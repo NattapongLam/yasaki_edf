@@ -31,6 +31,7 @@ Route::get('/dashboard', function () {
 
 require __DIR__.'/auth.php';
 Route::resource('/profiles' , App\Http\Controllers\ProfilesController::class);
+// เคมี
 Route::post('/confirmDelProfile' , [App\Http\Controllers\ProfilesController::class , 'confirmDelProfile']);
 Route::resource('/chemicalgroups' , App\Http\Controllers\ChemicalGroupController::class);
 Route::post('/confirmDelChemicalGroup' , [App\Http\Controllers\ChemicalGroupController::class , 'confirmDelChemicalGroup']);
@@ -39,3 +40,18 @@ Route::post('/confirmDelChemicalFuntion' , [App\Http\Controllers\ChemicalGroupCo
 Route::resource('/chemicallists' , App\Http\Controllers\ChemicalListController::class);
 Route::post('/confirmDelChemical' , [App\Http\Controllers\ChemicalListController::class , 'confirmDelChemical']);
 Route::get('/chemical/functions/{group_id}', [App\Http\Controllers\ChemicalListController::class, 'getFunctions']);
+// เคมี
+
+// ทั่วไป
+Route::resource('/countrys' , App\Http\Controllers\OtherCountryController::class);
+Route::resource('/provinces' , App\Http\Controllers\OtherProvinceController::class);
+Route::resource('/districts' , App\Http\Controllers\OtherDistrictController::class);
+Route::resource('/sub-districts' , App\Http\Controllers\OtherSubDistrictController::class);
+// ทั่วไป
+
+// บัญชี
+Route::resource('/companys' , App\Http\Controllers\AccCompanyController::class);
+Route::resource('/currencys' , App\Http\Controllers\AccCurrencyController::class);
+Route::resource('/periods' , App\Http\Controllers\AccPeriodController::class);
+Route::resource('/typevats' , App\Http\Controllers\AccTypevatController::class);
+// บัญชี
