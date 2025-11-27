@@ -11,8 +11,8 @@
                         <span key="t-layouts">ลูกค้า</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="true">
-                        <li><a href="#" key="t-default">กลุ่มลูกค้า</a></li>     
-                        <li><a href="#" key="t-default">ลูกค้า</a></li>                      
+                        <li><a href="{{route('customergroups.create')}}" key="t-default">กลุ่มลูกค้า</a></li>     
+                        <li><a href="{{route('customerlists.index')}}" key="t-default">ลูกค้า</a></li>                      
                     </ul>                 
                 </li>
                 <li>

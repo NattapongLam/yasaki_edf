@@ -14,6 +14,6 @@ class ChemicalFuntion extends Model
     protected $guarded = ['chemical_funtions_id'];
     public function Groups()
     {
-        return $this->hasMany(ChemicalGroup::class, 'chemical_groups_id', 'chemical_groups_id');
+        return $this->belongsTo(ChemicalGroup::class, 'chemical_groups_id', 'chemical_groups_id');
     }
 }

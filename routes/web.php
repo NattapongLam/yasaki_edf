@@ -55,3 +55,10 @@ Route::resource('/currencys' , App\Http\Controllers\AccCurrencyController::class
 Route::resource('/periods' , App\Http\Controllers\AccPeriodController::class);
 Route::resource('/typevats' , App\Http\Controllers\AccTypevatController::class);
 // บัญชี
+
+// ลูกค้า
+Route::resource('/customergroups' , App\Http\Controllers\ArCustomerGroupController::class);
+Route::resource('/customerlists' , App\Http\Controllers\ArCustomerListController::class);
+Route::get('/get-districts/{province_id}', [App\Http\Controllers\ArCustomerListController::class, 'getDistricts']);
+Route::get('/get-subdistricts/{district_id}', [App\Http\Controllers\ArCustomerListController::class, 'getSubDistricts']);
+// ลูกค้า
