@@ -62,3 +62,14 @@ Route::resource('/customerlists' , App\Http\Controllers\ArCustomerListController
 Route::get('/get-districts/{province_id}', [App\Http\Controllers\ArCustomerListController::class, 'getDistricts']);
 Route::get('/get-subdistricts/{district_id}', [App\Http\Controllers\ArCustomerListController::class, 'getSubDistricts']);
 // ลูกค้า
+
+//ผู้จำหน่าย
+Route::resource('/vendorgroups' , App\Http\Controllers\ApVendorGroupController::class);
+Route::resource('/vendorlists' , App\Http\Controllers\ApVendorListController::class);
+//ผู้จำหน่าย
+
+//เครื่องวัดมือ
+Route::resource('/calibrationcategorys' , App\Http\Controllers\CalibrationCategoryController::class);
+Route::resource('/calibrationgroups' , App\Http\Controllers\CalibrationGroupController::class);
+Route::resource('/calibrationtypes' , App\Http\Controllers\CalibrationTypeController::class);
+//เครื่องวัดมือ

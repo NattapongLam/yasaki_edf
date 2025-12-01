@@ -17,15 +17,15 @@
 <div class="card">
     <div class="card-body">
         <div class="row">
-            <div class="col-12 col-md-6"><h3 class="card-title">ลูกค้า</h3></div> 
+            <div class="col-12 col-md-6"><h3 class="card-title">ผู้จำหน่าย</h3></div> 
         </div>
-        <form method="POST" class="form-horizontal" action="{{ route('customerlists.store') }}" enctype="multipart/form-data">
+        <form method="POST" class="form-horizontal" action="{{ route('vendorlists.store') }}" enctype="multipart/form-data">
         @csrf  
         <div class="row">            
             <div class="col-3">
                 <div class="form-group">
-                    <label for="ar_customer_lists_code" class="col-form-label">รหัส</label>
-                    <input type="text" class="form-control" name="ar_customer_lists_code" id="ar_customer_lists_code" required>
+                    <label for="ap_vendor_lists_code" class="col-form-label">รหัส</label>
+                    <input type="text" class="form-control" name="ap_vendor_lists_code" id="ap_vendor_lists_code" required>
                 </div>         
             </div>
             <div class="col-3">
@@ -41,11 +41,11 @@
             </div>
             <div class="col-3">
                 <div class="form-group">
-                    <label for="ar_customer_groups_id" class="col-form-label">กลุ่ม</label>
-                    <select class="form-select" name="ar_customer_groups_id">
+                    <label for="ap_vendor_groups_id" class="col-form-label">กลุ่ม</label>
+                    <select class="form-select" name="ap_vendor_groups_id">
                         <option value="">กรุณาเลือก</option>
                         @foreach ($groups as $item)
-                            <option value="{{$item->ar_customer_groups_id}}">{{$item->ar_customer_groups_name}}</option>
+                            <option value="{{$item->ap_vendor_groups_id}}">{{$item->ap_vendor_groups_name}}</option>
                         @endforeach
                     </select>
                 </div>         
@@ -65,22 +65,22 @@
         <div class="row">   
             <div class="col-6">
                 <div class="form-group">
-                    <label for="ar_customer_lists_name1" class="col-form-label">ชื่อภาษไทย</label>
-                    <input type="text" class="form-control" name="ar_customer_lists_name1" id="ar_customer_lists_name1" required>
+                    <label for="ap_vendor_lists_name1" class="col-form-label">ชื่อภาษไทย</label>
+                    <input type="text" class="form-control" name="ap_vendor_lists_name1" id="ap_vendor_lists_name1" required>
                 </div>         
             </div>
             <div class="col-6">
                 <div class="form-group">
-                    <label for="ar_customer_lists_name2" class="col-form-label">ชื่อภาษอังกฤษ</label>
-                    <input type="text" class="form-control" name="ar_customer_lists_name2" id="ar_customer_lists_name2">
+                    <label for="ap_vendor_lists_name2" class="col-form-label">ชื่อภาษไทย</label>
+                    <input type="text" class="form-control" name="ap_vendor_lists_name2" id="ap_vendor_lists_name2">
                 </div>         
             </div>
         </div> 
         <div class="row">   
             <div class="col-3">
                 <div class="form-group">
-                    <label for="ar_customer_lists_address1" class="col-form-label">ที่อยู่ออกบิล</label>
-                    <input type="text" class="form-control" name="ar_customer_lists_address1" id="ar_customer_lists_address1" required>
+                    <label for="ap_vendor_lists_address1" class="col-form-label">ที่อยู่ออกบิล</label>
+                    <input type="text" class="form-control" name="ap_vendor_lists_address1" id="ap_vendor_lists_address1" required>
                 </div>         
             </div>
             <div class="col-3">
@@ -116,10 +116,16 @@
             </div>
         </div> 
         <div class="row">          
-             <div class="col-12">
+            <div class="col-6">
                 <div class="form-group">
-                    <label for="ar_customer_lists_address2" class="col-form-label">ที่อยู่จัดส่ง</label>
-                    <input type="text" class="form-control" name="ar_customer_lists_address2" id="ar_customer_lists_address2">
+                    <label for="ap_vendor_lists_bankname" class="col-form-label">ธนาคร</label>
+                    <input type="text" class="form-control" name="ap_vendor_lists_bankname" id="ap_vendor_lists_bankname">
+                </div>         
+            </div>
+             <div class="col-6">
+                <div class="form-group">
+                    <label for="ap_vendor_lists_banknumber" class="col-form-label">เลขที่บัญชี</label>
+                    <input type="text" class="form-control" name="ap_vendor_lists_banknumber" id="ap_vendor_lists_banknumber">
                 </div>         
             </div>
         </div>
@@ -137,46 +143,46 @@
             </div>
             <div class="col-3">
                 <div class="form-group">
-                    <label for="ar_customer_lists_branchnumber" class="col-form-label">รหัสสาขา</label>
-                    <input type="text" class="form-control" name="ar_customer_lists_branchnumber" id="ar_customer_lists_branchnumber">
+                    <label for="ap_vendor_lists_branchnumber" class="col-form-label">รหัสสาขา</label>
+                    <input type="text" class="form-control" name="ap_vendor_lists_branchnumber" id="ap_vendor_lists_branchnumber">
                 </div>
             </div>
             <div class="col-3">
                 <div class="form-group">
-                    <label for="ar_customer_lists_taxid" class="col-form-label">เลขประจำตัวผู้เสียภาษี</label>
-                    <input type="text" class="form-control" name="ar_customer_lists_taxid" id="ar_customer_lists_taxid">
+                    <label for="ap_vendor_lists_taxid" class="col-form-label">เลขประจำตัวผู้เสียภาษี</label>
+                    <input type="text" class="form-control" name="ap_vendor_lists_taxid" id="ap_vendor_lists_taxid">
                 </div>
             </div>
             <div class="col-3">
                 <div class="form-group">
-                    <label for="ar_customer_lists_credit" class="col-form-label">จำนวนวันเครดิต</label>
-                    <input type="number" class="form-control" name="ar_customer_lists_credit" id="ar_customer_lists_credit">
+                    <label for="ap_vendor_lists_credit" class="col-form-label">จำนวนวันเครดิต</label>
+                    <input type="number" class="form-control" name="ap_vendor_lists_credit" id="ap_vendor_lists_credit">
                 </div>
             </div>
         </div> 
         <div class="row">
             <div class="col-3">
                 <div class="form-group">
-                    <label for="ar_customer_lists_contact" class="col-form-label">ผู้ติดต่อ</label>
-                    <input type="text" class="form-control" name="ar_customer_lists_contact" id="ar_customer_lists_contact">
+                    <label for="ap_vendor_lists_contact" class="col-form-label">ผู้ติดต่อ</label>
+                    <input type="text" class="form-control" name="ap_vendor_lists_contact" id="ap_vendor_lists_contact">
                 </div>
             </div>
             <div class="col-3">
                 <div class="form-group">
-                    <label for="ar_customer_lists_tel" class="col-form-label">เบอร์โทร</label>
-                    <input type="text" class="form-control" name="ar_customer_lists_tel" id="ar_customer_lists_tel" required>
+                    <label for="ap_vendor_lists_tel" class="col-form-label">เบอร์โทร</label>
+                    <input type="text" class="form-control" name="ap_vendor_lists_tel" id="ap_vendor_lists_tel" required>
                 </div>
             </div>
             <div class="col-3">
                 <div class="form-group">
-                    <label for="ar_customer_lists_email" class="col-form-label">Email</label>
-                    <input type="text" class="form-control" name="ar_customer_lists_email" id="ar_customer_lists_email">
+                    <label for="ap_vendor_lists_email" class="col-form-label">Email</label>
+                    <input type="text" class="form-control" name="ap_vendor_lists_email" id="ap_vendor_lists_email">
                 </div>
             </div>
             <div class="col-3">
                 <div class="form-group">
-                    <label for="ar_customer_lists_lineid" class="col-form-label">Line ID</label>
-                    <input type="text" class="form-control" name="ar_customer_lists_lineid" id="ar_customer_lists_lineid">
+                    <label for="ap_vendor_lists_lineid" class="col-form-label">Line ID</label>
+                    <input type="text" class="form-control" name="ap_vendor_lists_lineid" id="ap_vendor_lists_lineid">
                 </div>
             </div>
         </div> 

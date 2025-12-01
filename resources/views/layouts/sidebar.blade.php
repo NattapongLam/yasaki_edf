@@ -21,8 +21,8 @@
                         <span key="t-layouts">ผู้จำหน่าย</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="true">
-                        <li><a href="#" key="t-default">กลุ่มผู้จำหน่าย</a></li>     
-                        <li><a href="#" key="t-default">ผู้จำหน่าย</a></li>                      
+                        <li><a href="{{route('vendorgroups.create')}}" key="t-default">กลุ่มผู้จำหน่าย</a></li>     
+                        <li><a href="{{route('vendorlists.index')}}" key="t-default">ผู้จำหน่าย</a></li>                      
                     </ul>                 
                 </li>
                 <li>
@@ -86,6 +86,9 @@
                             <ul class="sub-menu" aria-expanded="true">
                                 <li><a href="{{route('chemicalgroups.index')}}" key="t-default">กลุ่มเคมี</a></li> 
                                 <li><a href="{{route('chemicallists.index')}}" key="t-default">รายชื่อเคมี</a></li> 
+                                <li><a href="{{route('calibrationcategorys.create')}}" key="t-default">หมวดเครื่องมือวัด</a></li> 
+                                <li><a href="{{route('calibrationgroups.create')}}" key="t-default">กลุ่มเครื่องมือวัด</a></li> 
+                                <li><a href="{{route('calibrationtypes.create')}}" key="t-default">ประเภทครื่องมือวัด</a></li>
                             </ul>
                         </li>
                     </ul>                                         
