@@ -72,4 +72,6 @@ Route::resource('/vendorlists' , App\Http\Controllers\ApVendorListController::cl
 Route::resource('/calibrationcategorys' , App\Http\Controllers\CalibrationCategoryController::class);
 Route::resource('/calibrationgroups' , App\Http\Controllers\CalibrationGroupController::class);
 Route::resource('/calibrationtypes' , App\Http\Controllers\CalibrationTypeController::class);
+Route::resource('/calibrationlists' , App\Http\Controllers\CalibrationListController::class);
+Route::get('/calibration/get-last-running', [App\Http\Controllers\CalibrationListController::class, 'getLastRunning'])->name('calibration.getLastRunning');
 //เครื่องวัดมือ

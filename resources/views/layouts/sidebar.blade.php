@@ -89,6 +89,7 @@
                                 <li><a href="{{route('calibrationcategorys.create')}}" key="t-default">หมวดเครื่องมือวัด</a></li> 
                                 <li><a href="{{route('calibrationgroups.create')}}" key="t-default">กลุ่มเครื่องมือวัด</a></li> 
                                 <li><a href="{{route('calibrationtypes.create')}}" key="t-default">ประเภทครื่องมือวัด</a></li>
+                                <li><a href="{{route('calibrationlists.index')}}" key="t-default">ทะเบียนครื่องมือวัด</a></li>
                             </ul>
                         </li>
                     </ul>                                         
