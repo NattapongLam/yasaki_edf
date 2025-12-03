@@ -31,10 +31,10 @@
                         <span key="t-layouts">สินค้า</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="true">
-                        <li><a href="#" key="t-default">ประเภทสินค้า</a></li>     
-                        <li><a href="#" key="t-default">กลุ่มสินค้า</a></li>     
-                        <li><a href="#" key="t-default">หน่วยนับ</a></li>          
-                        <li><a href="#" key="t-default">สินค้า</a></li>              
+                        <li><a href="{{route('producttypes.create')}}" key="t-default">ประเภทสินค้า</a></li>     
+                        <li><a href="{{route('productgroups.create')}}" key="t-default">กลุ่มสินค้า</a></li>     
+                        <li><a href="{{route('productunits.create')}}" key="t-default">หน่วยนับ</a></li>          
+                        <li><a href="{{route('productlists.index')}}" key="t-default">สินค้า</a></li>              
                     </ul>                 
                 </li>
                 <li>

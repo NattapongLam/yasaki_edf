@@ -183,25 +183,25 @@
                     <div class="col-3">
                         <div class="form-group">
                             <label for="calibration_lists_areaofuse" class="col-form-label">ย่านการใช้งาน</label>
-                            <input type="text" class="form-control" name="calibration_lists_areaofuse" id="calibration_lists_areaofuse">
+                            <input type="text" class="form-control" name="calibration_lists_areaofuse" id="calibration_lists_areaofuse" value="{{old('calibration_lists_areaofuse',0)}}">
                         </div>
                     </div>
                     <div class="col-3">
                         <div class="form-group">
                             <label for="calibration_lists_measuringrange" class="col-form-label">ย่านการวัด</label>
-                            <input type="text" class="form-control" name="calibration_lists_measuringrange" id="calibration_lists_measuringrange">
+                            <input type="text" class="form-control" name="calibration_lists_measuringrange" id="calibration_lists_measuringrange" value="{{old('calibration_lists_measuringrange',0)}}">
                         </div>
                     </div>
                     <div class="col-3">
                         <div class="form-group">
                             <label for="calibration_lists_precision" class="col-form-label">ค่าความเที่ยงตรง</label>
-                            <input type="text" class="form-control" name="calibration_lists_precision" id="calibration_lists_precision">
+                            <input type="text" class="form-control" name="calibration_lists_precision" id="calibration_lists_precision" value="{{old('calibration_lists_precision',0)}}">
                         </div>
                     </div>
                     <div class="col-3">
                         <div class="form-group">
                             <label for="calibration_lists_resolution" class="col-form-label">ความละเอียด</label>
-                            <input type="text" class="form-control" name="calibration_lists_resolution" id="calibration_lists_resolution">
+                            <input type="text" class="form-control" name="calibration_lists_resolution" id="calibration_lists_resolution" value="{{old('calibration_lists_resolution',0)}}">
                         </div>
                     </div>
                 </div> 

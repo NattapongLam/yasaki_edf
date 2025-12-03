@@ -75,3 +75,11 @@ Route::resource('/calibrationtypes' , App\Http\Controllers\CalibrationTypeContro
 Route::resource('/calibrationlists' , App\Http\Controllers\CalibrationListController::class);
 Route::get('/calibration/get-last-running', [App\Http\Controllers\CalibrationListController::class, 'getLastRunning'])->name('calibration.getLastRunning');
 //เครื่องวัดมือ
+
+// สินค้า
+Route::resource('/productgroups' , App\Http\Controllers\WhProductGroupController::class);
+Route::resource('/productlists' , App\Http\Controllers\WhProductListController::class);
+Route::resource('/producttypes' , App\Http\Controllers\WhProductTypeController::class);
+Route::resource('/productunits' , App\Http\Controllers\WhProductUnitController::class);
+Route::get('/product/get-last-running', [App\Http\Controllers\WhProductListController::class, 'getLastRunning'])->name('product.getLastRunning');
+// สินค้า
