@@ -100,7 +100,7 @@
                         <span key="t-layouts">ฝ่ายขาย</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="true">
-                        <li><a href="#" key="t-default">ใบเสนอราคา</a></li> 
+                        <li><a href="{{route('quotations.index')}}" key="t-default">ใบเสนอราคา</a></li> 
                         <li><a href="#" key="t-default">ใบแจ้งหนี้</a></li> 
                         <li><a href="#" key="t-default">บิลขาย</a></li> 
                         <li><a href="#" key="t-default">รับมัดจำ/ล่วงหน้า</a></li>

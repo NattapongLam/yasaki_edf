@@ -115,7 +115,7 @@ class WhProductUnitController extends Controller
         ];
         try{
             DB::beginTransaction();
-            $insertHD = WhProductUnit::create($data);               
+            $insertHD = WhProductUnit::where('wh_product_units_id',$id)->update($data);               
             DB::commit();
             return redirect()->route('productunits.create')->with('success', 'บันทึกข้อมูลเรียบร้อย');
         }catch(\Exception $e){

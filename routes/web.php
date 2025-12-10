@@ -83,3 +83,9 @@ Route::resource('/producttypes' , App\Http\Controllers\WhProductTypeController::
 Route::resource('/productunits' , App\Http\Controllers\WhProductUnitController::class);
 Route::get('/product/get-last-running', [App\Http\Controllers\WhProductListController::class, 'getLastRunning'])->name('product.getLastRunning');
 // สินค้า
+
+// ขาย
+Route::resource('/quotations' , App\Http\Controllers\ArQuotationListController::class);
+Route::get('/quotation/runno', [App\Http\Controllers\ArQuotationListController::class, 'runNo'])->name('quotation.runno');
+Route::get('/customer/address-text', [App\Http\Controllers\ArQuotationListController::class, 'addressText'])->name('customer.addressText');
+// ขาย
