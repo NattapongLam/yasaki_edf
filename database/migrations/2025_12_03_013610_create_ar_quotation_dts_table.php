@@ -24,12 +24,13 @@ return new class extends Migration
             $table->string('wh_product_lists_unit');
             $table->decimal('acc_discount_qty', 18, 2)->default(0);
             $table->decimal('ar_quotation_dts_qty', 18, 2)->default(0);
+            $table->decimal('ar_quotation_dts_price', 20, 4)->default(0);
             $table->decimal('ar_quotation_dts_base', 20, 4)->default(0);
             $table->decimal('ar_quotation_dts_vat', 20, 4)->default(0);
             $table->decimal('ar_quotation_dts_net', 20, 4)->default(0);
             $table->decimal('ar_quotation_dts_dis', 20, 4)->default(0);
             $table->decimal('ar_quotation_dts_amount', 20, 4)->default(0);
-            $table->string('ar_quotation_hds_remark')->nullable();
+            $table->string('ar_quotation_dts_remark')->nullable();
             $table->boolean('ar_quotation_dts_flag')->default(true);
             $table->string('person_at');
             $table->timestamps();
