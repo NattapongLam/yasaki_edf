@@ -494,6 +494,10 @@ function calculateQuotation() {
         $("#sum-discount").text((rowDiscountTotal).toFixed(2));
         $("#sum-vat").text(subVat.toFixed(2));
         $("#sum-grandtotal").text(subtotal.toFixed(2));
+        $("#ar_quotation_hds_base").val(subBase.toFixed(2));
+        $("#ar_quotation_hds_dis").val((rowDiscountTotal).toFixed(2));
+        $("#ar_quotation_hds_vat").val(subVat.toFixed(2));
+        $("#ar_quotation_hds_net").val(subtotal.toFixed(2));
     }else if(vatRate == 3){
         let subtotal = 0;
         let rowDiscountTotal = 0;
@@ -545,6 +549,10 @@ function calculateQuotation() {
         $("#sum-discount").text((rowDiscountTotal).toFixed(2));
         $("#sum-vat").text(subVat.toFixed(2));
         $("#sum-grandtotal").text(subtotal.toFixed(2));
+        $("#ar_quotation_hds_base").val(subBase.toFixed(2));
+        $("#ar_quotation_hds_dis").val((rowDiscountTotal).toFixed(2));
+        $("#ar_quotation_hds_vat").val(subVat.toFixed(2));
+        $("#ar_quotation_hds_net").val(subtotal.toFixed(2));
     }
   
 }
