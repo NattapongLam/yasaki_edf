@@ -39,11 +39,11 @@ class ArQuotationListController extends Controller
      */
     public function create()
     {
-        $customers = ArCustomerList::get();
+        $customers = ArCustomerList::where('ar_customer_lists_flag',true)->get();
         $typevats = AccTypevat::whereIN('acc_typevats_id',[1,2,3])->get();
         $currencys = AccCurrency::get();
         $discounts = DB::table('acc_discount')->get();
-        $products = WhProductList::whereIn('wh_product_types_id',[4,5])->get();
+        $products = WhProductList::whereIn('wh_product_types_id',[4,5])->where('wh_product_lists_flag',true)->get();
         return view('sales.form-quotation-create', compact('customers','typevats','currencys','discounts','products'));
     }
 
@@ -157,11 +157,11 @@ class ArQuotationListController extends Controller
      */
     public function edit($id)
     {
-        $customers = ArCustomerList::get();
+        $customers = ArCustomerList::where('ar_customer_lists_flag',true)->get();
         $typevats = AccTypevat::whereIN('acc_typevats_id',[1,2,3])->get();
         $currencys = AccCurrency::get();
         $discounts = DB::table('acc_discount')->get();
-        $products = WhProductList::whereIn('wh_product_types_id',[4,5])->get();
+        $products = WhProductList::whereIn('wh_product_types_id',[4,5])->where('wh_product_lists_flag',true)->get();
         $hd = ArQuotationHd::find($id);
         $dt = ArQuotationDt::where('ar_quotation_dts_flag',true)->where('ar_quotation_hds_id',$id)->get();
         return view('sales.form-quotation-edit', compact('customers','typevats','currencys','discounts','products','hd','dt'));
@@ -235,6 +235,38 @@ class ArQuotationListController extends Controller
         return response()->json([
             "address" =>  $address . " " . $subdistricts . " " . $district . " " . $province . " " . $subdistrict->other_sub_districts_zipcode . " " . $country
         ]);
+    }
+
+    public function CancelQuotationsDoc(Request $request)
+    {
+        $id = $request->refid;
+        try 
+        {
+            DB::beginTransaction();
+            ArQuotationHd::where('ar_quotation_hds_id',$id)->update([
+                'ar_quotation_statuses_id' => 2,
+                'person_at' => Auth::user()->name,
+                'updated_at'=> Carbon::now(),
+            ]);
+            DB::commit();
+            return response()->json([
+                'status' => true,
+                'message' => 'ยกเลิกรายการเรียบร้อยแล้ว'
+            ]);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function print($id)
+    {
+        $hd = ArQuotationHd::findOrFail($id);
+        $dt = ArQuotationDt::where('ar_quotation_hds_id', $id)->where('ar_quotation_dts_flag',true)->get();
+        return view('sales.form-quotation-print', compact('hd', 'dt'));
     }
 
 }

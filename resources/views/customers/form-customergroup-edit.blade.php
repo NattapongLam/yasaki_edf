@@ -32,13 +32,17 @@
                     <label for="ar_customer_groups_name" class="col-form-label">ชื่อ</label>
                     <input type="text" class="form-control" name="ar_customer_groups_name" id="ar_customer_groups_name" value="{{$hd->ar_customer_groups_name}}" required>
                 </div>
-                   <div class="col-xl-3 mb-3">
+                <div class="col-xl-3 mb-3">
                     <label for="ar_customer_groups_flag" class="form-label">Status</label>
                                 <div class="input-group">
                                     <div class="d-flex">
                                         <div class="square-switch">
-                                            <input type="checkbox" id="ar_customer_groups_flag" switch="none" name="ar_customer_groups_flag" value="true" checked/>                              
-                                            <label for="ar_customer_groups_flag" data-on-label="On" data-off-label="Off"></label>
+                                            @if($hd->ar_customer_groups_flag == 1)
+                                                <input type="checkbox" id="square-switch1" switch="none" name="ar_customer_groups_flag" value="true" checked/>
+                                            @else
+                                                <input type="checkbox" id="square-switch1" switch="none" name="ar_customer_groups_flag" />
+                                            @endif
+                                                <label for="square-switch1" data-on-label="On" data-off-label="Off"></label>
                                         </div>
                                     </div>
                                 </div>

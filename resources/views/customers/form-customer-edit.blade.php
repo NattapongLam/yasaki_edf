@@ -194,6 +194,26 @@
                 </div>
             </div>
         </div> 
+         <div class="col-xl-3 mb-3">
+                    <label for="ar_customer_lists_flag" class="form-label">Status</label>
+                                <div class="input-group">
+                                    <div class="d-flex">
+                                        <div class="square-switch">
+                                            @if($hd->ar_customer_lists_flag == 1)
+                                                <input type="checkbox" id="square-switch1" switch="none" name="ar_customer_lists_flag" value="true" checked/>
+                                            @else
+                                                <input type="checkbox" id="square-switch1" switch="none" name="ar_customer_lists_flag" />
+                                            @endif
+                                                <label for="square-switch1" data-on-label="On" data-off-label="Off"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                @error('ar_customer_lists_flag')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
+                </div>
         <br>
                 <div class="col-12 col-md-1">
                     <div class="form-group">

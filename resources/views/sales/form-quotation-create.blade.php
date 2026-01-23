@@ -52,7 +52,7 @@
                     </select>
                 </div> 
             </div>
-             <div class="col-3">
+            <div class="col-3">
                 <div class="form-group">
                     <label for="acc_currencies_id" class="col-form-label">สกุลเงิน</label>
                     <select class="form-select" name="acc_currencies_id" id="acc_currencies_id" required>

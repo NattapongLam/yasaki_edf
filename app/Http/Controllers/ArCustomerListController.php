@@ -139,18 +139,13 @@ class ArCustomerListController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {
-         $request->validate([
-            'ar_customer_groups_id' => ['required'],
-            'ar_customer_lists_type' => ['required'],
-            'ar_customer_lists_name1' => ['required'],
-            'other_countries_id' => ['required'],
-            'other_provinces_id' => ['required'],
-            'other_districts_id' => ['required'],
-            'other_sub_districts_id' => ['required'],
-            'ar_customer_lists_address1' => ['required'],
-            'ar_customer_lists_tel' => ['required'],
-        ]); 
+    { 
+        $flag = $request->ar_customer_lists_flag;
+        if ($flag == 'on' || $flag == 'true') {
+            $flag = true;
+        } else {
+            $flag = false;
+        }
         $data = [
             'ar_customer_groups_id' => $request->ar_customer_groups_id,
             'acc_companytype_id' => $request->acc_companytype_id,
@@ -170,7 +165,7 @@ class ArCustomerListController extends Controller
             'ar_customer_lists_email' => $request->ar_customer_lists_email,
             'ar_customer_lists_lineid' => $request->ar_customer_lists_lineid,
             'ar_customer_lists_contact' => $request->ar_customer_lists_contact,
-            'ar_customer_lists_flag' => 1,
+            'ar_customer_lists_flag' => $flag,
             'person_at' => Auth::user()->name,
             'updated_at' => Carbon::now(),
         ]; 

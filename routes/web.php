@@ -88,4 +88,13 @@ Route::get('/product/get-last-running', [App\Http\Controllers\WhProductListContr
 Route::resource('/quotations' , App\Http\Controllers\ArQuotationListController::class);
 Route::get('/quotation/runno', [App\Http\Controllers\ArQuotationListController::class, 'runNo'])->name('quotation.runno');
 Route::get('/customer/address-text', [App\Http\Controllers\ArQuotationListController::class, 'addressText'])->name('customer.addressText');
+Route::post('/CancelQuotationsDoc' , [App\Http\Controllers\ArQuotationListController::class , 'CancelQuotationsDoc']);
+Route::get('quotations/{id}/print',[App\Http\Controllers\ArQuotationListController::class, 'print'])->name('quotations.print');
+Route::resource('/invoices' , App\Http\Controllers\ArInvoiceListController::class);
+Route::get('/invoice/runno', [App\Http\Controllers\ArInvoiceListController::class, 'runNo'])->name('invoice.runno');
+Route::get('quotation/items', [App\Http\Controllers\ArInvoiceListController::class, 'getItems'])->name('quotation.items');
+Route::post('/CancelInvoicesDoc' , [App\Http\Controllers\ArInvoiceListController::class , 'CancelInvoicesDoc']);
+Route::get('invoices/{id}/print', [App\Http\Controllers\ArInvoiceListController::class, 'print'])->name('invoices.print');
+Route::resource('/saleorders' , App\Http\Controllers\ArSaleOrderListController::class);
+Route::get('/saleorder/runno', [App\Http\Controllers\ArSaleOrderListController::class, 'runNo'])->name('saleorder.runno');
 // ขาย
