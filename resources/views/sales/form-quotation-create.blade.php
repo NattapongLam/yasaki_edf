@@ -54,10 +54,11 @@
             </div>
             <div class="col-3">
                 <div class="form-group">
-                    <label for="acc_currencies_id" class="col-form-label">สกุลเงิน</label>
-                    <select class="form-select" name="acc_currencies_id" id="acc_currencies_id" required>
-                        @foreach ($currencys as $item)
-                            <option value="{{$item->acc_currencies_id}}">{{$item->acc_currencies_name}}</option>
+                    <label for="ar_requestorder_hds_id" class="col-form-label">คำขอใช้บริการ</label>
+                    <select class="form-select" name="ar_requestorder_hds_id" id="ar_requestorder_hds_id" required>
+                        <option value="0">กรุณาเลือก</option>
+                        @foreach ($orders as $item)
+                            <option value="{{$item->ar_requestorder_hds_id}}">{{$item->ar_requestorder_hds_docuno}}</option>
                         @endforeach
                     </select>
                 </div> 
@@ -105,11 +106,21 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-12">
+            <div class="col-9">
                 <div class="form-group">
                     <label for="ar_customer_lists_address" class="col-form-label">ที่อยู่</label>
                     <input class="form-control" type="text" name="ar_customer_lists_address" id="ar_customer_lists_address">
                 </div>
+            </div>
+            <div class="col-3">
+                <div class="form-group">
+                    <label for="acc_currencies_id" class="col-form-label">สกุลเงิน</label>
+                    <select class="form-select" name="acc_currencies_id" id="acc_currencies_id" required>
+                        @foreach ($currencys as $item)
+                            <option value="{{$item->acc_currencies_id}}">{{$item->acc_currencies_name}}</option>
+                        @endforeach
+                    </select>
+                </div> 
             </div>
         </div>
         <div class="row">

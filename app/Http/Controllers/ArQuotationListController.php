@@ -11,6 +11,7 @@ use App\Models\ArQuotationHd;
 use App\Models\WhProductList;
 use App\Models\WhProductUnit;
 use App\Models\ArCustomerList;
+use App\Models\ArRequestorderHd;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
@@ -44,7 +45,8 @@ class ArQuotationListController extends Controller
         $currencys = AccCurrency::get();
         $discounts = DB::table('acc_discount')->get();
         $products = WhProductList::whereIn('wh_product_types_id',[4,5])->where('wh_product_lists_flag',true)->get();
-        return view('sales.form-quotation-create', compact('customers','typevats','currencys','discounts','products'));
+        $orders = ArRequestorderHd::where('ar_requestorder_statuses_id',1)->get();
+        return view('sales.form-quotation-create', compact('customers','typevats','currencys','discounts','products','orders'));
     }
 
     /**
@@ -90,7 +92,8 @@ class ArQuotationListController extends Controller
             'person_at' => Auth::user()->name,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
-            'ar_customer_lists_taxid' => $request->ar_customer_lists_taxid
+            'ar_customer_lists_taxid' => $request->ar_customer_lists_taxid,
+            'ar_requestorder_hds_id' => $request->ar_requestorder_hds_id,
         ];
         try{
             DB::beginTransaction();
@@ -128,7 +131,14 @@ class ArQuotationListController extends Controller
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
-            }            
+            }     
+            if($request->ar_requestorder_hds_id <> 0){
+                ArRequestorderHd::where('ar_requestorder_hds_id',$request->ar_requestorder_hds_id)
+                ->update([
+                    'ar_requestorder_statuses_id' => 2
+                ]);   
+            }   
+           
             DB::commit();
             return redirect()->route('quotations.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
         }catch(\Exception $e){
@@ -164,7 +174,8 @@ class ArQuotationListController extends Controller
         $products = WhProductList::whereIn('wh_product_types_id',[4,5])->where('wh_product_lists_flag',true)->get();
         $hd = ArQuotationHd::find($id);
         $dt = ArQuotationDt::where('ar_quotation_dts_flag',true)->where('ar_quotation_hds_id',$id)->get();
-        return view('sales.form-quotation-edit', compact('customers','typevats','currencys','discounts','products','hd','dt'));
+        $orders = ArRequestorderHd::whereIn('ar_requestorder_statuses_id',[1,2])->get();
+        return view('sales.form-quotation-edit', compact('customers','typevats','currencys','discounts','products','hd','dt','orders'));
     }
 
     /**

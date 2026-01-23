@@ -85,6 +85,9 @@ Route::get('/product/get-last-running', [App\Http\Controllers\WhProductListContr
 // สินค้า
 
 // ขาย
+Route::resource('/requestorders' , App\Http\Controllers\ArRequestOrderListController::class);
+Route::get('/requestorder/runno', [App\Http\Controllers\ArRequestOrderListController::class, 'runNo'])->name('requestorder.runno');
+Route::post('/CancelRequestOrderDoc' , [App\Http\Controllers\ArRequestOrderListController::class , 'CancelRequestOrderDoc']);
 Route::resource('/quotations' , App\Http\Controllers\ArQuotationListController::class);
 Route::get('/quotation/runno', [App\Http\Controllers\ArQuotationListController::class, 'runNo'])->name('quotation.runno');
 Route::get('/customer/address-text', [App\Http\Controllers\ArQuotationListController::class, 'addressText'])->name('customer.addressText');

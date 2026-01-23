@@ -25,6 +25,7 @@ return new class extends Migration
             $table->decimal('ar_invoice_hds_vat', 20, 4)->default(0);
             $table->decimal('ar_invoice_hds_net', 20, 4)->default(0);
             $table->string('ar_invoice_hds_remark')->nullable();
+            $table->BigInteger('ar_requestorder_hds_id')->default(0);
             $table->string('person_at');
             $table->timestamps();
         });
