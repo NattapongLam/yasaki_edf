@@ -56,7 +56,7 @@
         <div class="row mt-3">
             <div class="col-12">
                 <div class="form-group">
-                    <label for="ms_allocate_id" class="col-form-label">หมายเหตุ</label>
+                    <label for="ap_purchaserequest_hds_remark" class="col-form-label">หมายเหตุ</label>
                     <textarea class="form-control" name="ap_purchaserequest_hds_remark"></textarea>
                 </div>
             </div>

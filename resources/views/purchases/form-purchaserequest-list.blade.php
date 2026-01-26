@@ -31,12 +31,64 @@
                     <th>ผู้อนุมัติ</th>                   
                     <th>แก้ไข</th>
                     <th>ยกเลิก</th>
-                    <th></th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($hd as $item)
-                    
+                    <tr>
+                        <td>
+                            @if ($item->ap_purchaserequest_statuses_id == 1)
+                                <span class="bg-warning bg-soft">
+                                    {{$item->ap_purchaserequest_statuses_name}}
+                                </span>
+                            @elseif($item->ap_purchaserequest_statuses_id == 2)
+                                <span class="bg-danger bg-soft">
+                                    {{$item->ap_purchaserequest_statuses_name}}
+                                </span>
+                            @elseif($item->ap_purchaserequest_statuses_id == 3)
+                                <span class="bg-success bg-soft">
+                                    {{$item->ap_purchaserequest_statuses_name}}
+                                </span>
+                            @endif
+                        </td>
+                        <td>
+                             {{$item->ap_purchaserequest_hds_date}}
+                        </td>
+                        <td>
+                             {{$item->ap_purchaserequest_hds_docuno}}
+                        </td>
+                        <td>
+                             {{$item->ms_allocate_name}}
+                        </td>
+                        <td>
+                             {{$item->person_at}}<br>
+                             ( {{$item->ap_purchaserequest_hds_remark}} )
+                        </td>
+                        <td>
+                            @if ($item->approved_by)
+                                {{$item->approved_by}}
+                                (วันที่ : {{$item->approved_date}} )
+                            @else
+                                @if ($item->ap_purchaserequest_statuses_id == 1)
+                                    <a href="{{route('purchaserequests.show',$item->ap_purchaserequest_hds_id)}}" class="btn btn-sm btn-primary" >
+                                        <i class="fas fa-edit"></i>
+                                    </a> 
+                                @endif
+                            @endif
+                        </td>
+                        <td>
+                            @if ($item->ap_purchaserequest_statuses_id == 1)
+                                <a href="{{route('purchaserequests.edit',$item->ap_purchaserequest_hds_id)}}" class="btn btn-sm btn-warning" >
+                                    <i class="fas fa-edit"></i>
+                                </a> 
+                            @endif
+                        </td>
+                        <td>
+                            @if ($item->ap_purchaserequest_statuses_id == 1)
+                                <a href="javascript:void(0)" class="btn btn-danger btn-sm" onclick="confirmDel('{{ $item->ap_purchaserequest_hds_id }}')"><i class="fas fa-trash"></i></a>
+                            @endif
+                        </td>
+                    </tr>
                 @endforeach
             </tbody>
         </table>
@@ -73,7 +125,7 @@ Swal.fire({
 }).then(function(result) {
     if (result.value) {
         $.ajax({
-            url: `{{ url('/CancelQuotationsDoc') }}`,
+            url: `{{ url('/CancelPurchaseRequestDoc') }}`,
             type: "POST",
             data: {
                 "_token": "{{ csrf_token() }}",
