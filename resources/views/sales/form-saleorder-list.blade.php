@@ -35,6 +35,49 @@
                 </tr>
             </thead>
             <tbody>
+                @foreach ($hd as $item)
+                    <tr>
+                        <td>
+                            @if ($item->ar_saleorder_statuses_id == 1)
+                                <span class="bg-warning bg-soft">
+                                    {{$item->ar_saleorder_statuses_name}}
+                                </span>
+                            @elseif($item->ar_saleorder_statuses_id == 2)
+                                <span class="bg-danger bg-soft">
+                                    {{$item->ar_saleorder_statuses_name}}
+                                </span>
+                            @endif
+                        </td>
+                        <td>
+                            {{$item->ar_saleorder_hds_date}}
+                        </td>
+                        <td>
+                            {{$item->ar_saleorder_hds_docuno}}
+                        </td>
+                        <td>
+                            {{$item->ar_customer_lists_name}}
+                        </td>
+                        <td>
+                            {{number_format($item->ar_saleorder_hds_amount,2)}}
+                        </td>
+                        <td>
+                           {{$item->ar_saleorder_hds_remark}}
+                        </td>
+                        <td>
+                            @if ($item->ar_saleorder_statuses_id == 1)
+                                <a href="{{route('saleorders.edit',$item->ar_saleorder_hds_id)}}" class="btn btn-sm btn-warning" >
+                                    <i class="fas fa-edit"></i>
+                                </a> 
+                            @endif
+                        </td>
+                        <td>
+                            @if ($item->ar_saleorder_statuses_id == 1)
+                                <a href="javascript:void(0)" class="btn btn-danger btn-sm" onclick="confirmDel('{{ $item->ar_saleorder_hds_id }}')"><i class="fas fa-trash"></i></a>
+                            @endif
+                        </td>
+                        <td></td>
+                    </tr>
+                @endforeach
             </tbody>
         </table>
     </div>
@@ -70,7 +113,7 @@ Swal.fire({
 }).then(function(result) {
     if (result.value) {
         $.ajax({
-            url: `{{ url('/CancelInvoicesDoc') }}`,
+            url: `{{ url('/CancelSaleorderDoc') }}`,
             type: "POST",
             data: {
                 "_token": "{{ csrf_token() }}",

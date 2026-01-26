@@ -100,4 +100,5 @@ Route::post('/CancelInvoicesDoc' , [App\Http\Controllers\ArInvoiceListController
 Route::get('invoices/{id}/print', [App\Http\Controllers\ArInvoiceListController::class, 'print'])->name('invoices.print');
 Route::resource('/saleorders' , App\Http\Controllers\ArSaleOrderListController::class);
 Route::get('/saleorder/runno', [App\Http\Controllers\ArSaleOrderListController::class, 'runNo'])->name('saleorder.runno');
+Route::post('/CancelSaleorderDoc' , [App\Http\Controllers\ArSaleOrderListController::class , 'CancelSaleorderDoc']);
 // ขาย
