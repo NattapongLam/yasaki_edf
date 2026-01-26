@@ -102,3 +102,9 @@ Route::resource('/saleorders' , App\Http\Controllers\ArSaleOrderListController::
 Route::get('/saleorder/runno', [App\Http\Controllers\ArSaleOrderListController::class, 'runNo'])->name('saleorder.runno');
 Route::post('/CancelSaleorderDoc' , [App\Http\Controllers\ArSaleOrderListController::class , 'CancelSaleorderDoc']);
 // ขาย
+
+//จัดซื้อ
+Route::resource('/purchaserequests' , App\Http\Controllers\ApPurchaseRequestListController::class);
+Route::get('/purchaserequest/runno', [App\Http\Controllers\ApPurchaseRequestListController::class, 'runNo'])->name('purchaserequest.runno');
+Route::resource('/purchaseorders' , App\Http\Controllers\ApPurchaseOrderListController::class);
+//จัดซื้อ

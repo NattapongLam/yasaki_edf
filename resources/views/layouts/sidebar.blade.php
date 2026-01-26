@@ -113,8 +113,8 @@
                         <span key="t-layouts">ฝ่ายจัดซื้อ</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="true">
-                        <li><a href="#" key="t-default">ใบขอสั่งซื้อ</a></li> 
-                        <li><a href="#" key="t-default">ใบสั่งซื้อ</a></li> 
+                        <li><a href="{{route('purchaserequests.index')}}" key="t-default">ใบขอสั่งซื้อ</a></li> 
+                        <li><a href="{{route('purchaseorders.index')}}" key="t-default">ใบสั่งซื้อ</a></li> 
                         <li><a href="#" key="t-default">รับสินค้า/ตั้งหนี้</a></li> 
                         <li><a href="#" key="t-default">จ่ายมัดจำ/ล่วงหน้า</a></li>
                     </ul>   

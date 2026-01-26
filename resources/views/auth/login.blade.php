@@ -2,9 +2,9 @@
 <html lang="en">
     <head>        
         <meta charset="utf-8" />
-        <title>Login | YASAKI</title>
+        <title>Login | KK&C PART CO.,LTD</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
+        <meta content="KK&C PART CO.,LTD" name="description" />
         <meta content="Themesbrand" name="author" />
         <!-- App favicon -->
         <link rel="shortcut icon" href="{{URL::asset('assets/images/favicon.ico')}}">
@@ -24,7 +24,7 @@
                             <div class="bg-soft">
                                 <div class="row">
                                         <center>
-                                            <img src="{{URL::asset('assets/images/logo.jpg')}}" alt="" height="100">
+                                            <img src="{{URL::asset('assets/images/KK-C.png')}}" alt="" height="150">
                                             @if (session('success'))
                                                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                                                     <i class="mdi mdi-check-all me-2"></i>
@@ -95,7 +95,7 @@
                         </div>
                         <div class="mt-5 text-center">                           
                             <div>
-                                <p>© <script>document.write(new Date().getFullYear())</script>By<i class="mdi mdi-heart text-danger"></i> YASAKI</p>
+                                <p>© <script>document.write(new Date().getFullYear())</script>By<i class="mdi mdi-heart text-danger"></i> KK&C PART CO.,LTD</p>
                             </div>
                         </div>
 
