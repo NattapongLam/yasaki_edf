@@ -67,7 +67,7 @@ class ApPurchaseRequestListController extends Controller
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ];
-         try{
+        try{
             DB::beginTransaction();
             $insertHD = ApPurchaserequestHd::create($data);   
             foreach ($request->ap_purchaserequest_dts_listno as $key => $value) {
@@ -230,6 +230,7 @@ class ApPurchaseRequestListController extends Controller
                     'approved_date' => Carbon::now(),
                     'approved_by' => Auth::user()->name,
                     'approved_remark' => $request->approved_remark,
+                    'ap_purchaserequest_statuses_id' => 3,
                 ]);                              
                 DB::commit();
                 return redirect()->route('purchaserequests.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');

@@ -20,8 +20,8 @@
         @csrf
         @method('PUT')
         <div class="row">
-            <div class="col-12 col-md-6"><h3 class="card-title">ใบสั่งซื้อ</h3></div>
-             <input type="hidden" value="Edit" name="checkdoc">
+            <div class="col-12 col-md-6"><h3 class="card-title">อนุมัติใบสั่งซื้อ</h3></div>
+             <input type="hidden" value="Approved" name="checkdoc">
         </div>       
         <div class="row">
             <div class="col-3">
@@ -31,7 +31,7 @@
                             name="ap_purchaseorder_hds_date" 
                             id="ap_purchaseorder_hds_date"
                             value="{{$hd->ap_purchaseorder_hds_date}}" 
-                            required>
+                            readonly>
                 </div>
             </div>
             <div class="col-3">
@@ -47,7 +47,7 @@
             <div class="col-6">
                 <div class="form-group">
                     <label for="ap_vendor_lists_id" class="col-form-label">ผู้จำหน่าย</label>
-                    <select class="form-control" name="ap_vendor_lists_id" id="ap_vendor_lists_id">
+                    <select class="form-control" name="ap_vendor_lists_id" id="ap_vendor_lists_id" disabled>
                         <option value="0">กรุณาเลือก</option>
                         @foreach ($vendors as $item)
                             <option value="{{$item->ap_vendor_lists_id}}"
@@ -83,7 +83,7 @@
             <div class="col-3">
                 <div class="form-group">
                     <label for="ap_vendor_lists_email" class="col-form-label">Email</label>
-                    <input class="form-control" type="text" name="ap_vendor_lists_email" id="ap_vendor_lists_email" value="{{$hd->ap_vendor_lists_email}}">                   
+                    <input class="form-control" type="text" name="ap_vendor_lists_email" id="ap_vendor_lists_email" value="{{$hd->ap_vendor_lists_email}}" readonly>                   
                 </div>
             </div>       
             <div class="col-6">
@@ -97,25 +97,25 @@
             <div class="col-3">
                 <div class="form-group">
                     <label for="ap_vendor_lists_contact" class="col-form-label">ผู้ติดต่อ</label>
-                    <input class="form-control" type="text" name="ap_vendor_lists_contact" id="ap_vendor_lists_contact" value="{{$hd->ap_vendor_lists_contact}}">
+                    <input class="form-control" type="text" name="ap_vendor_lists_contact" id="ap_vendor_lists_contact" value="{{$hd->ap_vendor_lists_contact}}" readonly>
                 </div>
             </div>
             <div class="col-3">
                 <div class="form-group">
                     <label for="ap_vendor_lists_tel" class="col-form-label">เบอร์โทร</label>
-                    <input class="form-control" type="text" name="ap_vendor_lists_tel" id="ap_vendor_lists_tel" value="{{$hd->ap_vendor_lists_tel}}">
+                    <input class="form-control" type="text" name="ap_vendor_lists_tel" id="ap_vendor_lists_tel" value="{{$hd->ap_vendor_lists_tel}}" readonly>
                 </div>
             </div>
             <div class="col-3">
                 <div class="form-group">
                     <label for="ap_vendor_lists_credit" class="col-form-label">วันเครดิต</label>
-                    <input class="form-control" type="text" name="ap_vendor_lists_credit" id="ap_vendor_lists_credit" value="{{$hd->ap_vendor_lists_credit}}">
+                    <input class="form-control" type="text" name="ap_vendor_lists_credit" id="ap_vendor_lists_credit" value="{{$hd->ap_vendor_lists_credit}}" readonly>
                 </div>
             </div>
             <div class="col-3">
                 <div class="form-group">
                     <label for="acc_typevats_id" class="col-form-label">ประเภทภาษี</label>
-                    <select class="form-select" name="acc_typevats_id" id="acc_typevats_id" required>
+                    <select class="form-select" name="acc_typevats_id" id="acc_typevats_id" disabled>
                         <option value="">กรุณาเลือก</option>
                         @foreach ($typevats as $item)
                             <option value="{{$item->acc_typevats_id}}"
@@ -131,7 +131,7 @@
             <div class="col-3">
                 <div class="form-group">
                     <label for="acc_currencies_id" class="col-form-label">สกุลเงิน</label>
-                    <select class="form-select" name="acc_currencies_id" id="acc_currencies_id" required>
+                    <select class="form-select" name="acc_currencies_id" id="acc_currencies_id" disabled>
                         @foreach ($currencys as $item)
                             <option value="{{$item->acc_currencies_id}}"
                                 {{ $item->acc_currencies_id == $hd->acc_currencies_id ? 'selected' : '' }}>
@@ -144,7 +144,7 @@
             <div class="col-3">
                 <div class="form-group">
                     <label for="acc_discount_id" class="col-form-label">ประเภทส่วนลด</label>
-                    <select class="form-select" name="acc_discount_id" id="acc_discount_id" required>
+                    <select class="form-select" name="acc_discount_id" id="acc_discount_id" disabled>
                         @foreach ($discounts as $item)
                             <option value="{{$item->acc_discount_id}}"
                                 {{$item->acc_discount_id == $hd->acc_discount_id ? 'selected' : '' }}>
@@ -157,16 +157,12 @@
              <div class="col-6">
                 <div class="form-group">
                     <label for="ap_purchaseorder_hds_remark" class="col-form-label">หมายเหตุ</label>
-                    <input class="form-control" type="text" name="ap_purchaseorder_hds_remark" id="ap_purchaseorder_hds_remark" value="{{$hd->ap_purchaseorder_hds_remark}}">
+                    <input class="form-control" type="text" name="ap_purchaseorder_hds_remark" id="ap_purchaseorder_hds_remark" value="{{$hd->ap_purchaseorder_hds_remark}}" readonly>
                 </div>
              </div>
         </div>
         <br>
         <div class="row">
-            <div class="col-12" style="text-align: right;">
-                <a href="javascript:void(0);" class="btn btn-secondary" id="addRowBtn">เพิ่มรายการ</a>
-            </div>
-            <hr>
             <table class="table table-bordered dt-responsive nowrap w-100 text-center">
                 <thead>
                     <tr>
@@ -178,43 +174,26 @@
                         <th style="width: 9%">ยอดรวม</th>
                         <th style="width: 8%">กำหนดส่ง</th>
                         <th style="width: 20%">หมายเหตุ</th>
-                        <th style="width: 5%"></th>
                     </tr>
                 </thead>
                 <tbody id="tableBody">
                     @foreach ($dt as $item)
                         <tr>
                             <td>
-                                <span class="row-number">{{ $loop->iteration }}</span>
-                                <input type="hidden"
-                                    name="ap_purchaseorder_dts_listno[]"
-                                    class="row-number-hidden"
-                                    value="{{ $loop->iteration }}">
-                                <input type="hidden" name="ap_purchaseorder_dts_id[]" value="{{$item->ap_purchaseorder_dts_id}}">
+                                <span class="row-number">{{ $item->ap_purchaseorder_dts_listno }}</span>
                             </td>
                             <td>
-                               {{$item->wh_product_lists_name}} ({{$item->ap_purchaserequest_hds_docuno}} จำนวน : {{$item->ap_purchaserequest_dts_qty}})
+                               {{$item->wh_product_lists_name}} ({{$item->ap_purchaserequest_hds_docuno}} จำนวน : {{number_format($item->ap_purchaserequest_dts_qty,2)}})
                             </td>
-                            <td><input type="text" name="ap_purchaseorder_dts_qty[]" class="form-control qty-input" value="{{$item->ap_purchaseorder_dts_qty}}"></td>
-                            <td><input type="text" name="ap_purchaseorder_dts_price[]" class="form-control price-input" value="{{$item->ap_purchaseorder_dts_price}}"/></td>
+                            <td>{{number_format($item->ap_purchaseorder_dts_qty,2)}}</td>
+                            <td>{{number_format($item->ap_purchaseorder_dts_price,2)}}</td>
                             <td>
-                                @if ($item->acc_discount_qty == 0)
-                                    <input type="text" name="acc_discount_qty[]" class="form-control dis-input" value="0"/>
-                                @else
-                                    <input type="text" name="acc_discount_qty[]" class="form-control dis-input" value="{{$item->acc_discount_qty}}"/>
-                                @endif                   
+                                {{number_format($item->acc_discount_qty,2)}}           
                             </td>
-                            <td><input type="text" name="ap_purchaseorder_dts_amount[]" class="form-control amount-input" value="{{$item->ap_purchaseorder_dts_amount}}" readonly/></td>
-                            <td><input type="date" name="ap_purchaseorder_dts_duedate[]" class="form-control" value="{{$item->ap_purchaseorder_dts_duedate}}"/></td>
+                            <td>{{number_format($item->ap_purchaseorder_dts_amount,2)}}</td>
+                            <td>{{$item->ap_purchaseorder_dts_duedate}}</td>
                             <td>
-                                <input type="text" name="ap_purchaseorder_dts_remark[]" class="form-control" value="{{$item->ap_purchaseorder_dts_remark}}"/>
-                                <input type="hidden" name="ap_purchaseorder_dts_base[]" class="form-control base-input" value="{{$item->ap_purchaseorder_dts_base}}"/>
-                                <input type="hidden" name="ap_purchaseorder_dts_vat[]" class="form-control vat-input" value="{{$item->ap_purchaseorder_dts_vat}}"/>
-                                <input type="hidden" name="ap_purchaseorder_dts_net[]" class="form-control net-input" value="{{$item->ap_purchaseorder_dts_net}}"/>
-                                <input type="hidden" name="ap_purchaseorder_dts_dis[]" class="form-control distotal-input" value="{{$item->ap_purchaseorder_dts_dis}}"/>
-                            </td>
-                            <td>
-                                <a href="javascript:void(0)" class="btn btn-danger btn-sm" onclick="confirmDel('{{ $item->ap_purchaseorder_dts_id }}')"><i class="fas fa-trash"></i></a>
+                                {{$item->ap_purchaseorder_dts_remark}}
                             </td>
                         </tr>
                     @endforeach
@@ -292,6 +271,14 @@
                     </div>
                 </div>
             </div>                      
+        </div>
+        <div class="row">
+             <div class="col-12">
+                <div class="form-group">
+                    <label for="approved_remark" class="col-form-label">หมายเหตุอนุมัติ</label>
+                    <textarea class="form-control" name="approved_remark">{{$hd->approved_remark}}</textarea>
+                </div>
+            </div>
         </div>
         <br>
             <div class="col-12 col-md-1">
@@ -617,63 +604,6 @@ $("#tableBody").on("input", ".qty-input, .price-input, .dis-input", function () 
 $("#acc_discount_qty, #acc_typevats_id").on("change input", function () {
     calculateQuotation();
 });
-confirmDel = (refid) =>{
-Swal.fire({
-    title: 'คุณแน่ใจหรือไม่ !',
-    text: `คุณต้องการลบรายการนี้หรือไม่ ?`,
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonText: 'ยืนยัน',
-    cancelButtonText: 'ยกเลิก',
-    confirmButtonClass: 'btn btn-success',
-    cancelButtonClass: 'btn btn-danger',
-    buttonsStyling: false         
-}).then(function(result) {
-    if (result.value) {
-        $.ajax({
-            url: `{{ url('/CancelPurchaseOrderDoc') }}`,
-            type: "POST",
-            data: {
-                "_token": "{{ csrf_token() }}",
-                "refid": refid,               
-            },           
-            dataType: "json",
-            success: function(data) {
-                // console.log(data);
-                if (data.status == true) {
-                    Swal.fire({
-                        title: 'สำเร็จ',
-                        text: 'ยกเลิกรายการเรียบร้อยแล้ว',
-                        icon: 'success'
-                    }).then(function() {
-                        location.reload();
-                    });
-                } else {
-                    Swal.fire({
-                        title: 'ไม่สำเร็จ',
-                        text: 'ยกเลิกรายการไม่สำเร็จ',
-                        icon: 'error'
-                    });
-                }
-               
-            },
-            error: function(data) {
-                Swal.fire({
-                        title: 'ไม่สำเร็จ',
-                        text: 'ยกเลิกรายการไม่สำเร็จ',
-                        icon: 'error'
-                    });            }
-        });
 
-    } else if ( // Read more about handling dismissals
-        result.dismiss === Swal.DismissReason.cancel) {
-        Swal.fire({
-            title: 'ยกเลิก',
-            text: 'โปรดตรวจสอบข้อมูลอีกครั้งเพื่อความถูกต้อง :)',
-            icon: 'error'
-        });
-    }
-});
-}
 </script>
 @endpush

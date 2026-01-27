@@ -350,7 +350,7 @@ document.getElementById('addRowBtn').addEventListener('click', function () {
             <td><input type="text" name="ar_quotation_dts_qty[]" class="form-control qty-input" value="0" disabled/></td>
             <td><input type="text" name="ar_quotation_dts_price[]" class="form-control price-input" value="0" disabled/></td>
             <td><input type="text" name="acc_discount_qty[]" class="form-control dis-input" value="0" disabled/></td>
-            <td><input type="text" name="ar_quotation_dts_amount[]" class="form-control amount-input"" value="0" readonly/></td>
+            <td><input type="text" name="ar_quotation_dts_amount[]" class="form-control amount-input" value="0" readonly/></td>
             <td>
                 <input type="text" name="ar_quotation_dts_remark[]" class="form-control"/>
                 <input type="hidden" name="ar_quotation_dts_base[]" class="form-control base-input"/>

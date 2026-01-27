@@ -109,4 +109,8 @@ Route::get('/purchaserequest/runno', [App\Http\Controllers\ApPurchaseRequestList
 Route::post('/CancelPurchaseRequestDoc' , [App\Http\Controllers\ApPurchaseRequestListController::class , 'CancelPurchaseRequestDoc']);
 Route::post('/CancelPurchaseRequestList' , [App\Http\Controllers\ApPurchaseRequestListController::class , 'CancelPurchaseRequestList']);
 Route::resource('/purchaseorders' , App\Http\Controllers\ApPurchaseOrderListController::class);
+Route::get('/purchaseorder/runno', [App\Http\Controllers\ApPurchaseOrderListController::class, 'runNo'])->name('purchaseorder.runno');
+Route::get('/vendor/address-text', [App\Http\Controllers\ApPurchaseOrderListController::class, 'addressText'])->name('vendor.addressText');
+Route::post('/CancelPurchaseOrderDoc' , [App\Http\Controllers\ApPurchaseOrderListController::class , 'CancelPurchaseOrderDoc']);
+Route::post('/CancelPurchaseOrderList' , [App\Http\Controllers\ApPurchaseOrderListController::class , 'CancelPurchaseOrderList']);
 //จัดซื้อ
