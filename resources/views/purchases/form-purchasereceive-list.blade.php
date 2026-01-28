@@ -17,8 +17,8 @@
 <div class="card">
     <div class="card-body">
         <div class="row">
-            <div class="col-12 col-md-6"><h3 class="card-title">ใบสั่งซื้อ</h3></div>
-            <div class="col-12 col-md-6"><a style="float: right" href="{{route('purchaseorders.create')}}" class="btn btn-primary"><i class="fas fa-plus"></i> เพิ่มรายการ</a></div>
+            <div class="col-12 col-md-6"><h3 class="card-title">รับสินค้า</h3></div>
+            <div class="col-12 col-md-6"><a style="float: right" href="{{route('purchasereceives.create')}}" class="btn btn-primary"><i class="fas fa-plus"></i> เพิ่มรายการ</a></div>
         </div>       
         <table id="tb_job" class="table table-bordered dt-responsive nowrap w-100 text-center">
             <thead>
@@ -27,69 +27,36 @@
                     <th>วันที่</th>
                     <th>เลขที่</th>
                     <th>ผู้จำหน่าย</th>
-                    <th>ยอดเงิน</th>
-                    <th>ผู้อนุมัติ</th>                   
-                    <th>แก้ไข</th>
-                    <th>ยกเลิก</th>
-                    <td></td>  
+                    <th>ผู้รับสินค้า</th>
+                    <th>คลังสินค้า</th>                   
+                    <th>ยกเลิก</th> 
                 </tr>
             </thead>
             <tbody>
                 @foreach ($hd as $item)
                     <tr>
                         <td>
-                            @if ($item->ap_purchaseorder_statuses_id == 1 || $item->ap_purchaseorder_statuses_id == 5)
-                                <span class="bg-warning bg-soft">
-                                    {{$item->ap_purchaseorder_statuses_name}}
-                                </span>
-                            @elseif($item->ap_purchaseorder_statuses_id == 2)
-                                <span class="bg-danger bg-soft">
-                                    {{$item->ap_purchaseorder_statuses_name}}
-                                </span>
-                            @elseif($item->ap_purchaseorder_statuses_id == 3 || $item->ap_purchaseorder_statuses_id == 4)
+                            @if ($item->ap_purchase_receive_statuses_id == 1)
                                 <span class="bg-success bg-soft">
-                                    {{$item->ap_purchaseorder_statuses_name}}
+                                    {{$item->ap_purchase_receive_statuses_name}}
+                                </span>
+                            @elseif($item->ap_purchase_receive_statuses_id == 2)
+                                <span class="bg-danger bg-soft">
+                                    {{$item->ap_purchase_receive_statuses_name}}
                                 </span>
                             @endif
-                        </td>    
-                        <td>
-                            {{$item->ap_purchaseorder_hds_date}}
                         </td>   
+                        <td>{{$item->ap_purchase_receive_hds_date}}</td> 
+                        <td>{{$item->ap_purchase_receive_hds_docuno}}</td>
+                        <td>{{$item->ap_vendor_lists_name}}</td>
+                        <td>{{$item->person_at}}</td>
+                        <td>{{$item->wh_warehouses_name}}</td>
                         <td>
-                            {{$item->ap_purchaseorder_hds_docuno}}
-                        </td>  
-                        <td>
-                            {{$item->ap_vendor_lists_name}}
-                        </td> 
-                        <td>
-                            {{number_format($item->ap_purchaseorder_hds_amount,2)}}
-                        </td>   
-                        <td>
-                            @if ($item->approved_by)
-                                {{$item->approved_by}}
-                                (วันที่ : {{$item->approved_date}} )
-                            @else
-                                @if ($item->ap_purchaseorder_statuses_id == 1)
-                                    <a href="{{route('purchaseorders.show',$item->ap_purchaseorder_hds_id)}}" class="btn btn-sm btn-primary" >
-                                        <i class="fas fa-edit"></i>
-                                    </a> 
-                                @endif
-                            @endif
-                        </td>  
-                        <td>
-                            @if ($item->ap_purchaseorder_statuses_id == 1)
-                                <a href="{{route('purchaseorders.edit',$item->ap_purchaseorder_hds_id)}}" class="btn btn-sm btn-warning" >
-                                    <i class="fas fa-edit"></i>
-                                </a> 
-                            @endif
-                        </td>  
-                        <td>
-                            @if ($item->ap_purchaseorder_statuses_id == 1)
-                                <a href="javascript:void(0)" class="btn btn-danger btn-sm" onclick="confirmDel('{{ $item->ap_purchaseorder_hds_id }}')"><i class="fas fa-trash"></i></a>
+                            @if ($item->ap_purchase_receive_statuses_id == 1)
+                                <a href="javascript:void(0)" class="btn btn-danger btn-sm" onclick="confirmDel('{{ $item->ap_purchase_receive_hds_id }}')"><i class="fas fa-trash"></i></a>
                             @endif
                         </td>
-                        <td></td>                  
-                    </tr>
+                    </tr>  
                 @endforeach
             </tbody>
         </table>
@@ -126,7 +93,7 @@ Swal.fire({
 }).then(function(result) {
     if (result.value) {
         $.ajax({
-            url: `{{ url('/CancelPurchaseOrderDoc') }}`,
+            url: `{{ url('/CancelPurchaseReceiveDoc') }}`,
             type: "POST",
             data: {
                 "_token": "{{ csrf_token() }}",

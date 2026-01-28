@@ -43,7 +43,7 @@
                         <span key="t-layouts">คลัง</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="true">
-                        <li><a href="#" key="t-default">คลังสินค้า</a></li>     
+                        <li><a href="{{route('warehouses.create')}}" key="t-default">คลังสินค้า</a></li>     
                         <li><a href="#" key="t-default">สถานที่เก็บ</a></li>                
                     </ul>                 
                 </li>
@@ -115,7 +115,7 @@
                     <ul class="sub-menu" aria-expanded="true">
                         <li><a href="{{route('purchaserequests.index')}}" key="t-default">ใบขอสั่งซื้อ</a></li> 
                         <li><a href="{{route('purchaseorders.index')}}" key="t-default">ใบสั่งซื้อ</a></li> 
-                        <li><a href="#" key="t-default">รับสินค้า/ตั้งหนี้</a></li> 
+                        <li><a href="{{route('purchasereceives.index')}}" key="t-default">รับสินค้า</a></li> 
                         <li><a href="#" key="t-default">จ่ายมัดจำ/ล่วงหน้า</a></li>
                     </ul>   
                 </li>

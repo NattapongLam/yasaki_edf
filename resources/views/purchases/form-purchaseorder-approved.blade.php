@@ -170,7 +170,7 @@
                         <th style="width: 30%">สินค้า</th>
                         <th style="width: 9%">จำนวน</th>
                         <th style="width: 9%">ราคาต่อหน่วย</th>
-                        <th style="width: 9%">ส่วนลด</th>
+                        <th style="width: 9%">ส่วนลดต่อหน่วย</th>
                         <th style="width: 9%">ยอดรวม</th>
                         <th style="width: 8%">กำหนดส่ง</th>
                         <th style="width: 20%">หมายเหตุ</th>

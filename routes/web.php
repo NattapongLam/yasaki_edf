@@ -84,6 +84,10 @@ Route::resource('/productunits' , App\Http\Controllers\WhProductUnitController::
 Route::get('/product/get-last-running', [App\Http\Controllers\WhProductListController::class, 'getLastRunning'])->name('product.getLastRunning');
 // สินค้า
 
+// คลังสินค้า
+Route::resource('/warehouses' , App\Http\Controllers\WhWarehouseListController::class);
+// คลังสินค้า
+
 // ขาย
 Route::resource('/requestorders' , App\Http\Controllers\ArRequestOrderListController::class);
 Route::get('/requestorder/runno', [App\Http\Controllers\ArRequestOrderListController::class, 'runNo'])->name('requestorder.runno');
@@ -113,4 +117,8 @@ Route::get('/purchaseorder/runno', [App\Http\Controllers\ApPurchaseOrderListCont
 Route::get('/vendor/address-text', [App\Http\Controllers\ApPurchaseOrderListController::class, 'addressText'])->name('vendor.addressText');
 Route::post('/CancelPurchaseOrderDoc' , [App\Http\Controllers\ApPurchaseOrderListController::class , 'CancelPurchaseOrderDoc']);
 Route::post('/CancelPurchaseOrderList' , [App\Http\Controllers\ApPurchaseOrderListController::class , 'CancelPurchaseOrderList']);
+Route::resource('/purchasereceives' , App\Http\Controllers\ApPurchaseReceiveListController::class);
+Route::get('/purchasereceive/runno', [App\Http\Controllers\ApPurchaseReceiveListController::class, 'runNo'])->name('purchasereceive.runno');
+Route::get('purchase/items', [App\Http\Controllers\ApPurchaseReceiveListController::class, 'getItems'])->name('purchase.items');
+Route::post('/CancelPurchaseReceiveDoc' , [App\Http\Controllers\ApPurchaseReceiveListController::class , 'CancelPurchaseReceiveDoc']);
 //จัดซื้อ

@@ -174,7 +174,7 @@
                         <th style="width: 30%">สินค้า</th>
                         <th style="width: 9%">จำนวน</th>
                         <th style="width: 9%">ราคาต่อหน่วย</th>
-                        <th style="width: 9%">ส่วนลด</th>
+                        <th style="width: 9%">ส่วนลดต่อหน่วย</th>
                         <th style="width: 9%">ยอดรวม</th>
                         <th style="width: 8%">กำหนดส่ง</th>
                         <th style="width: 20%">หมายเหตุ</th>
@@ -451,7 +451,8 @@ function calculateQuotation() {
             let dis   = parseFloat($(this).find(".dis-input").val()) || 0;
             if(disRate == 1){
                 let disTotal =  dis;
-                let rowTotal = (qty * price) -  disTotal;
+                let disTotal1 =  qty * disTotal;
+                let rowTotal = (qty * (price - disTotal));
                 let rowVat = rowTotal * 0.07;
                 let rowAmount = rowTotal + rowVat;
                 if (rowAmount < 0) rowAmount = 0;
@@ -461,14 +462,15 @@ function calculateQuotation() {
                 $(this).find(".base-input").val(rowTotal.toFixed(2));
                 $(this).find(".vat-input").val(rowVat.toFixed(2));
                 $(this).find(".net-input").val(rowAmount.toFixed(2));
-                $(this).find(".distotal-input").val(disTotal.toFixed(2));
+                $(this).find(".distotal-input").val(disTotal1.toFixed(2));
                 subBase += rowTotal;
                 subVat += rowVat;
                 subtotal += rowAmount;
-                rowDiscountTotal +=  disTotal;
+                rowDiscountTotal +=  disTotal1;
             }else if(disRate == 2){
-                let disTotal = ((qty * price) * dis) / 100
-                let rowTotal = (qty * price) - disTotal;
+                let disTotal = (price * dis) / 100
+                let disTotal1 =  qty * disTotal;
+                let rowTotal = (qty * (price - disTotal));
                 let rowVat = rowTotal * 0.07;
                 let rowAmount = rowTotal + rowVat;
                 if (rowAmount < 0) rowAmount = 0;
@@ -478,11 +480,11 @@ function calculateQuotation() {
                 $(this).find(".base-input").val(rowTotal.toFixed(2));
                 $(this).find(".vat-input").val(rowVat.toFixed(2));
                 $(this).find(".net-input").val(rowAmount.toFixed(2));
-                $(this).find(".distotal-input").val(disTotal.toFixed(2));
+                $(this).find(".distotal-input").val(disTotal1.toFixed(2));
                 subBase += rowTotal;
                 subVat += rowVat;
                 subtotal += rowAmount;
-                rowDiscountTotal += disTotal;
+                rowDiscountTotal += disTotal1;
             }          
         });
         // 👉 สรุปท้ายบิล
@@ -506,7 +508,8 @@ function calculateQuotation() {
             let dis   = parseFloat($(this).find(".dis-input").val()) || 0;
             if(disRate == 1){
                 let disTotal =  dis;
-                let rowAmount= (qty * price) - disTotal;
+                let disTotal1 =  qty * disTotal;
+                let rowAmount= (qty * (price - disTotal));
                 let rowVat = rowAmount * 0.07;
                 let rowTotal = rowAmount - rowVat;
                 if (rowAmount < 0) rowAmount = 0;
@@ -516,14 +519,15 @@ function calculateQuotation() {
                 $(this).find(".base-input").val(rowTotal.toFixed(2));
                 $(this).find(".vat-input").val(rowVat.toFixed(2));
                 $(this).find(".net-input").val(rowAmount.toFixed(2));
-                $(this).find(".distotal-input").val(disTotal.toFixed(2));
+                $(this).find(".distotal-input").val(disTotal1.toFixed(2));
                 subBase += rowTotal;
                 subVat += rowVat;
                 subtotal += rowAmount;
-                rowDiscountTotal += dis;
+                rowDiscountTotal += disTotal1;
             }else if(disRate == 2){
-                let disTotal = ((qty * price) * dis) / 100
-                let rowAmount = (qty * price) - disTotal;
+                let disTotal = (price * dis) / 100
+                let disTotal1 =  qty * disTotal;
+                let rowAmount =  (qty * (price - disTotal));
                 let rowVat = rowAmount * 0.07;
                 let rowTotal = rowAmount - rowVat;
                 if (rowAmount < 0) rowAmount = 0;
@@ -533,11 +537,11 @@ function calculateQuotation() {
                 $(this).find(".base-input").val(rowTotal.toFixed(2));
                 $(this).find(".vat-input").val(rowVat.toFixed(2));
                 $(this).find(".net-input").val(rowAmount.toFixed(2));
-                $(this).find(".distotal-input").val(disTotal.toFixed(2));
+                $(this).find(".distotal-input").val(disTotal1.toFixed(2));
                 subBase += rowTotal;
                 subVat += rowVat;
                 subtotal += rowAmount;
-                rowDiscountTotal += disTotal;
+                rowDiscountTotal += disTotal1;
             }          
         });
         // 👉 สรุปท้ายบิล
@@ -561,7 +565,8 @@ function calculateQuotation() {
             let dis   = parseFloat($(this).find(".dis-input").val()) || 0;
             if(disRate == 1){
                 let disTotal =  dis;
-                let rowAmount= (qty * price) - disTotal;
+                let disTotal1 =  qty * disTotal;
+                let rowAmount= (qty * (price - disTotal));
                 let rowVat = 0;
                 let rowTotal = (qty * price) - dis;
                 if (rowAmount < 0) rowAmount = 0;
@@ -571,14 +576,15 @@ function calculateQuotation() {
                 $(this).find(".base-input").val(rowTotal.toFixed(2));
                 $(this).find(".vat-input").val(rowVat.toFixed(2));
                 $(this).find(".net-input").val(rowAmount.toFixed(2));
-                $(this).find(".distotal-input").val(disTotal.toFixed(2));
+                $(this).find(".distotal-input").val(disTotal1.toFixed(2));
                 subBase += rowTotal;
                 subVat += rowVat;
                 subtotal += rowAmount;
-                rowDiscountTotal += dis;
+                rowDiscountTotal += disTotal1;
             }else if(disRate == 2){
-                let disTotal = ((qty * price) * dis) / 100
-                let rowAmount = (qty * price) - disTotal;
+                let disTotal =  (price * dis) / 100
+                let disTotal1 =  qty * disTotal;
+                let rowAmount = (qty * (price - disTotal));
                 let rowVat = 0;
                 let rowTotal = (qty * price) - disTotal;
                 if (rowAmount < 0) rowAmount = 0;
@@ -588,11 +594,11 @@ function calculateQuotation() {
                 $(this).find(".base-input").val(rowTotal.toFixed(2));
                 $(this).find(".vat-input").val(rowVat.toFixed(2));
                 $(this).find(".net-input").val(rowAmount.toFixed(2));
-                $(this).find(".distotal-input").val(disTotal.toFixed(2));
+                $(this).find(".distotal-input").val(disTotal1.toFixed(2));
                 subBase += rowTotal;
                 subVat += rowVat;
                 subtotal += rowAmount;
-                rowDiscountTotal += disTotal;
+                rowDiscountTotal += disTotal1;
             }          
         });
         // 👉 สรุปท้ายบิล
