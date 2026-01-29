@@ -86,6 +86,11 @@ Route::get('/product/get-last-running', [App\Http\Controllers\WhProductListContr
 
 // คลังสินค้า
 Route::resource('/warehouses' , App\Http\Controllers\WhWarehouseListController::class);
+Route::resource('/issuestocks' , App\Http\Controllers\WhIssueStockListController::class);
+Route::get('/issuestock/runno', [App\Http\Controllers\WhIssueStockListController::class, 'runNo'])->name('issuestock.runno');
+Route::get('issuestock/products-by-warehouse', [App\Http\Controllers\WhIssueStockListController::class, 'getProductsByWarehouse'])->name('issuestock.productsByWarehouse');
+Route::post('/CancelIssueStockDoc' , [App\Http\Controllers\WhIssueStockListController::class , 'CancelIssueStockDoc']);
+Route::post('/CancelIssueStockList' , [App\Http\Controllers\WhIssueStockListController::class , 'CancelIssueStockList']);
 // คลังสินค้า
 
 // ขาย

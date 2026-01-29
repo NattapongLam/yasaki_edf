@@ -119,7 +119,7 @@
     $(document).ready(function () {
         loadDocNo();
     });
-    function updateRowNumbers() {
+function updateRowNumbers() {
     const rows = document.querySelectorAll('#tableBody tr');
     rows.forEach((row, index) => {
         row.querySelector('.row-number').textContent = index + 1;

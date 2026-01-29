@@ -125,9 +125,8 @@
                         <span key="t-layouts">ฝ่ายคลัง</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="true">
-                        <li><a href="#" key="t-default">ใบเบิก</a></li> 
+                        <li><a href="{{route('issuestocks.index')}}" key="t-default">ใบเบิก</a></li> 
                         <li><a href="#" key="t-default">ใบรับคืน</a></li> 
-                        <li><a href="#" key="t-default">ใบโอนย้าย</a></li> 
                         <li><a href="#" key="t-default">ใบปรับปรุงสต็อค</a></li>
                     </ul>   
                 </li>
