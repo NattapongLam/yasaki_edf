@@ -17,72 +17,46 @@
 <div class="card">
     <div class="card-body">
         <div class="row">
-            <div class="col-12 col-md-6"><h3 class="card-title">ใบเสนอราคา</h3></div>
-            <div class="col-12 col-md-6"><a style="float: right" href="{{route('quotations.create')}}" class="btn btn-primary"><i class="fas fa-plus"></i> เพิ่มรายการ</a></div>
+            <div class="col-12 col-md-6"><h3 class="card-title">ใบรับคืน</h3></div>
+            <div class="col-12 col-md-6"><a style="float: right" href="{{route('returnstocks.create')}}" class="btn btn-primary"><i class="fas fa-plus"></i> เพิ่มรายการ</a></div>
         </div>       
         <table id="tb_job" class="table table-bordered dt-responsive nowrap w-100 text-center">
             <thead>
                 <tr>
                     <th>สถานะ</th>
                     <th>วันที่</th>
-                    <th>เลขที่</th>
-                    <th>ลูกค้า</th>
-                    <th>ยอดเงิน</th>
-                    <th>หมายเหตุ</th>
-                    <th>แก้ไข</th>
-                    <th>ยกเลิก</th>
-                    <th></th>
+                    <th>เลขที่</th>                 
+                    <th>คลังสินค้า</th>   
+                    <th>เลขที่ใบเบิก</th>
+                    <th>หมายเหตุ</th>                
+                    <th>ยกเลิก</th> 
                 </tr>
             </thead>
             <tbody>
                 @foreach ($hd as $item)
                     <tr>
                         <td>
-                            @if ($item->ar_quotation_statuses_id == 1)
-                                <span class="bg-warning bg-soft">
-                                    {{$item->ar_quotation_statuses_name}}
-                                </span>
-                            @elseif($item->ar_quotation_statuses_id == 2)
-                                <span class="bg-danger bg-soft">
-                                    {{$item->ar_quotation_statuses_name}}
-                                </span>
-                            @elseif($item->ar_quotation_statuses_id == 3)
-                                <span class="bg-primary bg-soft">
-                                    {{$item->ar_quotation_statuses_name}}
-                                </span>
-                            @elseif($item->ar_quotation_statuses_id == 4)
+                            @if ($item->wh_returnstock_statuses_id == 1)
                                 <span class="bg-success bg-soft">
-                                    {{$item->ar_quotation_statuses_name}}
+                                    {{$item->wh_returnstock_statuses_name}}
+                                </span>
+                            @elseif($item->wh_returnstock_statuses_id == 2)
+                                <span class="bg-danger bg-soft">
+                                    {{$item->wh_returnstock_statuses_name}}
                                 </span>
                             @endif
-                        </td>
-                        <td>{{$item->ar_quotation_hds_date}}</td>
-                        <td>{{$item->ar_quotation_hds_docuno}}</td>
-                        <td>{{$item->ar_customer_lists_name}}</td>
-                        <td>{{number_format($item->ar_quotation_hds_amount,2)}}</td>
-                        <td>{{$item->ar_quotation_hds_remark}}</td>
+                        </td>   
+                        <td>{{$item->wh_returnstock_hds_date}}</td>
+                        <td>{{$item->wh_returnstock_hds_docuno}}</td>
+                        <td>{{$item->wh_warehouses_name}}</td>
+                        <td>{{$item->wh_issuestock_hds_docuno}}</td>
+                        <td>{{$item->wh_returnstock_hds_remark}}</td>
                         <td>
-                            @if ($item->ar_quotation_statuses_id == 1)
-                                <a href="{{route('quotations.edit',$item->ar_quotation_hds_id)}}" class="btn btn-sm btn-warning" >
-                                    <i class="fas fa-edit"></i>
-                                </a> 
+                            @if ($item->wh_returnstock_statuses_id == 1)
+                                <a href="javascript:void(0)" class="btn btn-danger btn-sm" onclick="confirmDel('{{ $item->wh_returnstock_hds_id }}')"><i class="fas fa-trash"></i></a>
                             @endif
                         </td>
-                        <td>
-                            @if ($item->ar_quotation_statuses_id == 1)
-                            <a href="javascript:void(0)" class="btn btn-danger btn-sm" onclick="confirmDel('{{ $item->ar_quotation_hds_id }}')"><i class="fas fa-trash"></i></a>
-                            @endif
-                        </td>
-                        <td>
-                            @if ($item->ar_quotation_statuses_id <> 2)
-                            <a href="{{ route('quotations.print', $item->ar_quotation_hds_id) }}" 
-                                target="_blank"
-                                class="btn btn-outline-secondary">
-                                    <i class="bx bx-printer"></i> พิมพ์
-                            </a>
-                            @endif
-                        </td>
-                    </tr>
+                    </tr>  
                 @endforeach
             </tbody>
         </table>
@@ -119,7 +93,7 @@ Swal.fire({
 }).then(function(result) {
     if (result.value) {
         $.ajax({
-            url: `{{ url('/CancelQuotationsDoc') }}`,
+            url: `{{ url('/CancelIssueStockDoc') }}`,
             type: "POST",
             data: {
                 "_token": "{{ csrf_token() }}",

@@ -126,7 +126,7 @@
                     </a>
                     <ul class="sub-menu" aria-expanded="true">
                         <li><a href="{{route('issuestocks.index')}}" key="t-default">ใบเบิก</a></li> 
-                        <li><a href="#" key="t-default">ใบรับคืน</a></li> 
+                        <li><a href="{{route('returnstocks.index')}}" key="t-default">ใบรับคืน</a></li> 
                         <li><a href="#" key="t-default">ใบปรับปรุงสต็อค</a></li>
                     </ul>   
                 </li>

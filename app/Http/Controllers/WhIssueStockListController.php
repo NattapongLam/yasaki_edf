@@ -95,7 +95,8 @@ class WhIssueStockListController extends Controller
                     'person_at' => Auth::user()->name,
                     'created_at' => now(),
                     'updated_at' => now(),
-                    'poststock' => "N"
+                    'poststock' => "N",
+                    'return_qty' => 0,
                 ]);
             }                
             DB::commit();

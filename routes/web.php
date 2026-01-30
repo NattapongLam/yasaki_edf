@@ -91,6 +91,10 @@ Route::get('/issuestock/runno', [App\Http\Controllers\WhIssueStockListController
 Route::get('issuestock/products-by-warehouse', [App\Http\Controllers\WhIssueStockListController::class, 'getProductsByWarehouse'])->name('issuestock.productsByWarehouse');
 Route::post('/CancelIssueStockDoc' , [App\Http\Controllers\WhIssueStockListController::class , 'CancelIssueStockDoc']);
 Route::post('/CancelIssueStockList' , [App\Http\Controllers\WhIssueStockListController::class , 'CancelIssueStockList']);
+Route::resource('/returnstocks' , App\Http\Controllers\WhReturnStockListController::class);
+Route::get('/returnstock/runno', [App\Http\Controllers\WhReturnStockListController::class, 'runNo'])->name('returnstock.runno');
+Route::get('returnstock/items', [App\Http\Controllers\WhReturnStockListController::class, 'getItems'])->name('returnstock.items');
+Route::post('/CancelReturnStockDoc' , [App\Http\Controllers\WhReturnStockListController::class , 'CancelReturnStockDoc']);
 // คลังสินค้า
 
 // ขาย
