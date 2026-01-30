@@ -20,7 +20,7 @@
         @csrf
         @method('PUT')
         <div class="row">
-            <div class="col-12 col-md-6"><h3 class="card-title">ใบเบิก</h3></div>  
+            <div class="col-12 col-md-6"><h3 class="card-title">อนุมัติใบเบิก</h3></div>  
             <input type="hidden" value="Approved" name="checkdoc">         
         </div> 
              <div class="row">

@@ -95,6 +95,11 @@ Route::resource('/returnstocks' , App\Http\Controllers\WhReturnStockListControll
 Route::get('/returnstock/runno', [App\Http\Controllers\WhReturnStockListController::class, 'runNo'])->name('returnstock.runno');
 Route::get('returnstock/items', [App\Http\Controllers\WhReturnStockListController::class, 'getItems'])->name('returnstock.items');
 Route::post('/CancelReturnStockDoc' , [App\Http\Controllers\WhReturnStockListController::class , 'CancelReturnStockDoc']);
+Route::resource('/adjuststocks' , App\Http\Controllers\WhAdjustStockListController::class);
+Route::get('/adjuststock/runno', [App\Http\Controllers\WhAdjustStockListController::class, 'runNo'])->name('adjuststock.runno');
+Route::get('adjuststock/get-stock', [App\Http\Controllers\WhAdjustStockListController::class, 'getStock'])->name('adjuststock.getstock');
+Route::post('/CancelAdjustStockDoc' , [App\Http\Controllers\WhAdjustStockListController::class , 'CancelAdjustStockDoc']);
+Route::post('/CancelAdjustStockList' , [App\Http\Controllers\WhAdjustStockListController::class , 'CancelAdjustStockList']);
 // คลังสินค้า
 
 // ขาย
