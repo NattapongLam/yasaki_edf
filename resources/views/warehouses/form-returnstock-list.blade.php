@@ -93,7 +93,7 @@ Swal.fire({
 }).then(function(result) {
     if (result.value) {
         $.ajax({
-            url: `{{ url('/CancelIssueStockDoc') }}`,
+            url: `{{ url('/CancelReturnStockDoc') }}`,
             type: "POST",
             data: {
                 "_token": "{{ csrf_token() }}",
