@@ -192,9 +192,10 @@
                             <td>
                                 <span class="row-number">{{ $loop->iteration }}</span>
                                 <input type="hidden"
-                                    name="ar_quotation_dts_listno[]"
                                     class="row-number-hidden"
+                                    name="ar_quotation_dts_listno[]"
                                     value="{{ $loop->iteration }}">
+                                <input type="hidden" name="ar_quotation_dts_id[]" value="{{$item->ar_quotation_dts_id}}">
                             </td>
                             <td>
                                 <select class="form-control" name="wh_product_lists_id[]">

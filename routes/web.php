@@ -119,6 +119,7 @@ Route::get('invoices/{id}/print', [App\Http\Controllers\ArInvoiceListController:
 Route::resource('/saleorders' , App\Http\Controllers\ArSaleOrderListController::class);
 Route::get('/saleorder/runno', [App\Http\Controllers\ArSaleOrderListController::class, 'runNo'])->name('saleorder.runno');
 Route::post('/CancelSaleorderDoc' , [App\Http\Controllers\ArSaleOrderListController::class , 'CancelSaleorderDoc']);
+Route::get('saleorders/{id}/print', [App\Http\Controllers\ArSaleOrderListController::class,'print'])->name('saleorders.print');
 // ขาย
 
 //จัดซื้อ

@@ -72,7 +72,7 @@ class ArInvoiceListController extends Controller
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ];
-         try{
+        try{
             DB::beginTransaction();
             $insertHD = ArInvoiceHd::create($data);   
             foreach ($request->ar_quotation_dts_listno as $key => $value) {
@@ -127,8 +127,9 @@ class ArInvoiceListController extends Controller
     {
         $hd = ArInvoiceHd::find($id);
         $dt = ArInvoiceDt::where('ar_invoice_hds_id',$id)->get();
-        $quotation = ArQuotationHd::whereIn('ar_quotation_statuses_id',[1,3])->get();
-        return view('sales.form-invoice-edit', compact('quotation','hd','dt'));
+        $quotation = ArQuotationHd::where('ar_quotation_hds_id',$hd->ar_quotation_hds_id)->get();
+        $qt = ArQuotationHd::find($hd->ar_quotation_hds_id);
+        return view('sales.form-invoice-edit', compact('quotation','hd','dt','qt'));
     }
 
     /**
@@ -140,7 +141,33 @@ class ArInvoiceListController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $data = [
+            'ar_invoice_statuses_id' => 1,
+            'ar_invoice_hds_percent' => $request->ar_invoice_hds_percent,
+            'ar_invoice_hds_base' => $request->ar_invoice_hds_base,
+            'ar_invoice_hds_vat' => $request->ar_invoice_hds_vat,
+            'ar_invoice_hds_net' => $request->ar_invoice_hds_net,
+            'ar_invoice_hds_remark' => $request->ar_invoice_hds_remark,
+            'person_at' => Auth::user()->name,
+            'updated_at' => Carbon::now(),
+        ];
+        try{
+            DB::beginTransaction();
+            ArInvoiceHd::where('ar_invoice_hds_id',$id)->update($data);   
+            foreach ($request->ar_invoice_dts_id as $key => $value) {
+                ArInvoiceDt::where('ar_invoice_dts_id',$value)->update([
+                    'ar_invoice_dts_remark' => $request->ar_invoice_dts_remark[$key],
+                    'person_at' => Auth::user()->name,
+                    'updated_at' => Carbon::now(),
+                ]);
+            };            
+            DB::commit();
+            return redirect()->route('invoices.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+        }catch(\Exception $e){
+            Log::error($e->getMessage());
+            dd($e->getMessage());
+            return redirect()->back()->with('error', 'เกิดข้อผิดพลาด');
+        }
     }
 
     /**

@@ -187,7 +187,92 @@ class ArQuotationListController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $data = [
+            'ar_quotation_statuses_id' => 1,
+            'ar_customer_lists_id' => $request->ar_customer_lists_id,
+            'ar_customer_lists_code' => $request->ar_customer_lists_code,
+            'ar_customer_lists_name' => $request->ar_customer_lists_name,
+            'ar_customer_lists_address' => $request->ar_customer_lists_address,
+            'ar_customer_lists_contact' => $request->ar_customer_lists_contact,
+            'ar_customer_lists_tel' => $request->ar_customer_lists_tel,            
+            'ar_customer_lists_email' => $request->ar_customer_lists_email,
+            'ar_customer_lists_credit' => $request->ar_customer_lists_credit,
+            'acc_typevats_id' => $request->acc_typevats_id,
+            'acc_currencies_id' => $request->acc_currencies_id,
+            'acc_discount_id' => $request->acc_discount_id,
+            'acc_discount_qty' => 0,
+            'ar_quotation_hds_remark' => $request->ar_quotation_hds_remark,
+            'ar_quotation_hds_base' => $request->ar_quotation_hds_base,
+            'ar_quotation_hds_vat' => $request->ar_quotation_hds_vat,
+            'ar_quotation_hds_net' => $request->ar_quotation_hds_net,
+            'ar_quotation_hds_dis' => $request->ar_quotation_hds_dis,
+            'ar_quotation_hds_amount' => $request->ar_quotation_hds_net,
+            'person_at' => Auth::user()->name,
+            'updated_at' => Carbon::now(),
+            'ar_customer_lists_taxid' => $request->ar_customer_lists_taxid,
+            'ar_requestorder_hds_id' => $request->ar_requestorder_hds_id,
+        ];
+        try{
+            DB::beginTransaction();
+            ArQuotationHd::where('ar_quotation_hds_id',$id)->update($data);              
+            if(!empty($request->ar_quotation_dts_listno)){
+                $insertHD = ArQuotationHd::find($id);
+                foreach ($request->ar_quotation_dts_listno as $key => $value) {
+                    if (!isset($request->wh_product_lists_id[$key])) {continue;}
+                        $pd = WhProductList::find($request->wh_product_lists_id[$key]);
+                        if (!$pd) continue;
+                        $unit = WhProductUnit::find($pd->wh_product_units_id);
+                        if(!empty($request->ar_quotation_dts_id[$key])){
+                            ArQuotationDt::where('ar_quotation_dts_id',$request->ar_quotation_dts_id[$key])->update([
+                                'wh_product_lists_id' => $request->wh_product_lists_id[$key],
+                                'wh_product_lists_code' => $pd->wh_product_lists_code,
+                                'wh_product_lists_name' => $pd->wh_product_lists_name1,
+                                'wh_product_lists_unit' => optional($unit)->wh_product_units_name,
+                                'acc_discount_qty' => $request->acc_discount_qty[$key] ?? 0,
+                                'ar_quotation_dts_qty' => $request->ar_quotation_dts_qty[$key] ?? 0,
+                                'ar_quotation_dts_price' => $request->ar_quotation_dts_price[$key] ?? 0,
+                                'ar_quotation_dts_base' => $request->ar_quotation_dts_base[$key] ?? 0,
+                                'ar_quotation_dts_vat' => $request->ar_quotation_dts_vat[$key] ?? 0,
+                                'ar_quotation_dts_net' => $request->ar_quotation_dts_net[$key] ?? 0,
+                                'ar_quotation_dts_dis' => $request->ar_quotation_dts_dis[$key] ?? 0,
+                                'ar_quotation_dts_amount' => $request->ar_quotation_dts_amount[$key] ?? 0,
+                                'ar_quotation_dts_flag' => true,
+                                'person_at' => Auth::user()->name,
+                                'updated_at' => now(),
+                            ]);        
+                               
+                        }
+                        else{
+                            ArQuotationDt::insert([
+                                'ar_quotation_hds_id' => $insertHD->ar_quotation_hds_id,
+                                'ar_quotation_dts_listno' => $value,
+                                'wh_product_lists_id' => $request->wh_product_lists_id[$key],
+                                'wh_product_lists_code' => $pd->wh_product_lists_code,
+                                'wh_product_lists_name' => $pd->wh_product_lists_name1,
+                                'wh_product_lists_unit' => optional($unit)->wh_product_units_name,
+                                'acc_discount_qty' => $request->acc_discount_qty[$key] ?? 0,
+                                'ar_quotation_dts_qty' => $request->ar_quotation_dts_qty[$key] ?? 0,
+                                'ar_quotation_dts_price' => $request->ar_quotation_dts_price[$key] ?? 0,
+                                'ar_quotation_dts_base' => $request->ar_quotation_dts_base[$key] ?? 0,
+                                'ar_quotation_dts_vat' => $request->ar_quotation_dts_vat[$key] ?? 0,
+                                'ar_quotation_dts_net' => $request->ar_quotation_dts_net[$key] ?? 0,
+                                'ar_quotation_dts_dis' => $request->ar_quotation_dts_dis[$key] ?? 0,
+                                'ar_quotation_dts_amount' => $request->ar_quotation_dts_amount[$key] ?? 0,
+                                'ar_quotation_dts_flag' => true,
+                                'person_at' => Auth::user()->name,
+                                'created_at' => now(),
+                                'updated_at' => now(),
+                            ]);
+                        }
+                }     
+            }           
+            DB::commit();
+            return redirect()->route('quotations.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+        }catch(\Exception $e){
+            Log::error($e->getMessage());
+            dd($e->getMessage());
+            return redirect()->back()->with('error', 'เกิดข้อผิดพลาด');
+        }  
     }
 
     /**

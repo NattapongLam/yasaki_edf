@@ -164,7 +164,47 @@ class ArSaleOrderListController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $data = [
+            'ar_saleorder_statuses_id' => 1,
+            'ar_quotation_hds_id' => $request->ar_quotation_hds_id,
+            'ar_customer_lists_id' => $request->ar_customer_lists_id,
+            'ar_customer_lists_code' => $request->ar_customer_lists_code,
+            'ar_customer_lists_name' => $request->ar_customer_lists_name,
+            'ar_customer_lists_address' => $request->ar_customer_lists_address,
+            'ar_customer_lists_taxid' => $request->ar_customer_lists_taxid,
+            'ar_customer_lists_contact' => $request->ar_customer_lists_contact,
+            'ar_customer_lists_tel' => $request->ar_customer_lists_tel,
+            'ar_customer_lists_email' => $request->ar_customer_lists_email,
+            'ar_customer_lists_credit' => $request->ar_customer_lists_credit,
+            'acc_typevats_id' => $request->acc_typevats_id,
+            'acc_currencies_id' => $request->acc_currencies_id,
+            'acc_discount_id' => $request->acc_discount_id,
+            'ar_saleorder_hds_remark' => $request->ar_saleorder_hds_remark,
+            'ar_saleorder_hds_base' => $request->ar_saleorder_hds_base,
+            'ar_saleorder_hds_vat' => $request->ar_saleorder_hds_vat,
+            'ar_saleorder_hds_net' => $request->ar_saleorder_hds_net,
+            'ar_saleorder_hds_dis' => $request->ar_saleorder_hds_dis,
+            'ar_saleorder_hds_amount' => $request->ar_saleorder_hds_net,
+            'person_at' => Auth::user()->name,
+            'updated_at'=> Carbon::now(),
+        ];
+        try{
+            DB::beginTransaction();
+            $insertHD = ArSaleorderHd::where('ar_saleorder_hds_id',$id)->update($data);   
+            foreach ($request->ar_saleorder_dts_id as $key => $value) {
+                ArSaleorderDt::where('ar_saleorder_dts_id',$value)->update([
+                    'ar_saleorder_dts_remark' => $request->ar_saleorder_dts_remark[$key],
+                    'person_at' => Auth::user()->name,
+                    'updated_at' => now(),
+                ]);
+            }     
+            DB::commit();
+            return redirect()->route('saleorders.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+        }catch(\Exception $e){
+            Log::error($e->getMessage());
+            dd($e->getMessage());
+            return redirect()->back()->with('error', 'เกิดข้อผิดพลาด');
+        } 
     }
 
     /**
@@ -233,5 +273,13 @@ class ArSaleOrderListController extends Controller
                 'message' => $e->getMessage()
             ]);
         }
+    }
+
+    public function print($id)
+    {
+        $hd = ArSaleorderHd::findOrFail($id);
+        $dt = ArSaleorderDt::where('ar_saleorder_hds_id',$id)->get();
+
+        return view('sales.form-saleorder-print', compact('hd','dt'));
     }
 }

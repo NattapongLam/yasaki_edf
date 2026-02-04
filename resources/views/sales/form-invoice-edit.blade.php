@@ -49,7 +49,8 @@
                     <select class="form-control" name="ar_quotation_hds_id" id="ar_quotation_hds_id" required>
                         <option value="0">กรุณาเลือก</option>
                         @foreach ($quotation as $item)
-                            <option value="{{$item->ar_quotation_hds_id}}" {{ $item->ar_quotation_hds_id == $hd->ar_quotation_hds_id ? 'selected' : '' }}>
+                            <option value="{{$item->ar_quotation_hds_id}}" 
+                                {{ $item->ar_quotation_hds_id == $hd->ar_quotation_hds_id ? 'selected' : '' }}>
                                 {{$item->ar_quotation_hds_docuno}} ลูกค้า : {{$item->ar_customer_lists_name}} ยอดเงิน : {{number_format($item->ar_quotation_hds_amount,2)}}
                             </option>
                         @endforeach
@@ -167,62 +168,27 @@
 @endsection
 @push('scriptjs')
 <script>
-let quotationฺBase = 0;
-let quotationฺVat = 0;
-let quotationฺNet = 0;
-// เลือกใบเสนอราคา
-$('#ar_quotation_hds_id').change(function () {
-    let quotationId = $(this).val();
-    $('#quotation-items').html('');
+/* ====== DEBUG: ดูว่ามาถึง JS ไหม ====== */
+console.log('invoice js loaded');
 
-    if (quotationId == 0) return;
+/* ====== ตั้งค่าตั้งต้นจาก PHP (หน้า EDIT มีค่าอยู่แล้ว) ====== */
+let quotationBase = {{ (float) $qt->ar_quotation_hds_base }};
+let quotationVat  = {{ (float) $qt->ar_quotation_hds_vat }};
+let quotationNet  = {{ (float) $qt->ar_quotation_hds_net }};
 
-    $.ajax({
-        url: "{{ route('quotation.items') }}",
-        type: "GET",
-        data: { id: quotationId },
-        success: function (res) {
-            let rows = '';
-            quotationฺBase = 0;
-            quotationฺVat = 0;
-            quotationฺNet = 0;
-            $.each(res, function (index, item) {
-                quotationฺBase += parseFloat(item.ar_quotation_dts_base);
-                quotationฺVat += parseFloat(item.ar_quotation_dts_vat);
-                quotationฺNet += parseFloat(item.ar_quotation_dts_net);
-                rows += `
-                    <tr>
-                        <td>${item.ar_quotation_dts_listno}</td>
-                        <td>${item.wh_product_lists_name}</td>
-                        <td>${item.ar_quotation_dts_qty}</td>
-                        <td>${parseFloat(item.ar_quotation_dts_price).toFixed(2)}</td>
-                        <td>${parseFloat(item.ar_quotation_dts_dis).toFixed(2)}</td>
-                        <td>${parseFloat(item.ar_quotation_dts_amount).toFixed(2)}</td>
-                        <td>
-                            <textarea class="form-control" name="ar_invoice_dts_remark[]"></textarea>
-                            <input type="hidden" name="ar_quotation_dts_listno[]" value="${item.ar_quotation_dts_listno}">
-                            <input type="hidden" name="wh_product_lists_id[]" value="${item.wh_product_lists_id}">
-                            <input type="hidden" name="wh_product_lists_code[]" value="${item.wh_product_lists_code}">
-                            <input type="hidden" name="wh_product_lists_name[]" value="${item.wh_product_lists_name}">
-                            <input type="hidden" name="wh_product_lists_unit[]" value="${item.wh_product_lists_unit}">
-                        </td>
-                      
-                    </tr>
-                `;
-            });
+console.log('base/vat/net:', quotationBase, quotationVat, quotationNet);
 
-            $('#quotation-items').html(rows);
-            calculateInvoice(); 
-        }
-    });
-});
-
+/* ====== function คำนวณ ====== */
 function calculateInvoice() {
-    let percent = parseFloat($('#ar_invoice_hds_percent').val()) || 0;
+    let percent = parseFloat($('#ar_invoice_hds_percent').val());
 
-    let base = quotationฺBase * (percent / 100);
-    let vat = quotationฺVat * (percent / 100);
-    let net = quotationฺNet * (percent / 100);
+    if (isNaN(percent)) percent = 0;
+
+    let base = quotationBase * (percent / 100);
+    let vat  = quotationVat  * (percent / 100);
+    let net  = quotationNet  * (percent / 100);
+
+    console.log('percent:', percent, 'result:', base, vat, net);
 
     $('#sum-subtotal').text(base.toFixed(2));
     $('#sum-vat').text(vat.toFixed(2));
@@ -232,7 +198,12 @@ function calculateInvoice() {
     $('#ar_invoice_hds_vat').val(vat.toFixed(2));
     $('#ar_invoice_hds_net').val(net.toFixed(2));
 }
-$('#ar_invoice_hds_percent').on('input', function () {
+
+/* ====== bind event ====== */
+$(document).ready(function () {
+    $('#ar_invoice_hds_percent').on('input change', calculateInvoice);
+
+    // คำนวณทันทีตอนเปิดหน้า
     calculateInvoice();
 });
 </script>

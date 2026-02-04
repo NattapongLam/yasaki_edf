@@ -123,7 +123,51 @@ class ArRequestOrderListController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $data = [
+            'ar_requestorder_statuses_id' => 1,
+            'ar_requestorder_hds_customer' => $request->ar_requestorder_hds_customer,
+            'ar_requestorder_hds_contact' => $request->ar_requestorder_hds_contact,
+            'ar_requestorder_hd_remark' => $request->ar_requestorder_hd_remark,
+            'person_at' => Auth::user()->name,
+            'updated_at' => Carbon::now(),
+        ];
+        try{
+            DB::beginTransaction();
+            ArRequestorderHd::where('ar_requestorder_hds_id',$id)->update($data);             
+            if(!empty($request->ar_requestorder_dts_listno)){
+                $insertHD = ArRequestorderHd::find($id);
+                foreach ($request->ar_requestorder_dts_listno as $key => $value) {
+                    if(!empty($request->ar_requestorder_dts_id[$key])){
+                        ArRequestorderDt::where('ar_requestorder_dts_id',$request->ar_requestorder_dts_id[$key])->update([
+                            'ar_requestorder_dts_product' => $request->ar_requestorder_dts_product[$key],
+                            'ar_requestorder_hds_remark' => $request->ar_requestorder_hds_remark[$key],
+                            'ar_requestorder_dts_qty' => $request->ar_requestorder_dts_qty[$key],
+                            'ar_requestorder_dts_flag' => true,
+                            'person_at' => Auth::user()->name,
+                            'updated_at'=> Carbon::now(),
+                        ]);
+                    }else{
+                        ArRequestorderDt::insert([
+                            'ar_requestorder_hds_id' => $insertHD->ar_requestorder_hds_id,
+                            'ar_requestorder_dts_listno' => $value,
+                            'ar_requestorder_dts_product' => $request->ar_requestorder_dts_product[$key],
+                            'ar_requestorder_hds_remark' => $request->ar_requestorder_hds_remark[$key],
+                            'ar_requestorder_dts_qty' => $request->ar_requestorder_dts_qty[$key],
+                            'ar_requestorder_dts_flag' => true,
+                            'person_at' => Auth::user()->name,
+                            'created_at'=> Carbon::now(),
+                            'updated_at'=> Carbon::now(),
+                        ]);
+                    }                   
+                }      
+            }              
+            DB::commit();
+            return redirect()->route('requestorders.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+        }catch(\Exception $e){
+            Log::error($e->getMessage());
+            dd($e->getMessage());
+            return redirect()->back()->with('error', 'เกิดข้อผิดพลาด');
+        }  
     }
 
     /**

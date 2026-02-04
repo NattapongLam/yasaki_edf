@@ -96,9 +96,10 @@
                             <td>
                                 <span class="row-number">{{ $loop->iteration }}</span>
                                 <input type="hidden"
-                                    name="ar_requestorder_dts_listno[]"
                                     class="row-number-hidden"
+                                    name="ar_requestorder_dts_listno[]"
                                     value="{{ $loop->iteration }}">
+                                    <input type="hidden" name="ar_requestorder_dts_id[]" value="{{$item->ar_requestorder_dts_id}}">
                             </td>
                             <td>
                                 <input class="form-control" name="ar_requestorder_dts_product[]" value="{{$item->ar_requestorder_dts_product}}">

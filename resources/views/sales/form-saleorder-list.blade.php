@@ -75,7 +75,13 @@
                                 <a href="javascript:void(0)" class="btn btn-danger btn-sm" onclick="confirmDel('{{ $item->ar_saleorder_hds_id }}')"><i class="fas fa-trash"></i></a>
                             @endif
                         </td>
-                        <td></td>
+                        <td>
+                           <a href="{{ route('saleorders.print',$item->ar_saleorder_hds_id) }}"
+                            target="_blank"
+                            class="btn btn-outline-secondary">
+                                <i class="bx bx-printer"></i> พิมพ์
+                           </a>
+                        </td>
                     </tr>
                 @endforeach
             </tbody>
