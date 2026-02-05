@@ -160,50 +160,50 @@ class WhAdjustStockListController extends Controller
             ];
             try{
                 DB::beginTransaction();
-                $insertHD = WhAdjuststockHd::where('wh_adjuststock_hds_id',$id)->update($data);   
-                if($request->wh_adjuststock_dts_id){
-                    foreach ($request->wh_adjuststock_dts_id as $key => $value) {
-                        WhAdjuststockDt::where('wh_adjuststock_dts_id',$value)->update([
-                            'wh_adjuststock_dts_qty' => $request->wh_adjuststock_dts_qty[$key],
-                            'wh_adjuststock_dts_flag' => true,
-                            'person_at' => Auth::user()->name,
-                            'updated_at' => now(),
-                            'poststock' => "N"
-                        ]);
-                    }
-                }else{
-                    foreach ($request->wh_adjuststock_dts_listno as $key => $value) {
-                        if (!isset($request->wh_product_lists_id[$key])) {
-                            continue; // กัน error
-                        }
-                        $stc = DB::table('vw_stockcard')
-                        ->where('wh_product_lists_id',$request->wh_product_lists_id[$key])
-                        ->where('wh_warehouses_id',$request->wh_warehouses_id)
-                        ->first();
-                        if (!$stc) continue;
-                        $pd = WhProductList::find($request->wh_product_lists_id[$key]);
-                        if (!$pd) continue;
-                        $unit = WhProductUnit::find($pd->wh_product_units_id);
-                        WhAdjuststockDt::insert([
-                            'wh_adjuststock_hds_id' => $insertHD->wh_adjuststock_hds_id,
-                            'wh_adjuststock_dts_listno' => $value,
-                            'wh_product_lists_id' => $request->wh_product_lists_id[$key],
-                            'wh_product_lists_code' => $pd->wh_product_lists_code,
-                            'wh_product_lists_name' => $pd->wh_product_lists_name1,
-                            'wh_product_lists_unit' => optional($unit)->wh_product_units_name,
-                            'wh_adjuststock_dts_qty' => $request->wh_adjuststock_dts_qty[$key],
-                            'wh_adjuststock_dts_cost' => $stc->costqty,
-                            'stc_stockcard_qty' => $stc->goodqty,
-                            'wh_adjuststock_dts_flag' => true,
-                            'person_at' => Auth::user()->name,
-                            'created_at' => now(),
-                            'updated_at' => now(),
-                            'poststock' => "N",
-                            'stockflag' => $request->stockflag[$key],
-                        ]);
-                    }                
-                }
-                            
+                WhAdjuststockHd::where('wh_adjuststock_hds_id',$id)->update($data);   
+                $insertHD = WhAdjuststockHd::find($id);
+                    if(!empty($request->wh_adjuststock_dts_listno)){
+                        foreach ($request->wh_adjuststock_dts_listno as $key => $value) {
+                            if(!empty($request->wh_adjuststock_dts_id[$key])){
+                                WhAdjuststockDt::where('wh_adjuststock_dts_id',$request->wh_adjuststock_dts_id[$key])->update([
+                                    'wh_adjuststock_dts_qty' => $request->wh_adjuststock_dts_qty[$key],
+                                    'wh_adjuststock_dts_flag' => true,
+                                    'person_at' => Auth::user()->name,
+                                    'updated_at' => now(),
+                                    'poststock' => "N"
+                                ]);
+                            }else{
+                                if (!isset($request->wh_product_lists_id[$key])) {
+                                    continue; // กัน error
+                                }
+                                $stc = DB::table('vw_stockcard')
+                                ->where('wh_product_lists_id',$request->wh_product_lists_id[$key])
+                                ->where('wh_warehouses_id',$request->wh_warehouses_id)
+                                ->first();
+                                if (!$stc) continue;
+                                $pd = WhProductList::find($request->wh_product_lists_id[$key]);
+                                if (!$pd) continue;
+                                $unit = WhProductUnit::find($pd->wh_product_units_id);
+                                WhAdjuststockDt::insert([
+                                    'wh_adjuststock_hds_id' => $insertHD->wh_adjuststock_hds_id,
+                                    'wh_adjuststock_dts_listno' => $value,
+                                    'wh_product_lists_id' => $request->wh_product_lists_id[$key],
+                                    'wh_product_lists_code' => $pd->wh_product_lists_code,
+                                    'wh_product_lists_name' => $pd->wh_product_lists_name1,
+                                    'wh_product_lists_unit' => optional($unit)->wh_product_units_name,
+                                    'wh_adjuststock_dts_qty' => $request->wh_adjuststock_dts_qty[$key],
+                                    'wh_adjuststock_dts_cost' => $stc->costqty,
+                                    'stc_stockcard_qty' => $stc->goodqty,
+                                    'wh_adjuststock_dts_flag' => true,
+                                    'person_at' => Auth::user()->name,
+                                    'created_at' => now(),
+                                    'updated_at' => now(),
+                                    'poststock' => "N",
+                                    'stockflag' => $request->stockflag[$key],
+                                ]);
+                            }                           
+                        }    
+                    }                                    
                 DB::commit();
                 return redirect()->route('adjuststocks.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
             }catch(\Exception $e){

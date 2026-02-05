@@ -71,19 +71,19 @@
                 <a href="javascript:void(0);" class="btn btn-secondary" id="addRowBtn">เพิ่มรายการ</a>
             </div>
             <hr>
-            <table class="table table-bordered dt-responsive nowrap w-100 text-center">
+            <table class="table table-bordered dt-responsive nowrap w-100">
                 <thead>
                     <tr>
-                        <th style="width: 5%">#</th>
-                        <th style="width: 30%">สินค้า</th>
-                        <th style="width: 10%">จำนวนเบิก</th>
-                        <th style="width: 5%"></th>
+                        <th style="width: 5%" class="text-center">#</th>
+                        <th style="width: 30%" class="text-center">สินค้า</th>
+                        <th style="width: 10%" class="text-center">จำนวนเบิก</th>
+                        <th style="width: 5%" class="text-center"></th>
                     </tr>
                 </thead>
                 <tbody id="tableBody">
                     @foreach ($dt as $item)
                         <tr>
-                            <td>
+                            <td class="text-center">
                                 <span class="row-number">{{ $loop->iteration }}</span>
                                 <input type="hidden"
                                     name="wh_issuestock_dts_listno[]"
@@ -118,11 +118,9 @@
 @endsection
 @push('scriptjs')
 <script>
-let productOptions = '';
+let productOptions = '<option value="">กรุณาเลือก</option>';
 
-$('#wh_warehouses_id').on('change', function () {
-    let warehouseId = $(this).val();
-
+function loadProducts(warehouseId) {
     if (!warehouseId) {
         productOptions = '<option value="">กรุณาเลือก</option>';
         $('.product-select').html(productOptions);
@@ -136,49 +134,64 @@ $('#wh_warehouses_id').on('change', function () {
         success: function (res) {
             productOptions = '<option value="">กรุณาเลือก</option>';
             res.forEach(item => {
-                productOptions += `<option value="${item.wh_product_lists_id}">
-                    ${item.wh_product_lists_name1} สต็อค : ${item.goodqty} ${item.wh_product_units_name} 
-                </option>`;
+                productOptions += `
+                    <option value="${item.wh_product_lists_id}">
+                        ${item.wh_product_lists_name1} สต็อค : ${item.goodqty} ${item.wh_product_units_name}
+                    </option>`;
             });
 
-            // update select ที่มีอยู่แล้ว
             $('.product-select').html(productOptions);
         }
     });
+}
+
+// 🔹 change warehouse
+$('#wh_warehouses_id').on('change', function () {
+    loadProducts($(this).val());
 });
+
+// 🔹 โหลดตอนเปิดหน้า Edit
+$(document).ready(function () {
+    const warehouseId = $('#wh_warehouses_id').val();
+    if (warehouseId) {
+        loadProducts(warehouseId);
+    }
+});
+
 function updateRowNumbers() {
-    const rows = document.querySelectorAll('#tableBody tr');
-    rows.forEach((row, index) => {
-        row.querySelector('.row-number').textContent = index + 1;
-        row.querySelector('.row-number-hidden').value = index + 1;
+    $('#tableBody tr').each(function (index) {
+        $(this).find('.row-number').text(index + 1);
+        $(this).find('.row-number-hidden').val(index + 1);
     });
 }
-document.getElementById('addRowBtn').addEventListener('click', function () {
-        const tbody = document.getElementById('tableBody');
 
-        const newRow = document.createElement('tr');
-        newRow.innerHTML = `
-            <td>
+$('#addRowBtn').on('click', function () {
+    const newRow = `
+        <tr>
+            <td class="text-center"> 
                 <span class="row-number"></span>
-                <input type="hidden" name="wh_issuestock_dts_listno[]" class="row-number-hidden"/>
+                <input type="hidden" name="wh_issuestock_dts_listno[]" class="row-number-hidden">
             </td>
             <td>
                 <select class="form-control product-select" name="wh_product_lists_id[]">
                     ${productOptions}
-                </select>       
+                </select>
             </td>
-            <td><input type="text" name="wh_issuestock_dts_qty[]" class="form-control" value="0"/></td>
-            <td><button type="button" class="btn btn-danger btn-sm deleteRow">ลบ</button></td>
-        `;
-
-        tbody.appendChild(newRow);
-        updateRowNumbers(); 
+            <td>
+                <input type="text" name="wh_issuestock_dts_qty[]" class="form-control" value="0">
+            </td>
+            <td>
+                <button type="button" class="btn btn-danger btn-sm deleteRow">ลบ</button>
+            </td>
+        </tr>
+    `;
+    $('#tableBody').append(newRow);
+    updateRowNumbers();
 });
-document.getElementById('tableBody').addEventListener('click', function (e) {
-    if (e.target.classList.contains('deleteRow')) {
-        e.target.closest('tr').remove();
-        updateRowNumbers(); // อัปเดตลำดับหลังจากลบ
-    }
+
+$('#tableBody').on('click', '.deleteRow', function () {
+    $(this).closest('tr').remove();
+    updateRowNumbers();
 });
 confirmDel = (refid) =>{
 Swal.fire({

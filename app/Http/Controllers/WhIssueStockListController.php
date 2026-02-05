@@ -155,49 +155,50 @@ class WhIssueStockListController extends Controller
             ];
              try{
             DB::beginTransaction();
-            $insertHD = WhIssuestockHd::where('wh_issuestock_hds_id',$id)->update($data);   
-            if($request->wh_issuestock_dts_id){
-                foreach ($request->wh_issuestock_dts_id as $key => $value) {
-                    WhIssuestockDt::where('wh_issuestock_dts_id',$value)->update([
-                        'wh_issuestock_dts_qty' => $request->wh_issuestock_dts_qty[$key],
-                        'wh_issuestock_dts_flag' => true,
-                        'person_at' => Auth::user()->name,
-                        'updated_at' => now(),
-                        'poststock' => "N"
-                    ]);
-                }
-            }else{
-                foreach ($request->wh_issuestock_dts_listno as $key => $value) {
-                if (!isset($request->wh_product_lists_id[$key])) {
-                    continue; // กัน error
-                }
+                WhIssuestockHd::where('wh_issuestock_hds_id',$id)->update($data); 
+                $insertHD = WhIssuestockHd::find($id);
+                if(!empty($request->wh_issuestock_dts_listno)){
+                    foreach ($request->wh_issuestock_dts_listno as $key => $value) {
+                        if(!empty($request->wh_issuestock_dts_id[$key]))
+                        {
+                            WhIssuestockDt::where('wh_issuestock_dts_id',$request->wh_issuestock_dts_id[$key])->update([
+                                'wh_issuestock_dts_qty' => $request->wh_issuestock_dts_qty[$key],
+                                'wh_issuestock_dts_flag' => true,
+                                'person_at' => Auth::user()->name,
+                                'updated_at' => now(),
+                                'poststock' => "N"
+                            ]);
+                        }else{
+                            if (!isset($request->wh_product_lists_id[$key])) {
+                                continue; // กัน error
+                            }
 
-                $pd = DB::table('vw_stockcard')
-                ->where('wh_product_lists_id',$request->wh_product_lists_id[$key])
-                ->where('wh_warehouses_id',$request->wh_warehouses_id)
-                ->first();
-                if (!$pd) continue;
+                            $pd = DB::table('vw_stockcard')
+                            ->where('wh_product_lists_id',$request->wh_product_lists_id[$key])
+                            ->where('wh_warehouses_id',$request->wh_warehouses_id)
+                            ->first();
+                            if (!$pd) continue;
 
 
-                WhIssuestockDt::insert([
-                    'wh_issuestock_hds_id' =>  $insertHD->wh_issuestock_hds_id,
-                    'wh_issuestock_dts_listno' => $value,
-                    'wh_product_lists_id' => $request->wh_product_lists_id[$key],
-                    'wh_product_lists_code' => $pd->wh_product_lists_code,
-                    'wh_product_lists_name' => $pd->wh_product_lists_name1,
-                    'wh_product_lists_unit' => $pd->wh_product_units_name,
-                    'wh_issuestock_dts_qty' => $request->wh_issuestock_dts_qty[$key],
-                    'wh_issuestock_dts_cost' => $pd->costqty,
-                    'stc_stockcard_qty' => $pd->goodqty,
-                    'wh_issuestock_dts_flag' => true,
-                    'person_at' => Auth::user()->name,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                    'poststock' => "N"
-                ]);
-            }  
-            }
-                          
+                            WhIssuestockDt::insert([
+                                'wh_issuestock_hds_id' =>  $insertHD->wh_issuestock_hds_id,
+                                'wh_issuestock_dts_listno' => $value,
+                                'wh_product_lists_id' => $request->wh_product_lists_id[$key],
+                                'wh_product_lists_code' => $pd->wh_product_lists_code,
+                                'wh_product_lists_name' => $pd->wh_product_lists_name1,
+                                'wh_product_lists_unit' => $pd->wh_product_units_name,
+                                'wh_issuestock_dts_qty' => $request->wh_issuestock_dts_qty[$key],
+                                'wh_issuestock_dts_cost' => $pd->costqty,
+                                'stc_stockcard_qty' => $pd->goodqty,
+                                'wh_issuestock_dts_flag' => true,
+                                'person_at' => Auth::user()->name,
+                                'created_at' => now(),
+                                'updated_at' => now(),
+                                'poststock' => "N"
+                            ]);
+                        }                       
+                    }  
+                }                          
             DB::commit();
             return redirect()->route('issuestocks.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
         }catch(\Exception $e){
