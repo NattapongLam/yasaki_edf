@@ -191,6 +191,7 @@
                                     class="row-number-hidden"
                                     value="{{ $loop->iteration }}">
                                 <input type="hidden" name="ap_purchaseorder_dts_id[]" value="{{$item->ap_purchaseorder_dts_id}}">
+                                <input type="hidden" name="ap_purchaserequest_dts_id[]" value="{{$item->ap_purchaserequest_dts_id}}">
                             </td>
                             <td>
                                {{$item->wh_product_lists_name}} ({{$item->ap_purchaserequest_hds_docuno}} จำนวน : {{$item->ap_purchaserequest_dts_qty}})
@@ -205,7 +206,7 @@
                                 @endif                   
                             </td>
                             <td><input type="text" name="ap_purchaseorder_dts_amount[]" class="form-control amount-input" value="{{$item->ap_purchaseorder_dts_amount}}" readonly/></td>
-                            <td><input type="date" name="ap_purchaseorder_dts_duedate[]" class="form-control" value="{{$item->ap_purchaseorder_dts_duedate}}"/></td>
+                            <td><input type="date" name="ap_purchaseorder_dts_duedate[]" class="form-control" value="{{$item->ap_purchaseorder_dts_duedate}}" required/></td>
                             <td>
                                 <input type="text" name="ap_purchaseorder_dts_remark[]" class="form-control" value="{{$item->ap_purchaseorder_dts_remark}}"/>
                                 <input type="hidden" name="ap_purchaseorder_dts_base[]" class="form-control base-input" value="{{$item->ap_purchaseorder_dts_base}}"/>
@@ -373,7 +374,7 @@ document.getElementById('addRowBtn').addEventListener('click', function () {
             <td><input type="text" name="ap_purchaseorder_dts_price[]" class="form-control price-input" value="0" disabled/></td>
             <td><input type="text" name="acc_discount_qty[]" class="form-control dis-input" value="0" disabled/></td>
             <td><input type="text" name="ap_purchaseorder_dts_amount[]" class="form-control amount-input" value="0" readonly/></td>
-            <td><input type="date" name="ap_purchaseorder_dts_duedate[]" class="form-control"/></td>
+            <td><input type="date" name="ap_purchaseorder_dts_duedate[]" class="form-control" required/></td>
             <td>
                 <input type="text" name="ap_purchaseorder_dts_remark[]" class="form-control"/>
                 <input type="hidden" name="ap_purchaseorder_dts_base[]" class="form-control base-input"/>

@@ -132,6 +132,7 @@ Route::get('/purchaseorder/runno', [App\Http\Controllers\ApPurchaseOrderListCont
 Route::get('/vendor/address-text', [App\Http\Controllers\ApPurchaseOrderListController::class, 'addressText'])->name('vendor.addressText');
 Route::post('/CancelPurchaseOrderDoc' , [App\Http\Controllers\ApPurchaseOrderListController::class , 'CancelPurchaseOrderDoc']);
 Route::post('/CancelPurchaseOrderList' , [App\Http\Controllers\ApPurchaseOrderListController::class , 'CancelPurchaseOrderList']);
+Route::get('/purchaseorders/{id}/print', [App\Http\Controllers\ApPurchaseOrderListController::class, 'print'])->name('purchaseorders.print');
 Route::resource('/purchasereceives' , App\Http\Controllers\ApPurchaseReceiveListController::class);
 Route::get('/purchasereceive/runno', [App\Http\Controllers\ApPurchaseReceiveListController::class, 'runNo'])->name('purchasereceive.runno');
 Route::get('purchase/items', [App\Http\Controllers\ApPurchaseReceiveListController::class, 'getItems'])->name('purchase.items');

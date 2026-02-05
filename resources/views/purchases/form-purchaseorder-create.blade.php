@@ -339,7 +339,7 @@ document.getElementById('addRowBtn').addEventListener('click', function () {
             <td><input type="text" name="ap_purchaseorder_dts_price[]" class="form-control price-input" value="0" disabled/></td>
             <td><input type="text" name="acc_discount_qty[]" class="form-control dis-input" value="0" disabled/></td>
             <td><input type="text" name="ap_purchaseorder_dts_amount[]" class="form-control amount-input" value="0" readonly/></td>
-            <td><input type="date" name="ap_purchaseorder_dts_duedate[]" class="form-control"/></td>
+            <td><input type="date" name="ap_purchaseorder_dts_duedate[]" class="form-control" required/></td>
             <td>
                 <input type="text" name="ap_purchaseorder_dts_remark[]" class="form-control"/>
                 <input type="hidden" name="ap_purchaseorder_dts_base[]" class="form-control base-input"/>

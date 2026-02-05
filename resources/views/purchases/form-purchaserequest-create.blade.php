@@ -145,7 +145,7 @@ document.getElementById('addRowBtn').addEventListener('click', function () {
                
             </td>
             <td><input type="text" name="ap_purchaserequest_dts_qty[]" class="form-control qty-input" value="0"/></td>
-            <td><input type="date" name="ap_purchaserequest_hds_duedate[]" class="form-control price-input"/></td>
+            <td><input type="date" name="ap_purchaserequest_hds_duedate[]" class="form-control" required/></td>
             <td>
                 <input type="text" name="ap_purchaserequest_dts_remark[]" class="form-control"/>
             </td>

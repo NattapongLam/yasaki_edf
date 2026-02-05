@@ -156,62 +156,51 @@ class ApPurchaseRequestListController extends Controller
             ];
             try{
                 DB::beginTransaction();
-                $insertHD = ApPurchaserequestHd::where('ap_purchaserequest_hds_id',$id)->update($data);  
-                if($request->ap_purchaserequest_dts_id){
-                    foreach ($request->ap_purchaserequest_dts_id as $key => $value) {
-                        if (!isset($request->wh_product_lists_id[$key])) {
-                            continue; // กัน error
-                        }
-
-                        $pd = WhProductList::find($request->wh_product_lists_id[$key]);
-                        if (!$pd) continue;
-
-                        $unit = WhProductUnit::find($pd->wh_product_units_id);
-                        ApPurchaserequestDt::where('ap_purchaserequest_dts_id',$value)->update([
-                            'ap_purchaserequest_dts_listno' => $request->ap_purchaserequest_dts_listno[$key],
-                            'wh_product_lists_id' => $request->wh_product_lists_id[$key],
-                            'wh_product_lists_code' => $pd->wh_product_lists_code,
-                            'wh_product_lists_name' => $pd->wh_product_lists_name1,
-                            'wh_product_lists_unit' => optional($unit)->wh_product_units_name,
-
-                            'ap_purchaserequest_dts_qty' => $request->ap_purchaserequest_dts_qty[$key] ?? 0,
-                            'ap_purchaserequest_hds_duedate' => $request->ap_purchaserequest_hds_duedate[$key],
-                            'ap_purchaserequest_dts_remark' => $request->ap_purchaserequest_dts_remark[$key],
-
-                            'ap_purchaserequest_dts_flag' => true,
-                            'person_at' => Auth::user()->name,
-                            'updated_at' => now(),
-                        ]);
-                    }
-                } 
-                if($request->ap_purchaserequest_dts_listno){
+                ApPurchaserequestHd::where('ap_purchaserequest_hds_id',$id)->update($data);  
+                if(!empty($request->ap_purchaserequest_dts_listno)){
                     foreach ($request->ap_purchaserequest_dts_listno as $key => $value) {
                         if (!isset($request->wh_product_lists_id[$key])) {
                             continue; // กัน error
                         }
-
                         $pd = WhProductList::find($request->wh_product_lists_id[$key]);
                         if (!$pd) continue;
-
                         $unit = WhProductUnit::find($pd->wh_product_units_id);
+                        if(!empty($request->ap_purchaserequest_dts_id[$key])){
+                            ApPurchaserequestDt::where('ap_purchaserequest_dts_id',$request->ap_purchaserequest_dts_id[$key])->update([
+                                'wh_product_lists_id' => $request->wh_product_lists_id[$key],
+                                'wh_product_lists_code' => $pd->wh_product_lists_code,
+                                'wh_product_lists_name' => $pd->wh_product_lists_name1,
+                                'wh_product_lists_unit' => optional($unit)->wh_product_units_name,
 
-                        ApPurchaserequestDt::insert([
-                            'ap_purchaserequest_hds_id' => $insertHD->ap_purchaserequest_hds_id,
-                            'ap_purchaserequest_dts_listno' => $value,
-                            'wh_product_lists_id' => $request->wh_product_lists_id[$key],
-                            'wh_product_lists_code' => $pd->wh_product_lists_code,
-                            'wh_product_lists_name' => $pd->wh_product_lists_name1,
-                            'wh_product_lists_unit' => optional($unit)->wh_product_units_name,
+                                'ap_purchaserequest_dts_qty' => $request->ap_purchaserequest_dts_qty[$key] ?? 0,
+                                'ap_purchaserequest_hds_duedate' => $request->ap_purchaserequest_hds_duedate[$key],
+                                'ap_purchaserequest_dts_remark' => $request->ap_purchaserequest_dts_remark[$key],
 
-                            'ap_purchaserequest_dts_qty' => $request->ap_purchaserequest_dts_qty[$key] ?? 0,
-                            'ap_purchaserequest_hds_duedate' => $request->ap_purchaserequest_hds_duedate[$key],
-                            'ap_purchaserequest_dts_remark' => $request->ap_purchaserequest_dts_remark[$key],
+                                'ap_purchaserequest_dts_flag' => true,
+                                'person_at' => Auth::user()->name,
+                                'updated_at' => now(),
+                            ]);
+                        }else{
+                            $insertHD = ApPurchaserequestHd::find($id);
+                            ApPurchaserequestDt::insert([
+                                'ap_purchaserequest_hds_id' => $insertHD->ap_purchaserequest_hds_id,
+                                'ap_purchaserequest_dts_listno' => $value,
+                                'wh_product_lists_id' => $request->wh_product_lists_id[$key],
+                                'wh_product_lists_code' => $pd->wh_product_lists_code,
+                                'wh_product_lists_name' => $pd->wh_product_lists_name1,
+                                'wh_product_lists_unit' => optional($unit)->wh_product_units_name,
 
-                            'ap_purchaserequest_dts_flag' => true,
-                            'person_at' => Auth::user()->name,
-                            'created_at' => now(),
-                            'updated_at' => now(),
-                        ]);
+                                'ap_purchaserequest_dts_qty' => $request->ap_purchaserequest_dts_qty[$key] ?? 0,
+                                'ap_purchaserequest_hds_duedate' => $request->ap_purchaserequest_hds_duedate[$key],
+                                'ap_purchaserequest_dts_remark' => $request->ap_purchaserequest_dts_remark[$key],
+
+                                'ap_purchaserequest_dts_flag' => true,
+                                'person_at' => Auth::user()->name,
+                                'created_at' => now(),
+                                'updated_at' => now(),
+                            ]);
+                        }
+                       
                     }  
                 }                             
                 DB::commit();

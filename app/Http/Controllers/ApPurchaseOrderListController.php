@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use App\Models\AccCompany;
 use App\Models\AccTypevat;
 use App\Models\AccCurrency;
 use App\Models\ApVendorList;
@@ -205,62 +206,61 @@ class ApPurchaseOrderListController extends Controller
             ];
             try{
                 DB::beginTransaction();
-                $insertHD = ApPurchaseorderHd::where('ap_purchaseorder_hds_id',$id)->update($data);   
-                if($request->ap_purchaseorder_dts_id){
-                    foreach ($request->ap_purchaseorder_dts_id as $key => $value) {
-                        ApPurchaseorderDt::where('ap_purchaseorder_dts_id',$value)->update([
-                            'acc_discount_qty' => $request->acc_discount_qty[$key],
-                            'ap_purchaseorder_dts_qty' => $request->ap_purchaseorder_dts_qty[$key],
-                            'ap_purchaseorder_dts_price' => $request->ap_purchaseorder_dts_price[$key],
-                            'ap_purchaseorder_dts_base' => $request->ap_purchaseorder_dts_base[$key],
-                            'ap_purchaseorder_dts_vat' => $request->ap_purchaseorder_dts_vat[$key],
-                            'ap_purchaseorder_dts_net' => $request->ap_purchaseorder_dts_net[$key],
-                            'ap_purchaseorder_dts_dis' => $request->ap_purchaseorder_dts_dis[$key],
-                            'ap_purchaseorder_dts_amount' => $request->ap_purchaseorder_dts_net[$key],
-                            'ap_purchaseorder_dts_duedate' => $request->ap_purchaseorder_dts_duedate[$key],
-                            'ap_purchaseorder_dts_remark' => $request->ap_purchaseorder_dts_remark[$key],
-                            'ap_purchaseorder_dts_flag' => true,
-                            'person_at' => Auth::user()->name,
-                            'updated_at' => now(),
-                        ]);
-                    }                      
-                }
-                if($request->ap_purchaserequest_dts_id){
-                    foreach ($request->ap_purchaserequest_dts_id as $key => $value) {
-                        if (!isset($request->ap_purchaserequest_dts_id[$key])) {
-                            continue;
+                ApPurchaseorderHd::where('ap_purchaseorder_hds_id',$id)->update($data);   
+                if(!empty($request->ap_purchaseorder_dts_listno)){
+                    foreach($request->ap_purchaseorder_dts_listno as $key => $value) {
+                       
+                        if(!empty($request->ap_purchaseorder_dts_id[$key])){
+                            ApPurchaseorderDt::where('ap_purchaseorder_dts_id',$request->ap_purchaseorder_dts_id[$key])->update([
+                                'acc_discount_qty' => $request->acc_discount_qty[$key],
+                                'ap_purchaseorder_dts_qty' => $request->ap_purchaseorder_dts_qty[$key],
+                                'ap_purchaseorder_dts_price' => $request->ap_purchaseorder_dts_price[$key],
+                                'ap_purchaseorder_dts_base' => $request->ap_purchaseorder_dts_base[$key],
+                                'ap_purchaseorder_dts_vat' => $request->ap_purchaseorder_dts_vat[$key],
+                                'ap_purchaseorder_dts_net' => $request->ap_purchaseorder_dts_net[$key],
+                                'ap_purchaseorder_dts_dis' => $request->ap_purchaseorder_dts_dis[$key],
+                                'ap_purchaseorder_dts_amount' => $request->ap_purchaseorder_dts_net[$key],
+                                'ap_purchaseorder_dts_duedate' => $request->ap_purchaseorder_dts_duedate[$key],
+                                'ap_purchaseorder_dts_remark' => $request->ap_purchaseorder_dts_remark[$key],
+                                'ap_purchaseorder_dts_flag' => true,
+                                'person_at' => Auth::user()->name,
+                                'updated_at' => now(),
+                            ]);                                         
                         }
-                        $pd = DB::table('vw_purchaserequest')->where('ap_purchaserequest_dts_id',$value)->first();
-                        if (!$pd) continue;
-                        ApPurchaseorderDt::insert([
-                            'ap_purchaseorder_hds_id' => $insertHD->ap_purchaseorder_hds_id,
-                            'ap_purchaseorder_dts_listno' => $request->ap_purchaseorder_dts_listno[$key],
-                            'ap_purchaserequest_dts_id' => $value,
-                            'wh_product_lists_id' => $pd->wh_product_lists_id,
-                            'wh_product_lists_code' => $pd->wh_product_lists_code,
-                            'wh_product_lists_name' => $pd->wh_product_lists_name,
-                            'wh_product_lists_unit' => $pd->wh_product_lists_unit,
-                            'acc_discount_qty' => $request->acc_discount_qty[$key],
-                            'ap_purchaseorder_dts_qty' => $request->ap_purchaseorder_dts_qty[$key],
-                            'ap_purchaseorder_dts_price' => $request->ap_purchaseorder_dts_price[$key],
-                            'ap_purchaseorder_dts_base' => $request->ap_purchaseorder_dts_base[$key],
-                            'ap_purchaseorder_dts_vat' => $request->ap_purchaseorder_dts_vat[$key],
-                            'ap_purchaseorder_dts_net' => $request->ap_purchaseorder_dts_net[$key],
-                            'ap_purchaseorder_dts_dis' => $request->ap_purchaseorder_dts_dis[$key],
-                            'ap_purchaseorder_dts_amount' => $request->ap_purchaseorder_dts_net[$key],
-                            'ap_purchaseorder_dts_duedate' => $request->ap_purchaseorder_dts_duedate[$key],
-                            'ap_purchaseorder_dts_remark' => $request->ap_purchaseorder_dts_remark[$key],
-                            'ap_purchaseorder_dts_flag' => true,
-                            'ms_allocate_id' => $pd->ms_allocate_id,
-                            'ap_purchaserequest_dts_qty' => $pd->pr_total,
-                            'ap_purchaserequest_hds_docuno' => $pd->ap_purchaserequest_hds_docuno,
-                            'person_at' => Auth::user()->name,
-                            'created_at' => now(),
-                            'updated_at' => now(),
-                        ]);
-                    }  
-                }
-                              
+                        else
+                        {  
+                            $pd = DB::table('vw_purchaserequest')->where('ap_purchaserequest_dts_id',$request->ap_purchaserequest_dts_id[$key])->first();                             
+                            if (!$pd) continue;
+                            $insertHD = ApPurchaseorderHd::find($id);  
+                            ApPurchaseorderDt::insert([
+                                'ap_purchaseorder_hds_id' => $insertHD->ap_purchaseorder_hds_id,
+                                'ap_purchaseorder_dts_listno' => $request->ap_purchaseorder_dts_listno[$key],
+                                'ap_purchaserequest_dts_id' => $request->ap_purchaserequest_dts_id[$key],
+                                'wh_product_lists_id' => $pd->wh_product_lists_id,
+                                'wh_product_lists_code' => $pd->wh_product_lists_code,
+                                'wh_product_lists_name' => $pd->wh_product_lists_name,
+                                'wh_product_lists_unit' => $pd->wh_product_lists_unit,
+                                'acc_discount_qty' => $request->acc_discount_qty[$key] ?? 0,
+                                'ap_purchaseorder_dts_qty' => $request->ap_purchaseorder_dts_qty[$key],
+                                'ap_purchaseorder_dts_price' => $request->ap_purchaseorder_dts_price[$key],
+                                'ap_purchaseorder_dts_base' => $request->ap_purchaseorder_dts_base[$key],
+                                'ap_purchaseorder_dts_vat' => $request->ap_purchaseorder_dts_vat[$key],
+                                'ap_purchaseorder_dts_net' => $request->ap_purchaseorder_dts_net[$key],
+                                'ap_purchaseorder_dts_dis' => $request->ap_purchaseorder_dts_dis[$key],
+                                'ap_purchaseorder_dts_amount' => $request->ap_purchaseorder_dts_net[$key],
+                                'ap_purchaseorder_dts_duedate' => $request->ap_purchaseorder_dts_duedate[$key],
+                                'ap_purchaseorder_dts_remark' => $request->ap_purchaseorder_dts_remark[$key],
+                                'ap_purchaseorder_dts_flag' => true,
+                                'ms_allocate_id' => $pd->ms_allocate_id,
+                                'ap_purchaserequest_dts_qty' => $pd->pr_total,
+                                'ap_purchaserequest_hds_docuno' => $pd->ap_purchaserequest_hds_docuno,
+                                'person_at' => Auth::user()->name,
+                                'created_at' => now(),
+                                'updated_at' => now(),
+                            ]);
+                        }
+                    }
+                }                                            
                 DB::commit();
                 return redirect()->route('purchaseorders.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
             }catch(\Exception $e){
@@ -400,5 +400,13 @@ class ApPurchaseOrderListController extends Controller
                 'message' => $e->getMessage()
             ]);
         }
+    }
+
+    public function print($id)
+    {
+        $hd = ApPurchaseorderHd::findOrFail($id);
+        $dt = ApPurchaseorderDt::where('ap_purchaseorder_hds_id', $id)->where('ap_purchaseorder_dts_flag',true)->get();
+        $comp = AccCompany::find(1);
+        return view('purchases.form-purchaseorder-print', compact('hd', 'dt','comp'));
     }
 }

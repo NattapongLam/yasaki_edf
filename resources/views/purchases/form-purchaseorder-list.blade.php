@@ -88,7 +88,13 @@
                                 <a href="javascript:void(0)" class="btn btn-danger btn-sm" onclick="confirmDel('{{ $item->ap_purchaseorder_hds_id }}')"><i class="fas fa-trash"></i></a>
                             @endif
                         </td>
-                        <td></td>                  
+                        <td>
+                            <a href="{{ route('purchaseorders.print', $item->ap_purchaseorder_hds_id) }}"
+                                target="_blank"
+                                class="btn btn-info">
+                                🖨 พิมพ์ใบสั่งซื้อ
+                                </a>
+                            </td>                  
                     </tr>
                 @endforeach
             </tbody>
