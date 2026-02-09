@@ -1,5 +1,18 @@
 @extends('layouts.main')
 @section('content')
+<link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+.select2-container {
+    width: 100% !important;
+}
+.select2-selection--single {
+    height: 38px !important;
+}
+.select2-selection__rendered {
+    line-height: 36px !important;
+}
+</style>
 <div class="row">
     @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -44,7 +57,7 @@
             <div class="col-6">
                 <div class="form-group">
                     <label for="ms_allocate_id" class="col-form-label">จัดสรร</label>
-                    <select class="form-control" name="ms_allocate_id">
+                    <select class="form-control select2" name="ms_allocate_id">
                         <option value="0">กรุณาเลือก</option>
                         @foreach ($allocates as $item)
                             <option value="{{$item->ms_allocate_id}}">{{$item->ms_allocate_name}}</option>
@@ -94,6 +107,7 @@
 </div>
 @endsection
 @push('scriptjs')
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
     function loadDocNo() {
         let docDate = $("#ap_purchaserequest_hds_date").val();
@@ -118,6 +132,7 @@
     // ✔ ทำงานทันทีเมื่อเปิดฟอร์ม
     $(document).ready(function () {
         loadDocNo();
+        initSelect2();
     });
 function updateRowNumbers() {
     const rows = document.querySelectorAll('#tableBody tr');
@@ -127,39 +142,66 @@ function updateRowNumbers() {
     });
 }
 document.getElementById('addRowBtn').addEventListener('click', function () {
-        const tbody = document.getElementById('tableBody');
+    const tbody = document.getElementById('tableBody');
 
-        const newRow = document.createElement('tr');
-        newRow.innerHTML = `
-            <td>
-                <span class="row-number"></span>
-                <input type="hidden" name="ap_purchaserequest_dts_listno[]" class="row-number-hidden"/>
-            </td>
-            <td>
-                <select class="form-control" name="wh_product_lists_id[]">
-                    <option value="0">กรุณาเลือก</option>
-                    @foreach ($products as $item)
-                            <option value="{{$item->wh_product_lists_id}}">{{$item->wh_product_lists_name1}}</option>
-                    @endforeach
-                </select>
-               
-            </td>
-            <td><input type="text" name="ap_purchaserequest_dts_qty[]" class="form-control qty-input" value="0"/></td>
-            <td><input type="date" name="ap_purchaserequest_hds_duedate[]" class="form-control" required/></td>
-            <td>
-                <input type="text" name="ap_purchaserequest_dts_remark[]" class="form-control"/>
-            </td>
-            <td><button type="button" class="btn btn-danger btn-sm deleteRow">ลบ</button></td>
-        `;
+    const newRow = document.createElement('tr');
+    newRow.innerHTML = `
+        <td>
+            <span class="row-number"></span>
+            <input type="hidden" name="ap_purchaserequest_dts_listno[]" class="row-number-hidden"/>
+        </td>
+        <td>
+            <select class="form-control select2-product" name="wh_product_lists_id[]">
+                <option value="">เลือกสินค้า</option>
+                @foreach ($products as $item)
+                    <option value="{{$item->wh_product_lists_id}}">
+                        {{$item->wh_product_lists_name1}}
+                    </option>
+                @endforeach
+            </select>
+        </td>
+        <td><input type="number" name="ap_purchaserequest_dts_qty[]" class="form-control" value="0"/></td>
+        <td><input type="date" name="ap_purchaserequest_hds_duedate[]" class="form-control"/></td>
+        <td><input type="text" name="ap_purchaserequest_dts_remark[]" class="form-control"/></td>
+        <td><button type="button" class="btn btn-danger btn-sm deleteRow">ลบ</button></td>
+    `;
 
-        tbody.appendChild(newRow);
-        updateRowNumbers(); 
+    tbody.appendChild(newRow);
+    updateRowNumbers();
+
+    // ⭐ init select2 เฉพาะ select ใหม่
+    initProductSelect($(newRow).find('.select2-product'));
 });
 document.getElementById('tableBody').addEventListener('click', function (e) {
     if (e.target.classList.contains('deleteRow')) {
         e.target.closest('tr').remove();
         updateRowNumbers(); // อัปเดตลำดับหลังจากลบ
     }
+});
+function initSelect2() {
+    $('.select2').select2({
+        placeholder: 'กรุณาเลือก',
+        allowClear: true,
+        width: '100'
+    });
+
+    $('.select2-product').select2({
+        placeholder: 'เลือกสินค้า',
+        width: '100'
+    });
+}
+function initProductSelect(el) {
+    el.select2({
+        theme: 'bootstrap-5',
+        placeholder: 'เลือกสินค้า',
+        width: '100%',
+        dropdownParent: el.closest('td') // ⭐ แก้ปัญหาใน table
+    });
+}
+$(document).ready(function () {
+    $('.select2-product').each(function () {
+        initProductSelect($(this));
+    });
 });
 </script>
 @endpush

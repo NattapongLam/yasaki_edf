@@ -1,5 +1,18 @@
 @extends('layouts.main')
 @section('content')
+<link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+.select2-container {
+    width: 100% !important;
+}
+.select2-selection--single {
+    height: 38px !important;
+}
+.select2-selection__rendered {
+    line-height: 36px !important;
+}
+</style>
 <div class="row">
     @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -91,6 +104,7 @@
 </div>
 @endsection
 @push('scriptjs')
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
 function loadDocNo() {
     let docDate = $("#wh_issuestock_hds_date").val();
@@ -123,7 +137,12 @@ $('#wh_warehouses_id').on('change', function () {
 
     if (!warehouseId) {
         productOptions = '<option value="">กรุณาเลือก</option>';
-        $('.product-select').html(productOptions);
+        $('.select2-product').each(function () {
+            if ($(this).hasClass("select2-hidden-accessible")) {
+                $(this).select2('destroy');
+            }
+            initSelect2Table($(this));
+        });
         return;
     }
 
@@ -135,12 +154,17 @@ $('#wh_warehouses_id').on('change', function () {
             productOptions = '<option value="">กรุณาเลือก</option>';
             res.forEach(item => {
                 productOptions += `<option value="${item.wh_product_lists_id}">
-                    ${item.wh_product_lists_name1} สต็อค : ${item.goodqty} ${item.wh_product_units_name} 
+                    ${item.wh_product_lists_name1} สต็อค : ${item.goodqty} ${item.wh_product_units_name}
                 </option>`;
             });
 
-            // update select ที่มีอยู่แล้ว
-            $('.product-select').html(productOptions);
+            $('.select2-product').each(function () {
+                if ($(this).hasClass("select2-hidden-accessible")) {
+                    $(this).select2('destroy');
+                }
+                $(this).html(productOptions);
+                initSelect2Table($(this));
+            });
         }
     });
 });
@@ -161,7 +185,7 @@ document.getElementById('addRowBtn').addEventListener('click', function () {
                 <input type="hidden" name="wh_issuestock_dts_listno[]" class="row-number-hidden"/>
             </td>
             <td>
-                <select class="form-control product-select" name="wh_product_lists_id[]">
+                <select class="form-control select2-product" name="wh_product_lists_id[]">
                     ${productOptions}
                 </select>       
             </td>
@@ -171,6 +195,7 @@ document.getElementById('addRowBtn').addEventListener('click', function () {
 
         tbody.appendChild(newRow);
         updateRowNumbers(); 
+        initSelect2Table($(newRow).find('.select2-product'));
 });
 document.getElementById('tableBody').addEventListener('click', function (e) {
     if (e.target.classList.contains('deleteRow')) {
@@ -178,5 +203,14 @@ document.getElementById('tableBody').addEventListener('click', function (e) {
         updateRowNumbers(); // อัปเดตลำดับหลังจากลบ
     }
 });
+function initSelect2Table(el) {
+    el.select2({
+        theme: 'bootstrap-5',
+        width: '100%',
+        placeholder: 'กรุณาเลือกสินค้า',
+        allowClear: true,
+        dropdownParent: el.closest('td') // ⭐ สำคัญมาก (อยู่ใน table)
+    });
+}
 </script>
 @endpush

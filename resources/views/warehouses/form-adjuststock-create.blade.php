@@ -1,5 +1,18 @@
 @extends('layouts.main')
 @section('content')
+<link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+.select2-container {
+    width: 100% !important;
+}
+.select2-selection--single {
+    height: 38px !important;
+}
+.select2-selection__rendered {
+    line-height: 36px !important;
+}
+</style>
 <div class="row">
     @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -93,6 +106,7 @@
 </div>
 @endsection
 @push('scriptjs')
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
 function loadDocNo() {
     let docDate = $("#wh_adjuststock_hds_date").val();
@@ -125,57 +139,59 @@ function updateRowNumbers() {
         row.querySelector('.row-number-hidden').value = index + 1;
     });
 }
-document.getElementById('addRowBtn').addEventListener('click', function () {
-        const tbody = document.getElementById('tableBody');
-
-        const newRow = document.createElement('tr');
-        newRow.innerHTML = `
-            <td>
+$('#addRowBtn').on('click', function () {
+    const newRow = $(`
+        <tr>
+            <td class="text-center">
                 <span class="row-number"></span>
                 <input type="hidden" name="wh_adjuststock_dts_listno[]" class="row-number-hidden"/>
             </td>
             <td>
-                <select class="form-control product-select" name="wh_product_lists_id[]">
-                    <option value="0">กรุณาเลือก</option>
+                <select class="form-control select2-product" name="wh_product_lists_id[]">
+                    <option value="">กรุณาเลือก</option>
                     @foreach ($products as $item)
                         <option value="{{ $item->wh_product_lists_id }}">
                             {{ $item->wh_product_lists_name1 }}
                         </option>
                     @endforeach
-                </select>              
+                </select>
             </td>
-            <td class="stock-cell">
-                0
-            </td>
-              <td>
+            <td class="stock-cell text-center">0</td>
+            <td>
                 <select class="form-control" name="stockflag[]">
                     <option value="1">เพิ่ม</option>
                     <option value="-1">ลด</option>
-                </select>              
+                </select>
             </td>
-            <td><input type="text" name="wh_adjuststock_dts_qty[]" class="form-control" value="0"/></td>
-            <td><button type="button" class="btn btn-danger btn-sm deleteRow">ลบ</button></td>
-        `;
+            <td>
+                <input type="text" name="wh_adjuststock_dts_qty[]" class="form-control" value="0"/>
+            </td>
+            <td>
+                <button type="button" class="btn btn-danger btn-sm deleteRow">ลบ</button>
+            </td>
+        </tr>
+    `);
 
-        tbody.appendChild(newRow);
-        updateRowNumbers(); 
+    $('#tableBody').append(newRow);
+    updateRowNumbers();
+    initSelect2Table(newRow.find('.select2-product'));
 });
+
 document.getElementById('tableBody').addEventListener('click', function (e) {
     if (e.target.classList.contains('deleteRow')) {
         e.target.closest('tr').remove();
         updateRowNumbers(); // อัปเดตลำดับหลังจากลบ
     }
 });
-$(document).on('change', '.product-select', function () {
-
+$(document).on('change', '.select2-product', function () {
     let productId   = $(this).val();
     let warehouseId = $('#wh_warehouses_id').val();
     let row         = $(this).closest('tr');
     let stockCell   = row.find('.stock-cell');
 
     if (!warehouseId) {
-        alert('กรุณาเลือกคลังสินค้าก่อน');
-        $(this).val('');
+        Swal.fire('แจ้งเตือน', 'กรุณาเลือกคลังสินค้าก่อน', 'warning');
+        $(this).val(null).trigger('change');
         return;
     }
 
@@ -198,5 +214,14 @@ $(document).on('change', '.product-select', function () {
         stockCell.text('0');
     }
 });
+function initSelect2Table(el) {
+    el.select2({
+        theme: 'bootstrap-5',
+        width: '100%',
+        placeholder: 'กรุณาเลือกสินค้า',
+        allowClear: true,
+        dropdownParent: el.closest('td') // ⭐ กัน dropdown ลอย
+    });
+}
 </script>
 @endpush

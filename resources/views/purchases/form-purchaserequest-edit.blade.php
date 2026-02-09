@@ -1,5 +1,18 @@
 @extends('layouts.main')
 @section('content')
+<link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+.select2-container {
+    width: 100% !important;
+}
+.select2-selection--single {
+    height: 38px !important;
+}
+.select2-selection__rendered {
+    line-height: 36px !important;
+}
+</style>
 <div class="row">
     @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -47,7 +60,7 @@
             <div class="col-6">
                 <div class="form-group">
                     <label for="ms_allocate_id" class="col-form-label">จัดสรร</label>
-                    <select class="form-control" name="ms_allocate_id">
+                    <select class="form-control select2" name="ms_allocate_id">
                         <option value="0">กรุณาเลือก</option>
                         @foreach ($allocates as $item)
                             <option value="{{$item->ms_allocate_id}}"
@@ -95,7 +108,7 @@
                                 <input type="hidden" name="ap_purchaserequest_dts_id[]" value="{{$item->ap_purchaserequest_dts_id}}">
                             </td>
                             <td>
-                                <select class="form-control" name="wh_product_lists_id[]">
+                                <select class="form-control select2-product" name="wh_product_lists_id[]">
                                     <option value="0">กรุณาเลือก</option>
                                     @foreach ($products as $product)
                                             <option value="{{$product->wh_product_lists_id}}"
@@ -136,6 +149,7 @@
 </div>
 @endsection
 @push('scriptjs')
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
     function updateRowNumbers() {
     const rows = document.querySelectorAll('#tableBody tr');
@@ -154,7 +168,7 @@ document.getElementById('addRowBtn').addEventListener('click', function () {
                 <input type="hidden" name="ap_purchaserequest_dts_listno[]" class="row-number-hidden"/>
             </td>
             <td>
-                <select class="form-control" name="wh_product_lists_id[]">
+                <select class="form-control select2-product" name="wh_product_lists_id[]">
                     <option value="0">กรุณาเลือก</option>
                     @foreach ($products as $item)
                             <option value="{{$item->wh_product_lists_id}}">{{$item->wh_product_lists_name1}}</option>
@@ -170,8 +184,9 @@ document.getElementById('addRowBtn').addEventListener('click', function () {
             <td><button type="button" class="btn btn-danger btn-sm deleteRow">ลบ</button></td>
         `;
 
-        tbody.appendChild(newRow);
+        tbody.appendChild(newRow);        
         updateRowNumbers(); 
+        initSelect2Table($(newRow).find('.select2-product'));
 });
 document.getElementById('tableBody').addEventListener('click', function (e) {
     if (e.target.classList.contains('deleteRow')) {
@@ -237,5 +252,32 @@ Swal.fire({
     }
 });
 }
+function initSelect2Normal(el) {
+    el.select2({
+        theme: 'bootstrap-5',
+        width: '100%',
+        placeholder: 'กรุณาเลือก',
+        allowClear: true
+    });
+}
+
+function initSelect2Table(el) {
+    el.select2({
+        theme: 'bootstrap-5',
+        width: '100%',
+        placeholder: 'กรุณาเลือก',
+        allowClear: true,
+        dropdownParent: el.closest('td') // ✅ ใช้เฉพาะใน table
+    });
+}
+$(document).ready(function () {
+    $('.select2').each(function () {
+        initSelect2Normal($(this));   // ✅ จัดสรร
+    });
+
+    $('.select2-product').each(function () {
+        initSelect2Table($(this));    // ✅ สินค้า
+    });
+});
 </script>
 @endpush
