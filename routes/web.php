@@ -74,6 +74,8 @@ Route::resource('/calibrationgroups' , App\Http\Controllers\CalibrationGroupCont
 Route::resource('/calibrationtypes' , App\Http\Controllers\CalibrationTypeController::class);
 Route::resource('/calibrationlists' , App\Http\Controllers\CalibrationListController::class);
 Route::get('/calibration/get-last-running', [App\Http\Controllers\CalibrationListController::class, 'getLastRunning'])->name('calibration.getLastRunning');
+Route::resource('/calibrationplans' , App\Http\Controllers\CalibrationPlanController::class);
+Route::get('/calibration/calendar', [App\Http\Controllers\CalibrationPlanController::class, 'getCalibrationCalendar'])->name('calibration.calendar');
 //เครื่องวัดมือ
 
 // สินค้า

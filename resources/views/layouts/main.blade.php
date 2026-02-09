@@ -24,6 +24,7 @@
             font-family: 'Kanit';
             }
         </style>
+        @stack('styles')
     </head>
     <body data-sidebar="dark" data-layout-mode="light">
         <div id="layout-wrapper">

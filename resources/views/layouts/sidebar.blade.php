@@ -97,7 +97,7 @@
                         <li>
                             <a href="javascript: void(0);" class="has-arrow" key="t-vertical">แผน</a>
                             <ul class="sub-menu" aria-expanded="true">
-                                <li><a href="#" key="t-default">แผนสอบเทียบ</a></li> 
+                                <li><a href="{{route('calibrationplans.index')}}" key="t-default">แผนสอบเทียบ</a></li> 
                                 <li><a href="#" key="t-default">แผนซ่อมบำรุง</a></li> 
                             </ul>
                         </li>
@@ -177,7 +177,7 @@
                         <li>
                             <a href="#">
                                 <i class="bx bx-calendar"></i>
-                                <span key="t-users">แผนรวม</span>
+                                <span key="t-users">สต็อคคงเหลือ</span>
                             </a>
                             </li> 
                     </ul>                    
