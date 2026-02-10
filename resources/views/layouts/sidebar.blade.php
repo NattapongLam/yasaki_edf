@@ -101,6 +101,13 @@
                                 <li><a href="#" key="t-default">แผนซ่อมบำรุง</a></li> 
                             </ul>
                         </li>
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow" key="t-vertical">ตรวจเช็คประจำวัน</a>
+                            <ul class="sub-menu" aria-expanded="true">
+                                <li><a href="{{route('calibrationplans.index')}}" key="t-default">ครื่องมือวัด</a></li> 
+                                <li><a href="#" key="t-default">เครื่องจักร</a></li> 
+                            </ul>
+                        </li>
                     </ul>                                         
                 </li>
                 <li>
@@ -175,7 +182,7 @@
                     </a>
                     <ul class="sub-menu" aria-expanded="true">
                         <li>
-                            <a href="#">
+                            <a href="{{ url('/report-stock') }}">
                                 <i class="bx bx-calendar"></i>
                                 <span key="t-users">สต็อคคงเหลือ</span>
                             </a>

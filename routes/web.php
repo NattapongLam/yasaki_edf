@@ -102,6 +102,7 @@ Route::get('/adjuststock/runno', [App\Http\Controllers\WhAdjustStockListControll
 Route::get('adjuststock/get-stock', [App\Http\Controllers\WhAdjustStockListController::class, 'getStock'])->name('adjuststock.getstock');
 Route::post('/CancelAdjustStockDoc' , [App\Http\Controllers\WhAdjustStockListController::class , 'CancelAdjustStockDoc']);
 Route::post('/CancelAdjustStockList' , [App\Http\Controllers\WhAdjustStockListController::class , 'CancelAdjustStockList']);
+Route::get('/report-stock' , [App\Http\Controllers\ReportStockController::class , 'ReportStock']);
 // คลังสินค้า
 
 // ขาย

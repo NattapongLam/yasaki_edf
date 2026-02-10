@@ -33,62 +33,62 @@
                 </tr>
                 <tr>
                     <th>ค่าความเที่ยงตรง</th>
-                    <td> {{number_format($data->calibration_lists_precision,4)}}</td>
+                    <td> {{number_format($data->calibration_lists_precision,6)}}</td>
                     <th>ความไม่แน่นอน</th>
-                    <td> {{number_format($data->calibration_lists_uncertainty,4)}}</td>
+                    <td> {{number_format($data->calibration_lists_uncertainty,6)}}</td>
                 </tr>
                 <tr>
                     <th>ความละเอียด</th>
-                    <td> {{number_format($data->calibration_lists_resolution,4)}}</td>
+                    <td> {{number_format($data->calibration_lists_resolution,6)}}</td>
                     <th>เครื่องหมายหรือรูปร่าง</th>
                     <td> {{$data->calibration_lists_markingorshape}}</td>
                 </tr>
                 <tr>
                     <th>ย่านการใช้งาน</th>
                     <td>
-                        {{number_format($data->calibration_lists_areaofuse,4)}}                        
+                        {{number_format($data->calibration_lists_areaofuse,6)}}                        
                     </td>
                     <td>
-                        ค่า + {{number_format($data->calibration_lists_areaofuse_add,4)}}
+                        ค่า + {{number_format($data->calibration_lists_areaofuse_add,6)}}
                     </td>
                     <td>
-                        ค่า - {{number_format($data->calibration_lists_areaofuse_del,4)}}
+                        ค่า - {{number_format($data->calibration_lists_areaofuse_del,6)}}
                     </td>
                 </tr>
                 <tr>
                     <th>ย่านการวัด</th>
                     <td>
-                        {{number_format($data->calibration_lists_measuringrange,4)}} 
+                        {{number_format($data->calibration_lists_measuringrange,6)}} 
                     </td>
                     <td>
-                        ค่า + {{number_format($data->calibration_lists_measuringrange_add,4)}}
+                        ค่า + {{number_format($data->calibration_lists_measuringrange_add,6)}}
                     </td>
                     <td>
-                        ค่า - {{number_format($data->calibration_lists_measuringrange_del,4)}}
+                        ค่า - {{number_format($data->calibration_lists_measuringrange_del,6)}}
                     </td>
                 </tr>
                 <tr>
                     <th>อุณหภูมิ</th>
                     <td>
-                        {{number_format($data->calibration_lists_temperature,4)}} 
+                        {{number_format($data->calibration_lists_temperature,6)}} 
                     </td>
                     <td>
-                        ค่า + {{number_format($data->calibration_lists_temperature_add,4)}}
+                        ค่า + {{number_format($data->calibration_lists_temperature_add,6)}}
                     </td>
                     <td>
-                        ค่า - {{number_format($data->calibration_lists_temperature_del,4)}}
+                        ค่า - {{number_format($data->calibration_lists_temperature_del,6)}}
                     </td>
                 </tr>
                 <tr>
                     <th>ความชื้น</th>
                     <td>
-                        {{number_format($data->calibration_lists_humidity,4)}}         
+                        {{number_format($data->calibration_lists_humidity,6)}}         
                     </td>
                     <td>
-                        ค่า + {{number_format($data->calibration_lists_humidity_add,4)}}
+                        ค่า + {{number_format($data->calibration_lists_humidity_add,6)}}
                     </td>
                     <td>
-                        ค่า - {{number_format($data->calibration_lists_humidity_del,4)}}
+                        ค่า - {{number_format($data->calibration_lists_humidity_del,6)}}
                     </td>
                 </tr>              
             </table>
