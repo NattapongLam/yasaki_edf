@@ -188,8 +188,14 @@
                     </div>
                     <div class="col-3">
                         <div class="form-group">
-                            <label for="calibration_lists_measuringrange" class="col-form-label">ย่านการวัด</label>
-                            <input type="text" class="form-control" name="calibration_lists_measuringrange" id="calibration_lists_measuringrange" value="{{old('calibration_lists_measuringrange',0)}}">
+                            <label for="calibration_lists_areaofuse_add" class="col-form-label">ย่านการใช้งาน (ค่า +)</label>
+                            <input type="text" class="form-control" name="calibration_lists_areaofuse_add" id="calibration_lists_areaofuse_add" value="{{old('calibration_lists_areaofuse_add',0)}}">
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="form-group">
+                            <label for="calibration_lists_areaofuse_del" class="col-form-label">ย่านการใช้งาน (ค่า -)</label>
+                            <input type="text" class="form-control" name="calibration_lists_areaofuse_del" id="calibration_lists_areaofuse_del" value="{{old('calibration_lists_areaofuse_del',0)}}">
                         </div>
                     </div>
                     <div class="col-3">
@@ -197,11 +203,83 @@
                             <label for="calibration_lists_precision" class="col-form-label">ค่าความเที่ยงตรง</label>
                             <input type="text" class="form-control" name="calibration_lists_precision" id="calibration_lists_precision" value="{{old('calibration_lists_precision',0)}}">
                         </div>
+                    </div>                    
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <div class="form-group">
+                            <label for="calibration_lists_measuringrange" class="col-form-label">ย่านการวัด</label>
+                            <input type="text" class="form-control" name="calibration_lists_measuringrange" id="calibration_lists_measuringrange" value="{{old('calibration_lists_measuringrange',0)}}">
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="form-group">
+                            <label for="calibration_lists_measuringrange_add" class="col-form-label">ย่านการวัด (ค่า +)</label>
+                            <input type="text" class="form-control" name="calibration_lists_measuringrange_add" id="calibration_lists_measuringrange_add" value="{{old('calibration_lists_measuringrange_add',0)}}">
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="form-group">
+                            <label for="calibration_lists_measuringrange_del" class="col-form-label">ย่านการวัด (ค่า -)</label>
+                            <input type="text" class="form-control" name="calibration_lists_measuringrange_del" id="calibration_lists_measuringrange_del" value="{{old('calibration_lists_measuringrange_del',0)}}">
+                        </div>
                     </div>
                     <div class="col-3">
                         <div class="form-group">
                             <label for="calibration_lists_resolution" class="col-form-label">ความละเอียด</label>
                             <input type="text" class="form-control" name="calibration_lists_resolution" id="calibration_lists_resolution" value="{{old('calibration_lists_resolution',0)}}">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <div class="form-group">
+                            <label for="calibration_lists_temperature" class="col-form-label">อุณหภูมิ</label>
+                            <input type="text" class="form-control" name="calibration_lists_temperature" id="calibration_lists_temperature" value="{{old('calibration_lists_temperature',0)}}">
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="form-group">
+                            <label for="calibration_lists_temperature_add" class="col-form-label">อุณหภูมิ (ค่า +)</label>
+                            <input type="text" class="form-control" name="calibration_lists_temperature_add" id="calibration_lists_temperature_add" value="{{old('calibration_lists_temperature_add',0)}}">
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="form-group">
+                            <label for="calibration_lists_temperature_del" class="col-form-label">อุณหภูมิ (ค่า -)</label>
+                            <input type="text" class="form-control" name="calibration_lists_temperature_del" id="calibration_lists_temperature_del" value="{{old('calibration_lists_temperature_del',0)}}">
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="form-group">
+                            <label for="calibration_lists_uncertainty" class="col-form-label">ความไม่แน่นอน</label>
+                            <input type="text" class="form-control" name="calibration_lists_uncertainty" id="calibration_lists_uncertainty" value="{{old('calibration_lists_uncertainty',0)}}">
+                        </div>
+                    </div>
+                </div> 
+                <div class="row">
+                    <div class="col-3">
+                        <div class="form-group">
+                            <label for="calibration_lists_humidity" class="col-form-label">ความชื้น</label>
+                            <input type="text" class="form-control" name="calibration_lists_humidity" id="calibration_lists_humidity" value="{{old('calibration_lists_humidity',0)}}">
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="form-group">
+                            <label for="calibration_lists_humidity_add" class="col-form-label">ความชื้น (ค่า +)</label>
+                            <input type="text" class="form-control" name="calibration_lists_humidity_add" id="calibration_lists_humidity_add" value="{{old('calibration_lists_humidity_add',0)}}">
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="form-group">
+                            <label for="calibration_lists_humidity_del" class="col-form-label">ความชื้น (ค่า -)</label>
+                            <input type="text" class="form-control" name="calibration_lists_humidity_del" id="calibration_lists_humidity_del" value="{{old('calibration_lists_humidity_del',0)}}">
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="form-group">
+                            <label for="calibration_lists_markingorshape" class="col-form-label">เครื่องหมายหรือรูปร่าง</label>
+                            <input type="text" class="form-control" name="calibration_lists_markingorshape" id="calibration_lists_markingorshape">
                         </div>
                     </div>
                 </div> 
