@@ -31,6 +31,7 @@
                     <th>ประเภท</th>
                     <th>วันที่ทวนสอบครั้งต่อไป</th>
                     <th></th>
+                    <th>ตรวจประจำวัน</th>
                 </tr>
             </thead>
             <tbody>
@@ -50,6 +51,11 @@
                                 <i class="fas fa-edit"></i>
                             </a>
                         </td>
+                        <td>
+                            <a href="{{route('calibrationlists.show',$item->calibration_lists_id)}}" class="btn btn-sm btn-info" >
+                                <i class="fas fa-plus"></i>
+                            </a>
+                        </td>
                     </tr>
                 @endforeach
             </tbody>
@@ -62,7 +68,7 @@
 <script>
 $(document).ready(function() {
     $('#tb_job').DataTable({
-        "pageLength": 10,
+        "pageLength": 50,
         "lengthMenu": [
             [10, 25, 50, -1],
             [10, 25, 50, "All"]

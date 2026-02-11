@@ -135,7 +135,8 @@ class CalibrationListController extends Controller
      */
     public function show($id)
     {
-        //
+        $hd = CalibrationList::find($id);
+        return view('calibrationsetup.form-calibrationchecksheet-create', compact('hd'));
     }
 
     /**
