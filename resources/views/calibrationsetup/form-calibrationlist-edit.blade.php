@@ -28,7 +28,7 @@
                     <div class="col-3">
                         <div class="form-group">
                             <label for="calibration_categories_id" class="col-form-label">หมวดเครื่องมือวัด</label>
-                            <select class="form-select" name="calibration_categories_id" id="calibration_categories_id">
+                            <select class="form-select" name="calibration_categories_id" id="calibration_categories_id" required>
                                 <option value="">กรุณาเลือก</option>
                                 @foreach ($categorys as $item)
                                     <option value="{{$item->calibration_categories_id}}"
@@ -42,7 +42,7 @@
                     <div class="col-3">
                         <div class="form-group">
                             <label for="calibration_groups_id" class="col-form-label">กลุ่มเครื่องมือวัด</label>
-                            <select class="form-select" name="calibration_groups_id" id="calibration_groups_id">
+                            <select class="form-select" name="calibration_groups_id" id="calibration_groups_id" required>
                                 <option value="">กรุณาเลือก</option>
                                 @foreach ($groups as $item)
                                     <option value="{{$item->calibration_groups_id}}"
@@ -56,11 +56,11 @@
                     <div class="col-3">
                         <div class="form-group">
                             <label for="calibration_types_id" class="col-form-label">ประเภทเครื่องมือวัด</label>
-                            <select class="form-select" name="calibration_types_id" id="calibration_types_id">
+                            <select class="form-select" name="calibration_types_id" id="calibration_types_id" required>
                                 <option value="">กรุณาเลือก</option>
                                 @foreach ($types as $item)
                                     <option value="{{$item->calibration_types_id}}"
-                                        {{ $item->calibration_groups_id == $hd->calibration_groups_id ? 'selected' : '' }}>
+                                        {{ $item->calibration_types_id == $hd->calibration_types_id ? 'selected' : '' }}>
                                         {{$item->calibration_types_name}}
                                     </option>
                                 @endforeach
@@ -189,19 +189,19 @@
                 <div class="row">
                     <div class="col-3">
                         <div class="form-group">
-                            <label for="calibration_lists_areaofuse" class="col-form-label">ย่านการใช้งาน</label>
+                            <label for="calibration_lists_areaofuse" class="col-form-label">ค่ามาตรฐาน</label>
                             <input type="text" class="form-control" name="calibration_lists_areaofuse" id="calibration_lists_areaofuse" value="{{number_format($hd->calibration_lists_areaofuse,6)}}">
                         </div>
                     </div>
                     <div class="col-3">
                         <div class="form-group">
-                            <label for="calibration_lists_areaofuse_add" class="col-form-label">ย่านการใช้งาน (ค่า +)</label>
+                            <label for="calibration_lists_areaofuse_add" class="col-form-label">ค่ามาตรฐาน (ค่า +)</label>
                             <input type="text" class="form-control" name="calibration_lists_areaofuse_add" id="calibration_lists_areaofuse_add" value="{{number_format($hd->calibration_lists_areaofuse_add,6)}}">
                         </div>
                     </div>
                     <div class="col-3">
                         <div class="form-group">
-                            <label for="calibration_lists_areaofuse_del" class="col-form-label">ย่านการใช้งาน (ค่า -)</label>
+                            <label for="calibration_lists_areaofuse_del" class="col-form-label">ค่ามาตรฐาน (ค่า -)</label>
                             <input type="text" class="form-control" name="calibration_lists_areaofuse_del" id="calibration_lists_areaofuse_del" value="{{number_format($hd->calibration_lists_areaofuse_del,6)}}">
                         </div>
                     </div>
@@ -216,19 +216,19 @@
                 <div class="row">
                     <div class="col-3">
                         <div class="form-group">
-                            <label for="calibration_lists_measuringrange" class="col-form-label">ย่านการวัด</label>
+                            <label for="calibration_lists_measuringrange" class="col-form-label">ย่านการใช้งาน</label>
                             <input type="text" class="form-control" name="calibration_lists_measuringrange" id="calibration_lists_measuringrange" value="{{number_format($hd->calibration_lists_measuringrange,6)}}">
                         </div>
                     </div>
                     <div class="col-3">
                         <div class="form-group">
-                            <label for="calibration_lists_measuringrange_add" class="col-form-label">ย่านการวัด (ค่า +)</label>
+                            <label for="calibration_lists_measuringrange_add" class="col-form-label">ย่านการใช้งาน (ค่า +)</label>
                             <input type="text" class="form-control" name="calibration_lists_measuringrange_add" id="calibration_lists_measuringrange_add" value="{{number_format($hd->calibration_lists_measuringrange_add,6)}}">
                         </div>
                     </div>
                     <div class="col-3">
                         <div class="form-group">
-                            <label for="calibration_lists_measuringrange_del" class="col-form-label">ย่านการวัด (ค่า -)</label>
+                            <label for="calibration_lists_measuringrange_del" class="col-form-label">ย่านการใช้งาน (ค่า -)</label>
                             <input type="text" class="form-control" name="calibration_lists_measuringrange_del" id="calibration_lists_measuringrange_del" value="{{number_format($hd->calibration_lists_measuringrange_del,6)}}">
                         </div>
                     </div>

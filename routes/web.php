@@ -79,6 +79,11 @@ Route::get('/calibration/calendar', [App\Http\Controllers\CalibrationPlanControl
 Route::resource('/calibrationchecksheets' , App\Http\Controllers\CalibrationChecksheetController::class);
 //เครื่องวัดมือ
 
+//เครื่องจักร
+Route::resource('/machinerygroups' , App\Http\Controllers\MachineryGroupController::class);
+Route::resource('/machinerylists' , App\Http\Controllers\MachineryListController::class);
+//เครื่องจักร
+
 // สินค้า
 Route::resource('/productgroups' , App\Http\Controllers\WhProductGroupController::class);
 Route::resource('/productlists' , App\Http\Controllers\WhProductListController::class);

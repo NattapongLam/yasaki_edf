@@ -172,6 +172,9 @@ class CalibrationListController extends Controller
             'calibration_lists_resolution' => ['required'],
         ]);
         $data = [
+            'calibration_categories_id' => $request->calibration_categories_id,
+            'calibration_groups_id' => $request->calibration_groups_id,
+            'calibration_types_id' => $request->calibration_types_id,
             'calibration_lists_name1' => $request->calibration_lists_name1,
             'calibration_lists_name2' => $request->calibration_lists_name2,
             'calibration_lists_serialno' => $request->calibration_lists_serialno,

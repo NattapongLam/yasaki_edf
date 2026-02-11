@@ -90,8 +90,8 @@
                                 <li><a href="{{route('calibrationgroups.create')}}" key="t-default">กลุ่มเครื่องมือวัด</a></li> 
                                 <li><a href="{{route('calibrationtypes.create')}}" key="t-default">ประเภทครื่องมือวัด</a></li>
                                 <li><a href="{{route('calibrationlists.index')}}" key="t-default">ทะเบียนครื่องมือวัด</a></li>
-                                <li><a href="#" key="t-default">กลุ่มเครื่องจักร</a></li>
-                                <li><a href="#" key="t-default">กลุ่มเครื่องจักร</a></li>
+                                <li><a href="{{route('machinerygroups.create')}}" key="t-default">กลุ่มเครื่องจักร</a></li>
+                                <li><a href="{{route('machinerylists.index')}}" key="t-default">ทะเบียนเครื่องจักร</a></li>
                             </ul>                           
                         </li>
                         <li>
@@ -104,7 +104,7 @@
                         <li>
                             <a href="javascript: void(0);" class="has-arrow" key="t-vertical">ตรวจเช็คประจำวัน</a>
                             <ul class="sub-menu" aria-expanded="true">
-                                <li><a href="{{route('calibrationplans.index')}}" key="t-default">ครื่องมือวัด</a></li> 
+                                <li><a href="{{route('calibrationchecksheets.index')}}" key="t-default">เครื่องมือวัด</a></li> 
                                 <li><a href="#" key="t-default">เครื่องจักร</a></li> 
                             </ul>
                         </li>

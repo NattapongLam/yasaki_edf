@@ -44,7 +44,7 @@
                     <td> {{$data->calibration_lists_markingorshape}}</td>
                 </tr>
                 <tr>
-                    <th>ย่านการใช้งาน</th>
+                    <th>ค่ามาตรฐาน</th>
                     <td>
                         {{number_format($data->calibration_lists_areaofuse,6)}}                        
                     </td>
@@ -56,7 +56,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <th>ย่านการวัด</th>
+                    <th>ย่านการใช้งาน</th>
                     <td>
                         {{number_format($data->calibration_lists_measuringrange,6)}} 
                     </td>
@@ -117,19 +117,19 @@
                 <div class="row">
                     <div class="col-3">
                         <div class="form-group">
-                            <label for="calibration_plan_subs_areaofuse" class="col-form-label">ย่านการใช้งาน</label>
+                            <label for="calibration_plan_subs_areaofuse" class="col-form-label">ค่ามาตรฐาน</label>
                             <input type="text" class="form-control" name="calibration_plan_subs_areaofuse" id="calibration_plan_subs_areaofuse" value="{{old('calibration_plan_subs_areaofuse',0)}}" required>
                         </div>
                     </div>
                     <div class="col-3">
                         <div class="form-group">
-                            <label for="calibration_plan_subs_areaofuse_add" class="col-form-label">ย่านการใช้งาน (ค่า +)</label>
+                            <label for="calibration_plan_subs_areaofuse_add" class="col-form-label">ค่ามาตรฐาน (ค่า +)</label>
                             <input type="text" class="form-control" name="calibration_plan_subs_areaofuse_add" id="calibration_plan_subs_areaofuse_add" value="{{old('calibration_plan_subs_areaofuse_add',0)}}" required>
                         </div>
                     </div>
                     <div class="col-3">
                         <div class="form-group">
-                            <label for="calibration_plan_subs_areaofuse_del" class="col-form-label">ย่านการใช้งาน (ค่า -)</label>
+                            <label for="calibration_plan_subs_areaofuse_del" class="col-form-label">ค่ามาตรฐาน (ค่า -)</label>
                             <input type="text" class="form-control" name="calibration_plan_subs_areaofuse_del" id="calibration_plan_subs_areaofuse_del" value="{{old('calibration_plan_subs_areaofuse_del',0)}}" required>
                         </div>
                     </div>
@@ -143,19 +143,19 @@
                 <div class="row">
                     <div class="col-3">
                         <div class="form-group">
-                            <label for="calibration_plan_subs_measuringrange" class="col-form-label">ย่านการวัด</label>
+                            <label for="calibration_plan_subs_measuringrange" class="col-form-label">ย่านการใช้งาน</label>
                             <input type="text" class="form-control" name="calibration_plan_subs_measuringrange" id="calibration_plan_subs_measuringrange" value="{{old('calibration_plan_subs_measuringrange',0)}}" required>
                         </div>
                     </div>
                     <div class="col-3">
                         <div class="form-group">
-                            <label for="calibration_plan_subs_measuringrange_add" class="col-form-label">ย่านการวัด (ค่า +)</label>
+                            <label for="calibration_plan_subs_measuringrange_add" class="col-form-label">ย่านการใช้งาน (ค่า +)</label>
                             <input type="text" class="form-control" name="calibration_plan_subs_measuringrange_add" id="calibration_plan_subs_measuringrange_add" value="{{old('calibration_plan_subs_measuringrange_add',0)}}" required>
                         </div>
                     </div>
                     <div class="col-3">
                         <div class="form-group">
-                            <label for="calibration_plan_subs_measuringrange_del" class="col-form-label">ย่านการวัด (ค่า -)</label>
+                            <label for="calibration_plan_subs_measuringrange_del" class="col-form-label">ย่านการใช้งาน (ค่า -)</label>
                             <input type="text" class="form-control" name="calibration_plan_subs_measuringrange_del" id="calibration_plan_subs_measuringrange_del" value="{{old('calibration_plan_subs_measuringrange_del',0)}}" required>
                         </div>
                     </div>
