@@ -29,6 +29,18 @@
                 </tr>
             </thead>
             <tbody>
+                @foreach ($hd as $item)
+                    <tr>
+                        <td>{{\Carbon\Carbon::parse($item->machinery_checksheet_hds_date)->format('m/Y')}}</td>
+                        <td>{{$item->machinery_lists_code}}/{{$item->machinery_lists_name}}</td>
+                        <td>{{$item->machinery_checksheet_hds_remark}}</td>
+                        <td>
+                            <a href="{{route('machinerychecksheets.edit',$item->machinery_checksheet_hds_id)}}" class="btn btn-sm btn-warning" >
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        </td>
+                    </tr>
+                @endforeach
             </tbody>
         </table>
     </div>

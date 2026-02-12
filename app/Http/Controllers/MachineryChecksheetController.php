@@ -102,7 +102,9 @@ class MachineryChecksheetController extends Controller
      */
     public function edit($id)
     {
-        //
+        $hd = MachineryChecksheetHd::find($id);
+        $dt = MachineryChecksheetDt::where('machinery_checksheet_dts_flag',true)->where('machinery_checksheet_hds_id',$id)->get();
+        return view('machinerysetup.form-machinerychecksheet-update', compact('hd','dt'));
     }
 
     /**
@@ -114,7 +116,27 @@ class MachineryChecksheetController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        try
+        {
+            DB::beginTransaction();
+            $detailIds = $request->machinery_checksheet_dts_id ?? [];
+            $actions   = $request->action ?? [];
+            foreach ($detailIds as $index => $detailId) {
+                $updateData = [];
+                for ($i = 1; $i <= 31; $i++) {
+                    $field = 'action_' . str_pad($i, 2, '0', STR_PAD_LEFT);
+                    $updateData[$field] =
+                        isset($actions[$index][$field]) ? 1 : 0;
+                }
+                MachineryChecksheetDt::where('machinery_checksheet_dts_id', $detailId)->update($updateData);
+            }
+            DB::commit();
+            return redirect()->route('machinerychecksheets.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+        }catch(\Exception $e){
+            Log::error($e->getMessage());
+            dd($e->getMessage());
+            return redirect()->back()->with('error', 'เกิดข้อผิดพลาด');
+        }  
     }
 
     /**
