@@ -98,7 +98,7 @@
                             <a href="javascript: void(0);" class="has-arrow" key="t-vertical">แผน</a>
                             <ul class="sub-menu" aria-expanded="true">
                                 <li><a href="{{route('calibrationplans.index')}}" key="t-default">แผนสอบเทียบ</a></li> 
-                                <li><a href="#" key="t-default">แผนซ่อมบำรุง</a></li> 
+                                <li><a href="{{route('machineryplans.index')}}" key="t-default">แผนซ่อมบำรุง</a></li> 
                             </ul>
                         </li>
                         <li>

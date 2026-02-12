@@ -84,6 +84,8 @@ Route::resource('/machinerygroups' , App\Http\Controllers\MachineryGroupControll
 Route::resource('/machinerylists' , App\Http\Controllers\MachineryListController::class);
 Route::post('/CancelMachinery' , [App\Http\Controllers\MachineryListController::class , 'CancelMachinery']);
 Route::resource('/machinerychecksheets' , App\Http\Controllers\MachineryChecksheetController::class);
+Route::resource('/machineryplans' , App\Http\Controllers\MachineryPlanController::class);
+Route::get('/machinery/calendar', [App\Http\Controllers\MachineryPlanController::class, 'getMachineryCalendar'])->name('machinery.calendar');
 //เครื่องจักร
 
 // สินค้า
