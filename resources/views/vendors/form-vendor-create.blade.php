@@ -118,7 +118,7 @@
         <div class="row">          
             <div class="col-6">
                 <div class="form-group">
-                    <label for="ap_vendor_lists_bankname" class="col-form-label">ธนาคร</label>
+                    <label for="ap_vendor_lists_bankname" class="col-form-label">ธนาคาร</label>
                     <input type="text" class="form-control" name="ap_vendor_lists_bankname" id="ap_vendor_lists_bankname">
                 </div>         
             </div>

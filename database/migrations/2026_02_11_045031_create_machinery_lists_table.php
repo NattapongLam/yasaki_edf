@@ -31,6 +31,9 @@ return new class extends Migration
             $table->string('machinery_lists_file3')->nullable();
             $table->string('machinery_lists_file4')->nullable();
             $table->boolean('machinery_lists_flag')->default(true);
+            $table->date('machinery_lists_plandate')->nullable();
+            $table->date('machinery_lists_nextdate')->nullable();
+            $table->integer('machinery_lists_day')->nullable();
             $table->string('person_at');
             $table->timestamps();
         });

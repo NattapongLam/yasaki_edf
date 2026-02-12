@@ -82,6 +82,8 @@ Route::resource('/calibrationchecksheets' , App\Http\Controllers\CalibrationChec
 //เครื่องจักร
 Route::resource('/machinerygroups' , App\Http\Controllers\MachineryGroupController::class);
 Route::resource('/machinerylists' , App\Http\Controllers\MachineryListController::class);
+Route::post('/CancelMachinery' , [App\Http\Controllers\MachineryListController::class , 'CancelMachinery']);
+Route::resource('/machinerychecksheets' , App\Http\Controllers\MachineryChecksheetController::class);
 //เครื่องจักร
 
 // สินค้า

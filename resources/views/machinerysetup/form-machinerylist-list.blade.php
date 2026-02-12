@@ -27,12 +27,39 @@
                     <th>รหัส</th>
                     <th>ชื่อ</th>
                     <th>กลุ่ม</th>
-                    <th>หมายเหตุ</th>
                     <th>แก้ไข</th>
                     <th>ยกเลิก</th>
+                    <th>ตรวจประจำวัน</th>
                 </tr>
             </thead>
             <tbody>
+                @foreach ($hd as $item)
+                    <tr>
+                        <td>
+                            @if ($item->machinery_lists_flag)
+                                <span class="bg-success">ใช้งาน</span>
+                            @else
+                                <span class="bg-danger">ยกเลิก</span>
+                            @endif
+                        </td>
+                        <td>{{$item->machinery_lists_code}}</td>
+                        <td>{{$item->machinery_lists_name1}}</td>
+                        <td>{{$item->Groups->machinery_groups_name}}</td>
+                        <td>
+                            <a href="{{route('machinerylists.edit',$item->machinery_lists_id)}}" class="btn btn-sm btn-warning" >
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="javascript:void(0)" class="btn btn-danger btn-sm" onclick="confirmDel('{{ $item->machinery_lists_id }}')"><i class="fas fa-trash"></i></a>
+                        </td>
+                        <td>
+                            <a href="{{route('machinerylists.show',$item->machinery_lists_id)}}" class="btn btn-sm btn-info" >
+                                <i class="fas fa-plus"></i>
+                            </a>
+                        </td>
+                    </tr>
+                @endforeach
             </tbody>
         </table>
     </div>
@@ -68,7 +95,7 @@ Swal.fire({
 }).then(function(result) {
     if (result.value) {
         $.ajax({
-            url: `{{ url('/CancelQuotationsDoc') }}`,
+            url: `{{ url('/CancelMachinery') }}`,
             type: "POST",
             data: {
                 "_token": "{{ csrf_token() }}",
