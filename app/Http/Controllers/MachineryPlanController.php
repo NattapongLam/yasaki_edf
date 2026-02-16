@@ -64,7 +64,6 @@ class MachineryPlanController extends Controller
     {
         $request->validate([
             'machinery_plans_id' => ['required'],
-            'calibration_lists_id' => ['required'],
             'machinery_lists_id' => ['required'],
             'machinery_plan_subs_listno' => ['required'],
         ]);  
@@ -74,7 +73,7 @@ class MachineryPlanController extends Controller
                 MachineryPlanSub::insert([
                     'machinery_plans_id' => $request->machinery_plans_id,
                     'machinery_lists_id' => $request->machinery_lists_id,
-                    'machinery_plan_subs_date' => $request->machinery_plan_subs_date,
+                    'machinery_plan_subs_date' => Carbon::now(),
                     'machinery_plan_subs_listno' => $value,
                     'machinery_plan_subs_remark' => $request->machinery_plan_subs_remark[$key],
                     'machinery_plan_subs_flag' => true,
