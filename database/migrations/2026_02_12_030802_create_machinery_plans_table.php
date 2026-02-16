@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('person_at');
             $table->string('machinery_plans_file1')->nullable();
             $table->string('machinery_plans_file2')->nullable();
+            $table->string('machinery_plans_status')->nullable();
             $table->timestamps();
         });
     }

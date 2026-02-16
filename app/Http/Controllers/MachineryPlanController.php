@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Carbon\Carbon;
-use Illuminate\Http\Request;
 use App\Models\MachineryList;
 use App\Models\MachineryPlan;
+use App\Models\MachineryPlanSub;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
 
 class MachineryPlanController extends Controller
 {
@@ -80,21 +81,21 @@ class MachineryPlanController extends Controller
                     'person_at' => Auth::user()->name,
                     'created_at'=> Carbon::now(),
                     'updated_at'=> Carbon::now(),
+                    'machinery_plan_subs_action' => false
                 ]);                
             }
             MachineryPlan::where('machinery_plans_id',$request->machinery_plans_id)->update([
-                'machinery_plans_resultdate' => $request->machinery_plan_subs_date,
-                'machinery_plans_action' => true,
+                'machinery_plans_status' => "N",
                 'updated_at' => Carbon::now(),
             ]);
-            $mc = MachineryList::find($request->machinery_lists_id);
-            $machineryDate = Carbon::parse($request->machinery_plan_subs_date);
-            $nextDate = $machineryDate->copy()->addDays($mc->machinery_lists_day);
-                MachineryList::where('machinery_lists_id', $request->machinery_lists_id)->update([
-                    'machinery_lists_plandate' => $machineryDate->toDateString(),
-                    'machinery_lists_nextdate' => $nextDate->toDateString(),
-                    'updated_at' => Carbon::now(),
-                ]);
+            // $mc = MachineryList::find($request->machinery_lists_id);
+            // $machineryDate = Carbon::parse($request->machinery_plan_subs_date);
+            // $nextDate = $machineryDate->copy()->addDays($mc->machinery_lists_day);
+            // MachineryList::where('machinery_lists_id', $request->machinery_lists_id)->update([
+            //     'machinery_lists_plandate' => $machineryDate->toDateString(),
+            //     'machinery_lists_nextdate' => $nextDate->toDateString(),
+            //     'updated_at' => Carbon::now(),
+            // ]);
             DB::commit();
             return redirect()->route('machineryplans.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
         }catch(\Exception $e){
@@ -115,12 +116,15 @@ class MachineryPlanController extends Controller
         $data = DB::table('machinery_plans')
         ->where('machinery_plans_id', $id)
         ->first();
-
         if (!$data) {
             abort(404);
         }
-
-        return view('machinerysetup.form-machineryplan-show', compact('data'));
+        if($data->machinery_plans_status === null){
+            return view('machinerysetup.form-machineryplan-show', compact('data'));
+        }elseif($data->machinery_plans_status === "N"){
+            return view('machinerysetup.form-machineryplan-update', compact('data'));
+        }
+        
     }
 
     /**

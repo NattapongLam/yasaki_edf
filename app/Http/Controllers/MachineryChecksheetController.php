@@ -122,6 +122,9 @@ class MachineryChecksheetController extends Controller
             $detailIds = $request->machinery_checksheet_dts_id ?? [];
             $actions   = $request->action ?? [];
             foreach ($detailIds as $index => $detailId) {
+                MachineryChecksheetDt::where('machinery_checksheet_dts_id', $detailId)->update([
+                    'machinery_checksheet_dts_remark' => $request->machinery_checksheet_dts_remark[$index]
+                ]);
                 $updateData = [];
                 for ($i = 1; $i <= 31; $i++) {
                     $field = 'action_' . str_pad($i, 2, '0', STR_PAD_LEFT);

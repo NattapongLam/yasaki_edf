@@ -122,6 +122,9 @@ class CalibrationChecksheetController extends Controller
             $detailIds = $request->calibration_checksheet_dts_id ?? [];
             $actions   = $request->action ?? [];
             foreach ($detailIds as $index => $detailId) {
+                CalibrationChecksheetDt::where('calibration_checksheet_dts_id', $detailId)->update([
+                    'calibration_checksheet_dts_remark' => $request->calibration_checksheet_dts_remark[$index]
+                ]);
                 $updateData = [];
                 for ($i = 1; $i <= 31; $i++) {
                     $field = 'action_' . str_pad($i, 2, '0', STR_PAD_LEFT);

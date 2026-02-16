@@ -160,7 +160,7 @@
                         </td>
 
                         <td>
-                            {{ $item->calibration_checksheet_dts_remark }}
+                            <input class="form-control" name="calibration_checksheet_dts_remark[]" value="{{$item->calibration_checksheet_dts_remark}}">
                         </td>
 
                         @for ($i = 1; $i <= 31; $i++)

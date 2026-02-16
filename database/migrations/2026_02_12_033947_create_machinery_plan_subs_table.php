@@ -24,6 +24,7 @@ return new class extends Migration
             $table->boolean('machinery_plan_subs_flag')->default(true);
             $table->string('machinery_plan_subs_file1')->nullable();
             $table->string('machinery_plan_subs_file2')->nullable();
+            $table->boolean('machinery_plan_subs_action')->default(false);
             $table->string('person_at');
             $table->timestamps();
         });
