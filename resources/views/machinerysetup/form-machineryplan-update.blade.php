@@ -43,7 +43,11 @@
                     <div class="col-3">
                         <div class="form-group">
                             <label for="machinery_plan_subs_date" class="col-form-label">วันที่</label>
-                            <input type="date" class="form-control" name="machinery_plan_subs_date" id="machinery_plan_subs_date" required>
+                            <input type="date"
+                            class="form-control"
+                            name="machinery_plan_subs_date"
+                            value="{{ date('Y-m-d') }}"
+                            required>
                             <input value="{{$data->machinery_plans_id}}" name="machinery_plans_id" type="hidden">
                             <input value="{{$data->machinery_lists_id}}" name="machinery_lists_id" type="hidden">
                         </div>
@@ -83,7 +87,30 @@
                                 <th style="width: 5%"></th>
                             </tr>
                         </thead>
-                        <tbody id="tableBody"></tbody>       
+                        <tbody id="tableBody">
+                            @foreach ($sub as $item)
+                                <tr>
+                                    <td>
+                                        <span class="row-number">{{ $loop->iteration }}</span>
+                                        <input type="hidden" 
+                                        name="machinery_plan_subs_listno[]" 
+                                        class="row-number-hidden"
+                                        value="{{ $loop->iteration }}">
+                                        <input type="hidden" name="machinery_plan_subs_id[]" value="{{$item->machinery_plan_subs_id}}">
+                                    </td>
+                                    <td>
+                                        <input type="text" name="machinery_plan_subs_remark[]" class="form-control" value="{{$item->machinery_plan_subs_remark}}">
+                                    </td>
+                                    <td>
+                                        <input type="hidden" name="machinery_plan_subs_action[]" value="0">
+                                        <input type="checkbox"
+                                            name="machinery_plan_subs_action[]"
+                                            value="1"
+                                            {{ $item->machinery_plan_subs_action == 1 ? 'checked' : '' }}>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>       
                     </table>          
                 </div>
                 <br>
@@ -123,13 +150,19 @@ document.getElementById('addRowBtn').addEventListener('click', function () {
 
         const newRow = document.createElement('tr');
         newRow.innerHTML = `
-            <td>
-                <span class="row-number"></span>
-                <input type="hidden" name="machinery_plan_subs_listno[]" class="row-number-hidden"/>
-            </td>
-            <td><input type="text" name="machinery_plan_subs_remark[]" class="form-control"/></td>
-            <td><button type="button" class="btn btn-danger btn-sm deleteRow">ลบ</button></td>
-        `;
+        <td>
+            <span class="row-number"></span>
+            <input type="hidden" name="machinery_plan_subs_listno[]" class="row-number-hidden"/>
+        </td>
+        <td>
+            <input type="text" name="machinery_plan_subs_remark[]" class="form-control"/>
+        </td>
+        <td>
+            <input type="hidden" name="machinery_plan_subs_action[]" value="0">
+            <input type="checkbox" name="machinery_plan_subs_action[]" value="1">
+            <button type="button" class="btn btn-danger btn-sm deleteRow">ลบ</button>
+        </td>
+    `;
 
         tbody.appendChild(newRow);
         updateRowNumbers(); 

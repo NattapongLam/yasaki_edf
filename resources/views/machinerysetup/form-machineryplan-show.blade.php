@@ -42,7 +42,7 @@
                     <div class="col-3">
                         <div class="form-group">
                             <label for="machinery_plan_subs_date" class="col-form-label">วันที่</label>
-                            <input type="date" class="form-control" name="machinery_plan_subs_date" id="machinery_plan_subs_date" required>
+                            <input type="date" class="form-control" name="machinery_plan_subs_date" id="machinery_plan_subs_date" >
                             <input value="{{$data->machinery_plans_id}}" name="machinery_plans_id" type="hidden">
                             <input value="{{$data->machinery_lists_id}}" name="machinery_lists_id" type="hidden">
                         </div>

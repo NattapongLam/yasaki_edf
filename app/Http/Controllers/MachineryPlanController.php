@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class MachineryPlanController extends Controller
 {
@@ -87,14 +88,14 @@ class MachineryPlanController extends Controller
                 'machinery_plans_status' => "N",
                 'updated_at' => Carbon::now(),
             ]);
-            // $mc = MachineryList::find($request->machinery_lists_id);
-            // $machineryDate = Carbon::parse($request->machinery_plan_subs_date);
-            // $nextDate = $machineryDate->copy()->addDays($mc->machinery_lists_day);
-            // MachineryList::where('machinery_lists_id', $request->machinery_lists_id)->update([
-            //     'machinery_lists_plandate' => $machineryDate->toDateString(),
-            //     'machinery_lists_nextdate' => $nextDate->toDateString(),
-            //     'updated_at' => Carbon::now(),
-            // ]);
+            $mc = MachineryList::find($request->machinery_lists_id);
+            $machineryDate = Carbon::parse($request->machinery_plan_subs_date);
+            $nextDate = $machineryDate->copy()->addDays($mc->machinery_lists_day);
+            MachineryList::where('machinery_lists_id', $request->machinery_lists_id)->update([
+                'machinery_lists_plandate' => $machineryDate->toDateString(),
+                'machinery_lists_nextdate' => $nextDate->toDateString(),
+                'updated_at' => Carbon::now(),
+            ]);
             DB::commit();
             return redirect()->route('machineryplans.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
         }catch(\Exception $e){
@@ -121,7 +122,8 @@ class MachineryPlanController extends Controller
         if($data->machinery_plans_status === null){
             return view('machinerysetup.form-machineryplan-show', compact('data'));
         }elseif($data->machinery_plans_status === "N"){
-            return view('machinerysetup.form-machineryplan-update', compact('data'));
+            $sub = DB::table('machinery_plan_subs')->where('machinery_plans_id', $id)->get();
+            return view('machinerysetup.form-machineryplan-update', compact('data','sub'));
         }
         
     }
@@ -146,7 +148,44 @@ class MachineryPlanController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'machinery_plans_id' => ['required'],
+            'machinery_lists_id' => ['required'],
+            'machinery_plan_subs_listno' => ['required'],
+            'machinery_plan_subs_date' =>  ['required'],
+        ]); 
+        $data = [
+            'machinery_plans_remark' => $request->machinery_plans_remark,
+            'machinery_plans_action' => 1,
+            'updated_at' => Carbon::now(),
+        ];
+        if ($request->hasFile('machinery_plans_file1')) {
+            $data['machinery_plans_file1'] = $request->file('machinery_plans_file1')->storeAs('images/Machinery_File', "IMG_" . Carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('machinery_plans_file1')->extension());
+        }
+        if ($request->hasFile('machinery_plans_file2')) {
+            $data['machinery_plans_file2'] = $request->file('machinery_plans_file2')->storeAs('images/Machinery_File', "IMG_" . Carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('machinery_plans_file2')->extension());
+        }
+        try{
+            DB::beginTransaction();
+            MachineryPlan::where('machinery_plans_id',$id)->update($data);
+            foreach ($request->machinery_plan_subs_remark as $index => $remark) {
+                MachineryPlanSub::updateOrCreate(
+                    ['machinery_plan_subs_id' => $request->machinery_plan_subs_id[$index] ?? null],
+                    [
+                        'machinery_plan_subs_listno' => $request->machinery_plan_subs_listno[$index],
+                        'machinery_plan_subs_remark' => $remark,
+                        'machinery_plan_subs_action' => $request->machinery_plan_subs_action[$index] ?? 0,
+                    ]
+                );
+            }
+            DB::commit();
+            return redirect()->route('machineryplans.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+        }catch(\Exception $e){
+            Log::error($e->getMessage());
+            dd($e->getMessage());
+            return redirect()->back()->with('error', 'เกิดข้อผิดพลาด');
+        }   
+
     }
 
     /**
