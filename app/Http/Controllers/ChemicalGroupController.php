@@ -123,7 +123,8 @@ class ChemicalGroupController extends Controller
         ];
         try{
             DB::beginTransaction();
-            $insertHD = ChemicalGroup::where('chemical_groups_id',$id)->update($data);
+            ChemicalGroup::where('chemical_groups_id',$id)->update($data);
+            $insertHD = ChemicalGroup::find($id);
             if($request->chemical_funtions_listno){
                 foreach ($request->chemical_funtions_listno as $key => $value) {
                     ChemicalFuntion::insert([

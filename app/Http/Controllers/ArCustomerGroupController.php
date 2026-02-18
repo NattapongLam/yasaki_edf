@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ArCustomerGroup;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Models\ArCustomerGroup;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ArCustomerGroupController extends Controller
 {
