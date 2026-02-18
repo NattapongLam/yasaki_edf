@@ -118,7 +118,8 @@ class ChemicalListController extends Controller
     {
         $groups = ChemicalGroup::where('chemical_groups_flag',true)->get();
         $hd = ChemicalList::find($id);
-        return view('chemicalsetup.form-chemical-edit', compact('groups','hd'));
+        $funtions = ChemicalFuntion::where('chemical_groups_id',$hd->chemical_groups_id)->where('chemical_funtions_flag',true)->get();
+        return view('chemicalsetup.form-chemical-edit', compact('groups','hd','funtions'));
     }
 
     /**

@@ -81,6 +81,12 @@
                     <label for="chemical_funtions_id" class="col-form-label">Function</label>
                     <select id="chemical_funtions_id" name="chemical_funtions_id" class="form-control" required>
                         <option value="">กรุณาเลือก</option>
+                        @foreach ($funtions as $item)
+                            <option value="{{ $item->chemical_funtions_id }}"
+                                {{ $item->chemical_funtions_id == $hd->chemical_funtions_id ? 'selected' : '' }}>
+                                {{ $item->chemical_funtions_name }}
+                            </option>
+                        @endforeach
                     </select>
                 </div>
             </div>
