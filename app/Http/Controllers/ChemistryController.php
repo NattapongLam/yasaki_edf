@@ -52,7 +52,12 @@ class ChemistryController extends Controller
     public function show($id)
     {
         $hd = DB::table('chemistry_hd')->where('chemistry_hd_id',$id)->first();
-        $dt = DB::table('chemistry_dt')->where('chemistry_hd_id',$id)->where('flag',1)->get();
+        $dt = DB::table('chemistry_dt')
+        ->leftjoin('chemical_lists','chemistry_dt.code','=','chemical_lists.chemical_lists_refcode')
+        ->leftjoin('chemical_groups','chemical_groups.chemical_groups_id','=','chemical_lists.chemical_groups_id')
+        ->leftjoin('chemical_funtions','chemical_funtions.chemical_funtions_id','=','chemical_lists.chemical_funtions_id')
+        ->where('chemistry_hd_id',$id)
+        ->where('flag',1)->get();
         return view('chemicalsetup.form-chemistrys-show', compact('hd','dt'));
     }
 
