@@ -58,7 +58,11 @@ class ChemistryController extends Controller
         ->leftjoin('chemical_funtions','chemical_funtions.chemical_funtions_id','=','chemical_lists.chemical_funtions_id')
         ->where('chemistry_hd_id',$id)
         ->where('flag',1)->get();
-        return view('chemicalsetup.form-chemistrys-show', compact('hd','dt'));
+        $lap = DB::table('TestHeaders')
+        ->leftjoin('TestDetails','TestHeaders.TestID','=','TestDetails.TestID')
+        ->where('TestHeaders.FormulaNumber',$hd->chemistry_hd_name)
+        ->get();
+        return view('chemicalsetup.form-chemistrys-show', compact('hd','dt','lap'));
     }
 
     /**

@@ -80,12 +80,13 @@
             <div class="col-12">
                 <div class="form-group">
                     <label for="chemistry_hd_note" class="col-form-label">หมายเหตุ</label>
-                    <textarea class="form-control" readonly>{{$hd->chemistry_hd_note}}</textarea>
+                    <textarea class="form-control" rows="7" readonly>{{$hd->chemistry_hd_note}}</textarea>
                 </div>
             </div>
         </div>
         <br>
         <div class="row">
+            <h5 style="color: black">รายละเอียด</h5>
             <table class="table table-bordered">
                 <thead style="color: black">
                     <tr>
@@ -116,12 +117,199 @@
                     @endforeach
                 </tbody>
             </table>
+        </div>
+        <br>
+        <div class="row">
+            <h5 style="color: black">ผลการทดสอบ</h5>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>วันที่</th>
+                        <th>Hardness</th>
+                        <th>Shearing</th>
+                        <th>Noise</th>
+                        <th>RoadTest</th>
+                        <th>SampleSet</th>
+                        <th>Temperature</th>
+                        <th>WearRate</th>
+                        <th>T_Inc</th>
+                        <th>T_Dec</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($lap as $item)
+                        <tr>
+                            <td>{{ \Carbon\Carbon::parse($item->TestDate)->format('d/m/Y') }}</td>
+                            <td>{{ number_format($item->Hardness,4) }}</td>
+                            <td>{{ number_format($item->Shearing,4) }}</td>
+                            <td>{{ number_format($item->Noise,4) }}</td>
+                            <td>{{ number_format($item->RoadTestAvg,4) }}</td>
+                            <td>{{ $item->SampleSet}}</td>
+                            <td>{{ $item->Temperature}}</td>
+                            <td>{{ number_format($item->WearRate,4)}}</td>
+                            <td>{{ number_format($item->T_Inc,4)}}</td>
+                            <td>{{ number_format($item->T_Dec,4)}}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+                <tfoot>
+                    <tr style="font-weight:bold; background:#f2f2f2;">
+                        <td>AVG</td>
+                        <td>{{ number_format($lap->avg('Hardness'),4) }}</td>
+                        <td>{{ number_format($lap->avg('Shearing'),4) }}</td>
+                        <td>{{ number_format($lap->avg('Noise'),4) }}</td>
+                        <td>{{ number_format($lap->avg('RoadTestAvg'),4) }}</td>
+                        <td></td>
+                        <td></td>
+                        <td>{{ number_format($lap->avg('WearRate'),4) }}</td>
+                        <td>{{ number_format($lap->avg('T_Inc'),4) }}</td>
+                        <td>{{ number_format($lap->avg('T_Dec'),4) }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <canvas id="radarChart"></canvas>
+            </div>
+            <div class="col-6">
+                <canvas id="lineChart" height="300"></canvas>
+            </div>
         </div>            
     </div> 
 </div>
 </div>
 @endsection
 @push('scriptjs')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+
+    /* ===================== RADAR CHART ===================== */
+
+    const avgData = [
+        {{ $lap->avg('Hardness') ?? 0 }},
+        {{ $lap->avg('Shearing') ?? 0 }},
+        {{ $lap->avg('Noise') ?? 0 }},
+        {{ $lap->avg('RoadTestAvg') ?? 0 }}
+    ];
+
+    const radarCtx = document.getElementById('radarChart');
+
+    new Chart(radarCtx, {
+        type: 'radar',
+        data: {
+            labels: ['Hardness', 'Shearing', 'Noise','RoadTest'],
+            datasets: [{
+                label: 'Average Result',
+                data: avgData,
+                fill: true,
+                backgroundColor: 'rgba(13, 110, 253, 0.2)',
+                borderColor: 'rgba(13, 110, 253, 1)',
+                borderWidth: 2,
+                pointBackgroundColor: 'rgba(13, 110, 253, 1)'
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                r: {
+                    beginAtZero: true,
+                    ticks: {
+                        backdropColor: 'transparent'
+                    }
+                }
+            }
+        }
+    });
+
+
+    /* ===================== LINE CHART ===================== */
+
+    const labels = [
+        @foreach ($lap as $item)
+            "{{ \Carbon\Carbon::parse($item->TestDate)->format('d/m/Y') }}",
+        @endforeach
+    ];
+
+    const hardnessData = [
+        @foreach ($lap as $item)
+            {{ $item->Hardness ?? 0 }},
+        @endforeach
+    ];
+
+    const shearingData = [
+        @foreach ($lap as $item)
+            {{ $item->Shearing ?? 0 }},
+        @endforeach
+    ];
+
+    const noiseData = [
+        @foreach ($lap as $item)
+            {{ $item->Noise ?? 0 }},
+        @endforeach
+    ];
+
+    const roadTestData = [
+        @foreach ($lap as $item)
+            {{ $item->RoadTestAvg ?? 0 }},
+        @endforeach
+    ];
+
+    const lineCtx = document.getElementById('lineChart');
+
+    new Chart(lineCtx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Hardness',
+                    data: hardnessData,
+                    borderColor: 'blue',
+                    backgroundColor: 'transparent',
+                    tension: 0.3
+                },
+                {
+                    label: 'Shearing',
+                    data: shearingData,
+                    borderColor: 'green',
+                    backgroundColor: 'transparent',
+                    tension: 0.3
+                },
+                {
+                    label: 'Noise',
+                    data: noiseData,
+                    borderColor: 'orange',
+                    backgroundColor: 'transparent',
+                    tension: 0.3
+                },
+                {
+                    label: 'RoadTest',
+                    data: roadTestData,
+                    borderColor: 'red',
+                    backgroundColor: 'transparent',
+                    tension: 0.3
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            interaction: {
+                mode: 'index',
+                intersect: false
+            },
+            plugins: {
+                legend: {
+                    position: 'top'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: false
+                }
+            }
+        }
+    });
+
 </script>
 @endpush
