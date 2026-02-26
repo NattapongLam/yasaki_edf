@@ -129,11 +129,8 @@
                         <th>Shearing</th>
                         <th>Noise</th>
                         <th>RoadTest</th>
-                        <th>SampleSet</th>
-                        <th>Temperature</th>
-                        <th>WearRate</th>
-                        <th>T_Inc</th>
-                        <th>T_Dec</th>
+                        <th>Friction</th>
+                        <th>Total</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -144,11 +141,8 @@
                             <td>{{ number_format($item->Shearing,4) }}</td>
                             <td>{{ number_format($item->Noise,4) }}</td>
                             <td>{{ number_format($item->RoadTestAvg,4) }}</td>
-                            <td>{{ $item->SampleSet}}</td>
-                            <td>{{ $item->Temperature}}</td>
-                            <td>{{ number_format($item->WearRate,4)}}</td>
-                            <td>{{ number_format($item->T_Inc,4)}}</td>
-                            <td>{{ number_format($item->T_Dec,4)}}</td>
+                            <td>{{ number_format($item->Score_FrictionAvg,4) }}</td>
+                            <td>{{ number_format($item->Score_TotalAvg,4) }}</td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -159,11 +153,8 @@
                         <td>{{ number_format($lap->avg('Shearing'),4) }}</td>
                         <td>{{ number_format($lap->avg('Noise'),4) }}</td>
                         <td>{{ number_format($lap->avg('RoadTestAvg'),4) }}</td>
-                        <td></td>
-                        <td></td>
-                        <td>{{ number_format($lap->avg('WearRate'),4) }}</td>
-                        <td>{{ number_format($lap->avg('T_Inc'),4) }}</td>
-                        <td>{{ number_format($lap->avg('T_Dec'),4) }}</td>
+                        <td>{{ number_format($lap->avg('Score_FrictionAvg'),4) }}</td>
+                        <td>{{ number_format($lap->avg('Score_TotalAvg'),4) }}</td>
                     </tr>
                 </tfoot>
             </table>
@@ -175,7 +166,96 @@
             <div class="col-6">
                 <canvas id="lineChart" height="300"></canvas>
             </div>
-        </div>            
+        </div>
+        <hr>    
+        @php
+            $groupedByDateTemp = $test->groupBy(function($item){
+                return $item->TestDate;
+            });
+            $temps = $test->pluck('Temperature')->unique();
+            $grouped = $test->groupBy('Temperature');
+            $samples = $test->pluck('SampleSet')->unique();
+        @endphp
+
+        <div class="row">
+            <table class="table table-bordered text-center">
+                <thead>
+                    <!-- แถว 1 -->
+                    <tr>
+                        <th rowspan="2">Temperature</th>
+                        <th colspan="{{ $samples->count() }}">WearRate</th>
+                        <th colspan="{{ $samples->count() }}">T_Inc</th>
+                        <th colspan="{{ $samples->count() }}">T_Dec</th>
+                    </tr>
+
+                    <!-- แถว 2 -->
+                    <tr>
+                        @for ($i = 0; $i < 3; $i++)
+                            @foreach ($samples as $sample)
+                                <th>{{ $sample }}</th>
+                            @endforeach
+                        @endfor
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach ($grouped as $temp => $rows)
+                        <tr>
+                            <td>{{ $temp }}</td>
+
+                            {{-- WearRate --}}
+                            @foreach ($samples as $sample)
+                                @php
+                                    $avg = $rows->where('SampleSet', $sample)->avg('WearRate');
+                                @endphp
+                                <td>{{ $avg !== null ? number_format($avg,4) : '-' }}</td>
+                            @endforeach
+
+                            {{-- T_Inc --}}
+                            @foreach ($samples as $sample)
+                                @php
+                                    $avg = $rows->where('SampleSet', $sample)->avg('T_Inc');
+                                @endphp
+                                <td>{{ $avg !== null ? number_format($avg,4) : '-' }}</td>
+                            @endforeach
+
+                            {{-- T_Dec --}}
+                            @foreach ($samples as $sample)
+                                @php
+                                    $avg = $rows->where('SampleSet', $sample)->avg('T_Dec');
+                                @endphp
+                                <td>{{ $avg !== null ? number_format($avg,4) : '-' }}</td>
+                            @endforeach
+
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+        <div class="row">
+            @foreach($temps as $temp)
+                <div class="col-4 mb-5">
+                    <h5>{{ $temp }}°C</h5>
+                    <canvas id="wearChart_{{ $temp }}"></canvas>
+                </div>
+            @endforeach
+        </div>  
+        <div class="row">
+            @foreach($temps as $temp)
+                <div class="col-4 mb-5">
+                    <h5>{{ $temp }}°C</h5>
+                    <canvas id="incChart_{{ $temp }}"></canvas>
+                </div>
+            @endforeach
+        </div> 
+        <div class="row">
+            @foreach($temps as $temp)
+                <div class="col-4 mb-5">
+                    <h5>{{ $temp }}°C</h5>
+                    <canvas id="decChart_{{ $temp }}"></canvas>
+                </div>
+            @endforeach
+        </div>       
     </div> 
 </div>
 </div>
@@ -190,7 +270,8 @@
         {{ $lap->avg('Hardness') ?? 0 }},
         {{ $lap->avg('Shearing') ?? 0 }},
         {{ $lap->avg('Noise') ?? 0 }},
-        {{ $lap->avg('RoadTestAvg') ?? 0 }}
+        {{ $lap->avg('RoadTestAvg') ?? 0 }},
+        {{ $lap->avg('Score_FrictionAvg') ?? 0 }},
     ];
 
     const radarCtx = document.getElementById('radarChart');
@@ -198,7 +279,7 @@
     new Chart(radarCtx, {
         type: 'radar',
         data: {
-            labels: ['Hardness', 'Shearing', 'Noise','RoadTest'],
+            labels: ['Hardness', 'Shearing', 'Noise','RoadTest','Friction'],
             datasets: [{
                 label: 'Average Result',
                 data: avgData,
@@ -255,6 +336,11 @@
         @endforeach
     ];
 
+    const frictionData = [
+        @foreach ($lap as $item)
+            {{ $item->Score_FrictionAvg ?? 0 }},
+        @endforeach
+    ];
     const lineCtx = document.getElementById('lineChart');
 
     new Chart(lineCtx, {
@@ -289,6 +375,13 @@
                     borderColor: 'red',
                     backgroundColor: 'transparent',
                     tension: 0.3
+                },
+                {
+                    label: 'Friction',
+                    data: frictionData,
+                    borderColor: 'yellow',
+                    backgroundColor: 'transparent',
+                    tension: 0.3
                 }
             ]
         },
@@ -310,6 +403,133 @@
             }
         }
     });
+@foreach($temps as $temp)
 
+    const labels_{{ $temp }} = [
+        @foreach($groupedByDateTemp as $date => $rows)
+            "{{ \Carbon\Carbon::parse($date)->format('d/m/Y') }}",
+        @endforeach
+    ];
+
+    // ================= WEAR RATE =================
+    new Chart(document.getElementById('wearChart_{{ $temp }}'), {
+        type: 'bar',
+        data: {
+            labels: labels_{{ $temp }},
+            datasets: [
+                @foreach($samples as $sIndex => $sample)
+                {
+                    label: "{{ $sample }}",
+                    data: [
+                        @foreach($groupedByDateTemp as $date => $rows)
+                            {{
+                                $rows->where('Temperature',$temp)
+                                     ->where('SampleSet',$sample)
+                                     ->avg('WearRate') ?? 0
+                            }},
+                        @endforeach
+                    ],
+                    backgroundColor: "hsl({{ $sIndex * 80 }}, 70%, 55%)",
+                    borderColor: "hsl({{ $sIndex * 80 }}, 70%, 55%)",
+                    borderWidth: 1
+                },
+                @endforeach
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'top' },
+                title: {
+                    display: true,
+                    text: 'WearRate by Date'
+                }
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+
+
+    // ================= T_INC =================
+    new Chart(document.getElementById('incChart_{{ $temp }}'), {
+        type: 'bar',
+        data: {
+            labels: labels_{{ $temp }},
+            datasets: [
+                @foreach($samples as $sIndex => $sample)
+                {
+                    label: "{{ $sample }}",
+                    data: [
+                        @foreach($groupedByDateTemp as $date => $rows)
+                            {{
+                                $rows->where('Temperature',$temp)
+                                     ->where('SampleSet',$sample)
+                                     ->avg('T_Inc') ?? 0
+                            }},
+                        @endforeach
+                    ],
+                    backgroundColor: "hsl({{ $sIndex * 80 }}, 70%, 55%)",
+                    borderColor: "hsl({{ $sIndex * 80 }}, 70%, 55%)",
+                    borderWidth: 1
+                },
+                @endforeach
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'top' },
+                title: {
+                    display: true,
+                    text: 'T_Inc by Date'
+                }
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+     // ================= T_DEC =================
+    new Chart(document.getElementById('decChart_{{ $temp }}'), {
+        type: 'bar',
+        data: {
+            labels: labels_{{ $temp }},
+            datasets: [
+                @foreach($samples as $sIndex => $sample)
+                {
+                    label: "{{ $sample }}",
+                    data: [
+                        @foreach($groupedByDateTemp as $date => $rows)
+                            {{
+                                $rows->where('Temperature',$temp)
+                                     ->where('SampleSet',$sample)
+                                     ->avg('T_Dec') ?? 0
+                            }},
+                        @endforeach
+                    ],
+                    backgroundColor: "hsl({{ $sIndex * 80 }}, 70%, 55%)",
+                    borderColor: "hsl({{ $sIndex * 80 }}, 70%, 55%)",
+                    borderWidth: 1
+                },
+                @endforeach
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'top' },
+                title: {
+                    display: true,
+                    text: 'T_Dec by Date'
+                }
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+@endforeach
 </script>
 @endpush
