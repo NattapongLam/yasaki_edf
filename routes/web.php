@@ -78,6 +78,7 @@ Route::get('/calibration/get-last-running', [App\Http\Controllers\CalibrationLis
 Route::resource('/calibrationplans' , App\Http\Controllers\CalibrationPlanController::class);
 Route::get('/calibration/calendar', [App\Http\Controllers\CalibrationPlanController::class, 'getCalibrationCalendar'])->name('calibration.calendar');
 Route::resource('/calibrationchecksheets' , App\Http\Controllers\CalibrationChecksheetController::class);
+Route::post('/confirmDelCalibrationChecksheets' , [App\Http\Controllers\CalibrationChecksheetController::class , 'confirmDelCalibrationChecksheets']);
 //เครื่องวัดมือ
 
 //เครื่องจักร
