@@ -160,7 +160,7 @@
                         </td>
 
                         <td>
-                            <textarea class="form-control" name="machinery_checksheet_dts_remark[]" rows="3">{{ $item->machinery_checksheet_dts_remark }}</textarea>
+                            <textarea class="form-control" name="machinery_checksheet_dts_remark[]" rows="5">{{ $item->machinery_checksheet_dts_remark }}</textarea>
                         </td>
 
                         @for ($i = 1; $i <= 31; $i++)

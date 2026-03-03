@@ -156,7 +156,7 @@ class MachineryPlanController extends Controller
         ]); 
         $data = [
             'machinery_plans_remark' => $request->machinery_plans_remark,
-            'machinery_plans_action' => 1,
+            'machinery_plans_date' => $request->machinery_plan_subs_date,
             'updated_at' => Carbon::now(),
         ];
         if ($request->hasFile('machinery_plans_file1')) {
@@ -172,11 +172,25 @@ class MachineryPlanController extends Controller
                 MachineryPlanSub::updateOrCreate(
                     ['machinery_plan_subs_id' => $request->machinery_plan_subs_id[$index] ?? null],
                     [
+                        'machinery_plans_id' => $id,
+                        'machinery_lists_id' => $request->machinery_lists_id,
                         'machinery_plan_subs_listno' => $request->machinery_plan_subs_listno[$index],
                         'machinery_plan_subs_remark' => $remark,
                         'machinery_plan_subs_action' => $request->machinery_plan_subs_action[$index] ?? 0,
+                        'machinery_plan_subs_date' => Carbon::now(),
+                        'person_at' => Auth::user()->name,
+                        'created_at'=> Carbon::now(),
+                        'updated_at'=> Carbon::now(),
                     ]
                 );
+            }
+            DB::commit();
+            $dt = MachineryPlanSub::where('machinery_plan_subs_action',0)->where('machinery_plans_id',$id)->first();
+            if($dt == null)
+            {
+                MachineryPlan::where('machinery_plans_id',$id)->update([
+                    'machinery_plans_action' => 1,
+                ]);
             }
             DB::commit();
             return redirect()->route('machineryplans.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');

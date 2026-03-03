@@ -23,7 +23,7 @@ class MachineryChecksheetController extends Controller
      */
     public function index()
     {
-        $hd = MachineryChecksheetHd::get();
+        $hd = MachineryChecksheetHd::where('machinery_checksheet_hds_flag',true)->get();
         return view('machinerysetup.form-machinerychecksheet-list', compact('hd'));
     }
 
@@ -151,5 +151,30 @@ class MachineryChecksheetController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function confirmDelMachineryChecksheets(Request $request)
+    {
+        $id = $request->refid;
+        try {
+            DB::beginTransaction();
+            MachineryChecksheetHd::where('machinery_checksheet_hds_id', $id)
+            ->update([
+                'updated_at' => Carbon::now(),
+                'machinery_checksheet_hds_flag' => 0,
+                'person_at' => Auth::user()->name,
+            ]);
+            DB::commit();                      
+            return response()->json([
+                'status' => true,
+                'message' => 'ยกเลิกเรียบร้อยแล้ว'
+            ]);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
     }
 }
