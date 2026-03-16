@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ChemicalDt;
 use Carbon\Carbon;
-use ChemicalHd;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -137,7 +135,9 @@ class ChemistryController extends Controller
         ->leftjoin('TestDetails','TestHeaders.TestID','=','TestDetails.TestID')
         ->where('TestHeaders.FormulaNumber',$hd->chemistry_hd_name)
         ->get();
-        return view('chemicalsetup.form-chemistrys-show', compact('hd','dt','lap','test'));
+        $types = DB::table('chemistry_type')->get();
+        $products = DB::table('chemical_lists')->get();
+        return view('chemicalsetup.form-chemistrys-show', compact('hd','dt','lap','test','types','products'));
     }
 
     /**
@@ -160,7 +160,41 @@ class ChemistryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        try{
+            DB::beginTransaction();
+            DB::table('chemistry_hd')
+            ->where('chemistry_hd_id',$id)
+            ->update([
+                'chemistry_hd_calculate' => $request->chemistry_hd_calculate,
+                'chemistry_hd_note' => $request->chemistry_hd_note,
+                'chemistry_hd_type' => $request->chemistry_hd_type,
+                'chemistry_hd_save' => Auth::user()->name,
+                'update_at' => Carbon::now(),
+            ]);
+            foreach ($request->chemistry_dt_id as $key => $value) {
+                $pd = DB::table('chemical_lists')->where('chemical_lists_refcode',$request->code[$key])->first();
+                DB::table('chemistry_dt')
+                ->where('chemistry_dt_id',$value)
+                ->update([
+                    'code' => $pd->chemical_lists_refcode,
+                    'material' => $pd->chemical_lists_name,
+                    'grade' => $pd->chemical_lists_grade,
+                    'density' => $request->density[$key],
+                    'adjust' => $request->adjust[$key],
+                    'weght' => $request->weght[$key],
+                    'weghtper' => $request->weghtper[$key],
+                    'weghttotal' => $request->weghttotal[$key],
+                    'flag' => true,
+                    'update_at' => Carbon::now(),
+                ]);
+            }
+            DB::commit();
+            return redirect()->route('chemistrys.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+        }catch(\Exception $e){
+            Log::error($e->getMessage());
+            dd($e->getMessage());
+            return redirect()->back()->with('error', 'เกิดข้อผิดพลาด');
+        }   
     }
 
     /**

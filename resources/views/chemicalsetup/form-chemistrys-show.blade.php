@@ -19,17 +19,14 @@
         <div class="row">
             <div class="col-12 col-md-6"><h3 class="card-title">จัดการเคมี</h3></div>
         </div>
+        <form method="POST" class="form-horizontal" action="{{ route('chemistrys.update',$hd->chemistry_hd_id) }}" enctype="multipart/form-data">
+        @csrf     
+        @method('PUT')     
         <div class="row">
             <div class="col-3">
                 <div class="form-group">
                     <label for="chemistry_hd_date" class="col-form-label">วันที่</label>
                     <input type="date" class="form-control" name="chemistry_hd_date" id="chemistry_hd_date" value="{{$hd->chemistry_hd_date}}" readonly>
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="form-group">
-                    <label for="chemistry_hd_docuno" class="col-form-label">เลขที่</label>
-                    <input type="text" class="form-control" name="chemistry_hd_docuno" id="chemistry_hd_docuno" value="{{$hd->chemistry_hd_docuno}}" readonly>
                 </div>
             </div> 
             <div class="col-3">
@@ -43,15 +40,23 @@
                     <label for="chemistry_hd_name" class="col-form-label">เลขที่สูตร</label>
                     <input type="text" class="form-control" name="chemistry_hd_name" id="chemistry_hd_name" value="{{$hd->chemistry_hd_name}}" readonly>
                 </div>
+            </div>
+             <div class="col-3">
+                <div class="form-group">
+                    <label for="ms_formule_name" class="col-form-label">ประเภท</label>
+                    <select class="form-select" name="chemistry_hd_type" required>
+                        <option value="">เลือกประเภท</option>
+                        @foreach ($types as $item)
+                            <option value="{{ $item->chemistry_type_name }}"
+                                {{ $hd->chemistry_hd_type == $item->chemistry_type_name ? 'selected' : '' }}>
+                                {{ $item->chemistry_type_name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
             </div>    
         </div> 
-        <div class="row">          
-            <div class="col-3">
-                <div class="form-group">
-                    <label for="chemistry_hd_type" class="col-form-label">ประเภท</label>
-                    <input type="text" class="form-control" name="chemistry_hd_type" id="chemistry_hd_type" value="{{$hd->chemistry_hd_type}}" readonly>
-                </div>
-            </div>
+        <div class="row">                    
              <div class="col-3">
                 <div class="form-group">
                     <label for="update_at" class="col-form-label">อัพเดทล่าสุด</label>
@@ -75,12 +80,38 @@
                     <input type="number" class="form-control" name="chemistry_hd_qty" id="chemistry_hd_qty" value="{{$hd->chemistry_hd_qty}}" readonly>
                 </div>
             </div>
+            <div class="col-3">
+                <div class="form-group">
+                    <label class="col-form-label">ประเภทคำนวณ</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input"
+                                type="radio"
+                                name="chemistry_hd_calculate"
+                                id="formRadios1"
+                                value="vol"
+                                {{ $hd->chemistry_hd_calculate == 'vol' ? 'checked' : '' }}>
+                            <label class="form-check-label" for="formRadios1">Vol %</label>
+                        </div>
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input"
+                                type="radio"
+                                name="chemistry_hd_calculate"
+                                id="formRadios2"
+                                value="w"
+                                {{ $hd->chemistry_hd_calculate == 'w' ? 'checked' : '' }}>
+                            <label class="form-check-label" for="formRadios2">W %</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div> 
         <div class="row">
             <div class="col-12">
                 <div class="form-group">
                     <label for="chemistry_hd_note" class="col-form-label">หมายเหตุ</label>
-                    <textarea class="form-control" rows="7" readonly>{{$hd->chemistry_hd_note}}</textarea>
+                    <textarea class="form-control" rows="5">{{$hd->chemistry_hd_note}}</textarea>
                 </div>
             </div>
         </div>
@@ -92,33 +123,62 @@
                     <tr>
                         <th>No.</th>
                         <th>Material</th>
-                        <th>Group</th>
-                        <th>Funtion</th>
-                        <th>Grade</th>
                         <th>Density(g/cc)</th>
                         <th>Vol.% adjust</th>
+                        <th>W</th>
                         <th>Weght(%)</th>
                         <th>Weght(g)</th>
                     </tr>
                 </thead>
-                <tbody style="color: black">
+                <tbody id="tableBody" style="color: black">
                     @foreach ($dt as $item)
-                        <tr style="{{ $item->chemical_groups_color ? 'background-color: '.$item->chemical_groups_color : '' }}">
-                            <td>{{ $item->no }}</td>
-                            <td>{{ $item->material }} ({{ $item->code }})</td>
-                            <td>{{ $item->chemical_groups_name }}</td>
-                            <td>{{ $item->chemical_funtions_name }}</td>
-                            <td>{{ $item->grade }}</td>
-                            <td>{{ number_format($item->density,2) }}</td>
-                            <td>{{ number_format($item->adjust,2) }}</td>
-                            <td>{{ number_format($item->weghtper,2) }}</td>
-                            <td>{{ number_format($item->weghttotal,2) }}</td>
-                        </tr>
+                    <tr style="{{ $item->chemical_groups_color ? 'background-color: '.$item->chemical_groups_color : '' }}">
+                        <td>
+                            {{ $item->no }}
+                            <input type="hidden" name="chemistry_dt_id[]" value="{{$item->chemistry_dt_id}}">
+                        </td>
+                        <td>
+                            <select class="form-control select2-product" name="code[]">
+                                <option value="">เลือกสินค้า</option>
+                                @foreach ($products as $product)
+                                    <option value="{{$product->chemical_lists_refcode}}"
+                                        {{$item->code == $product->chemical_lists_refcode ? 'selected' : '' }}
+                                        data-density="{{ number_format($product->chemical_lists_density,2,'.','') }}">
+                                        {{$product->chemical_lists_refcode}} - {{$product->chemical_lists_name}} ({{$product->chemical_lists_grade}})
+                                        สต็อค : {{number_format($product->chemical_lists_stc,2)}}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </td>
+                        <td><input type="number" step="0.01" name="density[]" class="form-control density" value="{{ number_format($item->density,2) }}"/></td>
+                        <td><input type="number" step="0.01" name="adjust[]" class="form-control adjust" value="{{ number_format($item->adjust,2) }}"/></td>
+                        <td><input type="number" step="0.01" name="weght[]" class="form-control weght" value="{{ number_format($item->weght,2) }}"/></td>
+                        <td><input type="number" step="0.01" name="weghtper[]" class="form-control weghtper" value="{{ number_format($item->weghtper,2) }}"/></td>
+                        <td><input type="number" step="0.01" name="weghttotal[]" class="form-control weghttotal" value="{{ number_format($item->weghttotal,2) }}"/></td>
+                    </tr>
                     @endforeach
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="3" class="text-end">Total</th>
+                        <th id="sumAdjust">0</th>
+                        <th id="sumWeight">0</th>
+                        <th id="sumWeightPer">0</th>
+                        <th id="sumWeightTotal">0</th>
+                    </tr>
+                </tfoot>
             </table>
         </div>
         <br>
+            <div class="col-12 col-md-1">
+                <div class="form-group">
+                    <button type="submit" class="btn btn-block btn-primary">
+                        บันทึก
+                    </button>
+                </div>
+            </div>
+        </form>
+        <hr>
         <div class="row">
             <h5 style="color: black">ผลการทดสอบ</h5>
             <table class="table table-bordered">
@@ -263,7 +323,140 @@
 @push('scriptjs')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+$(document).ready(function () {
 
+    $('.select2-product').select2({
+        width: '100%',
+        placeholder: 'เลือกสินค้า'
+    });
+
+    calculateTable(); // คำนวณตอนเปิดหน้า
+});
+
+
+$(document).on('change', '.select2-product', function () {
+
+    let density = $(this).find(':selected').data('density') || 0;
+    density = parseFloat(density).toFixed(2);
+
+    let row = $(this).closest('tr');
+    row.find('.density').val(density);
+
+    calculateTable();
+});
+
+
+/* ================= DELETE ROW ================= */
+
+const tableBody = document.getElementById('tableBody');
+
+if (tableBody) {
+    tableBody.addEventListener('click', function (e) {
+
+        if (e.target.classList.contains('deleteRow')) {
+            e.target.closest('tr').remove();
+            calculateTable();
+        }
+
+    });
+}
+
+
+/* ================= CALCULATE TABLE ================= */
+
+function calculateTable(){
+
+    const mode = $('input[name="chemistry_hd_calculate"]:checked').val();
+    const mix = parseFloat($('input[name="chemistry_hd_mix"]').val()) || 0;
+
+    let totalWeight = 0;
+    let sumAdjust = 0;
+    let sumWeight = 0;
+    let sumWeightPer = 0;
+    let sumWeightTotal = 0;
+
+    const rows = $('#tableBody tr');
+
+    /* STEP 1 */
+
+    rows.each(function(){
+
+        const row = $(this);
+
+        const density = parseFloat(row.find('.density').val()) || 0;
+        const adjust = parseFloat(row.find('.adjust').val()) || 0;
+        let weight = parseFloat(row.find('.weght').val()) || 0;
+        let weightPer = parseFloat(row.find('.weghtper').val()) || 0;
+
+        if(mode === 'vol')
+        {
+            weight = density * adjust;
+            row.find('.weght').val(weight.toFixed(2));
+            totalWeight += weight;
+        }
+
+        sumAdjust += adjust;
+        sumWeight += weight;
+    });
+
+
+    /* STEP 2 */
+
+    rows.each(function(){
+
+        const row = $(this);
+
+        let weight = parseFloat(row.find('.weght').val()) || 0;
+        let weightPer = parseFloat(row.find('.weghtper').val()) || 0;
+        let weightTotal = 0;
+
+        if(mode === 'vol')
+        {
+            if(totalWeight > 0)
+            {
+                weightPer = (weight / totalWeight) * 100;
+                weightTotal = (mix * weightPer) / 100;
+
+                row.find('.weghtper').val(weightPer.toFixed(2));
+                row.find('.weghttotal').val(weightTotal.toFixed(2));
+            }
+        }
+
+        if(mode === 'w')
+        {
+            weightTotal = (mix * weightPer) / 100;
+            row.find('.weghttotal').val(weightTotal.toFixed(2));
+        }
+
+        sumWeightPer += weightPer;
+        sumWeightTotal += weightTotal;
+    });
+
+
+    /* TOTAL */
+
+    $('input[name="chemistry_hd_qty"]').val(sumWeightTotal.toFixed(2));
+
+    $('#sumAdjust').text(sumAdjust.toFixed(2));
+    $('#sumWeight').text(sumWeight.toFixed(2));
+    $('#sumWeightPer').text(sumWeightPer.toFixed(2));
+    $('#sumWeightTotal').text(sumWeightTotal.toFixed(2));
+}
+
+
+/* ================= EVENT ================= */
+
+$(document).on(
+    'keyup change',
+    '.adjust,.density,.weghtper,input[name="chemistry_hd_mix"]',
+    function(){
+        calculateTable();
+    }
+);
+
+$(document).on('change','input[name="chemistry_hd_calculate"]',function(){
+    calculateTable();
+});
     /* ===================== RADAR CHART ===================== */
 
     const avgData = [
