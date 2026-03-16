@@ -2,8 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ChemicalDt;
+use Carbon\Carbon;
+use ChemicalHd;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ChemistryController extends Controller
 {
@@ -29,7 +34,10 @@ class ChemistryController extends Controller
      */
     public function create()
     {
-        //
+        $formule = DB::table('ms_formule')->get();
+        $types = DB::table('chemistry_type')->get();
+        $products = DB::table('chemical_lists')->get();
+        return view('chemicalsetup.form-chemistrys-create', compact('formule','types','products'));
     }
 
     /**
@@ -40,7 +48,71 @@ class ChemistryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'chemistry_hd_date' => ['required'],
+            'ms_formule_name' => ['required'],
+            'chemistry_hd_name' => ['required'],
+            'chemistry_hd_type' => ['required'],
+            'no' => ['required'],
+        ]); 
+        $year = date('Y');
+
+        $last = DB::table('chemistry_hd')
+            ->whereYear('chemistry_hd_date',$year)
+            ->orderBy('chemistry_hd_number','desc')
+            ->first();
+
+        $runNumber = $last ? $last->chemistry_hd_number + 1 : 1;
+
+        $docuno = 'CHEM'.$year.str_pad($runNumber,4,'0',STR_PAD_LEFT);
+        $lastId = DB::table('chemistry_hd')->max('chemistry_hd_id');
+        $newId = $lastId + 1;
+        $data = [
+            'chemistry_hd_id' => $newId,
+            'chemistry_hd_date' => $request->chemistry_hd_date,
+            'ms_formule_name' => $request->ms_formule_name,
+            'chemistry_hd_mix' => $request->chemistry_hd_mix,
+            'chemistry_hd_qty' => $request->chemistry_hd_qty,
+            'chemistry_hd_note' => $request->chemistry_hd_note,
+            'chemistry_hd_save' => Auth::user()->name,
+            'chemistry_hd_flag' => true,
+            'update_at' => Carbon::now(),
+            'chemistry_hd_type' => $request->chemistry_hd_type,
+            'chemistry_hd_docuno' => $docuno,
+            'chemistry_hd_number' => $runNumber,
+            'chemistry_hd_name' => $request->chemistry_hd_name,
+            'chemistry_hd_calculate' => $request->chemistry_hd_calculate
+        ];     
+        try{
+            DB::beginTransaction();
+            DB::table('chemistry_hd')->insert($data);
+            foreach ($request->no as $key => $value) {
+                $pd = DB::table('chemical_lists')->where('chemical_lists_id',$request->code[$key])->first();
+                $lastDtId = DB::table('chemistry_dt')->max('chemistry_dt_id');
+                $newDtId = $lastDtId + 1;
+                DB::table('chemistry_dt')->insert([
+                    'chemistry_dt_id' => $newDtId,
+                    'chemistry_hd_id' => $newId,
+                    'no' =>  $value,
+                    'code' => $pd->chemical_lists_refcode,
+                    'material' => $pd->chemical_lists_name,
+                    'grade' => $pd->chemical_lists_grade,
+                    'density' => $request->density[$key],
+                    'adjust' => $request->adjust[$key],
+                    'weght' => $request->weght[$key],
+                    'weghtper' => $request->weghtper[$key],
+                    'weghttotal' => $request->weghttotal[$key],
+                    'flag' => true,
+                    'update_at' => Carbon::now(),
+                ]);
+            }  
+            DB::commit();
+            return redirect()->route('chemistrys.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+        }catch(\Exception $e){
+            Log::error($e->getMessage());
+            dd($e->getMessage());
+            return redirect()->back()->with('error', 'เกิดข้อผิดพลาด');
+        }   
     }
 
     /**

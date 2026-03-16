@@ -18,6 +18,7 @@
     <div class="card-body">
         <div class="row">
             <div class="col-12 col-md-6"><h3 class="card-title">จัดการเคมี</h3></div>
+             <div class="col-12 col-md-6"><a style="float: right" href="{{route('chemistrys.create')}}" class="btn btn-primary"><i class="fas fa-plus"></i> เพิ่มรายการ</a></div>
         </div>       
         <table id="tb_job" class="table table-bordered dt-responsive nowrap w-100 text-center">
             <thead>

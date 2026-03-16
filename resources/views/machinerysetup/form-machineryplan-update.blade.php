@@ -102,9 +102,12 @@
                                         <input type="text" name="machinery_plan_subs_remark[]" class="form-control" value="{{$item->machinery_plan_subs_remark}}">
                                     </td>
                                     <td>
-                                        <input type="hidden" name="machinery_plan_subs_action[]" value="0">
+                                        <input type="hidden"
+                                            name="machinery_plan_subs_action[{{ $loop->index }}]"
+                                            value="0">
+
                                         <input type="checkbox"
-                                            name="machinery_plan_subs_action[]"
+                                            name="machinery_plan_subs_action[{{ $loop->index }}]"
                                             value="1"
                                             {{ $item->machinery_plan_subs_action == 1 ? 'checked' : '' }}>
                                     </td>
