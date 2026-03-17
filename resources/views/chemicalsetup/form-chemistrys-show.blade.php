@@ -185,12 +185,13 @@
                 <thead>
                     <tr>
                         <th>วันที่</th>
-                        <th>Hardness</th>
-                        <th>Shearing</th>
-                        <th>Noise</th>
+                        <th>Hardness (HRB)</th>
+                        <th>Shearing (mm²)</th>
+                        <th>Noise (dB)</th>
                         <th>RoadTest</th>
-                        <th>Friction</th>
-                        <th>Total</th>
+                        <th>Normal (µ)</th>
+                        <th>Hot (µ)</th>
+                        <th>Wear (10−7cm3/(N⋅m))</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -201,8 +202,9 @@
                             <td>{{ number_format($item->Shearing,4) }}</td>
                             <td>{{ number_format($item->Noise,4) }}</td>
                             <td>{{ number_format($item->RoadTestAvg,4) }}</td>
-                            <td>{{ number_format($item->Score_FrictionAvg,4) }}</td>
-                            <td>{{ number_format($item->Score_TotalAvg,4) }}</td>
+                            <td>{{ number_format($item->Normal_Avg,4) }}</td>
+                            <td>{{ number_format($item->Hot_Avg,4) }}</td>
+                            <td>{{ number_format($item->Wear_Avg,4) }}</td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -213,8 +215,9 @@
                         <td>{{ number_format($lap->avg('Shearing'),4) }}</td>
                         <td>{{ number_format($lap->avg('Noise'),4) }}</td>
                         <td>{{ number_format($lap->avg('RoadTestAvg'),4) }}</td>
-                        <td>{{ number_format($lap->avg('Score_FrictionAvg'),4) }}</td>
-                        <td>{{ number_format($lap->avg('Score_TotalAvg'),4) }}</td>
+                        <td>{{ number_format($lap->avg('Normal_Avg'),4) }}</td>
+                        <td>{{ number_format($lap->avg('Hot_Avg'),4) }}</td>
+                        <td>{{ number_format($lap->avg('Wear_Avg'),4) }}</td>
                     </tr>
                 </tfoot>
             </table>
@@ -464,7 +467,9 @@ $(document).on('change','input[name="chemistry_hd_calculate"]',function(){
         {{ $lap->avg('Shearing') ?? 0 }},
         {{ $lap->avg('Noise') ?? 0 }},
         {{ $lap->avg('RoadTestAvg') ?? 0 }},
-        {{ $lap->avg('Score_FrictionAvg') ?? 0 }},
+        {{ $lap->avg('Normal_Avg') ?? 0 }},
+        {{ $lap->avg('Hot_Avg') ?? 0 }},
+        {{ $lap->avg('Wear_Avg') ?? 0 }},
     ];
 
     const radarCtx = document.getElementById('radarChart');
@@ -472,7 +477,7 @@ $(document).on('change','input[name="chemistry_hd_calculate"]',function(){
     new Chart(radarCtx, {
         type: 'radar',
         data: {
-            labels: ['Hardness', 'Shearing', 'Noise','RoadTest','Friction'],
+            labels: ['Hardness', 'Shearing', 'Noise','RoadTest','Normal','Hot','Wear'],
             datasets: [{
                 label: 'Average Result',
                 data: avgData,
@@ -529,9 +534,21 @@ $(document).on('change','input[name="chemistry_hd_calculate"]',function(){
         @endforeach
     ];
 
-    const frictionData = [
+    const NormalData = [
         @foreach ($lap as $item)
-            {{ $item->Score_FrictionAvg ?? 0 }},
+            {{ $item->Normal_Avg ?? 0 }},
+        @endforeach
+    ];
+
+    const HotData = [
+        @foreach ($lap as $item)
+            {{ $item->Hot_Avg ?? 0 }},
+        @endforeach
+    ];
+
+    const WearData = [
+        @foreach ($lap as $item)
+            {{ $item->Wear_Avg ?? 0 }},
         @endforeach
     ];
     const lineCtx = document.getElementById('lineChart');
@@ -544,35 +561,49 @@ $(document).on('change','input[name="chemistry_hd_calculate"]',function(){
                 {
                     label: 'Hardness',
                     data: hardnessData,
-                    borderColor: 'blue',
+                    borderColor: '#81ecec',
                     backgroundColor: 'transparent',
                     tension: 0.3
                 },
                 {
                     label: 'Shearing',
                     data: shearingData,
-                    borderColor: 'green',
+                    borderColor: '#74b9ff',
                     backgroundColor: 'transparent',
                     tension: 0.3
                 },
                 {
                     label: 'Noise',
                     data: noiseData,
-                    borderColor: 'orange',
+                    borderColor: '#a29bfe',
                     backgroundColor: 'transparent',
                     tension: 0.3
                 },
                 {
                     label: 'RoadTest',
                     data: roadTestData,
-                    borderColor: 'red',
+                    borderColor: '#fab1a0',
                     backgroundColor: 'transparent',
                     tension: 0.3
                 },
                 {
-                    label: 'Friction',
-                    data: frictionData,
-                    borderColor: 'yellow',
+                    label: 'Normal',
+                    data: NormalData,
+                    borderColor: '#ff7675',
+                    backgroundColor: 'transparent',
+                    tension: 0.3
+                },
+                {
+                    label: 'Hot',
+                    data: HotData,
+                    borderColor: '#fd79a8',
+                    backgroundColor: 'transparent',
+                    tension: 0.3
+                },
+                {
+                    label: 'Wear',
+                    data: WearData,
+                    borderColor: '#e17055',
                     backgroundColor: 'transparent',
                     tension: 0.3
                 }
