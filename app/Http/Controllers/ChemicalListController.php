@@ -80,9 +80,9 @@ class ChemicalListController extends Controller
             'updated_at' => Carbon::now(),
         ];
         if ($request->hasFile('chemical_lists_file1')) { 
-            $data['chemical_lists_file1'] = $request->file('chemical_lists_file1')->storeAs('img/Chemical_File', "IMG_" . carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('chemical_lists_file1')->extension()); 
+            $data['chemical_lists_file1'] = $request->file('chemical_lists_file1')->storeAs('images/Chemical_File', "IMG_" . carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('chemical_lists_file1')->extension()); 
         } if ($request->hasFile('chemical_lists_file2')) { 
-            $data['chemical_lists_file2'] = $request->file('chemical_lists_file2')->storeAs('img/Chemical_File', "IMG_" . carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('chemical_lists_file2')->extension());
+            $data['chemical_lists_file2'] = $request->file('chemical_lists_file2')->storeAs('images/Chemical_File', "IMG_" . carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('chemical_lists_file2')->extension());
         }
         try{
             DB::beginTransaction();
@@ -158,9 +158,9 @@ class ChemicalListController extends Controller
             'updated_at' => Carbon::now(),
         ]; 
         if ($request->hasFile('chemical_lists_file1')) { 
-            $data['chemical_lists_file1'] = $request->file('chemical_lists_file1')->storeAs('img/Chemical_File', "IMG_" . carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('chemical_lists_file1')->extension()); 
+            $data['chemical_lists_file1'] = $request->file('chemical_lists_file1')->storeAs('images/Chemical_File', "IMG_" . carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('chemical_lists_file1')->extension()); 
         } if ($request->hasFile('chemical_lists_file2')) { 
-            $data['chemical_lists_file2'] = $request->file('chemical_lists_file2')->storeAs('img/Chemical_File', "IMG_" . carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('chemical_lists_file2')->extension());
+            $data['chemical_lists_file2'] = $request->file('chemical_lists_file2')->storeAs('images/Chemical_File', "IMG_" . carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('chemical_lists_file2')->extension());
         }
         try{ 
             DB::beginTransaction(); 
