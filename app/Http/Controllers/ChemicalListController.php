@@ -10,7 +10,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class ChemicalListController extends Controller
@@ -130,82 +129,52 @@ class ChemicalListController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-{
-    $request->validate([
-        'chemical_lists_name' => ['required'],
-        'chemical_lists_density' => ['required'],
-        'chemical_lists_tempstart' => ['required'],
-        'chemical_lists_tempend' => ['required'],
-        'chemical_groups_id' => ['required'],
-        'chemical_funtions_id' => ['required'],
-    ]);
-
-    $model = ChemicalList::findOrFail($id);
-
-    $data = [
-        'chemical_groups_id' => $request->chemical_groups_id,
-        'chemical_funtions_id' => $request->chemical_funtions_id,
-        'chemical_lists_name' => $request->chemical_lists_name,
-        'chemical_lists_grade' => $request->chemical_lists_grade,
-        'chemical_lists_density' => $request->chemical_lists_density,
-        'chemical_lists_remark' => $request->chemical_lists_remark,
-        'chemical_lists_detail' => $request->chemical_lists_detail,
-        'chemical_lists_tempstart' => $request->chemical_lists_tempstart,
-        'chemical_lists_tempend' => $request->chemical_lists_tempend,
-        'chemical_lists_substitute' => $request->chemical_lists_substitute,
-        'chemical_lists_academic' => $request->chemical_lists_academic,
-        'chemical_lists_refcode' => $request->chemical_lists_refcode,
-        'chemical_lists_file3' => $request->chemical_lists_file3, 
-        'chemical_lists_file4' => $request->chemical_lists_file4,
-        'chemical_lists_flag' => 1,
-        'person_at' => Auth::user()->name,
-        'updated_at' => Carbon::now(),
-    ];
-
-    try {
-        DB::beginTransaction();
-
-        // helper function
-        $upload = function ($field, $oldFile = null) use ($request) {
-            if ($request->hasFile($field)) {
-
-                // ลบไฟล์เก่า
-                if ($oldFile && Storage::exists($oldFile)) {
-                    Storage::delete($oldFile);
-                }
-
-                return $request->file($field)->storeAs(
-                    'img/Chemical_File',
-                    "IMG_" . now()->format('YmdHis') . "_" . Str::random(5) . "." . $request->file($field)->extension()
-                );
-            }
-            return null;
-        };
-
-        // file1
-        if ($path = $upload('chemical_lists_file1', $model->chemical_lists_file1)) {
-            $data['chemical_lists_file1'] = $path;
-        }
-
-        // file2
-        if ($path = $upload('chemical_lists_file2', $model->chemical_lists_file2)) {
-            $data['chemical_lists_file2'] = $path;
-        }
-
-
-        $model->update($data);
-
-        DB::commit();
-
-        return redirect()->route('chemicallists.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
-
-    } catch (\Exception $e) {
-        DB::rollBack();
-        Log::error($e->getMessage());
-        dd($e->getMessage());
+    public function update(Request $request, $id) 
+    { 
+        $request->validate([ 
+            'chemical_lists_name' => ['required'], 
+            'chemical_lists_density' => ['required'], 
+            'chemical_lists_tempstart' => ['required'], 
+            'chemical_lists_tempend' => ['required'], 
+            'chemical_groups_id' => ['required'], 
+            'chemical_funtions_id' => ['required'], 
+        ]); 
+        $data = [ 
+            'chemical_groups_id' => $request->chemical_groups_id, 
+            'chemical_funtions_id' => $request->chemical_funtions_id, 
+            'chemical_lists_name' => $request->chemical_lists_name, 
+            'chemical_lists_grade' => $request->chemical_lists_grade, 
+            'chemical_lists_density' => $request->chemical_lists_density, 
+            'chemical_lists_remark' => $request->chemical_lists_remark, 
+            'chemical_lists_detail' => $request->chemical_lists_detail, 
+            'chemical_lists_tempstart' => $request->chemical_lists_tempstart, 
+            'chemical_lists_tempend' => $request->chemical_lists_tempend, 
+            'chemical_lists_substitute' => $request->chemical_lists_substitute, 
+            'chemical_lists_academic' => $request->chemical_lists_academic, 
+            'chemical_lists_file3' => $request->chemical_lists_file3, 
+            'chemical_lists_file4' => $request->chemical_lists_file4, 
+            'chemical_lists_refcode' => $request->chemical_lists_refcode, 
+            'chemical_lists_flag' => 1, 
+            'person_at' => Auth::user()->name, 
+            'updated_at' => Carbon::now(),
+        ]; 
+        if ($request->hasFile('chemical_lists_file1')) 
+        { 
+            $data['chemical_lists_file1'] = $request->file('chemical_lists_file1')->storeAs('img/Chemical_File', "IMG_" . carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('chemical_lists_file1')->extension());
+        } 
+        if ($request->hasFile('chemical_lists_file2')) 
+        { 
+            $data['chemical_lists_file2'] = $request->file('chemical_lists_file2')->storeAs('img/Chemical_File', "IMG_" . carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('chemical_lists_file2')->extension()); 
+        } 
+        try{ 
+            DB::beginTransaction(); 
+            $insertHD = ChemicalList::where('chemical_lists_id',$id)->update($data); 
+            DB::commit(); 
+            return redirect()->route('chemicallists.index')->with('success', 'บันทึกข้อมูลเรียบร้อย'); 
+        }catch(\Exception $e){ 
+            Log::error($e->getMessage()); dd($e->getMessage()); return redirect()->back()->with('error', 'เกิดข้อผิดพลาด'); 
+        } 
     }
-}
 
     /**
      * Remove the specified resource from storage.
