@@ -166,14 +166,20 @@ class ChemicalListController extends Controller
             'person_at' => Auth::user()->name, 
             'updated_at' => Carbon::now(),
         ]; 
-        if ($request->hasFile('chemical_lists_file1')) 
-        { 
-            $data['chemical_lists_file1'] = $request->file('chemical_lists_file1')->storeAs('img/Chemical_File', "IMG_" . carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('chemical_lists_file1')->extension());
-        } 
-        if ($request->hasFile('chemical_lists_file2')) 
-        { 
-            $data['chemical_lists_file2'] = $request->file('chemical_lists_file2')->storeAs('img/Chemical_File', "IMG_" . carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('chemical_lists_file2')->extension()); 
-        } 
+        if ($request->hasFile('chemical_lists_file1')) {
+            $file = $request->file('chemical_lists_file1');
+
+            $filename = "IMG_" . now()->format('YmdHis') . "_" . Str::random(5) . "." . $file->extension();
+
+            $data['chemical_lists_file1'] = $file->storeAs('img/Chemical_File', $filename, 'public');
+        }
+        if ($request->hasFile('chemical_lists_file2')) {
+            $file = $request->file('chemical_lists_file2');
+
+            $filename = "IMG_" . now()->format('YmdHis') . "_" . Str::random(5) . "." . $file->extension();
+
+            $data['chemical_lists_file2'] = $file->storeAs('img/Chemical_File', $filename, 'public');
+        }
         try{ 
             DB::beginTransaction(); 
             $insertHD = ChemicalList::where('chemical_lists_id',$id)->update($data); 
