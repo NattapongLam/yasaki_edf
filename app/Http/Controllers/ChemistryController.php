@@ -135,9 +135,11 @@ class ChemistryController extends Controller
         ->leftjoin('TestDetails','TestHeaders.TestID','=','TestDetails.TestID')
         ->where('TestHeaders.FormulaNumber',$hd->chemistry_hd_name)
         ->get();
+        $feeavg = DB::table('vw_formula_feeavg')->where('FormulaNumber',$hd->chemistry_hd_name)->get();
+        $datefeeavg = DB::table('vw_formula_datefeeavg')->where('FormulaNumber',$hd->chemistry_hd_name)->get();
         $types = DB::table('chemistry_type')->get();
         $products = DB::table('chemical_lists')->get();
-        return view('chemicalsetup.form-chemistrys-show', compact('hd','dt','lap','test','types','products'));
+        return view('chemicalsetup.form-chemistrys-show', compact('hd','dt','lap','test','types','products','feeavg','datefeeavg'));
     }
 
     /**

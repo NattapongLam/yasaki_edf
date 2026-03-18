@@ -463,13 +463,13 @@ $(document).on('change','input[name="chemistry_hd_calculate"]',function(){
     /* ===================== RADAR CHART ===================== */
 
     const avgData = [
-        {{ $lap->avg('Hardness') ?? 0 }},
-        {{ $lap->avg('Shearing') ?? 0 }},
-        {{ $lap->avg('Noise') ?? 0 }},
-        {{ $lap->avg('RoadTestAvg') ?? 0 }},
-        {{ $lap->avg('Normal_Avg') ?? 0 }},
-        {{ $lap->avg('Hot_Avg') ?? 0 }},
-        {{ $lap->avg('Wear_Avg') ?? 0 }},
+        {{ $feeavg->avg('HardnesPercent') ?? 0 }},
+        {{ $feeavg->avg('ShearingPercent') ?? 0 }},
+        {{ $feeavg->avg('NoisePercent') ?? 0 }},
+        {{ $feeavg->avg('RoadTestPercent') ?? 0 }},
+        {{ $feeavg->avg('NormalPercent') ?? 0 }},
+        {{ $feeavg->avg('HotPercent') ?? 0 }},
+        {{ $feeavg->avg('WearPercent') ?? 0 }},
     ];
 
     const radarCtx = document.getElementById('radarChart');
@@ -492,8 +492,11 @@ $(document).on('change','input[name="chemistry_hd_calculate"]',function(){
             responsive: true,
             scales: {
                 r: {
+                    min: 0,
+                    max: 100,
                     beginAtZero: true,
                     ticks: {
+                        stepSize: 20, // ปรับ interval ได้ เช่น 10, 25
                         backdropColor: 'transparent'
                     }
                 }
@@ -505,50 +508,50 @@ $(document).on('change','input[name="chemistry_hd_calculate"]',function(){
     /* ===================== LINE CHART ===================== */
 
     const labels = [
-        @foreach ($lap as $item)
+        @foreach ($datefeeavg as $item)
             "{{ \Carbon\Carbon::parse($item->TestDate)->format('d/m/Y') }}",
         @endforeach
     ];
 
     const hardnessData = [
-        @foreach ($lap as $item)
-            {{ $item->Hardness ?? 0 }},
+        @foreach ($datefeeavg as $item)
+            {{ $item->HardnesPercent ?? 0 }},
         @endforeach
     ];
 
     const shearingData = [
-        @foreach ($lap as $item)
-            {{ $item->Shearing ?? 0 }},
+        @foreach ($datefeeavg as $item)
+            {{ $item->ShearingPercent ?? 0 }},
         @endforeach
     ];
 
     const noiseData = [
-        @foreach ($lap as $item)
-            {{ $item->Noise ?? 0 }},
+        @foreach ($datefeeavg as $item)
+            {{ $item->NoisePercent ?? 0 }},
         @endforeach
     ];
 
     const roadTestData = [
-        @foreach ($lap as $item)
-            {{ $item->RoadTestAvg ?? 0 }},
+        @foreach ($datefeeavg as $item)
+            {{ $item->RoadTestPercent ?? 0 }},
         @endforeach
     ];
 
     const NormalData = [
-        @foreach ($lap as $item)
-            {{ $item->Normal_Avg ?? 0 }},
+        @foreach ($datefeeavg as $item)
+            {{ $item->NormalPercent ?? 0 }},
         @endforeach
     ];
 
     const HotData = [
-        @foreach ($lap as $item)
-            {{ $item->Hot_Avg ?? 0 }},
+        @foreach ($datefeeavg as $item)
+            {{ $item->HotPercent ?? 0 }},
         @endforeach
     ];
 
     const WearData = [
-        @foreach ($lap as $item)
-            {{ $item->Wear_Avg ?? 0 }},
+        @foreach ($datefeeavg as $item)
+            {{ $item->WearPercent ?? 0 }},
         @endforeach
     ];
     const lineCtx = document.getElementById('lineChart');
@@ -622,7 +625,11 @@ $(document).on('change','input[name="chemistry_hd_calculate"]',function(){
             },
             scales: {
                 y: {
-                    beginAtZero: false
+                    min: 0,
+                    max: 100,
+                    ticks: {
+                        stepSize: 20 // ปรับได้ เช่น 10, 25
+                    }
                 }
             }
         }
