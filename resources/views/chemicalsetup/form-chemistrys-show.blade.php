@@ -132,7 +132,11 @@
                 </thead>
                 <tbody id="tableBody" style="color: black">
                     @foreach ($dt as $item)
-                    <tr style="{{ $item->chemical_groups_color ? 'background-color: '.$item->chemical_groups_color : '' }}">
+                    <tr 
+                        style="{{ $item->chemical_groups_color ? 'background-color: '.$item->chemical_groups_color : '' }}"
+                        data-group="{{ $item->chemical_groups_name }}"
+                        data-color="{{ $item->chemical_groups_color }}"
+                    >
                         <td>
                             {{ $item->no }}
                             <input type="hidden" name="chemistry_dt_id[]" value="{{$item->chemistry_dt_id}}">
@@ -143,18 +147,41 @@
                                 @foreach ($products as $product)
                                     <option value="{{$product->chemical_lists_refcode}}"
                                         {{$item->code == $product->chemical_lists_refcode ? 'selected' : '' }}
-                                        data-density="{{ number_format($product->chemical_lists_density,2,'.','') }}">
+                                        data-density="{{ number_format($product->chemical_lists_density,2,'.','') }}"
+                                        data-group="{{ $item->chemical_groups_name }}"
+                                        data-color="{{ $item->chemical_groups_color }}">
                                         {{$product->chemical_lists_refcode}} - {{$product->chemical_lists_name}} ({{$product->chemical_lists_grade}})
                                         สต็อค : {{number_format($product->chemical_lists_stc,2)}}
                                     </option>
                                 @endforeach
                             </select>
+                            <input type="hidden" name="group[]" class="form-control group" value=""/>
+                            <input type="hidden" name="color[]" class="form-control color" value=""/>
                         </td>
-                        <td><input type="number" step="0.01" name="density[]" class="form-control density" value="{{ number_format($item->density,2) }}"/></td>
-                        <td><input type="number" step="0.01" name="adjust[]" class="form-control adjust" value="{{ number_format($item->adjust,2) }}"/></td>
-                        <td><input type="number" step="0.01" name="weght[]" class="form-control weght" value="{{ number_format($item->weght,2) }}"/></td>
-                        <td><input type="number" step="0.01" name="weghtper[]" class="form-control weghtper" value="{{ number_format($item->weghtper,2) }}"/></td>
-                        <td><input type="number" step="0.01" name="weghttotal[]" class="form-control weghttotal" value="{{ number_format($item->weghttotal,2) }}"/></td>
+                        <td><input type="number" step="0.01" name="density[]" class="form-control density" value="{{ number_format($item->density,2,'.','') }}"/></td>
+                        <td>
+                            <input type="number" step="0.01" name="adjust[]" 
+                                class="form-control adjust"
+                                value="{{ number_format($item->adjust, 2, '.', '') }}">
+                        </td>
+
+                        <td>
+                            <input type="number" step="0.01" name="weght[]" 
+                                class="form-control weght"
+                                value="{{ number_format($item->weght, 2, '.', '') }}">
+                        </td>
+
+                        <td>
+                            <input type="number" step="0.01" name="weghtper[]" 
+                                class="form-control weghtper"
+                                value="{{ number_format($item->weghtper, 2, '.', '') }}">
+                        </td>
+
+                        <td>
+                            <input type="number" step="0.01" name="weghttotal[]" 
+                                class="form-control weghttotal"
+                                value="{{ number_format($item->weghttotal, 2, '.', '') }}">
+                        </td>
                     </tr>
                     @endforeach
                 </tbody>
@@ -178,6 +205,13 @@
                 </div>
             </div>
         </form>
+        <div class="row">
+            <div class="col-12 d-flex justify-content-center">
+                <div style="width:500px; height:500px;">
+                    <canvas id="pieChart"></canvas>
+                </div>
+            </div>
+        </div>     
         <hr>
         <div class="row">
             <h5 style="color: black">ผลการทดสอบ</h5>
@@ -325,7 +359,19 @@
 @endsection
 @push('scriptjs')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 <script>
+let pieChart = null;
+function showOverLimit(msg) {
+    Swal.fire({
+        icon: 'warning',
+        title: 'เกิน 100%',
+        text: msg,
+        confirmButtonText: 'ตกลง'
+    });
+}
+
+/* ===================== INIT ===================== */
 $(document).ready(function () {
 
     $('.select2-product').select2({
@@ -333,46 +379,77 @@ $(document).ready(function () {
         placeholder: 'เลือกสินค้า'
     });
 
-    calculateTable(); // คำนวณตอนเปิดหน้า
+    initRowData();
+    calculateTable();
 });
 
+/* ===================== INIT ROW ===================== */
+function initRowData() {
+    $('#tableBody tr').each(function () {
+        const row = $(this);
 
+        const group = row.data('group') || '';
+        const color = normalizeColor(row.data('color'));
+
+        row.find('.group').val(group);
+        row.find('.color').val(color);
+    });
+}
+
+/* ===================== COLOR ===================== */
+function normalizeColor(color) {
+    if (!color) return '';
+    color = color.toString().trim();
+
+    if (color.startsWith('rgb')) return color;
+    if (!color.startsWith('#')) color = '#' + color;
+
+    return color;
+}
+
+/* ===================== SELECT PRODUCT ===================== */
 $(document).on('change', '.select2-product', function () {
 
-    let density = $(this).find(':selected').data('density') || 0;
-    density = parseFloat(density).toFixed(2);
+    const selected = $(this).find(':selected');
 
-    let row = $(this).closest('tr');
-    row.find('.density').val(density);
+    const density = selected.attr('data-density') || 0;
+    const group = selected.attr('data-group') || '';
+    const color = normalizeColor(selected.attr('data-color'));
+
+    const row = $(this).closest('tr');
+
+    row.find('.density').val(parseFloat(density).toFixed(2));
+    row.find('.group').val(group);
+    row.find('.color').val(color);
+
+    // color row
+    row.find('td').css({ backgroundColor: '', borderLeft: '' });
+
+    if (color) {
+        row.find('td').css('background-color', color);
+        row.find('td:first').css('border-left', '6px solid ' + color);
+    }
 
     calculateTable();
 });
 
+/* ===================== EVENT (สำคัญ) ===================== */
+/* 🔥 ใช้ blur เท่านั้น → พิมพ์ลื่น */
+$(document).on('blur', '.adjust, .density, .weghtper, input[name="chemistry_hd_mix"]', function () {
+    calculateTable();
+});
 
-/* ================= DELETE ROW ================= */
+/* 🔥 เปลี่ยน mode */
+$(document).on('change', 'input[name="chemistry_hd_calculate"]', function () {
+    calculateTable();
+});
 
-const tableBody = document.getElementById('tableBody');
-
-if (tableBody) {
-    tableBody.addEventListener('click', function (e) {
-
-        if (e.target.classList.contains('deleteRow')) {
-            e.target.closest('tr').remove();
-            calculateTable();
-        }
-
-    });
-}
-
-
-/* ================= CALCULATE TABLE ================= */
-
-function calculateTable(){
+/* ===================== CALCULATE ===================== */
+function calculateTable() {
 
     const mode = $('input[name="chemistry_hd_calculate"]:checked').val();
     const mix = parseFloat($('input[name="chemistry_hd_mix"]').val()) || 0;
 
-    let totalWeight = 0;
     let sumAdjust = 0;
     let sumWeight = 0;
     let sumWeightPer = 0;
@@ -380,44 +457,61 @@ function calculateTable(){
 
     const rows = $('#tableBody tr');
 
-    /* STEP 1 */
-
-    rows.each(function(){
+    /* ===== STEP 1 ===== */
+    rows.each(function () {
 
         const row = $(this);
 
         const density = parseFloat(row.find('.density').val()) || 0;
-        const adjust = parseFloat(row.find('.adjust').val()) || 0;
-        let weight = parseFloat(row.find('.weght').val()) || 0;
+        let adjust = parseFloat(row.find('.adjust').val()) || 0;
         let weightPer = parseFloat(row.find('.weghtper').val()) || 0;
+        let weight = 0;
 
-        if(mode === 'vol')
-        {
+        if (mode === 'vol') {
+
+            if (sumAdjust + adjust > 100) {
+                adjust = 100 - sumAdjust;
+                if (adjust < 0) adjust = 0;
+
+                row.find('.adjust').val(adjust.toFixed(2)); // update ตอน calculate เท่านั้น
+            }
+
             weight = density * adjust;
             row.find('.weght').val(weight.toFixed(2));
-            totalWeight += weight;
+
+            sumAdjust += adjust;
         }
 
-        sumAdjust += adjust;
+        if (mode === 'w') {
+
+            if (sumWeightPer + weightPer > 100) {
+                weightPer = 100 - sumWeightPer;
+                if (weightPer < 0) weightPer = 0;
+
+                row.find('.weghtper').val(weightPer.toFixed(2));
+            }
+
+            weight = weightPer;
+            sumWeightPer += weightPer;
+        }
+
         sumWeight += weight;
     });
 
-
-    /* STEP 2 */
-
-    rows.each(function(){
+    /* ===== STEP 2 ===== */
+    rows.each(function () {
 
         const row = $(this);
 
+        const density = parseFloat(row.find('.density').val()) || 0;
         let weight = parseFloat(row.find('.weght').val()) || 0;
         let weightPer = parseFloat(row.find('.weghtper').val()) || 0;
         let weightTotal = 0;
 
-        if(mode === 'vol')
-        {
-            if(totalWeight > 0)
-            {
-                weightPer = (weight / totalWeight) * 100;
+        if (mode === 'vol') {
+
+            if (sumWeight > 0) {
+                weightPer = (weight / sumWeight) * 100;
                 weightTotal = (mix * weightPer) / 100;
 
                 row.find('.weghtper').val(weightPer.toFixed(2));
@@ -425,41 +519,118 @@ function calculateTable(){
             }
         }
 
-        if(mode === 'w')
-        {
+        if (mode === 'w') {
+
+            if (density > 0 && sumWeightPer > 0) {
+
+                let adjustCalc = (weightPer / sumWeightPer) * 100 / density;
+
+                row.find('.adjust').val(adjustCalc.toFixed(2));
+            }
+
             weightTotal = (mix * weightPer) / 100;
             row.find('.weghttotal').val(weightTotal.toFixed(2));
         }
 
-        sumWeightPer += weightPer;
         sumWeightTotal += weightTotal;
     });
-
-
-    /* TOTAL */
-
+    /* 🔥 FIX SUM ADJUST */
+    sumAdjust = 0;
+    rows.each(function () {
+        const adjust = parseFloat($(this).find('.adjust').val()) || 0;
+        sumAdjust += adjust;
+    });
+    /* ===== SUMMARY ===== */
     $('input[name="chemistry_hd_qty"]').val(sumWeightTotal.toFixed(2));
 
     $('#sumAdjust').text(sumAdjust.toFixed(2));
     $('#sumWeight').text(sumWeight.toFixed(2));
     $('#sumWeightPer').text(sumWeightPer.toFixed(2));
     $('#sumWeightTotal').text(sumWeightTotal.toFixed(2));
+
+    renderPieChart();
 }
 
+/* ===================== PIE ===================== */
+function buildPieData() {
 
-/* ================= EVENT ================= */
+    const rows = document.querySelectorAll('#tableBody tr');
 
-$(document).on(
-    'keyup change',
-    '.adjust,.density,.weghtper,input[name="chemistry_hd_mix"]',
-    function(){
-        calculateTable();
+    const groupMap = {};
+    const colorMap = {};
+
+    rows.forEach(row => {
+
+        const group = row.querySelector('.group')?.value || 'ไม่ระบุ';
+        const value = parseFloat(row.querySelector('.weghttotal')?.value || 0);
+        const color = row.querySelector('.color')?.value || '#cccccc';
+
+        if (value <= 0) return;
+
+        if (!groupMap[group]) {
+            groupMap[group] = 0;
+            colorMap[group] = color;
+        }
+
+        groupMap[group] += value;
+    });
+
+    const labels = Object.keys(groupMap);
+    const data = Object.values(groupMap);
+    const total = data.reduce((a, b) => a + b, 0);
+
+    return {
+        labels,
+        data,
+        colors: labels.map(g => colorMap[g]),
+        total
+    };
+}
+
+function renderPieChart() {
+
+    const ctx = document.getElementById('pieChart').getContext('2d');
+    const result = buildPieData();
+
+    if (pieChart) {
+        pieChart.destroy();
     }
-);
 
-$(document).on('change','input[name="chemistry_hd_calculate"]',function(){
-    calculateTable();
-});
+    pieChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: result.labels,
+            datasets: [{
+                data: result.data,
+                backgroundColor: result.colors
+            }]
+        },
+        plugins: [ChartDataLabels],
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'right' },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const value = context.raw;
+                            const percent = (value / result.total * 100).toFixed(2);
+                            return `${context.label}: ${value.toFixed(2)} g (${percent}%)`;
+                        }
+                    }
+                },
+                datalabels: {
+                    color: '#000',
+                    formatter: function(value) {
+                        const percent = (value / result.total * 100).toFixed(1);
+                        return `${value.toFixed(1)}g\n${percent}%`;
+                    }
+                }
+            }
+        }
+    });
+}
     /* ===================== RADAR CHART ===================== */
 
     const avgData = [
@@ -762,5 +933,93 @@ $(document).on('change','input[name="chemistry_hd_calculate"]',function(){
         }
     });
 @endforeach
+/* ===================== BUILD DATA ===================== */
+function buildPieData() {
+    const rows = document.querySelectorAll('#tableBody tr');
+
+    const groupMap = {};
+    const colorMap = {};
+
+    rows.forEach(row => {
+        const group = row.querySelector('.group')?.value || 'ไม่ระบุ';
+        const value = parseFloat(row.querySelector('.weghttotal')?.value || 0); // 🔥 ใช้น้ำหนักจริง
+        const color = row.querySelector('.color')?.value || '#cccccc';
+
+        if (value <= 0) return;
+
+        if (!groupMap[group]) {
+            groupMap[group] = 0;
+            colorMap[group] = color;
+        }
+
+        groupMap[group] += value;
+    });
+
+    const labels = Object.keys(groupMap);
+    const data = Object.values(groupMap);
+    const total = data.reduce((a, b) => a + b, 0);
+
+    return {
+        labels,
+        data,
+        colors: labels.map(g => colorMap[g]),
+        total
+    };
+}
+
+/* ===================== RENDER PIE ===================== */
+function renderPieChart() {
+    const ctx = document.getElementById('pieChart').getContext('2d');
+    const result = buildPieData();
+
+    if (pieChart) {
+        pieChart.destroy();
+    }
+
+    pieChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: result.labels,
+            datasets: [{
+                data: result.data,
+                backgroundColor: result.colors
+            }]
+        },
+        plugins: [ChartDataLabels],
+        options: {
+            responsive: true,
+            maintainAspectRatio: false, 
+            plugins: {
+                legend: {
+                    position: 'right'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const value = context.raw;
+                            const percent = (value / result.total * 100).toFixed(2);
+                            return `${context.label}: ${value.toFixed(2)} g (${percent}%)`;
+                        }
+                    }
+                },
+                datalabels: {
+                    color: '#000000',
+                    formatter: function(value, context) {
+                        const percent = (value / result.total * 100).toFixed(1);
+                        return `${value.toFixed(1)}g\n${percent}%`;
+                    },
+                    font: {
+                        weight: 'bold',
+                        size: 12
+                    }
+                }
+            }
+        }
+    });
+}
+/* ===================== INIT ===================== */
+$(document).ready(function () {
+    renderPieChart();
+});
 </script>
 @endpush

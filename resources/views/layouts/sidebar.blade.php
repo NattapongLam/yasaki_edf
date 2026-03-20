@@ -189,7 +189,21 @@
                             </a>
                             </li> 
                     </ul>                    
-                </li>                                                
+                </li>   
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="bx bx-chart"></i>
+                        <span key="t-layouts">รายงานทดสอบและพัฒนา</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="true">
+                        <li>
+                            <a href="{{ url('/compare-formulas') }}">
+                                <i class="bx bx-bar-chart-square"></i>
+                                <span key="t-users">เปรียบเทียบผลทดลอง</span>
+                            </a>
+                            </li> 
+                    </ul>                    
+                </li>                                               
                 <li class="menu-title" key="t-pages">Setting</li>   
                 <li>
                     <a href="{{route('profiles.index')}}">

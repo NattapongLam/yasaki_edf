@@ -34,7 +34,9 @@ class ChemistryController extends Controller
     {
         $formule = DB::table('ms_formule')->get();
         $types = DB::table('chemistry_type')->get();
-        $products = DB::table('chemical_lists')->get();
+        $products = DB::table('chemical_lists')
+        ->leftjoin('chemical_groups','chemical_groups.chemical_groups_id','=','chemical_lists.chemical_groups_id')
+        ->get();
         return view('chemicalsetup.form-chemistrys-create', compact('formule','types','products'));
     }
 
@@ -138,7 +140,9 @@ class ChemistryController extends Controller
         $feeavg = DB::table('vw_formula_feeavg')->where('FormulaNumber',$hd->chemistry_hd_name)->get();
         $datefeeavg = DB::table('vw_formula_datefeeavg')->where('FormulaNumber',$hd->chemistry_hd_name)->get();
         $types = DB::table('chemistry_type')->get();
-        $products = DB::table('chemical_lists')->get();
+        $products = DB::table('chemical_lists')
+        ->leftjoin('chemical_groups','chemical_groups.chemical_groups_id','=','chemical_lists.chemical_groups_id')
+        ->get();
         return view('chemicalsetup.form-chemistrys-show', compact('hd','dt','lap','test','types','products','feeavg','datefeeavg'));
     }
 

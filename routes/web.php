@@ -41,6 +41,7 @@ Route::resource('/chemicallists' , App\Http\Controllers\ChemicalListController::
 Route::post('/confirmDelChemical' , [App\Http\Controllers\ChemicalListController::class , 'confirmDelChemical']);
 Route::get('/chemical/functions/{group_id}', [App\Http\Controllers\ChemicalListController::class, 'getFunctions']);
 Route::resource('/chemistrys' , App\Http\Controllers\ChemistryController::class);
+Route::get('/compare-formulas' , [App\Http\Controllers\ReportFormulaController::class , 'CompareFormulas']);
 // เคมี
 
 // ทั่วไป

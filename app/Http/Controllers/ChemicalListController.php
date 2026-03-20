@@ -78,6 +78,7 @@ class ChemicalListController extends Controller
             'person_at' => Auth::user()->name,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
+            'chemical_funtions_id_1' => $request->chemical_funtions_id_1,
         ];
         if ($request->hasFile('chemical_lists_file1')) { 
             $data['chemical_lists_file1'] = $request->file('chemical_lists_file1')->storeAs('images/Chemical_File', "IMG_" . carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('chemical_lists_file1')->extension()); 
@@ -156,6 +157,7 @@ class ChemicalListController extends Controller
             'chemical_lists_flag' => 1, 
             'person_at' => Auth::user()->name, 
             'updated_at' => Carbon::now(),
+            'chemical_funtions_id_1' => $request->chemical_funtions_id_1,
         ]; 
         if ($request->hasFile('chemical_lists_file1')) { 
             $data['chemical_lists_file1'] = $request->file('chemical_lists_file1')->storeAs('images/Chemical_File', "IMG_" . carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('chemical_lists_file1')->extension()); 

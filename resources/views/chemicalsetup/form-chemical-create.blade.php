@@ -73,13 +73,21 @@
         <div class="row">
             <div class="col-3">
                 <div class="form-group">
-                    <label for="chemical_funtions_id" class="col-form-label">Function</label>
+                    <label for="chemical_funtions_id" class="col-form-label">Function (หลัก)</label>
                     <select id="chemical_funtions_id" name="chemical_funtions_id" class="form-control" required>
                         <option value="">กรุณาเลือก</option>
                     </select>
                 </div>
             </div>
-            <div class="col-9">
+            <div class="col-3">
+                <div class="form-group">
+                    <label for="chemical_funtions_id_1" class="col-form-label">Function (รอง)</label>
+                    <select id="chemical_funtions_id_1" name="chemical_funtions_id_1" class="form-control" required>
+                        <option value="">กรุณาเลือก</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-6">
                 <div class="form-group">
                     <label for="chemical_lists_detail" class="col-form-label">Detail</label>
                     <input type="text" class="form-control" name="chemical_lists_detail" id="chemical_lists_detail">
@@ -173,7 +181,7 @@
         let groupId = $(this).val();
 
         $('#chemical_funtions_id').html('<option value="">กำลังโหลด...</option>');
-
+        $('#chemical_funtions_id_1').html('<option value="">กำลังโหลด...</option>');
         if(groupId){
             $.ajax({
                 url: '/chemical/functions/' + groupId,
@@ -187,10 +195,19 @@
                             '<option value="'+item.chemical_funtions_id+'">'+item.chemical_funtions_name+'</option>'
                         );
                     });
+                    $('#chemical_funtions_id_1').empty();
+                    $('#chemical_funtions_id_1').append('<option value="">กรุณาเลือก</option>');
+                    
+                    $.each(res, function(key, item){
+                        $('#chemical_funtions_id_1').append(
+                            '<option value="'+item.chemical_funtions_id+'">'+item.chemical_funtions_name+'</option>'
+                        );
+                    });
                 }
             });
         } else {
             $('#chemical_funtions_id').html('<option value="">กรุณาเลือก</option>');
+            $('#chemical_funtions_id_1').html('<option value="">กรุณาเลือก</option>');
         }
     });
 document.querySelectorAll('#chemical_lists_tempstart, #chemical_lists_tempend,#chemical_lists_density')

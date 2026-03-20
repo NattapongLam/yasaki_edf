@@ -134,7 +134,7 @@
                 </tfoot>
             </table>
             </div>
-        </div> 
+        </div>       
         <br>
             <div class="col-12 col-md-1">
                 <div class="form-group">
@@ -143,30 +143,88 @@
                     </button>
                 </div>
             </div>
-        </form>       
+        </form> 
+        <hr>
+        <div class="row">
+            <div class="col-12 d-flex justify-content-center">
+                <div style="width:500px; height:500px;">
+                    <canvas id="pieChart"></canvas>
+                </div>
+            </div>
+        </div>     
     </div>
 </div>
 </div>
 @endsection
 @push('scriptjs')
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 <script>
 $(document).ready(function () {
     $('.select2-product').select2({
         width: '100%',
         placeholder: 'เลือกสินค้า'
     });
-});   
+});
+function showOverLimit(msg) {
+    Swal.fire({
+        icon: 'warning',
+        title: 'เกิน 100%',
+        text: msg,
+        confirmButtonText: 'ตกลง'
+    });
+}
+function normalizeColor(color) {
+    if (!color) return '';
+
+    color = color.toString().trim();
+
+    // ถ้าเป็น rgb(...) ใช้ได้เลย
+    if (color.startsWith('rgb')) return color;
+
+    // เติม # ถ้าไม่มี
+    if (!color.startsWith('#')) {
+        color = '#' + color;
+    }
+
+    return color;
+}
+/* ===================== SELECT PRODUCT ===================== */
 $(document).on('change', '.select2-product', function () {
 
-    let density = $(this).find(':selected').data('density') || 0;
-    density = parseFloat(density).toFixed(2);
+    let selected = $(this).find(':selected');
+
+    let density = selected.attr('data-density') || 0;
+    let group = selected.attr('data-group') || '';
+    let color = normalizeColor(selected.attr('data-color'));
 
     let row = $(this).closest('tr');
-    row.find('.density').val(density);
+
+    row.find('.density').val(parseFloat(density).toFixed(2));
+    row.find('.group').val(group);
+    row.find('.color').val(color);
+
+    // reset ก่อน
+    row.find('td').each(function () {
+        this.style.backgroundColor = '';
+        this.style.borderLeft = '';
+    });
+
+    if (color) {
+        row.find('td').each(function () {
+            this.style.setProperty('background-color', color, 'important');
+        });
+
+        row.find('td:first')[0].style.setProperty('border-left', '6px solid ' + color, 'important');
+    }
 
     calculateTable();
+    renderPieChart();
 });
+
+/* ===================== UPDATE ROW NUMBER ===================== */
 function updateRowNumbers() {
     const rows = document.querySelectorAll('#tableBody tr');
     rows.forEach((row, index) => {
@@ -174,7 +232,9 @@ function updateRowNumbers() {
         row.querySelector('.row-number-hidden').value = index + 1;
     });
 }
-
+/* ===================== GLOBAL ===================== */
+let pieChart = null;
+/* ===================== ADD ROW ===================== */
 document.getElementById('addRowBtn').addEventListener('click', function () {
     const tbody = document.getElementById('tableBody');
 
@@ -188,15 +248,21 @@ document.getElementById('addRowBtn').addEventListener('click', function () {
             <select class="form-control select2-product" name="code[]">
                 <option value="">เลือกสินค้า</option>
                 @foreach ($products as $item)
-                    <option value="{{$item->chemical_lists_id}}"
-                        data-density="{{ number_format($item->chemical_lists_density,2,'.','') }}">
-                        {{$item->chemical_lists_refcode}} - {{$item->chemical_lists_name}} ({{$item->chemical_lists_grade}}) สต็อค : {{number_format($item->chemical_lists_stc,2)}}
+                   <option value="{{$item->chemical_lists_id}}"
+                        data-density="{{ number_format($item->chemical_lists_density,2,'.','') }}"
+                        data-group="{{ $item->chemical_groups_name }}"
+                        data-color="{{ $item->chemical_groups_color }}">
+                        {{$item->chemical_lists_refcode}} - {{$item->chemical_lists_name}} ({{$item->chemical_groups_name}}) สต็อค : {{number_format($item->chemical_lists_stc,2)}}
                     </option>
                 @endforeach
             </select>
         </td>
-        <td><input type="number" step="0.01" name="density[]" class="form-control density" value="0"/></td>
-        <td><input type="number" step="0.01" name="adjust[]" class="form-control adjust" value="0"/></td>
+        <td>
+            <input type="number" step="0.01" name="density[]" class="form-control density" value="0"/>
+            <input type="hidden" name="group[]" class="form-control group" value=""/>
+            <input type="hidden" name="color[]" class="form-control color" value=""/>
+        </td>
+        <td><input type="number" step="0.01" name="adjust[]" class="form-control adjust" value="0" max="100"/></td>
         <td><input type="number" step="0.01" name="weght[]" class="form-control weght" value="0"/></td>
         <td><input type="number" step="0.01" name="weghtper[]" class="form-control weghtper" value="0"/></td>
         <td><input type="number" step="0.01" name="weghttotal[]" class="form-control weghttotal" value="0"/></td>
@@ -205,21 +271,35 @@ document.getElementById('addRowBtn').addEventListener('click', function () {
 
     tbody.appendChild(newRow);
 
-    // init select2 เฉพาะ select ตัวใหม่
     $(newRow).find('.select2-product').select2({
         width: '100%',
         placeholder: 'เลือกสินค้า'
     });
 
     updateRowNumbers();
+    renderPieChart();
 });
 
+/* ===================== DELETE ROW ===================== */
 document.getElementById('tableBody').addEventListener('click', function (e) {
     if (e.target.classList.contains('deleteRow')) {
         e.target.closest('tr').remove();
         updateRowNumbers();
+        calculateTable();
+        renderPieChart();
     }
 });
+
+/* ===================== LIMIT INPUT (ROW) ===================== */
+$(document).on('input', '.adjust', function () {
+    let val = parseFloat($(this).val()) || 0;
+
+    if (val > 100) {
+        $(this).val(100);
+    }
+});
+
+/* ===================== CALCULATE ===================== */
 function calculateTable(){
 
     const mode = $('input[name="chemistry_hd_calculate"]:checked').val();
@@ -233,41 +313,67 @@ function calculateTable(){
 
     const rows = $('#tableBody tr');
 
-    // STEP 1
+    /* ===== STEP 1 ===== */
     rows.each(function(){
 
         const row = $(this);
 
         const density = parseFloat(row.find('.density').val()) || 0;
-        const adjust = parseFloat(row.find('.adjust').val()) || 0;
-        let weight = parseFloat(row.find('.weght').val()) || 0;
+        let adjust = parseFloat(row.find('.adjust').val()) || 0;
+        let weight = 0;
         let weightPer = parseFloat(row.find('.weghtper').val()) || 0;
 
         if(mode === 'vol')
         {
+            // จำกัด sum adjust <= 100
+            if (sumAdjust + adjust > 100) {
+                showOverLimit('Vol.% รวมเกิน 100%');
+
+                adjust = 100 - sumAdjust;
+                if (adjust < 0) adjust = 0;
+                row.find('.adjust').val(adjust.toFixed(2));
+            }
+
             weight = density * adjust;
             row.find('.weght').val(weight.toFixed(2));
-            totalWeight += weight;
+
+            sumAdjust += adjust;
         }
 
-        sumAdjust += adjust;
+        if(mode === 'w')
+        {
+            // จำกัด sum weightPer <= 100
+            if (sumWeightPer + weightPer > 100) {
+                showOverLimit('W % รวมเกิน 100%');
+
+                weightPer = 100 - sumWeightPer;
+                if (weightPer < 0) weightPer = 0;
+                row.find('.weghtper').val(weightPer.toFixed(2));
+            }
+
+            weight = weightPer; // temp (จะ normalize ด้านล่าง)
+            sumWeightPer += weightPer;
+        }
+
         sumWeight += weight;
     });
 
-    // STEP 2
+    /* ===== STEP 2 ===== */
     rows.each(function(){
 
         const row = $(this);
 
+        const density = parseFloat(row.find('.density').val()) || 0;
+        let adjust = parseFloat(row.find('.adjust').val()) || 0;
         let weight = parseFloat(row.find('.weght').val()) || 0;
         let weightPer = parseFloat(row.find('.weghtper').val()) || 0;
         let weightTotal = 0;
 
         if(mode === 'vol')
         {
-            if(totalWeight > 0)
+            if(sumWeight > 0)
             {
-                weightPer = (weight / totalWeight) * 100;
+                weightPer = (weight / sumWeight) * 100;
                 weightTotal = (mix * weightPer) / 100;
 
                 row.find('.weghtper').val(weightPer.toFixed(2));
@@ -277,11 +383,33 @@ function calculateTable(){
 
         if(mode === 'w')
         {
+            // คำนวณน้ำหนักจริงจาก %
+            weight = weightPer;
+            row.find('.weght').val(weight.toFixed(2));
+
+            // 🔥 แปลงกลับเป็น Vol.% (adjust)
+            if (density > 0 && sumWeightPer > 0)
+            {
+                // normalize weight ให้เป็นสัดส่วนจริง
+                let normWeight = (weightPer / sumWeightPer);
+
+                let totalW = 0;
+                rows.each(function(){
+                    let wp = parseFloat($(this).find('.weghtper').val()) || 0;
+                    totalW += wp;
+                });
+
+                // คำนวณ adjust
+                let adjustCalc = (weightPer / totalW) * 100 / density;
+
+                row.find('.adjust').val(adjustCalc.toFixed(2));
+                sumAdjust += adjustCalc;
+            }
+
             weightTotal = (mix * weightPer) / 100;
             row.find('.weghttotal').val(weightTotal.toFixed(2));
         }
 
-        sumWeightPer += weightPer;
         sumWeightTotal += weightTotal;
     });
 
@@ -291,13 +419,105 @@ function calculateTable(){
     $('#sumWeight').text(sumWeight.toFixed(2));
     $('#sumWeightPer').text(sumWeightPer.toFixed(2));
     $('#sumWeightTotal').text(sumWeightTotal.toFixed(2));
+     // 🔥 ADD THIS
+    renderPieChart();
 }
+
+/* ===================== TRIGGER ===================== */
 $(document).on('keyup change','.adjust,.density,.weghtper,input[name="chemistry_hd_mix"]',function(){
     calculateTable();
 });
 
 $(document).on('change','input[name="chemistry_hd_calculate"]',function(){
     calculateTable();
+});
+/* ===================== BUILD DATA ===================== */
+function buildPieData() {
+    const rows = document.querySelectorAll('#tableBody tr');
+
+    const groupMap = {};
+    const colorMap = {};
+
+    rows.forEach(row => {
+        const group = row.querySelector('.group')?.value || 'ไม่ระบุ';
+        const value = parseFloat(row.querySelector('.weghttotal')?.value || 0); // 🔥 ใช้น้ำหนักจริง
+        const color = row.querySelector('.color')?.value || '#cccccc';
+
+        if (value <= 0) return;
+
+        if (!groupMap[group]) {
+            groupMap[group] = 0;
+            colorMap[group] = color;
+        }
+
+        groupMap[group] += value;
+    });
+
+    const labels = Object.keys(groupMap);
+    const data = Object.values(groupMap);
+    const total = data.reduce((a, b) => a + b, 0);
+
+    return {
+        labels,
+        data,
+        colors: labels.map(g => colorMap[g]),
+        total
+    };
+}
+
+/* ===================== RENDER PIE ===================== */
+function renderPieChart() {
+    const ctx = document.getElementById('pieChart').getContext('2d');
+    const result = buildPieData();
+
+    if (pieChart) {
+        pieChart.destroy();
+    }
+
+    pieChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: result.labels,
+            datasets: [{
+                data: result.data,
+                backgroundColor: result.colors
+            }]
+        },
+        plugins: [ChartDataLabels],
+        options: {
+            responsive: true,
+            maintainAspectRatio: false, 
+            plugins: {
+                legend: {
+                    position: 'right'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const value = context.raw;
+                            const percent = (value / result.total * 100).toFixed(2);
+                            return `${context.label}: ${value.toFixed(2)} g (${percent}%)`;
+                        }
+                    }
+                },
+                datalabels: {
+                    color: '#000000',
+                    formatter: function(value, context) {
+                        const percent = (value / result.total * 100).toFixed(1);
+                        return `${value.toFixed(1)}g\n${percent}%`;
+                    },
+                    font: {
+                        weight: 'bold',
+                        size: 12
+                    }
+                }
+            }
+        }
+    });
+}
+/* ===================== INIT ===================== */
+$(document).ready(function () {
+    renderPieChart();
 });
 </script>
 @endpush
