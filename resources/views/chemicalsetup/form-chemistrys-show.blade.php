@@ -215,6 +215,68 @@
         <hr>
         <div class="row">
             <h5 style="color: black">ผลการทดสอบ</h5>
+           <div class="row g-1">
+
+                <!-- 100°C u -->
+                <div class="col-md-4">
+                    <canvas id="chartU100" height="180"></canvas>
+                </div>
+                 <!-- 150°C u -->
+                <div class="col-md-4">
+                    <canvas id="chartU150" height="180"></canvas>
+                </div>
+                   <!-- 200°C u -->
+                <div class="col-md-4">
+                    <canvas id="chartU200" height="180"></canvas>
+                </div>
+                <!-- 250°C u -->
+                <div class="col-md-4">
+                    <canvas id="chartU250" height="180"></canvas>
+                </div>
+                <!-- 300°C u -->
+                <div class="col-md-4">
+                    <canvas id="chartU300" height="180"></canvas>
+                </div>
+                <!-- 350°C u -->
+                <div class="col-md-4">
+                    <canvas id="chartU350" height="180"></canvas>
+                </div>
+
+                <!-- 100°C c -->
+                <div class="col-md-4">
+                    <canvas id="chartC100" height="180"></canvas>
+                </div>
+                <!-- 150°C c -->
+                <div class="col-md-4">
+                    <canvas id="chartC150" height="180"></canvas>
+                </div>
+                <!-- 200°C c -->
+                <div class="col-md-4">
+                    <canvas id="chartC200" height="180"></canvas>
+                </div>
+                <!-- 250°C c -->
+                <div class="col-md-4">
+                    <canvas id="chartC250" height="180"></canvas>
+                </div>
+                <!-- 300°C c -->
+                <div class="col-md-4">
+                    <canvas id="chartC300" height="180"></canvas>
+                </div>
+                <!-- 350°C c -->
+                <div class="col-md-4">
+                    <canvas id="chartC350" height="180"></canvas>
+                </div>
+
+                <!-- FALL°C u -->
+                <div class="col-md-6">
+                    <canvas id="chartUfall" height="180"></canvas>
+                </div>
+                <!-- FALL°C c -->
+                <div class="col-md-6">
+                    <canvas id="chartCfall" height="180"></canvas>
+                </div>
+            </div> 
+            <hr>
             <table class="table table-bordered">
                 <thead>
                     <tr>
@@ -1021,5 +1083,725 @@ function renderPieChart() {
 $(document).ready(function () {
     renderPieChart();
 });
+/* =============================
+   labels (ใช้แกน X ชุดเดียว)
+=============================*/
+
+const frictionLabels = @json($labels);
+const frictionLabels1 = @json($labels1);
+
+/* =============================
+   DATA จาก Laravel
+=============================*/
+
+// 100°C
+const frictionUn1_100 = @json($n1u100);
+const frictionUn2_100 = @json($n2u100);
+const frictionUn3_100 = @json($n3u100);
+
+const frictionCn1_100 = @json($n1c100);
+const frictionCn2_100 = @json($n2c100);
+const frictionCn3_100 = @json($n3c100);
+
+
+// 150°C
+const frictionUn1_150 = @json($n1u150);
+const frictionUn2_150 = @json($n2u150);
+const frictionUn3_150 = @json($n3u150);
+
+const frictionCn1_150 = @json($n1c150);
+const frictionCn2_150 = @json($n2c150);
+const frictionCn3_150 = @json($n3c150);
+
+// 200°C
+const frictionUn1_200 = @json($n1u200);
+const frictionUn2_200 = @json($n2u200);
+const frictionUn3_200 = @json($n3u200);
+
+const frictionCn1_200 = @json($n1c200);
+const frictionCn2_200 = @json($n2c200);
+const frictionCn3_200 = @json($n3c200);
+
+// 250°C
+const frictionUn1_250 = @json($n1u250);
+const frictionUn2_250 = @json($n2u250);
+const frictionUn3_250 = @json($n3u250);
+
+const frictionCn1_250 = @json($n1c250);
+const frictionCn2_250 = @json($n2c250);
+const frictionCn3_250 = @json($n3c250);
+
+// 300°C
+const frictionUn1_300 = @json($n1u300);
+const frictionUn2_300 = @json($n2u300);
+const frictionUn3_300 = @json($n3u300);
+
+const frictionCn1_300 = @json($n1c300);
+const frictionCn2_300 = @json($n2c300);
+const frictionCn3_300 = @json($n3c300);
+
+
+// 350°C
+const frictionUn1_350 = @json($n1u350);
+const frictionUn2_350 = @json($n2u350);
+const frictionUn3_350 = @json($n3u350);
+
+const frictionCn1_350 = @json($n1c350);
+const frictionCn2_350 = @json($n2c350);
+const frictionCn3_350 = @json($n3c350);
+
+// FALL°C
+const frictionUn1_fall = @json($n1ufall);
+const frictionUn2_fall = @json($n2ufall);
+const frictionUn3_fall = @json($n3ufall);
+
+const frictionCn1_fall = @json($n1cfall);
+const frictionCn2_fall = @json($n2cfall);
+const frictionCn3_fall = @json($n3cfall);
+
+/* =============================
+   function สร้าง chart
+=============================*/
+
+function createChart(canvasId, labels, datasets, yMax)
+{
+
+    new Chart(document.getElementById(canvasId),
+    {
+
+        type: 'line',
+
+        data:
+        {
+            labels: labels,
+
+            datasets: datasets
+        },
+
+        options:
+        {
+
+            responsive: true,
+
+            maintainAspectRatio:false,
+
+            plugins:
+            {
+                legend:
+                {
+                    position:'top'
+                }
+            },
+
+            scales:
+            {
+
+                x:
+                {
+                    type:'linear',   // สำคัญ
+
+                    ticks:
+                    {
+                        stepSize:50   // <<< แบ่งช่องละ 50
+                    }
+                },
+
+                y:
+                {
+                    min:0,
+                    max:yMax                 
+                }
+
+            }
+
+        }
+
+    });
+
+}
+
+
+
+/* =============================
+   render charts
+=============================*/
+
+
+/* ---------- 100°C u ---------- */
+
+createChart(
+
+    'chartU100',
+
+    frictionLabels1,
+
+    [
+
+        {
+            label:'N1 100°c_(u)',
+            data:frictionUn1_100,
+            borderColor:'#1f77b4',
+            tension:0.05,
+            pointRadius:0
+        },
+
+        {
+            label:'N2 100°c_(u)',
+            data:frictionUn2_100,
+            borderColor:'#2ca02c',
+            tension:0.05,
+            pointRadius:0
+        },
+
+        {
+            label:'N3 100°c_(u)',
+            data:frictionUn3_100,
+            borderColor:'#9467bd',
+            tension:0.05,
+            pointRadius:0
+        }
+
+    ],
+
+    0.8
+
+);
+
+
+
+/* ---------- 100°C c ---------- */
+
+createChart(
+
+    'chartC100',
+
+    frictionLabels1,
+
+    [
+
+        {
+            label:'N1 100°c_(°c)',
+            data:frictionCn1_100,
+            borderColor:'#d62728',
+            tension:0.05,
+            pointRadius:0
+        },
+
+        {
+            label:'N2 100°c_(°c)',
+            data:frictionCn2_100,
+            borderColor:'#ff7f0e',
+            tension:0.05,
+            pointRadius:0
+        },
+
+        {
+            label:'N3 100°c_(°c)',
+            data:frictionCn3_100,
+            borderColor:'#8c564b',
+            tension:0.05,
+            pointRadius:0
+        }
+
+    ],
+
+    400
+
+);
+
+
+
+/* ---------- 150°C u ---------- */
+
+createChart(
+
+    'chartU150',
+
+    frictionLabels1,
+
+    [
+
+        {
+            label:'N1 150°c_(u)',
+            data:frictionUn1_150,
+            borderColor:'#1f77b4',
+            tension:0.05,
+            pointRadius:0
+        },
+
+        {
+            label:'N2 150°c_(u)',
+            data:frictionUn2_150,
+            borderColor:'#2ca02c',
+            tension:0.05,
+            pointRadius:0
+        },
+
+        {
+            label:'N3 150°c_(u)',
+            data:frictionUn3_150,
+            borderColor:'#9467bd',
+            tension:0.05,
+            pointRadius:0
+        }
+
+    ],
+
+    0.8
+
+);
+
+
+
+/* ---------- 150°C c ---------- */
+
+createChart(
+
+    'chartC150',
+
+    frictionLabels1,
+
+    [
+
+        {
+            label:'N1 150°c_(°c)',
+            data:frictionCn1_150,
+            borderColor:'#d62728',
+            tension:0.05,
+            pointRadius:0
+        },
+
+        {
+            label:'N2 150°c_(°c)',
+            data:frictionCn2_150,
+            borderColor:'#ff7f0e',
+            tension:0.05,
+            pointRadius:0
+        },
+
+        {
+            label:'N3 150°c_(°c)',
+            data:frictionCn3_150,
+            borderColor:'#8c564b',
+            tension:0.05,
+            pointRadius:0
+        }
+
+    ],
+
+    400
+
+);
+
+/* ---------- 200°C u ---------- */
+
+createChart(
+
+    'chartU200',
+
+    frictionLabels1,
+
+    [
+
+        {
+            label:'N1 200°c_(u)',
+            data:frictionUn1_200,
+            borderColor:'#1f77b4',
+            tension:0.05,
+            pointRadius:0
+        },
+
+        {
+            label:'N2 200°c_(u)',
+            data:frictionUn2_200,
+            borderColor:'#2ca02c',
+            tension:0.05,
+            pointRadius:0
+        },
+
+        {
+            label:'N3 200°c_(u)',
+            data:frictionUn3_200,
+            borderColor:'#9467bd',
+            tension:0.05,
+            pointRadius:0
+        }
+
+    ],
+
+    0.8
+
+);
+
+
+
+/* ---------- 200°C c ---------- */
+
+createChart(
+
+    'chartC200',
+
+    frictionLabels1,
+
+    [
+
+        {
+            label:'N1 200°c_(°c)',
+            data:frictionCn1_200,
+            borderColor:'#d62728',
+            tension:0.05,
+            pointRadius:0
+        },
+
+        {
+            label:'N2 200°c_(°c)',
+            data:frictionCn2_200,
+            borderColor:'#ff7f0e',
+            tension:0.05,
+            pointRadius:0
+        },
+
+        {
+            label:'N3 200°c_(°c)',
+            data:frictionCn3_200,
+            borderColor:'#8c564b',
+            tension:0.05,
+            pointRadius:0
+        }
+
+    ],
+
+    400
+
+);
+
+/* ---------- 250°C u ---------- */
+
+createChart(
+
+    'chartU250',
+
+    frictionLabels1,
+
+    [
+
+        {
+            label:'N1 250°c_(u)',
+            data:frictionUn1_250,
+            borderColor:'#1f77b4',
+            tension:0.05,
+            pointRadius:0
+        },
+
+        {
+            label:'N2 250°c_(u)',
+            data:frictionUn2_250,
+            borderColor:'#2ca02c',
+            tension:0.05,
+            pointRadius:0
+        },
+
+        {
+            label:'N3 250°c_(u)',
+            data:frictionUn3_250,
+            borderColor:'#9467bd',
+            tension:0.05,
+            pointRadius:0
+        }
+
+    ],
+
+    0.8
+
+);
+
+
+
+/* ---------- 250°C c ---------- */
+
+createChart(
+
+    'chartC250',
+
+    frictionLabels1,
+
+    [
+
+        {
+            label:'N1 250°c_(°c)',
+            data:frictionCn1_250,
+            borderColor:'#d62728',
+            tension:0.05,
+            pointRadius:0
+        },
+
+        {
+            label:'N2 250°c_(°c)',
+            data:frictionCn2_250,
+            borderColor:'#ff7f0e',
+            tension:0.05,
+            pointRadius:0
+        },
+
+        {
+            label:'N3 250°c_(°c)',
+            data:frictionCn3_250,
+            borderColor:'#8c564b',
+            tension:0.05,
+            pointRadius:0
+        }
+
+    ],
+
+    400
+
+);
+
+/* ---------- 300°C u ---------- */
+
+createChart(
+
+    'chartU300',
+
+    frictionLabels1,
+
+    [
+
+        {
+            label:'N1 300°c_(u)',
+            data:frictionUn1_300,
+            borderColor:'#1f77b4',
+            tension:0.05,
+            pointRadius:0
+        },
+
+        {
+            label:'N2 300°c_(u)',
+            data:frictionUn2_300,
+            borderColor:'#2ca02c',
+            tension:0.05,
+            pointRadius:0
+        },
+
+        {
+            label:'N3 300°c_(u)',
+            data:frictionUn3_300,
+            borderColor:'#9467bd',
+            tension:0.05,
+            pointRadius:0
+        }
+
+    ],
+
+    0.8
+
+);
+
+
+
+/* ---------- 300°C c ---------- */
+
+createChart(
+
+    'chartC300',
+
+    frictionLabels1,
+
+    [
+
+        {
+            label:'N1 300°c_(°c)',
+            data:frictionCn1_300,
+            borderColor:'#d62728',
+            tension:0.05,
+            pointRadius:0
+        },
+
+        {
+            label:'N2 300°c_(°c)',
+            data:frictionCn2_300,
+            borderColor:'#ff7f0e',
+            tension:0.05,
+            pointRadius:0
+        },
+
+        {
+            label:'N3 300°c_(°c)',
+            data:frictionCn3_300,
+            borderColor:'#8c564b',
+            tension:0.05,
+            pointRadius:0
+        }
+
+    ],
+
+    400
+
+);
+
+/* ---------- 350°C u ---------- */
+
+createChart(
+
+    'chartU350',
+
+    frictionLabels1,
+
+    [
+
+        {
+            label:'N1 350°c_(u)',
+            data:frictionUn1_350,
+            borderColor:'#1f77b4',
+            tension:0.05,
+            pointRadius:0
+        },
+
+        {
+            label:'N2 350°c_(u)',
+            data:frictionUn2_350,
+            borderColor:'#2ca02c',
+            tension:0.05,
+            pointRadius:0
+        },
+
+        {
+            label:'N3 350°c_(u)',
+            data:frictionUn3_350,
+            borderColor:'#9467bd',
+            tension:0.05,
+            pointRadius:0
+        }
+
+    ],
+
+    0.8
+
+);
+
+
+
+/* ---------- 350°C c ---------- */
+
+createChart(
+
+    'chartC350',
+
+    frictionLabels1,
+
+    [
+
+        {
+            label:'N1 350°c_(°c)',
+            data:frictionCn1_350,
+            borderColor:'#d62728',
+            tension:0.05,
+            pointRadius:0
+        },
+
+        {
+            label:'N2 350°c_(°c)',
+            data:frictionCn2_350,
+            borderColor:'#ff7f0e',
+            tension:0.05,
+            pointRadius:0
+        },
+
+        {
+            label:'N3 350°c_(°c)',
+            data:frictionCn3_350,
+            borderColor:'#8c564b',
+            tension:0.05,
+            pointRadius:0
+        }
+
+    ],
+
+    400
+
+);
+
+/* ---------- FALL°C u ---------- */
+
+createChart(
+
+    'chartUfall',
+
+    frictionLabels,
+
+    [
+
+        {
+            label:'N1 FALL°c_(u)',
+            data:frictionUn1_fall,
+            borderColor:'#1f77b4',
+            tension:0.05,
+            pointRadius:0
+        },
+
+        {
+            label:'N2 FALL°c_(u)',
+            data:frictionUn2_fall,
+            borderColor:'#2ca02c',
+            tension:0.05,
+            pointRadius:0
+        },
+
+        {
+            label:'N3 FALL°c_(u)',
+            data:frictionUn3_fall,
+            borderColor:'#9467bd',
+            tension:0.05,
+            pointRadius:0
+        }
+
+    ],
+
+    0.8
+
+);
+
+
+
+/* ---------- FALL°C c ---------- */
+
+createChart(
+
+    'chartCfall',
+
+    frictionLabels,
+
+    [
+
+        {
+            label:'N1 FALL°c_(°c)',
+            data:frictionCn1_fall,
+            borderColor:'#d62728',
+            tension:0.05,
+            pointRadius:0
+        },
+
+        {
+            label:'N2 FALL°c_(°c)',
+            data:frictionCn2_fall,
+            borderColor:'#ff7f0e',
+            tension:0.05,
+            pointRadius:0
+        },
+
+        {
+            label:'N3 FALL°c_(°c)',
+            data:frictionCn3_fall,
+            borderColor:'#8c564b',
+            tension:0.05,
+            pointRadius:0
+        }
+
+    ],
+
+    400
+
+);
+
 </script>
 @endpush

@@ -143,7 +143,135 @@ class ChemistryController extends Controller
         $products = DB::table('chemical_lists')
         ->leftjoin('chemical_groups','chemical_groups.chemical_groups_id','=','chemical_lists.chemical_groups_id')
         ->get();
-        return view('chemicalsetup.form-chemistrys-show', compact('hd','dt','lap','test','types','products','feeavg','datefeeavg'));
+        $testIds = DB::table('TestHeaders')
+            ->where('FormulaNumber', $hd->chemistry_hd_name)
+            ->pluck('TestID');
+
+        $frictions1 = DB::table('TestFrictions')
+            ->whereIn('TestID', $testIds)
+            ->where('SampleSet', 'N1')
+            ->orderBy('Listno')
+            ->get([
+                'Listno',
+                'Friction100_u',
+                'Friction100_c',
+                'Friction150_u',
+                'Friction150_c',
+                'Friction200_u',
+                'Friction200_c',
+                'Friction250_u',
+                'Friction250_c',
+                'Friction300_u',
+                'Friction300_c',
+                'Friction350_u',
+                'Friction350_c',
+                'FrictionFall_u',
+                'FrictionFall_c',
+            ]);
+        $n1labels = $frictions1->pluck('Listno');
+        $n1u100labels = $frictions1->where('Friction100_u','>',0)->pluck('Listno');
+        $n1u100 = $frictions1->where('Friction100_u','>',0)->pluck('Friction100_u');
+        $n1c100 = $frictions1->where('Friction100_c','>',0)->pluck('Friction100_c');
+        $n1u150 = $frictions1->where('Friction150_u','>',0)->pluck('Friction150_u');
+        $n1c150 = $frictions1->where('Friction150_c','>',0)->pluck('Friction150_c');
+        $n1u200 = $frictions1->where('Friction200_u','>',0)->pluck('Friction200_u');
+        $n1c200 = $frictions1->where('Friction200_c','>',0)->pluck('Friction200_c');
+        $n1u250 = $frictions1->where('Friction250_u','>',0)->pluck('Friction250_u');
+        $n1c250 = $frictions1->where('Friction250_c','>',0)->pluck('Friction250_c');
+        $n1u300 = $frictions1->where('Friction300_u','>',0)->pluck('Friction300_u');
+        $n1c300 = $frictions1->where('Friction300_c','>',0)->pluck('Friction300_c');
+        $n1u350 = $frictions1->where('Friction350_u','>',0)->pluck('Friction350_u');
+        $n1c350 = $frictions1->where('Friction350_c','>',0)->pluck('Friction350_c');
+        $n1ufall = $frictions1->where('FrictionFall_u','>',0)->pluck('FrictionFall_u');
+        $n1cfall = $frictions1->where('FrictionFall_c','>',0)->pluck('FrictionFall_c');
+        $frictions2 = DB::table('TestFrictions')
+            ->whereIn('TestID', $testIds)
+            ->where('SampleSet', 'N2')
+            ->orderBy('Listno')
+            ->get([
+                'Listno',
+                'Friction100_u',
+                'Friction100_c',
+                'Friction150_u',
+                'Friction150_c',
+                'Friction200_u',
+                'Friction200_c',
+                'Friction250_u',
+                'Friction250_c',
+                'Friction300_u',
+                'Friction300_c',
+                'Friction350_u',
+                'Friction350_c',
+                'FrictionFall_u',
+                'FrictionFall_c',
+            ]);
+        $n2labels = $frictions2->pluck('Listno');
+        $n2u100labels = $frictions2->where('Friction100_u','>',0)->pluck('Listno');
+        $n2u100 = $frictions2->where('Friction100_u','>',0)->pluck('Friction100_u');
+        $n2c100 = $frictions2->where('Friction100_c','>',0)->pluck('Friction100_c');
+        $n2u150 = $frictions2->where('Friction150_u','>',0)->pluck('Friction150_u');
+        $n2c150 = $frictions2->where('Friction150_c','>',0)->pluck('Friction150_c');
+        $n2u200 = $frictions2->where('Friction200_u','>',0)->pluck('Friction200_u');
+        $n2c200 = $frictions2->where('Friction200_c','>',0)->pluck('Friction200_c');
+        $n2u250 = $frictions2->where('Friction250_u','>',0)->pluck('Friction250_u');
+        $n2c250 = $frictions2->where('Friction250_c','>',0)->pluck('Friction250_c');
+        $n2u300 = $frictions2->where('Friction300_u','>',0)->pluck('Friction300_u');
+        $n2c300 = $frictions2->where('Friction300_c','>',0)->pluck('Friction300_c');
+        $n2u350 = $frictions2->where('Friction350_u','>',0)->pluck('Friction350_u');
+        $n2c350 = $frictions2->where('Friction350_c','>',0)->pluck('Friction350_c');
+        $n2ufall = $frictions2->where('FrictionFall_u','>',0)->pluck('FrictionFall_u');
+        $n2cfall = $frictions2->where('FrictionFall_c','>',0)->pluck('FrictionFall_c');
+        $frictions3 = DB::table('TestFrictions')
+            ->whereIn('TestID', $testIds)
+            ->where('SampleSet', 'N3')
+            ->orderBy('Listno')
+            ->get([
+                'Listno',
+                'Friction100_u',
+                'Friction100_c',
+                'Friction150_u',
+                'Friction150_c',
+                'Friction200_u',
+                'Friction200_c',
+                'Friction250_u',
+                'Friction250_c',
+                'Friction300_u',
+                'Friction300_c',
+                'Friction350_u',
+                'Friction350_c',
+                'FrictionFall_u',
+                'FrictionFall_c',
+            ]);
+        $n3labels = $frictions3->pluck('Listno');
+        $n3u100labels = $frictions3->where('Friction100_u','>',0)->pluck('Listno');
+        $n3u100 = $frictions3->where('Friction100_u','>',0)->pluck('Friction100_u');
+        $n3c100 = $frictions3->where('Friction100_c','>',0)->pluck('Friction100_c');
+        $n3u150 = $frictions3->where('Friction150_u','>',0)->pluck('Friction150_u');
+        $n3c150 = $frictions3->where('Friction150_c','>',0)->pluck('Friction150_c');
+        $n3u200 = $frictions3->where('Friction200_u','>',0)->pluck('Friction200_u');
+        $n3c200 = $frictions3->where('Friction200_c','>',0)->pluck('Friction200_c');
+        $n3u250 = $frictions3->where('Friction250_u','>',0)->pluck('Friction250_u');
+        $n3c250 = $frictions3->where('Friction250_c','>',0)->pluck('Friction250_c');
+        $n3u300 = $frictions3->where('Friction300_u','>',0)->pluck('Friction300_u');
+        $n3c300 = $frictions3->where('Friction300_c','>',0)->pluck('Friction300_c');
+        $n3u350 = $frictions3->where('Friction350_u','>',0)->pluck('Friction350_u');
+        $n3c350 = $frictions3->where('Friction350_c','>',0)->pluck('Friction350_c');
+        $n3ufall = $frictions3->where('FrictionFall_u','>',0)->pluck('FrictionFall_u');
+        $n3cfall = $frictions3->where('FrictionFall_c','>',0)->pluck('FrictionFall_c');
+        $labels = collect([
+            $n1labels,
+            $n2labels,
+            $n3labels
+        ])->sortByDesc(fn($x) => $x->count())
+        ->first()
+        ->values();
+        $labels1 = collect(range(1,500));
+        return view('chemicalsetup.form-chemistrys-show', compact('hd','dt','lap','test','types','products','feeavg','datefeeavg',
+        'n1labels','n1u100','n1c100','n1u150','n1c150','n1u200','n1c200','n1u250','n1c250','n1u300','n1c300','n1u350','n1c350','n1ufall','n1cfall',
+        'n2labels','n2u100','n2c100','n2u150','n2c150','n2u200','n2c200','n2u250','n2c250','n2u300','n2c300','n2u350','n2c350','n2ufall','n2cfall',
+        'n3labels','n3u100','n3c100','n3u150','n3c150','n3u200','n3c200','n3u250','n3c250','n3u300','n3c300','n3u350','n3c350','n3ufall','n3cfall',
+        'labels','labels1'
+        ));
     }
 
     /**
