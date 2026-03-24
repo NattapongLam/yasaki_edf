@@ -112,7 +112,7 @@
             <div class="col-12">
                 <div class="form-group">
                     <label for="chemistry_hd_note" class="col-form-label">หมายเหตุ</label>
-                    <textarea class="form-control" rows="5">{{$hd->chemistry_hd_note}}</textarea>
+                    <textarea class="form-control" rows="5" name="chemistry_hd_note">{{$hd->chemistry_hd_note}}</textarea>
                 </div>
             </div>
         </div>
@@ -280,7 +280,8 @@
                 </div>
             </div> 
             <hr>
-            <table class="table table-bordered">
+            <div class="table-responsive">
+                <table class="table table-bordered table-sm">
                 <thead>
                     <tr>
                         <th>วันที่</th>
@@ -320,6 +321,7 @@
                     </tr>
                 </tfoot>
             </table>
+            </div>
         </div>
         <div class="row">
             <div class="col-6">
@@ -340,7 +342,8 @@
         @endphp
 
         <div class="row">
-            <table class="table table-bordered text-center">
+            <div class="table-responsive">
+                <table class="table table-bordered text-center table-sm">
                 <thead>
                     <!-- แถว 1 -->
                     <tr>
@@ -393,6 +396,7 @@
                     @endforeach
                 </tbody>
             </table>
+            </div>
         </div>
         <div class="row">
             @foreach($temps as $temp)

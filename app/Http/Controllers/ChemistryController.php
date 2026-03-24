@@ -304,6 +304,7 @@ class ChemistryController extends Controller
                 'chemistry_hd_type' => $request->chemistry_hd_type,
                 'chemistry_hd_save' => Auth::user()->name,
                 'update_at' => Carbon::now(),
+                'chemistry_hd_note' => $request->chemistry_hd_note
             ]);
             foreach ($request->chemistry_dt_id as $key => $value) {
                 $pd = DB::table('chemical_lists')->where('chemical_lists_refcode',$request->code[$key])->first();
