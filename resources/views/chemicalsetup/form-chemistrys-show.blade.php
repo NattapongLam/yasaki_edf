@@ -1,5 +1,6 @@
 @extends('layouts.main')
 @section('content')
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <div class="row">
     @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -118,16 +119,17 @@
         <br>
         <div class="row">
             <h5 style="color: black">รายละเอียด</h5>
-            <table class="table table-bordered">
+            <div class="table-responsive">
+                <table class="table table-bordered table-sm text-center">
                 <thead style="color: black">
                     <tr>
-                        <th>No.</th>
-                        <th>Material</th>
-                        <th>Density(g/cc)</th>
-                        <th>Vol.% adjust</th>
-                        <th>W</th>
-                        <th>Weght(%)</th>
-                        <th>Weght(g)</th>
+                        <th style="width: 3%">No.</th>
+                        <th style="width: 35%">Material</th>
+                        <th style="width: 10%">Density(g/cc)</th>
+                        <th style="width: 10%">Vol.% adjust</th>
+                        <th style="width: 10%">W</th>
+                        <th style="width: 10%">W (%)</th>
+                        <th style="width: 10%">Weght(g)</th>
                     </tr>
                 </thead>
                 <tbody id="tableBody" style="color: black">
@@ -195,6 +197,7 @@
                     </tr>
                 </tfoot>
             </table>
+            </div>           
         </div>
         <br>
             <div class="col-12 col-md-1">
@@ -420,6 +423,8 @@
 </div>
 @endsection
 @push('scriptjs')
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 <script>
@@ -437,7 +442,6 @@ function showOverLimit(msg) {
 $(document).ready(function () {
 
     $('.select2-product').select2({
-        width: '100%',
         placeholder: 'เลือกสินค้า'
     });
 
@@ -532,6 +536,7 @@ function calculateTable() {
         if (mode === 'vol') {
 
             if (sumAdjust + adjust > 100) {
+                showOverLimit('Vol.% รวมเกิน 100%');
                 adjust = 100 - sumAdjust;
                 if (adjust < 0) adjust = 0;
 
@@ -547,6 +552,7 @@ function calculateTable() {
         if (mode === 'w') {
 
             if (sumWeightPer + weightPer > 100) {
+                showOverLimit('W % รวมเกิน 100%');
                 weightPer = 100 - sumWeightPer;
                 if (weightPer < 0) weightPer = 0;
 

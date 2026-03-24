@@ -105,34 +105,36 @@
         <div class="row">
             <div class="col-12">
                  <div class="col-12" style="text-align: right;">
-                <a href="javascript:void(0);" class="btn btn-secondary" id="addRowBtn">เพิ่มรายการ</a>
-            </div>
-            <hr>
-            <table class="table table-bordered dt-responsive nowrap w-100 text-center">
-                <thead>
-                    <tr>
-                        <th style="width: 4%">#</th>
-                        <th style="width: 45%">Material</th>
-                        <th style="width: 8%">Density (g/cc)</th>
-                        <th style="width: 8%">Vol.% adjust</th>
-                        <th style="width: 8%">W</th>
-                        <th style="width: 8%">W (%)</th>
-                        <th style="width: 8%">Weght (g)</th>
-                        <th style="width: 4%"></th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody"></tbody>       
-                <tfoot>
-                    <tr>
-                        <th colspan="3" class="text-end">Total</th>
-                        <th id="sumAdjust">0</th>
-                        <th id="sumWeight">0</th>
-                        <th id="sumWeightPer">0</th>
-                        <th id="sumWeightTotal">0</th>
-                        <th></th>
-                    </tr>
-                </tfoot>
-            </table>
+                    <a href="javascript:void(0);" class="btn btn-secondary" id="addRowBtn">เพิ่มรายการ</a>
+                </div>
+                <hr>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-sm text-center">
+                        <thead>
+                            <tr>
+                                <th style="width: 3%">No.</th>
+                                <th style="width: 40%">Material</th>
+                                <th style="width: 10%">Density (g/cc)</th>
+                                <th style="width: 10%">Vol.% adjust</th>
+                                <th style="width: 10%">W</th>
+                                <th style="width: 10%">W (%)</th>
+                                <th style="width: 10%">Weght (g)</th>
+                                <th style="width: 3%"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody"></tbody>       
+                        <tfoot>
+                            <tr>
+                                <th colspan="3" class="text-end">Total</th>
+                                <th id="sumAdjust">0</th>
+                                <th id="sumWeight">0</th>
+                                <th id="sumWeightPer">0</th>
+                                <th id="sumWeightTotal">0</th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>          
             </div>
         </div>       
         <br>
@@ -164,7 +166,6 @@
 <script>
 $(document).ready(function () {
     $('.select2-product').select2({
-        width: '100%',
         placeholder: 'เลือกสินค้า'
     });
 });
@@ -272,7 +273,6 @@ document.getElementById('addRowBtn').addEventListener('click', function () {
     tbody.appendChild(newRow);
 
     $(newRow).find('.select2-product').select2({
-        width: '100%',
         placeholder: 'เลือกสินค้า'
     });
 
