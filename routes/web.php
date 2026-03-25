@@ -42,6 +42,7 @@ Route::post('/confirmDelChemical' , [App\Http\Controllers\ChemicalListController
 Route::get('/chemical/functions/{group_id}', [App\Http\Controllers\ChemicalListController::class, 'getFunctions']);
 Route::resource('/chemistrys' , App\Http\Controllers\ChemistryController::class);
 Route::get('/compare-formulas' , [App\Http\Controllers\ReportFormulaController::class , 'CompareFormulas']);
+Route::post('/get-friction-chart',[App\Http\Controllers\ReportFormulaController::class,'getFrictionChart']);
 // เคมี
 
 // ทั่วไป

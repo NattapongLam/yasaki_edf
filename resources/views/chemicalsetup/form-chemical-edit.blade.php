@@ -93,7 +93,7 @@
             <div class="col-3">
                 <div class="form-group">
                     <label for="chemical_funtions_id_1" class="col-form-label">Function (รอง)</label>
-                    <select id="chemical_funtions_id_1" name="chemical_funtions_id_1" class="form-control" required>
+                    <select id="chemical_funtions_id_1" name="chemical_funtions_id_1" class="form-control">
                         <option value="">กรุณาเลือก</option>
                         @foreach ($funtions as $item)
                             <option value="{{ $item->chemical_funtions_id }}"
