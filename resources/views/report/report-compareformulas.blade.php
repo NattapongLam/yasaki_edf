@@ -124,31 +124,31 @@
 
                 <div class="col-md-6">
                     <h5>Hardness (HRB)</h5>
-                    <canvas id="chartHardness">
+                    <canvas id="chartHardness" height="120">
                 </canvas></div>
                 <div class="col-md-6">
                     <h5>Shearing (mm²)</h5>
-                    <canvas id="chartShearing"></canvas>
+                    <canvas id="chartShearing" height="120"></canvas>
                 </div>
 
                 <div class="col-md-6">
                     <h5>Noise (dB)</h5>
-                    <canvas id="chartNoise"></canvas>
+                    <canvas id="chartNoise" height="120"></canvas>
                 </div>
                
 
                 <div class="col-md-6">
                     <h5>Normal (µ)</h5>
-                    <canvas id="chartNormal"></canvas>
+                    <canvas id="chartNormal" height="120"></canvas>
                 </div>
                 <div class="col-md-6">
                     <h5>Hot (µ)</h5>
-                    <canvas id="chartHot"></canvas>
+                    <canvas id="chartHot" height="120"></canvas>
                 </div>
 
                 <div class="col-md-6">
                     <h5>Wear (10−7cm3/(N⋅m))</h5>
-                    <canvas id="chartWear"></canvas>
+                    <canvas id="chartWear" height="120"></canvas>
                 </div>
                 {{-- <div class="col-md-6">
                     <h5>RoadTest</h5>
@@ -156,7 +156,6 @@
                 </div>              --}}
             </div>
             <div class="row g-1">
-                <h3>N1</h3>
                 <!-- 100°C u -->
                 <div class="col-md-4">
                     <canvas id="chartU100" height="180"></canvas>
@@ -519,7 +518,7 @@ async function loadFrictionChart(){
 
 }
 
-function buildDatasetsByFormula(dataObj,labelSuffix){
+function buildDatasetsByFormula(dataObj,labelSuffix,labels){
 
     let datasets = [];
 
@@ -535,13 +534,15 @@ function buildDatasetsByFormula(dataObj,labelSuffix){
 
             label: formula + " " + labelSuffix,
 
-            data: dataObj[testID],
+            data: dataObj[testID].map((y,i)=>({
+
+                x: labels[i],     // <<< ใช้ค่า X จริง
+                y: y
+
+            })),
 
             borderColor: color,
             backgroundColor: color,
-
-            pointBackgroundColor: color,
-            pointBorderColor: color,
 
             tension: 0.05,
             borderWidth: 2,
@@ -567,8 +568,7 @@ function createLineChart(canvasId, labels, datasets, yMax){
             type:'line',
 
             data:{
-                labels:labels,
-                datasets:datasets
+                datasets: datasets
             },
 
             options:{
@@ -580,9 +580,18 @@ function createLineChart(canvasId, labels, datasets, yMax){
                 },
 
                 scales:{
+
+                    // <<< X = 0-500 step 50
                     x:{
-                        type:'category'   // << FIX
+                        type:'linear',
+                        min:0,
+                        max:500,
+                        ticks:{
+                            stepSize:50
+                        }
                     },
+
+                    // <<< Y ใช้ค่าเดิม
                     y:{
                         min:0,
                         max:yMax
@@ -592,6 +601,7 @@ function createLineChart(canvasId, labels, datasets, yMax){
         }
     );
 }
+
 async function renderFrictionCharts(){
 
     let res = await loadFrictionChart();
@@ -608,31 +618,31 @@ async function renderFrictionCharts(){
 
         createLineChart(
 
-            "chartU"+t,
-            labels,
+    "chartU"+t,
+    labels,
 
-            buildDatasetsByFormula(
-                res[t].u,
-                t+"°C (u)"
-            ),
+    buildDatasetsByFormula(
+        res[t].u,
+        t+"°C (u)",
+        labels
+    ),
 
-            0.8
+    0.8     // <<< Y max เดิม
+);
 
-        );
+createLineChart(
 
-        createLineChart(
+    "chartC"+t,
+    labels,
 
-            "chartC"+t,
-            labels,
+    buildDatasetsByFormula(
+        res[t].c,
+        t+"°C (c)",
+        labels
+    ),
 
-            buildDatasetsByFormula(
-                res[t].c,
-                t+"°C (c)"
-            ),
-
-            400
-
-        );
+    400     // <<< Y max เดิม
+);
 
     });
 

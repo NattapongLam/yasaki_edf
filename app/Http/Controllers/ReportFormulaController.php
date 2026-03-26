@@ -19,7 +19,7 @@ class ReportFormulaController extends Controller
 
         $rows = DB::table('TestFrictions')
             ->whereIn('TestID',$ids)
-            ->where('SampleSet','N1')
+            //->where('SampleSet','N1')
             ->orderBy('TestID')
             ->orderBy('Listno')
             ->get();
