@@ -556,7 +556,7 @@ function buildDatasetsByFormula(dataObj,labelSuffix,labels){
 
 }
 
-function createLineChart(canvasId, labels, datasets, yMax){
+function createLineChart(canvasId, labels, datasets, yMax, xMax = 500){
 
     if(charts[canvasId]){
         charts[canvasId].destroy();
@@ -580,18 +580,15 @@ function createLineChart(canvasId, labels, datasets, yMax){
                 },
 
                 scales:{
-
-                    // <<< X = 0-500 step 50
                     x:{
                         type:'linear',
                         min:0,
-                        max:500,
+                        max:xMax,        // <<< dynamic
                         ticks:{
                             stepSize:50
                         }
                     },
 
-                    // <<< Y ใช้ค่าเดิม
                     y:{
                         min:0,
                         max:yMax
@@ -608,44 +605,58 @@ async function renderFrictionCharts(){
     console.log(res); 
     if(!res) return;
 
-    const temps = [100,150,200,250,300,350,'Fall'];
+const temps = [
+    100,
+    150,
+    200,
+    250,
+    300,
+    350,
+    {key:'Fall', id:'fall'}
+];
 
-    temps.forEach(t=>{
+temps.forEach(t=>{
 
-        if(!res[t]) return;
+    let key = typeof t === 'object' ? t.key : t;
+    let id  = typeof t === 'object' ? t.id  : t;
 
-        let labels = res[t].labels;
+    if(!res[key]) return;
 
-        createLineChart(
+    let labels = res[key].labels;
 
-    "chartU"+t,
-    labels,
+    let xMax = (id === 'fall') ? 750 : 500;
 
-    buildDatasetsByFormula(
-        res[t].u,
-        t+"°C (u)",
-        labels
-    ),
+    createLineChart(
 
-    0.8     // <<< Y max เดิม
-);
+        "chartU"+id,
+        labels,
 
-createLineChart(
+        buildDatasetsByFormula(
+            res[key].u,
+            key+"°C (u)",
+            labels
+        ),
 
-    "chartC"+t,
-    labels,
+        0.8,
+        xMax
+    );
 
-    buildDatasetsByFormula(
-        res[t].c,
-        t+"°C (c)",
-        labels
-    ),
+    createLineChart(
 
-    400     // <<< Y max เดิม
-);
+        "chartC"+id,
+        labels,
 
-    });
+        buildDatasetsByFormula(
+            res[key].c,
+            key+"°C (c)",
+            labels
+        ),
 
+        400,
+        xMax
+    );
+
+});
 }
 </script>
 @endpush
