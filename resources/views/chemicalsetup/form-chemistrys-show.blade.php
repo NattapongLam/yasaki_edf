@@ -127,7 +127,7 @@
                         <th style="width: 35%">Material</th>
                         <th style="width: 10%">Density(g/cc)</th>
                         <th style="width: 10%">Vol.% adjust</th>
-                        <th style="width: 10%">W</th>
+                        <th style="width: 10%">Volume(1kg)</th>
                         <th style="width: 10%">W (%)</th>
                         <th style="width: 10%">Weght(g)</th>
                     </tr>

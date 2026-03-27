@@ -20,7 +20,8 @@
                 <div class="col-12 col-md-6"><h3 class="card-title">เปรียบเทียบผลทดลอง</h3></div>
             </div>
             <div class="row">
-                <div class="table-responsive">
+                <div class="col-12">
+                     <div class="table-responsive">
                     <table id="tb_job" class="table table-bordered text-center table-sm">
                         <thead>
                             <tr>
@@ -35,51 +36,54 @@
                                 <th>Normal (µ)</th>
                                 <th>Hot (µ)</th>
                                 <th>Wear (10−7cm3/(N⋅m))</th>
-                                <th>หมายเหตุ</th>
                             </tr>
                         </thead> 
-                        <tbody>
+                       <tbody>
+
                             @foreach ($hd as $item)
-                                <tr
+
+                            <tr class="main-row"
                                 data-formula="{{$item->FormulaNumber}}"
                                 data-hardness="{{$item->Hardness}}"
                                 data-shearing="{{$item->Shearing}}"
                                 data-noise="{{$item->Noise}}"
-                                {{-- data-road="{{$item->RoadTestAvg}}" --}}
                                 data-normal="{{$item->Normal_Avg}}"
                                 data-hot="{{$item->Hot_Avg}}"
                                 data-wear="{{$item->Wear_Avg}}"
                                 data-testid="{{$item->TestID}}"
-                                >
-                                    <td>
-                                        <input type="checkbox"
+                                data-remark="{{$item->Remarks}}">
+                                <td>
+                                    <input type="checkbox"
                                         class="chkFormula"
                                         value="{{$item->TestID}}">
-                                    </td>
-                                    <td>{{ \Carbon\Carbon::parse($item->TestDate)->format('d/m/Y') }}</td>
-                                    <td>{{$item->FormulaName}}</td>
-                                    <td>{{$item->FormulaNumber}}</td>                                  
-                                    <td>{{number_format($item->Hardness,2)}}</td>
-                                    <td>{{number_format($item->Shearing,2)}}</td>
-                                    <td>{{number_format($item->Noise,2)}}</td>
-                                    {{-- <td>{{number_format($item->RoadTestAvg,2)}}</td> --}}
-                                    <td>{{number_format($item->Normal_Avg,2)}}</td>
-                                    <td>{{number_format($item->Hot_Avg,2)}}</td>
-                                    <td>{{number_format($item->Wear_Avg,2)}}</td>
-                                    <td>{{$item->Remarks}}</td>
-                                </tr>
+                                </td>
+
+                                <td>
+                                    {{ \Carbon\Carbon::parse($item->TestDate)->format('Y-m-d') }}
+                                </td>
+
+                                <td>{{$item->FormulaName}}</td>
+                                <td>{{$item->FormulaNumber}}</td>
+
+                                <td>{{number_format($item->Hardness,2)}}</td>
+                                <td>{{number_format($item->Shearing,2)}}</td>
+                                <td>{{number_format($item->Noise,2)}}</td>
+
+                                <td>{{number_format($item->Normal_Avg,2)}}</td>
+                                <td>{{number_format($item->Hot_Avg,2)}}</td>
+                                <td>{{number_format($item->Wear_Avg,2)}}</td>
+
+                            </tr>
+
+
                             @endforeach
-                        </tbody>                      
+
+                            </tbody>
                     </table>
                 </div>
-            </div>
-        </div>
-    </div>
-    <div class="card">
-        <div class="card-body">
-            <h5>รายละเอียด</h5>
-            <div class="row">
-                <div class="col-md-12">
+                </div>
+                <div class="col-12">
+                     <div class="table-responsive">
                     <table id="tb_result" class="table table-bordered table-sm text-center">
                         <thead>
                             <tr>
@@ -118,35 +122,52 @@
 
                         </tbody>
                     </table>
-                </div>             
+                </div> 
+                </div>
+                <div class="col-12">
+                     <h5>หมายเหตุ</h5>
+
+                    <div id="remarkContainer">
+
+                        <div class="text-muted">
+                            ยังไม่ได้เลือกสูตร
+                        </div>
+
+                    </div>
+                </div>
             </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <h5>รายละเอียด</h5>
             <div class="row">
 
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <h5>Hardness (HRB)</h5>
                     <canvas id="chartHardness" height="120">
                 </canvas></div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <h5>Shearing (mm²)</h5>
                     <canvas id="chartShearing" height="120"></canvas>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <h5>Noise (dB)</h5>
                     <canvas id="chartNoise" height="120"></canvas>
                 </div>
                
 
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <h5>Normal (µ)</h5>
                     <canvas id="chartNormal" height="120"></canvas>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <h5>Hot (µ)</h5>
                     <canvas id="chartHot" height="120"></canvas>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <h5>Wear (10−7cm3/(N⋅m))</h5>
                     <canvas id="chartWear" height="120"></canvas>
                 </div>
@@ -230,6 +251,7 @@ $(document).ready(function() {
             [10, 25, 50, -1],
             [10, 25, 50, "All"]
         ],
+            order: [[1, 'desc']], // เรียงวันที่ล่าสุดก่อน
             dom: 'Bfrtip',
             buttons: [
                 'copy', 'csv', 'excel', 'pdf', 'print'
@@ -483,6 +505,7 @@ $(document).on("change",".chkFormula",async function(){
 
     });
 
+    renderRemarks();   
     buildCharts();
 
     await renderFrictionCharts();
@@ -657,6 +680,41 @@ temps.forEach(t=>{
     );
 
 });
+}
+function renderRemarks(){
+
+    let html = "";
+
+    $(".chkFormula:checked").each(function(){
+
+        let row = $(this).closest("tr");
+
+        let formula = row.data("formula");
+
+        let remark  = row.data("remark") ?? "-";
+
+        html += `
+            <div class="mb-2 p-2 border rounded">
+
+                <b>${formula}</b>
+
+                <div class="text-muted">
+
+                    ${remark}
+
+                </div>
+
+            </div>
+        `;
+
+    });
+
+    if(html===""){
+        html = '<div class="text-muted">ยังไม่ได้เลือกสูตร</div>';
+    }
+
+    $("#remarkContainer").html(html);
+
 }
 </script>
 @endpush

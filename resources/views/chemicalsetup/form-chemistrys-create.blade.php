@@ -116,7 +116,7 @@
                                 <th style="width: 40%">Material</th>
                                 <th style="width: 10%">Density (g/cc)</th>
                                 <th style="width: 10%">Vol.% adjust</th>
-                                <th style="width: 10%">W</th>
+                                <th style="width: 10%">Volume(1kg)</th>
                                 <th style="width: 10%">W (%)</th>
                                 <th style="width: 10%">Weght (g)</th>
                                 <th style="width: 3%"></th>
@@ -125,7 +125,8 @@
                         <tbody id="tableBody"></tbody>       
                         <tfoot>
                             <tr>
-                                <th colspan="3" class="text-end">Total</th>
+                                <th colspan="2" class="text-end">Total</th>
+                                <th id="sumDensity">0</th>
                                 <th id="sumAdjust">0</th>
                                 <th id="sumWeight">0</th>
                                 <th id="sumWeightPer">0</th>
@@ -148,7 +149,14 @@
         </form> 
         <hr>
         <div class="row">
-            <div class="col-12 d-flex justify-content-center">
+            <div class="col-6 d-flex justify-content-center">
+                <h5>Adjust (%)</h5>
+                <div style="width:500px; height:500px;">
+                    <canvas id="donutChart"></canvas>
+                </div>
+            </div>
+            <div class="col-6 d-flex justify-content-center">
+                <h5>Weght (g)</h5>
                 <div style="width:500px; height:500px;">
                     <canvas id="pieChart"></canvas>
                 </div>
@@ -222,6 +230,7 @@ $(document).on('change', '.select2-product', function () {
     }
 
     calculateTable();
+    renderDonutChart();
     renderPieChart();
 });
 
@@ -277,6 +286,7 @@ document.getElementById('addRowBtn').addEventListener('click', function () {
     });
 
     updateRowNumbers();
+    renderDonutChart();
     renderPieChart();
 });
 
@@ -286,6 +296,7 @@ document.getElementById('tableBody').addEventListener('click', function (e) {
         e.target.closest('tr').remove();
         updateRowNumbers();
         calculateTable();
+        renderDonutChart();
         renderPieChart();
     }
 });
@@ -299,130 +310,251 @@ $(document).on('input', '.adjust', function () {
     }
 });
 
-/* ===================== CALCULATE ===================== */
 function calculateTable(){
 
-    const mode = $('input[name="chemistry_hd_calculate"]:checked').val();
-    const mix = parseFloat($('input[name="chemistry_hd_mix"]').val()) || 0;
+    const mode =
+        $('input[name="chemistry_hd_calculate"]:checked').val();
 
-    let totalWeight = 0;
+    const mixKg =
+        parseFloat(
+            $('input[name="chemistry_hd_mix"]').val()
+        ) || 0;
+
+    let sumDensity = 0;
     let sumAdjust = 0;
-    let sumWeight = 0;
     let sumWeightPer = 0;
     let sumWeightTotal = 0;
+    let sumWeight = 0;
 
-    const rows = $('#tableBody tr');
+    let totalAdjustRaw = 0;
 
-    /* ===== STEP 1 ===== */
+    const rows =
+        $('#tableBody tr');
+
+
+    /* ================= STEP 1 ================= */
+
+    let tmpSumWeight = 0;
+
     rows.each(function(){
 
         const row = $(this);
 
-        const density = parseFloat(row.find('.density').val()) || 0;
-        let adjust = parseFloat(row.find('.adjust').val()) || 0;
-        let weight = 0;
-        let weightPer = parseFloat(row.find('.weghtper').val()) || 0;
+        const density =
+            parseFloat(
+                row.find('.density').val()
+            ) || 0;
+
+        let adjust =
+            parseFloat(
+                row.find('.adjust').val()
+            ) || 0;
+
+        let weightPer =
+            parseFloat(
+                row.find('.weghtper').val()
+            ) || 0;
+
+
+
+        /* ===== MODE : VOL % ===== */
 
         if(mode === 'vol')
         {
-            // จำกัด sum adjust <= 100
-            if (sumAdjust + adjust > 100) {
-                showOverLimit('Vol.% รวมเกิน 100%');
-
+            if(sumAdjust + adjust > 100)
+            {
                 adjust = 100 - sumAdjust;
-                if (adjust < 0) adjust = 0;
-                row.find('.adjust').val(adjust.toFixed(2));
+
+                if(adjust < 0)
+                    adjust = 0;
+
+                row.find('.adjust')
+                    .val(adjust.toFixed(2));
             }
 
-            weight = density * adjust;
-            row.find('.weght').val(weight.toFixed(2));
+            let tmpWeight =
+                density * adjust;
 
+            tmpSumWeight += tmpWeight;
             sumAdjust += adjust;
+
+            row.data('tmpWeight', tmpWeight);
         }
+
+
+
+        /* ===== MODE : W % ===== */
 
         if(mode === 'w')
         {
-            // จำกัด sum weightPer <= 100
-            if (sumWeightPer + weightPer > 100) {
-                showOverLimit('W % รวมเกิน 100%');
+            if(sumWeightPer + weightPer > 100)
+            {
+                weightPer =
+                    100 - sumWeightPer;
 
-                weightPer = 100 - sumWeightPer;
-                if (weightPer < 0) weightPer = 0;
-                row.find('.weghtper').val(weightPer.toFixed(2));
+                if(weightPer < 0)
+                    weightPer = 0;
+
+                row.find('.weghtper')
+                    .val(weightPer.toFixed(2));
             }
 
-            weight = weightPer; // temp (จะ normalize ด้านล่าง)
             sumWeightPer += weightPer;
+
+            let raw =
+                density > 0
+                ? weightPer / density
+                : 0;
+
+            row.data('adjustRaw', raw);
+
+            totalAdjustRaw += raw;
         }
 
-        sumWeight += weight;
     });
 
-    /* ===== STEP 2 ===== */
+
+
+    /* ================= STEP 2 ================= */
+
+    let sumWeightExcel = 0;
+
     rows.each(function(){
 
         const row = $(this);
 
-        const density = parseFloat(row.find('.density').val()) || 0;
-        let adjust = parseFloat(row.find('.adjust').val()) || 0;
-        let weight = parseFloat(row.find('.weght').val()) || 0;
-        let weightPer = parseFloat(row.find('.weghtper').val()) || 0;
-        let weightTotal = 0;
+        const density =
+            parseFloat(
+                row.find('.density').val()
+            ) || 0;
+
+        let adjust =
+            parseFloat(
+                row.find('.adjust').val()
+            ) || 0;
+
+        let weightPer =
+            parseFloat(
+                row.find('.weghtper').val()
+            ) || 0;
+
+
+
+        /* ===== VOL -> W% ===== */
 
         if(mode === 'vol')
         {
-            if(sumWeight > 0)
-            {
-                weightPer = (weight / sumWeight) * 100;
-                weightTotal = (mix * weightPer) / 100;
+            let tmpWeight =
+                row.data('tmpWeight') || 0;
 
-                row.find('.weghtper').val(weightPer.toFixed(2));
-                row.find('.weghttotal').val(weightTotal.toFixed(2));
+            if(tmpSumWeight > 0)
+            {
+                weightPer =
+                    (tmpWeight / tmpSumWeight)
+                    * 100;
+
+                row.find('.weghtper')
+                    .val(weightPer.toFixed(2));
+
+                sumWeightPer += weightPer;
             }
         }
+
+
+
+        /* ===== W% -> VOL ===== */
 
         if(mode === 'w')
         {
-            // คำนวณน้ำหนักจริงจาก %
-            weight = weightPer;
-            row.find('.weght').val(weight.toFixed(2));
+            let raw =
+                row.data('adjustRaw') || 0;
 
-            // 🔥 แปลงกลับเป็น Vol.% (adjust)
-            if (density > 0 && sumWeightPer > 0)
+            if(totalAdjustRaw > 0)
             {
-                // normalize weight ให้เป็นสัดส่วนจริง
-                let normWeight = (weightPer / sumWeightPer);
+                adjust =
+                    (raw / totalAdjustRaw)
+                    * 100;
 
-                let totalW = 0;
-                rows.each(function(){
-                    let wp = parseFloat($(this).find('.weghtper').val()) || 0;
-                    totalW += wp;
-                });
+                row.find('.adjust')
+                    .val(adjust.toFixed(2));
 
-                // คำนวณ adjust
-                let adjustCalc = (weightPer / totalW) * 100 / density;
-
-                row.find('.adjust').val(adjustCalc.toFixed(2));
-                sumAdjust += adjustCalc;
+                sumAdjust += adjust;
             }
-
-            weightTotal = (mix * weightPer) / 100;
-            row.find('.weghttotal').val(weightTotal.toFixed(2));
         }
+
+
+
+        /* ===== W ตาม Excel ===== */
+
+        let weight = 0;
+
+        if(density > 0)
+        {
+            weight =
+                (
+                    mixKg
+                    /
+                    density
+                )
+                *
+                (
+                    weightPer
+                    / 100
+                );
+        }
+
+        row.find('.weght')
+            .val(weight.toFixed(2));
+
+        sumWeightExcel += weight;
+
+
+
+        /* ===== TOTAL kg ===== */
+
+        let weightTotal =
+            mixKg
+            *
+            weightPer
+            / 100;
+
+        row.find('.weghttotal')
+            .val(weightTotal.toFixed(2));
 
         sumWeightTotal += weightTotal;
+
     });
 
-    $('input[name="chemistry_hd_qty"]').val(sumWeightTotal.toFixed(2));
 
-    $('#sumAdjust').text(sumAdjust.toFixed(2));
-    $('#sumWeight').text(sumWeight.toFixed(2));
-    $('#sumWeightPer').text(sumWeightPer.toFixed(2));
-    $('#sumWeightTotal').text(sumWeightTotal.toFixed(2));
-     // 🔥 ADD THIS
+
+    /* ================= TOTAL ================= */
+    sumDensity = mixKg / sumWeightExcel;
+
+    $('#sumDensity')
+        .text(sumDensity.toFixed(2));
+
+    $('#sumAdjust')
+        .text(sumAdjust.toFixed(2));
+
+    $('#sumWeightPer')
+        .text(sumWeightPer.toFixed(2));
+
+    $('#sumWeight')
+        .text(sumWeightExcel.toFixed(2));
+
+    $('#sumWeightTotal')
+        .text(sumWeightTotal.toFixed(2));
+
+
+    $('input[name="chemistry_hd_qty"]')
+        .val(sumWeightTotal.toFixed(2));
+
+
+
     renderPieChart();
-}
+    renderDonutChart();
 
+}
 /* ===================== TRIGGER ===================== */
 $(document).on('keyup change','.adjust,.density,.weghtper,input[name="chemistry_hd_mix"]',function(){
     calculateTable();
@@ -518,6 +650,200 @@ function renderPieChart() {
 /* ===================== INIT ===================== */
 $(document).ready(function () {
     renderPieChart();
+    renderDonutChart();
 });
+let donutChart = null;
+
+function buildDonutData() {
+
+    const rows =
+        document.querySelectorAll('#tableBody tr');
+
+    const groupMap = {};
+    const colorMap = {};
+
+    rows.forEach(row => {
+
+        const group =
+            row.querySelector('.group')?.value || 'ไม่ระบุ';
+
+        const color =
+            row.querySelector('.color')?.value || '#cccccc';
+
+        let value =
+            parseFloat(
+                row.querySelector('.adjust')?.value || 0
+            );
+
+        if (value <= 0)
+            return;
+
+        // fix float precision
+        value =
+            parseFloat(
+                value.toFixed(2)
+            );
+
+        if (!groupMap[group]) {
+
+            groupMap[group] = 0;
+            colorMap[group] = color;
+        }
+
+        groupMap[group] += value;
+    });
+
+    const labels =
+        Object.keys(groupMap);
+
+    const data =
+        Object.values(groupMap)
+            .map(v =>
+                parseFloat(v.toFixed(2))
+            );
+
+    const total =
+        data.reduce(
+            (a, b) => a + b,
+            0
+        );
+
+    return {
+
+        labels,
+
+        data,
+
+        colors:
+            labels.map(
+                g => colorMap[g]
+            ),
+
+        total:
+            parseFloat(
+                total.toFixed(2)
+            )
+    };
+}
+
+
+function renderDonutChart() {
+
+    const ctx =
+        document
+        .getElementById('donutChart')
+        .getContext('2d');
+
+    const result =
+        buildDonutData();
+
+    if (donutChart)
+        donutChart.destroy();
+
+    donutChart =
+        new Chart(ctx, {
+
+        type: 'doughnut',
+
+        data: {
+
+            labels:
+                result.labels,
+
+            datasets: [{
+
+                data:
+                    result.data,
+
+                backgroundColor:
+                    result.colors,
+
+                borderWidth: 1
+            }]
+        },
+
+        plugins: [
+            ChartDataLabels
+        ],
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            cutout: '60%',
+
+            plugins: {
+
+                legend: {
+
+                    position: 'right',
+
+                    labels: {
+
+                        font: {
+                            size: 12
+                        }
+                    }
+                },
+
+                tooltip: {
+
+                    callbacks: {
+
+                        label:
+                        function(context) {
+
+                            const value =
+                                parseFloat(
+                                    context.raw.toFixed(2)
+                                );
+
+                            const percent =
+                                (
+                                    value
+                                    /
+                                    result.total
+                                    * 100
+                                )
+                                .toFixed(2);
+
+                            return
+                                `${context.label}: ${value.toFixed(2)}% (${percent}%)`;
+                        }
+                    }
+                },
+
+                datalabels: {
+
+                    color: '#000',
+
+                    formatter:
+                    function(value) {
+
+                        const percent =
+                            (
+                                value
+                                /
+                                result.total
+                                * 100
+                            )
+                            .toFixed(2);
+
+                        return `${percent}%`;
+                    },
+
+                    font: {
+
+                        weight: 'bold',
+
+                        size: 12
+                    }
+                }
+            }
+        }
+    });
+}
 </script>
 @endpush

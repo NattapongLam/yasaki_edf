@@ -19,37 +19,41 @@
         <div class="row">
             <div class="col-12 col-md-6"><h3 class="card-title">จัดการเคมี</h3></div>
              <div class="col-12 col-md-6"><a style="float: right" href="{{route('chemistrys.create')}}" class="btn btn-primary"><i class="fas fa-plus"></i> เพิ่มรายการ</a></div>
-        </div>       
-        <table id="tb_job" class="table table-bordered dt-responsive nowrap w-100 text-center">
+        </div>   
+        <div class="table-responsive">
+              <table id="tb_job" class="table table-bordered table-sm nowrap w-100 text-center">
             <thead>
                 <tr>
+                    <th></th>
                     <th>วันที่</th>
                     <th>ประเภท</th>                   
                     <th>เลขที่สูตร</th>
                     <th>ชื่อสูตร</th>
                     <th>หมายเหตุ</th>
                     <th>ผู้บันทึก</th>
-                    <th></th>
+                    
                 </tr>
             </thead>
             <tbody>
                 @foreach ($hd as $item)
                    <tr>
+                        <td>
+                            <a href="{{route('chemistrys.show',$item->chemistry_hd_id)}}" class="btn btn-sm btn-info" >
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        </td>
                         <td>{{$item->chemistry_hd_date}}</td>
                         <td>{{$item->chemistry_hd_type}}</td>
                         <td>{{$item->chemistry_hd_name}}</td>
                         <td>{{$item->ms_formule_name}}</td>
                         <td>{{$item->chemistry_hd_note}}</td>
                         <td>{{$item->chemistry_hd_save}}</td>
-                        <td>
-                            <a href="{{route('chemistrys.show',$item->chemistry_hd_id)}}" class="btn btn-sm btn-info" >
-                                <i class="fas fa-edit"></i>
-                            </a>
-                        </td>
+                       
                    </tr>
                 @endforeach
             </tbody>
         </table>
+        </div>    
     </div>
 </div>
 </div>
@@ -63,6 +67,7 @@ $(document).ready(function() {
             [10, 25, 50, -1],
             [10, 25, 50, "All"]
         ],
+            order: [[1, 'desc']],
             dom: 'Bfrtip',
             buttons: [
                 'copy', 'csv', 'excel', 'pdf', 'print'
