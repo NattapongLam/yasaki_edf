@@ -19,6 +19,53 @@
             <div class="row">
                 <div class="col-12 col-md-6"><h3 class="card-title">เปรียบเทียบผลทดลอง</h3></div>
             </div>
+            <form method="GET" action="{{ route('report.compareformulas') }}">
+                <div class="row">
+
+                    <div class="col-3">
+                        <div class="form-group">
+                            <label class="form-label">สูตร</label>
+                            <select class="form-select" name="formula">
+                                <option value="">กรุณาเลือก</option>
+                                @foreach ($group as $item)
+                                    <option value="{{ $item->ms_formule_name }}"
+                                        {{ request('formula') == $item->ms_formule_name ? 'selected' : '' }}>
+                                        {{ $item->ms_formule_name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-3">
+                        <div class="form-group">
+                            <label class="form-label">วันที่</label>
+                            <input class="form-control"
+                                type="date"
+                                name="date_from"
+                                value="{{ request('date_from') }}">
+                        </div>
+                    </div>
+
+                    <div class="col-3">
+                        <div class="form-group">
+                            <label class="form-label">ถึง</label>
+                            <input class="form-control"
+                                type="date"
+                                name="date_to"
+                                value="{{ request('date_to') }}">
+                        </div>
+                    </div>
+
+                    <div class="col-3 d-flex align-items-end">
+                        <button type="submit" class="btn btn-info w-100">
+                            ค้นหา
+                        </button>
+                    </div>
+
+                </div>
+            </form>
+            <br>
             <div class="row">
                 <div class="col-12">
                      <div class="table-responsive">

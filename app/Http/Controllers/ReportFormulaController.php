@@ -10,9 +10,38 @@ class ReportFormulaController extends Controller
     public function CompareFormulas(Request $request)
     {
         $hd = DB::table('TestHeaders')->get();
-        return view('report.report-compareformulas', compact('hd'));
+        $group = DB::table('ms_formule')->get();       
+        return view('report.report-compareformulas', compact('hd','group'));
     }
 
+    public function GetCompareFormulas(Request $request)
+    {
+        $query = DB::table('TestHeaders');
+
+        // filter สูตร
+        if ($request->filled('formula')) {
+            $query->where('FormulaName', $request->formula);
+        }
+
+        // filter วันที่
+        if ($request->filled('date_from')) {
+            $query->whereDate('TestDate', '>=', $request->date_from);
+        }
+
+        if ($request->filled('date_to')) {
+            $query->whereDate('TestDate', '<=', $request->date_to);
+        }
+
+        $hd = $query->orderBy('TestDate','desc')->get();
+
+        $group = DB::table('ms_formule')
+            ->orderBy('ms_formule_name')
+            ->get();
+
+        return view('report.report-compareformulas',
+            compact('hd','group')
+        );
+    }
     public function getFrictionChart(Request $request)
     {
         $ids = $request->testIDs ?? [];

@@ -43,6 +43,7 @@ Route::get('/chemical/functions/{group_id}', [App\Http\Controllers\ChemicalListC
 Route::resource('/chemistrys' , App\Http\Controllers\ChemistryController::class);
 Route::get('/compare-formulas' , [App\Http\Controllers\ReportFormulaController::class , 'CompareFormulas']);
 Route::post('/get-friction-chart',[App\Http\Controllers\ReportFormulaController::class,'getFrictionChart']);
+Route::get('/report/compareformulas',[App\Http\Controllers\ReportFormulaController::class, 'GetCompareFormulas'])->name('report.compareformulas');
 // เคมี
 
 // ทั่วไป
