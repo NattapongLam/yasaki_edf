@@ -41,9 +41,11 @@ Route::resource('/chemicallists' , App\Http\Controllers\ChemicalListController::
 Route::post('/confirmDelChemical' , [App\Http\Controllers\ChemicalListController::class , 'confirmDelChemical']);
 Route::get('/chemical/functions/{group_id}', [App\Http\Controllers\ChemicalListController::class, 'getFunctions']);
 Route::resource('/chemistrys' , App\Http\Controllers\ChemistryController::class);
+Route::get('/chemistrys/{id}/print',[App\Http\Controllers\ChemistryController::class, 'print'])->name('chemistrys.print');
 Route::get('/compare-formulas' , [App\Http\Controllers\ReportFormulaController::class , 'CompareFormulas']);
 Route::post('/get-friction-chart',[App\Http\Controllers\ReportFormulaController::class,'getFrictionChart']);
 Route::get('/report/compareformulas',[App\Http\Controllers\ReportFormulaController::class, 'GetCompareFormulas'])->name('report.compareformulas');
+Route::get('/report/compareformulas/print/{id}',[App\Http\Controllers\ReportFormulaController::class,'PrintCompareFormula'])->name('report.compareformulas.print');
 // เคมี
 
 // ทั่วไป

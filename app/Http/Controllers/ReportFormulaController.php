@@ -75,4 +75,125 @@ class ReportFormulaController extends Controller
 
         return response()->json($result);
     }
+
+    public function PrintCompareFormula($id)
+    {
+        $hd = DB::table('TestHeaders')
+            ->where('TestID',$id)
+            ->first();
+
+        if(!$hd){
+            abort(404);
+        }
+
+        $friction = DB::table('TestFrictions')
+            ->where('TestID',$id)
+            ->orderBy('Listno')
+            ->get();
+
+        $dt = DB::table('TestDetails')
+        ->select(
+            'Temperature',
+
+            DB::raw("
+                MAX(CASE WHEN SampleSet='N1'
+                THEN (T_Inc + T_Dec)/2 END) as F1
+            "),
+
+            DB::raw("
+                MAX(CASE WHEN SampleSet='N2'
+                THEN (T_Inc + T_Dec)/2 END) as F2
+            "),
+
+            DB::raw("
+                MAX(CASE WHEN SampleSet='N3'
+                THEN (T_Inc + T_Dec)/2 END) as F3
+            "),
+
+            DB::raw("
+                MAX(CASE WHEN SampleSet='N1'
+                THEN WearRate END) as W1
+            "),
+
+            DB::raw("
+                MAX(CASE WHEN SampleSet='N2'
+                THEN WearRate END) as W2
+            "),
+
+            DB::raw("
+                MAX(CASE WHEN SampleSet='N3'
+                THEN WearRate END) as W3
+            "),
+
+            DB::raw("
+                AVG(
+                    CASE
+                    WHEN SampleSet IN ('N1','N2','N3')
+                    THEN (T_Inc + T_Dec)/2
+                    END
+                ) as FAvg
+            "),
+
+            DB::raw("
+                AVG(
+                    CASE
+                    WHEN SampleSet IN ('N1','N2','N3')
+                    THEN WearRate
+                    END
+                ) as WAvg
+            ")
+
+        )
+        ->where('TestID',$id)
+        ->groupBy('Temperature')
+        ->orderBy('Temperature')
+        ->get(); 
+        $frictionPoints = $dt->pluck('FAvg','Temperature');   // FAvg chart
+        $wearRatePoints = $dt->pluck('WAvg','Temperature');   // WAvg chart
+        /*
+        |--------------------------------------------------------------------------
+        | zone config (แทน JISStandardResolver)
+        |--------------------------------------------------------------------------
+        */
+
+        $targetMu   = 0.45;   // DefaultDesignated
+        $tolerance  = 0.08;   // ±
+        $jisMaxVal  = 0.55;
+        $jisMinVal  = 0.35;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | build zone arrays ตาม Temperature จริง
+        |--------------------------------------------------------------------------
+        */
+
+        $temps = $dt->pluck('Temperature')->values();
+
+        $safeUpper = [];
+        $safeLower = [];
+
+        $jisMax = [];
+        $jisMin = [];
+
+        $targetUpper = [];
+        $targetLower = [];
+
+        foreach($temps as $t){
+
+            $safeUpper[] = $targetMu + $tolerance;
+            $safeLower[] = $targetMu - $tolerance;
+
+            $jisMax[] = $jisMaxVal;
+            $jisMin[] = $jisMinVal;
+
+            $targetUpper[] = $targetMu + $tolerance;
+            $targetLower[] = $targetMu - $tolerance;
+        }
+        return view(
+            'report.report-compareformulas-print',compact(
+                'hd','friction','dt','frictionPoints','wearRatePoints','temps','safeUpper','safeLower','jisMin','jisMax','targetUpper','targetLower'
+            )
+        );
+    }
 }

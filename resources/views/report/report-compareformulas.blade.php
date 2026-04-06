@@ -120,8 +120,15 @@
                                 <td>{{number_format($item->Normal_Avg,2)}}</td>
                                 <td>{{number_format($item->Hot_Avg,2)}}</td>
                                 <td>{{number_format($item->Wear_Avg,2)}}</td>
-                                <td>
-                                        
+                                <td>                                   
+                                    <a
+                                        href="{{ route('report.compareformulas.print',$item->TestID) }}"
+                                        target="_blank"
+                                        class="btn btn-sm btn-warning">
+
+                                        <i class="fas fa-print"></i>
+
+                                    </a>  
                                 </td>
                             </tr>
 

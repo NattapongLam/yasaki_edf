@@ -24,8 +24,9 @@
               <table id="tb_job" class="table table-bordered table-sm nowrap w-100 text-center">
             <thead>
                 <tr>
-                    <th></th>
+                    <th></th>                   
                     <th>วันที่</th>
+                    <th>พิมพ์</th>
                     <th>ประเภท</th>                   
                     <th>เลขที่สูตร</th>
                     <th>ชื่อสูตร</th>
@@ -41,8 +42,15 @@
                             <a href="{{route('chemistrys.show',$item->chemistry_hd_id)}}" class="btn btn-sm btn-info" >
                                 <i class="fas fa-edit"></i>
                             </a>
-                        </td>
+                        </td>                        
                         <td>{{$item->chemistry_hd_date}}</td>
+                        <td>
+                            <a href="{{ route('chemistrys.print',$item->chemistry_hd_id) }}"
+                                target="_blank"
+                                class="btn btn-sm btn-warning">
+                                <i class="fas fa-print"></i>
+                            </a>
+                        </td>
                         <td>{{$item->chemistry_hd_type}}</td>
                         <td>{{$item->chemistry_hd_name}}</td>
                         <td>{{$item->ms_formule_name}}</td>

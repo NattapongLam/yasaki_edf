@@ -342,4 +342,26 @@ class ChemistryController extends Controller
     {
         //
     }
+
+    public function print($id)
+    {
+        $hd = DB::table('chemistry_hd')
+            ->where('chemistry_hd_id',$id)
+            ->first();
+
+        $dt = DB::table('chemistry_dt')
+        ->leftJoin('chemical_lists','chemistry_dt.code','=','chemical_lists.chemical_lists_refcode')
+        ->leftJoin('chemical_groups','chemical_groups.chemical_groups_id','=','chemical_lists.chemical_groups_id')
+        ->where('chemistry_dt.chemistry_hd_id',$id)
+        ->where('chemistry_dt.flag',1)
+        ->orderBy('no')
+        ->select(
+            'chemistry_dt.*',
+            'chemical_groups.chemical_groups_name as group_name',
+            'chemical_groups.chemical_groups_color as group_color'
+        )
+        ->get();
+
+        return view('chemicalsetup.form-chemistrys-print', compact('hd','dt'));
+    }
 }
