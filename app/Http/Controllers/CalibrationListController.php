@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use Carbon\Carbon;
-use Illuminate\Support\Str;
 use App\Models\ApVendorList;
-use Illuminate\Http\Request;
+use App\Models\CalibrationCategory;
+use App\Models\CalibrationChecksheetDt;
+use App\Models\CalibrationChecksheetHd;
+use App\Models\CalibrationGroup;
 use App\Models\CalibrationList;
 use App\Models\CalibrationType;
-use App\Models\CalibrationGroup;
-use Illuminate\Support\Facades\DB;
-use App\Models\CalibrationCategory;
-use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class CalibrationListController extends Controller
 {
@@ -136,7 +138,12 @@ class CalibrationListController extends Controller
     public function show($id)
     {
         $hd = CalibrationList::find($id);
-        return view('calibrationsetup.form-calibrationchecksheet-create', compact('hd'));
+        $ck = CalibrationChecksheetHd::where('calibration_lists_id',$id)->latest()->first();
+        $dt = null;
+        if($ck){
+            $dt = CalibrationChecksheetDt::where('calibration_checksheet_hds_id',$ck->calibration_checksheet_hds_id)->get();
+        }
+        return view('calibrationsetup.form-calibrationchecksheet-create', compact('hd','dt'));
     }
 
     /**

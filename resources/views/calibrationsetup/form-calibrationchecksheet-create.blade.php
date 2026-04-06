@@ -66,7 +66,44 @@
                         <th style="width: 5%"></th>
                     </tr>
                 </thead>
-                <tbody id="tableBody"></tbody>       
+               <tbody id="tableBody">
+
+                    @if ($dt && count($dt) > 0)
+
+                        @foreach ($dt as $index => $item)
+
+                        <tr>
+
+                            <td>
+                                <span class="row-number">{{ $index+1 }}</span>
+
+                                <input type="hidden"
+                                    name="calibration_checksheet_dts_listno[]"
+                                    value="{{ $index+1 }}"
+                                    class="row-number-hidden">
+                            </td>
+
+                            <td>
+                                <input type="text"
+                                    name="calibration_checksheet_dts_remark[]"
+                                    value="{{ $item->calibration_checksheet_dts_remark }}"
+                                    class="form-control" required>
+                            </td>
+
+                            <td>
+                                <button type="button"
+                                        class="btn btn-danger btn-sm deleteRow">
+                                    ลบ
+                                </button>
+                            </td>
+
+                        </tr>
+
+                        @endforeach
+
+                    @endif
+
+                </tbody>      
             </table>          
         </div>   
         <br>
@@ -84,41 +121,90 @@
 @endsection
 @push('scriptjs')
 <script>
-document.getElementById('calibration_checksheet_hds_date').addEventListener('change', function () {
+document.getElementById('calibration_checksheet_hds_date')
+.addEventListener('change', function () {
+
     let selectedDate = new Date(this.value);
+
     if (selectedDate.getDate() !== 1) {
+
         alert('กรุณาเลือกเฉพาะวันที่ 1 ของเดือนเท่านั้น');
+
         this.value = '';
     }
 });
+
+
 function updateRowNumbers() {
+
     const rows = document.querySelectorAll('#tableBody tr');
+
     rows.forEach((row, index) => {
+
         row.querySelector('.row-number').textContent = index + 1;
+
         row.querySelector('.row-number-hidden').value = index + 1;
     });
 }
-document.getElementById('addRowBtn').addEventListener('click', function () {
-        const tbody = document.getElementById('tableBody');
 
-        const newRow = document.createElement('tr');
-        newRow.innerHTML = `
-            <td>
-                <span class="row-number"></span>
-                <input type="hidden" name="calibration_checksheet_dts_listno[]" class="row-number-hidden"/>
-            </td>
-            <td><input type="text" name="calibration_checksheet_dts_remark[]" class="form-control"/></td>
-            <td><button type="button" class="btn btn-danger btn-sm deleteRow">ลบ</button></td>
-        `;
 
-        tbody.appendChild(newRow);
-        updateRowNumbers(); 
+
+document.getElementById('addRowBtn')
+.addEventListener('click', function () {
+
+    const tbody = document.getElementById('tableBody');
+
+    const newRow = document.createElement('tr');
+
+    newRow.innerHTML = `
+        <td>
+            <span class="row-number"></span>
+
+            <input type="hidden"
+                   name="calibration_checksheet_dts_listno[]"
+                   class="row-number-hidden">
+        </td>
+
+        <td>
+            <input type="text"
+                   name="calibration_checksheet_dts_remark[]"
+                   class="form-control" required>
+        </td>
+
+        <td>
+            <button type="button"
+                    class="btn btn-danger btn-sm deleteRow">
+                ลบ
+            </button>
+        </td>
+    `;
+
+    tbody.appendChild(newRow);
+
+    updateRowNumbers();
+
 });
-document.getElementById('tableBody').addEventListener('click', function (e) {
+
+
+
+document.getElementById('tableBody')
+.addEventListener('click', function (e) {
+
     if (e.target.classList.contains('deleteRow')) {
+
         e.target.closest('tr').remove();
-        updateRowNumbers(); // อัปเดตลำดับหลังจากลบ
+
+        updateRowNumbers();
     }
+
+});
+
+
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    updateRowNumbers();
+
 });
 </script>
 @endpush

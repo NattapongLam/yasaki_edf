@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use Carbon\Carbon;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
-use App\Models\MachineryList;
+use App\Models\MachineryChecksheetDt;
+use App\Models\MachineryChecksheetHd;
 use App\Models\MachineryGroup;
+use App\Models\MachineryList;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class MachineryListController extends Controller
 {
@@ -104,7 +106,9 @@ class MachineryListController extends Controller
     public function show($id)
     {
         $hd = MachineryList::find($id);
-        return view('machinerysetup.form-machinerychecksheet-create', compact('hd'));
+        $ck = MachineryChecksheetHd::where('machinery_lists_id',$id)->latest()->first(); 
+        $dt = MachineryChecksheetDt::where('machinery_checksheet_hds_id',$ck->machinery_checksheet_hds_id)->get();
+        return view('machinerysetup.form-machinerychecksheet-create', compact('hd','dt'));
     }
 
     /**

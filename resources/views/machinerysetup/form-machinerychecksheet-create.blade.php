@@ -66,7 +66,32 @@
                         <th style="width: 5%"></th>
                     </tr>
                 </thead>
-                <tbody id="tableBody"></tbody>       
+                <tbody id="tableBody">
+                    @foreach ($dt as $index => $item)
+                    <tr>
+                        <td>
+                            <span class="row-number">{{ $index+1 }}</span>
+                            <input type="hidden"
+                                name="machinery_checksheet_dts_listno[]"
+                                value="{{ $index+1 }}"
+                                class="row-number-hidden">
+                        </td>
+
+                        <td>
+                            <input type="text"
+                                name="machinery_checksheet_dts_remark[]"
+                                value="{{ $item->machinery_checksheet_dts_remark }}"
+                                class="form-control" required>
+                        </td>
+
+                        <td>
+                            <button type="button" class="btn btn-danger btn-sm deleteRow">
+                                ลบ
+                            </button>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>   
             </table>          
         </div>
           <br>
@@ -93,32 +118,58 @@ document.getElementById('machinery_checksheet_hds_date').addEventListener('chang
 });
 function updateRowNumbers() {
     const rows = document.querySelectorAll('#tableBody tr');
+
     rows.forEach((row, index) => {
         row.querySelector('.row-number').textContent = index + 1;
         row.querySelector('.row-number-hidden').value = index + 1;
     });
 }
+
 document.getElementById('addRowBtn').addEventListener('click', function () {
-        const tbody = document.getElementById('tableBody');
 
-        const newRow = document.createElement('tr');
-        newRow.innerHTML = `
-            <td>
-                <span class="row-number"></span>
-                <input type="hidden" name="machinery_checksheet_dts_listno[]" class="row-number-hidden"/>
-            </td>
-            <td><input type="text" name="machinery_checksheet_dts_remark[]" class="form-control"/></td>
-            <td><button type="button" class="btn btn-danger btn-sm deleteRow">ลบ</button></td>
-        `;
+    const tbody = document.getElementById('tableBody');
 
-        tbody.appendChild(newRow);
-        updateRowNumbers(); 
+    const newRow = document.createElement('tr');
+
+    newRow.innerHTML = `
+        <td>
+            <span class="row-number"></span>
+            <input type="hidden"
+                   name="machinery_checksheet_dts_listno[]"
+                   class="row-number-hidden">
+        </td>
+
+        <td>
+            <input type="text"
+                   name="machinery_checksheet_dts_remark[]"
+                   class="form-control" required>
+        </td>
+
+        <td>
+            <button type="button"
+                    class="btn btn-danger btn-sm deleteRow">
+                    ลบ
+            </button>
+        </td>
+    `;
+
+    tbody.appendChild(newRow);
+
+    updateRowNumbers();
 });
+
 document.getElementById('tableBody').addEventListener('click', function (e) {
+
     if (e.target.classList.contains('deleteRow')) {
+
         e.target.closest('tr').remove();
-        updateRowNumbers(); // อัปเดตลำดับหลังจากลบ
+
+        updateRowNumbers();
     }
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    updateRowNumbers();
 });
 </script>
 @endpush
