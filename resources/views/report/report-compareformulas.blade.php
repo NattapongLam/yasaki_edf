@@ -329,6 +329,7 @@ const palette = [
 ];
 
 let formulaColors = {};
+let charts = {};
 
 function assignColors(){
 
@@ -357,7 +358,37 @@ function getColor(formula){
     return formulaColors[formula] ?? "#999";
 
 }
-let charts = {};
+
+function darkenColor(hex, factor){
+
+    let r = parseInt(hex.substring(1,3),16);
+    let g = parseInt(hex.substring(3,5),16);
+    let b = parseInt(hex.substring(5,7),16);
+
+    r = Math.max(0, Math.floor(r * factor));
+    g = Math.max(0, Math.floor(g * factor));
+    b = Math.max(0, Math.floor(b * factor));
+
+    return "#" +
+        r.toString(16).padStart(2,'0') +
+        g.toString(16).padStart(2,'0') +
+        b.toString(16).padStart(2,'0');
+
+}
+
+function getSampleColor(formula,sample){
+
+    let base = getColor(formula);
+
+    if(sample==="N1") return base;
+
+    if(sample==="N2") return darkenColor(base,0.40);
+
+    if(sample==="N3") return darkenColor(base,0.70);
+
+    return base;
+
+}
 
 function buildCharts(){
 
@@ -569,14 +600,20 @@ $(document).on("change",".chkFormula",async function(){
 
 });
 
+/* ===== load api ===== */
+
 function getSelectedTestID(){
+
     let ids = [];
 
-    $('.chkFormula:checked').each(function () {
+    $('.chkFormula:checked').each(function(){
+
         ids.push($(this).val());
+
     });
 
     return ids;
+
 }
 async function loadFrictionChart(){
 
@@ -587,6 +624,7 @@ async function loadFrictionChart(){
     return await $.ajax({
 
         url:'/get-friction-chart',
+
         type:'POST',
 
         data:{
@@ -598,6 +636,8 @@ async function loadFrictionChart(){
 
 }
 
+/* ===== build dataset ===== */
+
 function buildDatasetsByFormula(dataObj,labelSuffix,labels){
 
     let datasets = [];
@@ -608,25 +648,40 @@ function buildDatasetsByFormula(dataObj,labelSuffix,labels){
             $("tr[data-testid='"+testID+"']")
             .data("formula");
 
-        let color = getColor(formula);
+        Object.keys(dataObj[testID]).forEach(sampleSet=>{
 
-        datasets.push({
+            let color =
+                getSampleColor(formula,sampleSet);
 
-            label: formula + " " + labelSuffix,
+            datasets.push({
 
-            data: dataObj[testID].map((y,i)=>({
+                label:
+                    formula
+                    + " "
+                    + sampleSet
+                    + " "
+                    + labelSuffix,
 
-                x: labels[i],     // <<< ใช้ค่า X จริง
-                y: y
+                data:
+                    dataObj[testID][sampleSet]
+                    .map((y,i)=>({
 
-            })),
+                        x: labels[i],
+                        y: y
 
-            borderColor: color,
-            backgroundColor: color,
+                    })),
 
-            tension: 0.05,
-            borderWidth: 2,
-            pointRadius: 0
+                borderColor: color,
+
+                backgroundColor: color,
+
+                tension: 0.05,
+
+                borderWidth: 2,
+
+                pointRadius: 0
+
+            });
 
         });
 
@@ -636,15 +691,23 @@ function buildDatasetsByFormula(dataObj,labelSuffix,labels){
 
 }
 
+
+/* ===== create chart ===== */
+
 function createLineChart(canvasId, labels, datasets, yMax, xMax = 500){
 
     if(charts[canvasId]){
+
         charts[canvasId].destroy();
+
     }
 
     charts[canvasId] = new Chart(
+
         document.getElementById(canvasId),
+
         {
+
             type:'line',
 
             data:{
@@ -652,18 +715,24 @@ function createLineChart(canvasId, labels, datasets, yMax, xMax = 500){
             },
 
             options:{
+
                 responsive:true,
+
                 maintainAspectRatio:false,
 
                 plugins:{
-                    legend:{ position:'top' }
+                    legend:{
+                        position:'top'
+                    }
                 },
 
                 scales:{
+
                     x:{
                         type:'linear',
                         min:0,
-                        max:xMax,        // <<< dynamic
+                        max:xMax,
+
                         ticks:{
                             stepSize:50
                         }
@@ -673,71 +742,109 @@ function createLineChart(canvasId, labels, datasets, yMax, xMax = 500){
                         min:0,
                         max:yMax
                     }
+
                 }
+
             }
+
         }
+
     );
+
 }
+
+/* ===== render ===== */
 
 async function renderFrictionCharts(){
 
     let res = await loadFrictionChart();
-    console.log(res); 
+
     if(!res) return;
 
-const temps = [
-    100,
-    150,
-    200,
-    250,
-    300,
-    350,
-    {key:'Fall', id:'fall'}
-];
+    const temps = [
 
-temps.forEach(t=>{
+        100,
+        150,
+        200,
+        250,
+        300,
+        350,
 
-    let key = typeof t === 'object' ? t.key : t;
-    let id  = typeof t === 'object' ? t.id  : t;
+        {key:'Fall', id:'fall'}
 
-    if(!res[key]) return;
+    ];
 
-    let labels = res[key].labels;
+    temps.forEach(t=>{
 
-    let xMax = (id === 'fall') ? 750 : 500;
+        let key =
+            typeof t === 'object'
+            ? t.key
+            : t;
 
-    createLineChart(
+        let id =
+            typeof t === 'object'
+            ? t.id
+            : t;
 
-        "chartU"+id,
-        labels,
+        if(!res[key]) return;
 
-        buildDatasetsByFormula(
-            res[key].u,
-            key+"°C (u)",
-            labels
-        ),
+        let labels =
+            res[key].labels;
 
-        0.8,
-        xMax
-    );
+        let xMax =
+            (id === 'fall')
+            ? 750
+            : 500;
 
-    createLineChart(
+        createLineChart(
 
-        "chartC"+id,
-        labels,
+            "chartU"+id,
 
-        buildDatasetsByFormula(
-            res[key].c,
-            key+"°C (c)",
-            labels
-        ),
+            labels,
 
-        400,
-        xMax
-    );
+            buildDatasetsByFormula(
 
-});
+                res[key].u,
+
+                key+"°C (u)",
+
+                labels
+
+            ),
+
+            0.8,
+
+            xMax
+
+        );
+
+        createLineChart(
+
+            "chartC"+id,
+
+            labels,
+
+            buildDatasetsByFormula(
+
+                res[key].c,
+
+                key+"°C (c)",
+
+                labels
+
+            ),
+
+            400,
+
+            xMax
+
+        );
+
+    });
+
 }
+
+
 function renderRemarks(){
 
     let html = "";

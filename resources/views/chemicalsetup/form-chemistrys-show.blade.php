@@ -112,7 +112,7 @@
             <div class="col-12">
                 <div class="form-group">
                     <label for="chemistry_hd_note" class="col-form-label">หมายเหตุ</label>
-                    <textarea class="form-control" rows="5" name="chemistry_hd_note">{{$hd->chemistry_hd_note}}</textarea>
+                    <textarea class="form-control" rows="10" name="chemistry_hd_note">{{$hd->chemistry_hd_note}}</textarea>
                 </div>
             </div>
         </div>
@@ -190,11 +190,11 @@
                 <tfoot>
                     <tr>
                         <th colspan="2" class="text-end">Total</th>
-                        <th id="sumDensity">0</th>
-                        <th id="sumAdjust">0</th>
-                        <th id="sumWeight">0</th>
-                        <th id="sumWeightPer">0</th>
-                        <th id="sumWeightTotal">0</th>
+                        <th><input class="form-control" name="total_density" id="sumDensity" value="0" readonly></th>
+                        <th><input class="form-control" name="total_adjust" id="sumAdjust" value="0" readonly></th>
+                        <th><input class="form-control" name="total_volume" id="sumWeight" value="0" readonly></th>
+                        <th><input class="form-control" name="total_wper" id="sumWeightPer" value="0" readonly></th>
+                        <th><input class="form-control" name="total_weght" id="sumWeightTotal" value="0" readonly></th>
                     </tr>
                 </tfoot>
             </table>
@@ -209,6 +209,7 @@
                 </div>
             </div>
         </form>
+        <br>
         <div class="row">
             <div class="col-6 d-flex justify-content-center">
                 <h5>Adjust (%)</h5>
@@ -744,19 +745,19 @@ function calculateTable(){
     sumDensity = mixKg / sumWeightExcel;
 
     $('#sumDensity')
-        .text(sumDensity.toFixed(2));
+        .val(sumDensity.toFixed(2));
 
     $('#sumAdjust')
-        .text(sumAdjust.toFixed(2));
+        .val(sumAdjust.toFixed(2));
 
     $('#sumWeightPer')
-        .text(sumWeightPer.toFixed(2));
+        .val(sumWeightPer.toFixed(2));
 
     $('#sumWeight')
-        .text(sumWeightExcel.toFixed(2));
+        .val(sumWeightExcel.toFixed(2));
 
     $('#sumWeightTotal')
-        .text(sumWeightTotal.toFixed(2));
+        .val(sumWeightTotal.toFixed(2));
 
 
     $('input[name="chemistry_hd_qty"]')

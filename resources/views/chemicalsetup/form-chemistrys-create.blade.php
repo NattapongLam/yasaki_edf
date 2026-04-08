@@ -126,11 +126,11 @@
                         <tfoot>
                             <tr>
                                 <th colspan="2" class="text-end">Total</th>
-                                <th id="sumDensity">0</th>
-                                <th id="sumAdjust">0</th>
-                                <th id="sumWeight">0</th>
-                                <th id="sumWeightPer">0</th>
-                                <th id="sumWeightTotal">0</th>
+                                <th><input class="form-control" id="sumDensity" name="total_density" value="0" readonly></th>
+                                <th><input class="form-control" id="sumAdjust" name="total_adjust" value="0" readonly></th>
+                                <th><input class="form-control" id="sumWeight" name="total_volume" value="0" readonly></th>
+                                <th><input class="form-control" id="sumWeightPer" name="total_wper" value="0" readonly></th>
+                                <th><input class="form-control" id="sumWeightTotal" name="total_weght" value="0" readonly></th>
                                 <th></th>
                             </tr>
                         </tfoot>
@@ -531,19 +531,19 @@ function calculateTable(){
     sumDensity = mixKg / sumWeightExcel;
 
     $('#sumDensity')
-        .text(sumDensity.toFixed(2));
+        .val(sumDensity.toFixed(2));
 
     $('#sumAdjust')
-        .text(sumAdjust.toFixed(2));
+        .val(sumAdjust.toFixed(2));
 
     $('#sumWeightPer')
-        .text(sumWeightPer.toFixed(2));
+        .val(sumWeightPer.toFixed(2));
 
     $('#sumWeight')
-        .text(sumWeightExcel.toFixed(2));
+        .val(sumWeightExcel.toFixed(2));
 
     $('#sumWeightTotal')
-        .text(sumWeightTotal.toFixed(2));
+        .val(sumWeightTotal.toFixed(2));
 
 
     $('input[name="chemistry_hd_qty"]')

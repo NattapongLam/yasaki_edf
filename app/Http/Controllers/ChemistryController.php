@@ -81,7 +81,12 @@ class ChemistryController extends Controller
             'chemistry_hd_docuno' => $docuno,
             'chemistry_hd_number' => $runNumber,
             'chemistry_hd_name' => $request->chemistry_hd_name,
-            'chemistry_hd_calculate' => $request->chemistry_hd_calculate
+            'chemistry_hd_calculate' => $request->chemistry_hd_calculate,
+            'total_density' => $request->total_density,
+            'total_adjust' => $request->total_adjust,
+            'total_volume' => $request->total_volume,
+            'total_wper' => $request->total_wper,
+            'total_weght' => $request->total_weght
         ];     
         try{
             DB::beginTransaction();
@@ -304,7 +309,12 @@ class ChemistryController extends Controller
                 'chemistry_hd_type' => $request->chemistry_hd_type,
                 'chemistry_hd_save' => Auth::user()->name,
                 'update_at' => Carbon::now(),
-                'chemistry_hd_note' => $request->chemistry_hd_note
+                'chemistry_hd_note' => $request->chemistry_hd_note,
+                'total_density' => $request->total_density,
+                'total_adjust' => $request->total_adjust,
+                'total_volume' => $request->total_volume,
+                'total_wper' => $request->total_wper,
+                'total_weght' => $request->total_weght,
             ]);
             foreach ($request->chemistry_dt_id as $key => $value) {
                 $pd = DB::table('chemical_lists')->where('chemical_lists_refcode',$request->code[$key])->first();

@@ -42,14 +42,16 @@ class ReportFormulaController extends Controller
             compact('hd','group')
         );
     }
+    
     public function getFrictionChart(Request $request)
     {
         $ids = $request->testIDs ?? [];
 
         $rows = DB::table('TestFrictions')
             ->whereIn('TestID',$ids)
-            //->where('SampleSet','N1')
+            ->whereIn('SampleSet',['N1','N2','N3'])
             ->orderBy('TestID')
+            ->orderBy('SampleSet')
             ->orderBy('Listno')
             ->get();
 
@@ -62,15 +64,24 @@ class ReportFormulaController extends Controller
             $keyU = "Friction{$t}_u";
             $keyC = "Friction{$t}_c";
 
-            foreach($rows->groupBy('TestID') as $testID => $items){
+            foreach(
+                $rows->groupBy(['TestID','SampleSet'])
+                as $testID => $sampleGroups
+            ){
 
-                $result[$t]['labels'] = $items->pluck('Listno');
+                foreach($sampleGroups as $sampleSet => $items){
 
-                $result[$t]['u'][$testID] = $items->pluck($keyU);
-                $result[$t]['c'][$testID] = $items->pluck($keyC);
+                    $result[$t]['labels'] =
+                        $items->pluck('Listno');
 
+                    $result[$t]['u'][$testID][$sampleSet] =
+                        $items->pluck($keyU)->map(fn($v)=>(float)$v);
+
+                    $result[$t]['c'][$testID][$sampleSet] =
+                        $items->pluck($keyC)->map(fn($v)=>(float)$v);
+
+                }
             }
-
         }
 
         return response()->json($result);
