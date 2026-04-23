@@ -289,6 +289,84 @@
                 </div>
             </div> 
             <hr>
+            <div class="row">
+                <div class="col-12">
+                    <div style="height: 1200; max-width: 1200px; margin:auto;">
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-bordered table-sm">
+                    <thead>
+                        <tr>
+                            <th>วันที่ทดสอบ</th>
+                            <th>ผู้ทดสอบ</th>
+                            <th>รุ่นรถมอเตอร์ไซค์</th>
+                            <th>สภาพอากาศ/อุณหภูมิ</th>
+                            <th>การรันอินสัมผัสแรก</th>
+                            <th>เบรคความเร็วสูง</th>
+                            <th>เสียงครืดขณะเบรค</th>
+                            <th>การทนความร้อนสะสม</th>
+                            <th>การฟื้นตัวหลังเฟด</th>
+                            <th>การเบรคขณะเปียก</th>
+                            <th>เสียงแหลมจี๊ดรบกวน</th>
+                            <th>ฝุ่นจากการเบรค</th>
+                            <th>สภาพจาน</th>
+                            <th>สภาพผ้าเบรค</th>
+                            <th>เฉลี่ย</th>
+                            <th>ความพึงพอใจรวม</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($roadlist as $item)
+                            <tr>
+                                <td>{{ \Carbon\Carbon::parse($item->TestRoadDate)->format('d/m/Y') }}</td>
+                                <td>
+                                    {{$item->TestRoadName}}<br>
+                                    น้ำหนัก : {{number_format($item->LowSpeed3,2)}} กิโลกรัม
+                                </td>
+                                <td>
+                                    {{$item->TestRoadModel}}<br>
+                                    ระยะทาง : {{number_format($item->LowSpeed2,2)}} กิโลเมตร
+                                </td>
+                                <td>{{$item->TestRoadWeather}}</td>
+                                <td>{{number_format($item->LowSpeed1,2)}}</td>
+                                <td>{{number_format($item->LowSpeed4,2)}}</td>
+                                <td>{{number_format($item->LowSpeed5,2)}}</td>
+                                <td>{{number_format($item->HighSpeed1,2)}}</td>
+                                <td>{{number_format($item->HighSpeed2,2)}}</td>
+                                <td>{{number_format($item->HighSpeed3,2)}}</td>
+                                <td>{{number_format($item->HighSpeed4,2)}}</td>
+                                <td>{{number_format($item->HighSpeed5,2)}}</td>
+                                <td>{{number_format($item->Pillion1,2)}}</td>
+                                <td>{{number_format($item->Pillion2,2)}}</td>
+                                <td>{{number_format($item->Pillion3,2)}}</td>
+                                <td>{{number_format($item->Avg5,2)}}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                     <tfoot>
+                    <tr style="font-weight:bold; background:#f2f2f2;">
+                        <td colspan="4">AVG</td>
+                        <td>{{ number_format($roadlist->avg('LowSpeed1'),2) }}</td>
+                        <td>{{ number_format($roadlist->avg('LowSpeed4'),2) }}</td>
+                        <td>{{ number_format($roadlist->avg('LowSpeed5'),2) }}</td>
+                        <td>{{ number_format($roadlist->avg('HighSpeed1'),2) }}</td>
+                        <td>{{ number_format($roadlist->avg('HighSpeed2'),2) }}</td>
+                        <td>{{ number_format($roadlist->avg('HighSpeed3'),2) }}</td>
+                        <td>{{ number_format($roadlist->avg('HighSpeed4'),2) }}</td>
+                        <td>{{ number_format($roadlist->avg('HighSpeed5'),2) }}</td>
+                        <td>{{ number_format($roadlist->avg('Pillion1'),2) }}</td>
+                        <td>{{ number_format($roadlist->avg('Pillion2'),2) }}</td>
+                        <td>{{ number_format($roadlist->avg('Pillion3'),2) }}</td>
+                        <td>{{ number_format($roadlist->avg('Avg5'),2) }}</td>
+                    </tr>
+                </tfoot>
+                </table>
+            </div>
+           
+            <hr>
             <div class="table-responsive">
                 <table class="table table-bordered table-sm">
                 <thead>
@@ -332,11 +410,8 @@
             </table>
             </div>
         </div>
-        <div class="row">
-            <div class="col-6">
-                <canvas id="radarChart"></canvas>
-            </div>
-            <div class="col-6">
+        <div class="row">         
+            <div class="col-12">
                 <canvas id="lineChart" height="300"></canvas>
             </div>
         </div>
@@ -853,13 +928,16 @@ function renderPieChart() {
     /* ===================== RADAR CHART ===================== */
 
     const avgData = [
-        {{ $feeavg->avg('HardnesPercent') ?? 0 }},
-        {{ $feeavg->avg('ShearingPercent') ?? 0 }},
-        {{ $feeavg->avg('NoisePercent') ?? 0 }},
-        {{ $feeavg->avg('RoadTestPercent') ?? 0 }},
-        {{ $feeavg->avg('NormalPercent') ?? 0 }},
-        {{ $feeavg->avg('HotPercent') ?? 0 }},
-        {{ $feeavg->avg('WearPercent') ?? 0 }},
+        {{ $roadlist->avg('LowSpeed1') ?? 0 }},
+        {{ $roadlist->avg('LowSpeed4') ?? 0 }},
+        {{ $roadlist->avg('LowSpeed5') ?? 0 }},
+        {{ $roadlist->avg('HighSpeed1') ?? 0 }},
+        {{ $roadlist->avg('HighSpeed2') ?? 0 }},
+        {{ $roadlist->avg('HighSpeed3') ?? 0 }},
+        {{ $roadlist->avg('HighSpeed4') ?? 0 }},
+        {{ $roadlist->avg('HighSpeed5') ?? 0 }},
+        {{ $roadlist->avg('Pillion1') ?? 0 }},
+        {{ $roadlist->avg('Pillion2') ?? 0 }},
     ];
 
     const radarCtx = document.getElementById('radarChart');
@@ -867,7 +945,7 @@ function renderPieChart() {
     new Chart(radarCtx, {
         type: 'radar',
         data: {
-            labels: ['Hardness', 'Shearing', 'Noise','RoadTest','Normal','Hot','Wear'],
+            labels: ['การรันอินสัมผัสแรก', 'เบรคความเร็วสูง', 'เสียงครืดขณะเบรค','การทนความร้อนสะสม','การฟื้นตัวหลังเฟด','การเบรคขณะเปียก','เสียงแหลมจี๊ดรบกวน','ฝุ่นจากการเบรค','สภาพจาน','สภาพผ้าเบรค'],
             datasets: [{
                 label: 'Average Result',
                 data: avgData,
@@ -880,13 +958,14 @@ function renderPieChart() {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             scales: {
                 r: {
                     min: 0,
-                    max: 100,
+                    max: 10,
                     beginAtZero: true,
                     ticks: {
-                        stepSize: 20, // ปรับ interval ได้ เช่น 10, 25
+                        stepSize: 2, // ปรับ interval ได้ เช่น 10, 25
                         backdropColor: 'transparent'
                     }
                 }
@@ -1322,6 +1401,10 @@ const frictionCn3_fall = @json($n3cfall);
 
 function createChart(canvasId, labels, datasets, yMax)
 {
+    // 👇 ปรับความหนาเส้นทุก dataset
+    datasets.forEach(ds => {
+        ds.borderWidth = 0.5; // ปรับได้ เช่น 0.5, 1, 2
+    });
 
     new Chart(document.getElementById(canvasId),
     {

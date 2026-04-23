@@ -271,11 +271,12 @@ class ChemistryController extends Controller
         ->first()
         ->values();
         $labels1 = collect(range(1,500));
+        $roadlist = DB::table('TestRoads')->whereIn('TestID', $testIds)->get();
         return view('chemicalsetup.form-chemistrys-show', compact('hd','dt','lap','test','types','products','feeavg','datefeeavg',
         'n1labels','n1u100','n1c100','n1u150','n1c150','n1u200','n1c200','n1u250','n1c250','n1u300','n1c300','n1u350','n1c350','n1ufall','n1cfall',
         'n2labels','n2u100','n2c100','n2u150','n2c150','n2u200','n2c200','n2u250','n2c250','n2u300','n2c300','n2u350','n2c350','n2ufall','n2cfall',
         'n3labels','n3u100','n3c100','n3u150','n3c150','n3u200','n3c200','n3u250','n3c250','n3u300','n3c300','n3u350','n3c350','n3ufall','n3cfall',
-        'labels','labels1'
+        'labels','labels1','roadlist'
         ));
     }
 
