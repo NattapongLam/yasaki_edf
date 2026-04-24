@@ -9,7 +9,9 @@ class ReportFormulaController extends Controller
 {
     public function CompareFormulas(Request $request)
     {
-        $hd = DB::table('TestHeaders')->get();
+        $hd = DB::table('TestHeaders')
+        ->leftjoin('chemistry_hd','TestHeaders.FormulaNumber','=','chemistry_hd.chemistry_hd_name')
+        ->get();
         $group = DB::table('ms_formule')->get();       
         return view('report.report-compareformulas', compact('hd','group'));
     }

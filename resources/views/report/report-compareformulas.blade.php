@@ -75,14 +75,15 @@
                                 <th></th>
                                 <th>วันที่</th>
                                 <th>เลขที่สูตร</th>
-                                <th>ชื่อสูตร</th>                               
-                                <th>Hardness (HRB)</th>
+                                <th>ชื่อสูตร</th>       
+                                <th>รายละเอียด</th>                              
+                                {{-- <th>Hardness (HRB)</th>
                                 <th>Shearing (mm²)</th>
-                                <th>Noise (dB)</th>
+                                <th>Noise (dB)</th> --}}
                                 {{-- <th>RoadTest</th> --}}
-                                <th>Normal (µ)</th>
+                                {{-- <th>Normal (µ)</th>
                                 <th>Hot (µ)</th>
-                                <th>Wear (10−7cm3/(N⋅m))</th>
+                                <th>Wear (10−7cm3/(N⋅m))</th> --}}
                                 <th>พิมพ์</th>
                             </tr>
                         </thead> 
@@ -112,14 +113,15 @@
 
                                 <td>{{$item->FormulaName}}</td>
                                 <td>{{$item->FormulaNumber}}</td>
+                                <td>{{$item->chemistry_hd_note}}</td>
 
-                                <td>{{number_format($item->Hardness,2)}}</td>
+                                {{-- <td>{{number_format($item->Hardness,2)}}</td>
                                 <td>{{number_format($item->Shearing,2)}}</td>
                                 <td>{{number_format($item->Noise,2)}}</td>
 
                                 <td>{{number_format($item->Normal_Avg,2)}}</td>
                                 <td>{{number_format($item->Hot_Avg,2)}}</td>
-                                <td>{{number_format($item->Wear_Avg,2)}}</td>
+                                <td>{{number_format($item->Wear_Avg,2)}}</td> --}}
                                 <td>                                   
                                     <a
                                         href="{{ route('report.compareformulas.print',$item->TestID) }}"
@@ -182,8 +184,8 @@
                 </div> 
                 </div>
                 <div class="col-12">
-                     <h5>หมายเหตุ</h5>
-
+                    <h5>หมายเหตุ</h5>
+                    
                     <div id="remarkContainer">
 
                         <div class="text-muted">
@@ -197,34 +199,34 @@
     </div>
     <div class="card">
         <div class="card-body">
-            <h5>รายละเอียด</h5>
+            <h5>รายละเอียด</h5>        
             <div class="row">
 
-                <div class="col-md-4">
+                <div class="col-md-2">
                     <h5>Hardness (HRB)</h5>
                     <canvas id="chartHardness" height="120">
                 </canvas></div>
-                <div class="col-md-4">
+                <div class="col-md-2">
                     <h5>Shearing (mm²)</h5>
                     <canvas id="chartShearing" height="120"></canvas>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-2">
                     <h5>Noise (dB)</h5>
                     <canvas id="chartNoise" height="120"></canvas>
                 </div>
                
 
-                <div class="col-md-4">
+                <div class="col-md-2">
                     <h5>Normal (µ)</h5>
                     <canvas id="chartNormal" height="120"></canvas>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-2">
                     <h5>Hot (µ)</h5>
                     <canvas id="chartHot" height="120"></canvas>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-2">
                     <h5>Wear (10−7cm3/(N⋅m))</h5>
                     <canvas id="chartWear" height="120"></canvas>
                 </div>
@@ -235,61 +237,60 @@
             </div>
             <div class="row g-1">
                 <!-- 100°C u -->
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <canvas id="chartU100" height="180"></canvas>
                 </div>
                  <!-- 150°C u -->
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <canvas id="chartU150" height="180"></canvas>
                 </div>
-                   <!-- 200°C u -->
-                <div class="col-md-4">
-                    <canvas id="chartU200" height="180"></canvas>
-                </div>
-                <!-- 250°C u -->
-                <div class="col-md-4">
-                    <canvas id="chartU250" height="180"></canvas>
-                </div>
-                <!-- 300°C u -->
-                <div class="col-md-4">
-                    <canvas id="chartU300" height="180"></canvas>
-                </div>
-                <!-- 350°C u -->
-                <div class="col-md-4">
-                    <canvas id="chartU350" height="180"></canvas>
-                </div>
-
-                <!-- 100°C c -->
-                <div class="col-md-4">
+                 <!-- 100°C c -->
+                <div class="col-md-6">
                     <canvas id="chartC100" height="180"></canvas>
                 </div>
                 <!-- 150°C c -->
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <canvas id="chartC150" height="180"></canvas>
                 </div>
+                   <!-- 200°C u -->
+                <div class="col-md-6">
+                    <canvas id="chartU200" height="180"></canvas>
+                </div>
+                <!-- 250°C u -->
+                <div class="col-md-6">
+                    <canvas id="chartU250" height="180"></canvas>
+                </div>
                 <!-- 200°C c -->
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <canvas id="chartC200" height="180"></canvas>
                 </div>
                 <!-- 250°C c -->
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <canvas id="chartC250" height="180"></canvas>
                 </div>
+                <!-- 300°C u -->
+                <div class="col-md-6">
+                    <canvas id="chartU300" height="180"></canvas>
+                </div>
+                <!-- 350°C u -->
+                <div class="col-md-6">
+                    <canvas id="chartU350" height="180"></canvas>
+                </div>
                 <!-- 300°C c -->
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <canvas id="chartC300" height="180"></canvas>
                 </div>
                 <!-- 350°C c -->
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <canvas id="chartC350" height="180"></canvas>
                 </div>
 
                 <!-- FALL°C u -->
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <canvas id="chartUfall" height="180"></canvas>
                 </div>
                 <!-- FALL°C c -->
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <canvas id="chartCfall" height="180"></canvas>
                 </div>
             </div> 
@@ -449,7 +450,6 @@ function createChart(canvasId, label, labels, datasets) {
     if (charts[canvasId]) {
         charts[canvasId].destroy();
     }
-
     charts[canvasId] = new Chart(ctx, {
 
         type: 'bar',
@@ -475,8 +475,13 @@ function createChart(canvasId, label, labels, datasets) {
 
                 datalabels: {
 
-                    anchor: 'end',
-                    align: 'top',
+                    anchor: 'center',   // 👈 อยู่กลางแท่ง
+                    align: 'center',    // 👈 จัดกึ่งกลาง
+
+                    color: '#fff',      // 👈 สีตัวหนังสือ (ให้เห็นในแท่ง)
+                    font: {
+                        weight: 'bold'
+                    },
 
                     formatter: function(value) {
 
@@ -677,7 +682,7 @@ function buildDatasetsByFormula(dataObj,labelSuffix,labels){
 
                 tension: 0.05,
 
-                borderWidth: 2,
+                borderWidth: 0.5,
 
                 pointRadius: 0
 
