@@ -1004,7 +1004,129 @@ function loadFormulaTable(formulaId, tableAreaId) {
         success: function (response) {
 
             let html = '';
+             /*
+            |--------------------------------------------------------------------------
+            | TEST AVERAGE (NEW)
+            |--------------------------------------------------------------------------
+            */
+            if (response.test && response.test.length > 0) {
 
+                let t = response.test[0];
+
+                html += `
+                    <div class="mt-4">
+                        <div class="card border-0 shadow rounded-4">
+                            <div class="card-header bg-dark text-white">
+                                <h6 class="mb-0">Test Average Summary  ${response.header?.ms_formule_name ?? '-'}: ${response.header?.chemistry_hd_name ?? '-'}</h6>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="row text-center">
+                                    <div class="col-md-6">
+                                        <div class="p-3 border rounded-3">
+                                            <div class="text-muted">Hardness (HRB)</div>
+                                            <div class="fs-5 fw-bold text-primary">
+                                                ${parseFloat(t.Hardness ?? 0).toFixed(2)}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="p-3 border rounded-3">
+                                            <div class="text-muted">Shearing (mm²)</div>
+                                            <div class="fs-5 fw-bold text-primary">
+                                                ${parseFloat(t.Shearing ?? 0).toFixed(2)}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="p-3 border rounded-3">
+                                            <div class="text-muted">Noise (dB)</div>
+                                            <div class="fs-5 fw-bold text-primary">
+                                                ${parseFloat(t.Noise ?? 0).toFixed(2)}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="p-3 border rounded-3">
+                                            <div class="text-muted">Normal (µ)</div>
+                                            <div class="fs-5 fw-bold text-primary">
+                                                ${parseFloat(t.Normal_Avg ?? 0).toFixed(2)}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="p-3 border rounded-3">
+                                            <div class="text-muted">Hot (µ)</div>
+                                            <div class="fs-5 fw-bold text-primary">
+                                                ${parseFloat(t.Hot_Avg ?? 0).toFixed(2)}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="p-3 border rounded-3">
+                                            <div class="text-muted">Wear (10−7cm3/(N⋅m))</div>
+                                            <div class="fs-5 fw-bold text-primary">
+                                                ${parseFloat(t.Wear_Avg ?? 0).toFixed(2)}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+              html += `
+<div class="mt-4">
+
+    <div class="card border-0 shadow rounded-4">
+        <div class="card-header bg-dark text-white">
+            <h6 class="mb-0">Friction Analysis ${response.header?.ms_formule_name ?? '-'}: ${response.header?.chemistry_hd_name ?? '-'}</h6>
+        </div>
+
+        <div class="card-body">
+
+            <div class="row g-3">
+
+                <div class="col-md-12">
+                    <canvas id="chartU100-${formulaId}" height="240"></canvas>
+                </div>
+                <div class="col-md-12">
+                    <canvas id="chartU150-${formulaId}" height="240"></canvas>
+                </div>
+
+                <div class="col-md-12">
+                    <canvas id="chartU200-${formulaId}" height="240"></canvas>
+                </div>
+
+                <div class="col-md-12">
+                    <canvas id="chartU250-${formulaId}" height="240"></canvas>
+                </div>
+
+                <div class="col-md-12">
+                    <canvas id="chartU300-${formulaId}" height="240"></canvas>
+                </div>
+
+                <div class="col-md-12">
+                    <canvas id="chartU350-${formulaId}" height="240"></canvas>
+                </div>
+
+
+                <!-- FALL -->
+                <div class="col-md-12">
+                    <canvas id="chartUfall-${formulaId}" height="240"></canvas>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+`;
             let sumDensity = 0;
             let sumAdjust = 0;
             let sumWeight = 0;
@@ -1126,81 +1248,7 @@ function loadFormulaTable(formulaId, tableAreaId) {
                 </div>
             `;
 
-            /*
-            |--------------------------------------------------------------------------
-            | TEST AVERAGE (NEW)
-            |--------------------------------------------------------------------------
-            */
-            if (response.test && response.test.length > 0) {
-
-                let t = response.test[0];
-
-                html += `
-                    <div class="mt-4">
-                        <div class="card border-0 shadow rounded-4">
-                            <div class="card-header bg-dark text-white">
-                                <h6 class="mb-0">Test Average Summary  ${response.header?.ms_formule_name ?? '-'}: ${response.header?.chemistry_hd_name ?? '-'}</h6>
-                            </div>
-
-                            <div class="card-body">
-                                <div class="row text-center">
-                                    <div class="col-md-6">
-                                        <div class="p-3 border rounded-3">
-                                            <div class="text-muted">Hardness (HRB)</div>
-                                            <div class="fs-5 fw-bold text-primary">
-                                                ${parseFloat(t.Hardness ?? 0).toFixed(2)}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="p-3 border rounded-3">
-                                            <div class="text-muted">Shearing (mm²)</div>
-                                            <div class="fs-5 fw-bold text-primary">
-                                                ${parseFloat(t.Shearing ?? 0).toFixed(2)}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="p-3 border rounded-3">
-                                            <div class="text-muted">Noise (dB)</div>
-                                            <div class="fs-5 fw-bold text-primary">
-                                                ${parseFloat(t.Noise ?? 0).toFixed(2)}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="p-3 border rounded-3">
-                                            <div class="text-muted">Normal (µ)</div>
-                                            <div class="fs-5 fw-bold text-primary">
-                                                ${parseFloat(t.Normal_Avg ?? 0).toFixed(2)}
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <div class="p-3 border rounded-3">
-                                            <div class="text-muted">Hot (µ)</div>
-                                            <div class="fs-5 fw-bold text-primary">
-                                                ${parseFloat(t.Hot_Avg ?? 0).toFixed(2)}
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <div class="p-3 border rounded-3">
-                                            <div class="text-muted">Wear (10−7cm3/(N⋅m))</div>
-                                            <div class="fs-5 fw-bold text-primary">
-                                                ${parseFloat(t.Wear_Avg ?? 0).toFixed(2)}
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }
+           
 
             /*
             |--------------------------------------------------------------------------
@@ -1238,54 +1286,7 @@ function loadFormulaTable(formulaId, tableAreaId) {
 
                 </div>
             `;
-            html += `
-<div class="mt-4">
-
-    <div class="card border-0 shadow rounded-4">
-        <div class="card-header bg-dark text-white">
-            <h6 class="mb-0">Friction Analysis ${response.header?.ms_formule_name ?? '-'}: ${response.header?.chemistry_hd_name ?? '-'}</h6>
-        </div>
-
-        <div class="card-body">
-
-            <div class="row g-3">
-
-                <div class="col-md-12">
-                    <canvas id="chartU100-${formulaId}" height="240"></canvas>
-                </div>
-                <div class="col-md-12">
-                    <canvas id="chartU150-${formulaId}" height="240"></canvas>
-                </div>
-
-                <div class="col-md-12">
-                    <canvas id="chartU200-${formulaId}" height="240"></canvas>
-                </div>
-
-                <div class="col-md-12">
-                    <canvas id="chartU250-${formulaId}" height="240"></canvas>
-                </div>
-
-                <div class="col-md-12">
-                    <canvas id="chartU300-${formulaId}" height="240"></canvas>
-                </div>
-
-                <div class="col-md-12">
-                    <canvas id="chartU350-${formulaId}" height="240"></canvas>
-                </div>
-
-
-                <!-- FALL -->
-                <div class="col-md-12">
-                    <canvas id="chartUfall-${formulaId}" height="240"></canvas>
-                </div>
-
-            </div>
-
-        </div>
-    </div>
-
-</div>
-`;
+          
             /*
             |--------------------------------------------------------------------------
             | RENDER HTML
