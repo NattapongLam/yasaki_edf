@@ -22,7 +22,7 @@
             <form method="GET" action="{{ route('report.compareformulas') }}">
                 <div class="row">
 
-                    <div class="col-3">
+                    <div class="col-2">
                         <div class="form-group">
                             <label class="form-label">สูตร</label>
                             <select class="form-select" name="formula">
@@ -37,7 +37,7 @@
                         </div>
                     </div>
 
-                    <div class="col-3">
+                    <div class="col-2">
                         <div class="form-group">
                             <label class="form-label">วันที่</label>
                             <input class="form-control"
@@ -47,7 +47,7 @@
                         </div>
                     </div>
 
-                    <div class="col-3">
+                    <div class="col-2">
                         <div class="form-group">
                             <label class="form-label">ถึง</label>
                             <input class="form-control"
@@ -57,12 +57,17 @@
                         </div>
                     </div>
 
-                    <div class="col-3 d-flex align-items-end">
-                        <button type="submit" class="btn btn-info w-100">
+                    <div class="col-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-danger w-100">
                             ค้นหา
                         </button>
                     </div>
-
+                    <div class="col-2"></div>
+                    <div class="col-2 d-flex align-items-end">
+                        <a href="{{ url('/analyze-formulas') }}" class="btn btn-info" >
+                                <i class="fas fa-plus"> Analyze</i>
+                            </a>
+                    </div>
                 </div>
             </form>
             <br>
@@ -73,9 +78,9 @@
                         <thead>
                             <tr>
                                 <th></th>
-                                <th>วันที่</th>
-                                <th>เลขที่สูตร</th>
-                                <th>ชื่อสูตร</th>       
+                                <th style="min-width:70px;">วันที่</th>
+                                <th style="min-width:70px;">เลขที่สูตร</th>
+                                <th style="min-width:70px;">ชื่อสูตร</th>       
                                 <th>รายละเอียด</th>                              
                                 {{-- <th>Hardness (HRB)</th>
                                 <th>Shearing (mm²)</th>
@@ -141,6 +146,18 @@
                     </table>
                 </div>
                 </div>
+                <hr>
+                <div class="col-12">
+                    <h5>หมายเหตุ</h5>
+                    
+                    <div id="remarkContainer">
+
+                        <div class="text-muted">
+                            ยังไม่ได้เลือกสูตร
+                        </div>
+
+                    </div>
+                </div>
                 <div class="col-12">
                      <div class="table-responsive">
                     <table id="tb_result" class="table table-bordered table-sm text-center">
@@ -183,17 +200,7 @@
                     </table>
                 </div> 
                 </div>
-                <div class="col-12">
-                    <h5>หมายเหตุ</h5>
-                    
-                    <div id="remarkContainer">
-
-                        <div class="text-muted">
-                            ยังไม่ได้เลือกสูตร
-                        </div>
-
-                    </div>
-                </div>
+                
             </div>
         </div>
     </div>
@@ -202,31 +209,31 @@
             <h5>รายละเอียด</h5>        
             <div class="row">
 
-                <div class="col-md-2">
+                <div class="col-md-4">
                     <h5>Hardness (HRB)</h5>
                     <canvas id="chartHardness" height="120">
                 </canvas></div>
-                <div class="col-md-2">
+                <div class="col-md-4">
                     <h5>Shearing (mm²)</h5>
                     <canvas id="chartShearing" height="120"></canvas>
                 </div>
 
-                <div class="col-md-2">
+                <div class="col-md-4">
                     <h5>Noise (dB)</h5>
                     <canvas id="chartNoise" height="120"></canvas>
                 </div>
                
 
-                <div class="col-md-2">
+                <div class="col-md-4">
                     <h5>Normal (µ)</h5>
                     <canvas id="chartNormal" height="120"></canvas>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-4">
                     <h5>Hot (µ)</h5>
                     <canvas id="chartHot" height="120"></canvas>
                 </div>
 
-                <div class="col-md-2">
+                <div class="col-md-4">
                     <h5>Wear (10−7cm3/(N⋅m))</h5>
                     <canvas id="chartWear" height="120"></canvas>
                 </div>

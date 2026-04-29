@@ -46,6 +46,8 @@ Route::get('/compare-formulas' , [App\Http\Controllers\ReportFormulaController::
 Route::post('/get-friction-chart',[App\Http\Controllers\ReportFormulaController::class,'getFrictionChart']);
 Route::get('/report/compareformulas',[App\Http\Controllers\ReportFormulaController::class, 'GetCompareFormulas'])->name('report.compareformulas');
 Route::get('/report/compareformulas/print/{id}',[App\Http\Controllers\ReportFormulaController::class,'PrintCompareFormula'])->name('report.compareformulas.print');
+Route::get('/analyze-formulas' , [App\Http\Controllers\ReportFormulaController::class , 'AnalyzeFormulas']);
+Route::post('/get-formula-detail', [App\Http\Controllers\ReportFormulaController::class, 'getFormulaDetail'])->name('report.get.formula.detail');
 // เคมี
 
 // ทั่วไป

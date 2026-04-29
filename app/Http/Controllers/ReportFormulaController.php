@@ -209,4 +209,37 @@ class ReportFormulaController extends Controller
             )
         );
     }
+
+    public function AnalyzeFormulas(Request $request)
+    {
+        $hd = DB::table('chemistry_hd')->where('chemistry_hd_flag',true)->whereNotNull('chemistry_hd_name')->get();      
+        return view('report.report-analyzaformulas', compact('hd'));
+    }
+    public function getFormulaDetail(Request $request)
+    {
+        $formulaName = $request->formula_name;
+
+        // chemistry_hd
+        $header = DB::table('chemistry_hd')
+            ->where('chemistry_hd_name', $formulaName)
+            ->where('chemistry_hd_flag',true)
+            ->first();
+
+        // chemistry_dt
+        $details = DB::table('chemistry_dt')
+            ->leftjoin('chemical_lists','chemistry_dt.code','=','chemical_lists.chemical_lists_refcode')
+            ->leftjoin('chemical_groups','chemical_groups.chemical_groups_id','=','chemical_lists.chemical_groups_id')
+            ->where('chemistry_hd_id', $header->chemistry_hd_id)
+            ->where('flag',true)
+            ->orderBy('no', 'asc')
+            ->get();
+        $test = DB::table('TestHeaders')
+        ->where('FormulaNumber',$header->chemistry_hd_name)
+        ->get();
+        return response()->json([
+            'header' => $header,
+            'details' => $details,
+            'test' => $test
+        ]);
+    }
 }
