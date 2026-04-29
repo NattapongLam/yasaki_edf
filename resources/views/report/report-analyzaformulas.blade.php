@@ -332,242 +332,292 @@ function renderCharts(details, formulaId) {
     | Load Formula Table
     |--------------------------------------------------------------------------
     */
+function loadFormulaTable(formulaId, tableAreaId) {
 
-    function loadFormulaTable(formulaId, tableAreaId) {
+    let formulaName = $('#' + formulaId).val();
 
-        let formulaName = $('#' + formulaId).val();
+    if (formulaName === '') {
+        $('#' + tableAreaId).html(`
+            <div class="text-center text-muted py-4">
+                กรุณาเลือกสูตรเพื่อแสดงข้อมูล
+            </div>
+        `);
+        return;
+    }
 
-        if (formulaName === '') {
-            $('#' + tableAreaId).html(`
-                <div class="text-center text-muted py-4">
-                    กรุณาเลือกสูตรเพื่อแสดงข้อมูล
+    $.ajax({
+        url: "{{ route('report.get.formula.detail') }}",
+        type: "POST",
+        data: {
+            _token: "{{ csrf_token() }}",
+            formula_name: formulaName
+        },
+
+        success: function (response) {
+
+            let html = '';
+
+            let sumDensity = 0;
+            let sumAdjust = 0;
+            let sumWeight = 0;
+            let sumWeightPer = 0;
+            let sumWeightTotal = 0;
+
+            let mixKg = parseFloat(response.header?.chemistry_hd_mix ?? 0);
+            let sumWeightExcel = 0;
+
+            /*
+            |--------------------------------------------------------------------------
+            | HEADER
+            |--------------------------------------------------------------------------
+            */
+            html += `
+                <div class="mb-2">
+                    <h6 class="fw-bold mb-2">
+                        ${response.header?.ms_formule_name ?? '-'}
+                        : ${response.header?.chemistry_hd_name ?? '-'}
+                    </h6>
                 </div>
-            `);
 
-            return;
-        }
-
-        $.ajax({
-            url: "{{ route('report.get.formula.detail') }}",
-            type: "POST",
-            data: {
-                _token: "{{ csrf_token() }}",
-                formula_name: formulaName
-            },
-
-            success: function (response) {
-
-                let html = '';
-
-                let sumDensity = 0;
-                let sumAdjust = 0;
-                let sumWeight = 0;
-                let sumWeightPer = 0;
-                let sumWeightTotal = 0;
-
-                let mixKg = parseFloat(response.header?.chemistry_hd_mix ?? 0);
-                let sumWeightExcel = 0;
-
-
-                html += `
-                    <div class="mb-2">
-                        <h6 class="fw-bold mb-2">
-                            ${response.header?.ms_formule_name ?? '-'}
-                            :
-                            ${response.header?.chemistry_hd_name ?? '-'}
-                        </h6>
-                    </div>
-
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-hover align-middle table-sm-custom">
-                            <thead class="table-light">
-                                <tr>
-                                    <th width="40" class="text-center">#</th>
-                                    <th>Code</th>
-                                    <th>Material</th>
-                                    <th>Grade</th>
-                                    <th class="text-end">Density</th>
-                                    <th class="text-end">Vol.%</th>
-                                    <th class="text-end">Volume</th>
-                                    <th class="text-end">W(%)</th>
-                                    <th class="text-end">Weight(g)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                `;
-
-
-                if (response.details.length > 0) {
-
-                    $.each(response.details, function (index, item) {
-
-                        let density = parseFloat(item.density ?? 0);
-                        let adjust = parseFloat(item.adjust ?? 0);
-                        let weght = parseFloat(item.weght ?? 0);
-                        let weghtper = parseFloat(item.weghtper ?? 0);
-                        let weghttotal = parseFloat(item.weghttotal ?? 0);
-
-                        sumAdjust += adjust;
-                        sumWeight += weght;
-                        sumWeightPer += weghtper;
-                        sumWeightTotal += weghttotal;
-
-                        sumWeightExcel += weght;
-
-                        html += `
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover align-middle table-sm-custom">
+                        <thead class="table-light">
                             <tr>
-                                <td class="text-center">${index + 1}</td>
-                                <td>${item.code ?? '-'}</td>
-                                <td>
-                                    ${item.material ?? '-'}
-                                    (${item.chemical_groups_name ?? '-'})
-                                </td>
-                                <td>${item.grade ?? '-'}</td>
-                                <td class="text-end">${density.toFixed(2)}</td>
-                                <td class="text-end">${adjust.toFixed(2)}</td>
-                                <td class="text-end">${weght.toFixed(2)}</td>
-                                <td class="text-end">${weghtper.toFixed(2)}</td>
-                                <td class="text-end">${weghttotal.toFixed(2)}</td>
+                                <th width="40" class="text-center">#</th>
+                                <th>Code</th>
+                                <th>Material</th>
+                                <th>Grade</th>
+                                <th class="text-end">Density</th>
+                                <th class="text-end">Vol.%</th>
+                                <th class="text-end">Volume</th>
+                                <th class="text-end">W(%)</th>
+                                <th class="text-end">Weight(g)</th>
                             </tr>
-                        `;
-                    });
+                        </thead>
+                        <tbody>
+            `;
 
+            /*
+            |--------------------------------------------------------------------------
+            | DETAILS
+            |--------------------------------------------------------------------------
+            */
+            if (response.details.length > 0) {
 
-                    /*
-                    |--------------------------------------------------------------------------
-                    | Density Formula
-                    | sumDensity = chemistry_hd_mix / sumWeightExcel
-                    |--------------------------------------------------------------------------
-                    */
+                $.each(response.details, function (index, item) {
 
-                    if (sumWeightExcel > 0) {
-                        sumDensity = mixKg / sumWeightExcel;
-                    } else {
-                        sumDensity = 0;
-                    }
+                    let density = parseFloat(item.density ?? 0);
+                    let adjust = parseFloat(item.adjust ?? 0);
+                    let weght = parseFloat(item.weght ?? 0);
+                    let weghtper = parseFloat(item.weghtper ?? 0);
+                    let weghttotal = parseFloat(item.weghttotal ?? 0);
 
+                    sumAdjust += adjust;
+                    sumWeight += weght;
+                    sumWeightPer += weghtper;
+                    sumWeightTotal += weghttotal;
 
-                    html += `
-                            </tbody>
-                            <tfoot>
-                                <tr class="table-secondary fw-bold">
-                                    <td colspan="4" class="text-end">
-                                        Total
-                                    </td>
-
-                                    <td class="text-end">
-                                        ${sumDensity.toFixed(2)}
-                                    </td>
-
-                                    <td class="text-end">
-                                        ${sumAdjust.toFixed(2)}
-                                    </td>
-
-                                    <td class="text-end">
-                                        ${sumWeight.toFixed(2)}
-                                    </td>
-
-                                    <td class="text-end">
-                                        ${sumWeightPer.toFixed(2)}
-                                    </td>
-
-                                    <td class="text-end">
-                                        ${sumWeightTotal.toFixed(2)}
-                                    </td>
-                                </tr>
-                            </tfoot>
-                    `;
-                }
-                else {
+                    sumWeightExcel += weght;
 
                     html += `
                         <tr>
-                            <td colspan="9" class="text-center text-muted">
-                                ไม่พบข้อมูล
-                            </td>
+                            <td class="text-center">${index + 1}</td>
+                            <td>${item.code ?? '-'}</td>
+                            <td>${item.material ?? '-'}</td>
+                            <td>${item.grade ?? '-'}</td>
+                            <td class="text-end">${density.toFixed(2)}</td>
+                            <td class="text-end">${adjust.toFixed(2)}</td>
+                            <td class="text-end">${weght.toFixed(2)}</td>
+                            <td class="text-end">${weghtper.toFixed(2)}</td>
+                            <td class="text-end">${weghttotal.toFixed(2)}</td>
                         </tr>
-                        </tbody>
                     `;
+                });
+
+                if (sumWeightExcel > 0) {
+                    sumDensity = mixKg / sumWeightExcel;
                 }
 
+                html += `
+                        </tbody>
+                        <tfoot>
+                            <tr class="table-secondary fw-bold">
+                                <td colspan="4" class="text-end">Total</td>
+                                <td class="text-end">${sumDensity.toFixed(2)}</td>
+                                <td class="text-end">${sumAdjust.toFixed(2)}</td>
+                                <td class="text-end">${sumWeight.toFixed(2)}</td>
+                                <td class="text-end">${sumWeightPer.toFixed(2)}</td>
+                                <td class="text-end">${sumWeightTotal.toFixed(2)}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            `;
+            } else {
+                html += `
+                    <tr>
+                        <td colspan="9" class="text-center text-muted">
+                            ไม่พบข้อมูล
+                        </td>
+                    </tr>
+                </tbody>
+                </table>
+                `;
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | NOTE
+            |--------------------------------------------------------------------------
+            */
+            html += `
+                <div class="mt-3">
+                    <h6 class="fw-bold">
+                        ${response.header?.chemistry_hd_note ?? '-'}
+                    </h6>
+                </div>
+            `;
+
+            /*
+            |--------------------------------------------------------------------------
+            | TEST AVERAGE (NEW)
+            |--------------------------------------------------------------------------
+            */
+            if (response.test && response.test.length > 0) {
+
+                let t = response.test[0];
 
                 html += `
-                        </table>
-                    </div>
+                    <div class="mt-4">
+                        <div class="card border-0 shadow rounded-4">
+                            <div class="card-header bg-dark text-white">
+                                <h6 class="mb-0">Test Average Summary</h6>
+                            </div>
 
-                    <div class="mt-3">
-                        <h6 class="fw-bold">
-                            ${response.header?.chemistry_hd_note ?? '-'}
-                        </h6>
-                    </div>
-                    <div class="row mt-4 g-4">
+                            <div class="card-body">
+                                <div class="row text-center">
+                                    <div class="col-md-6">
+                                        <div class="p-3 border rounded-3">
+                                            <div class="text-muted">Hardness (HRB)</div>
+                                            <div class="fs-5 fw-bold text-primary">
+                                                ${parseFloat(t.Hardness ?? 0).toFixed(2)}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="p-3 border rounded-3">
+                                            <div class="text-muted">Shearing (mm²)</div>
+                                            <div class="fs-5 fw-bold text-primary">
+                                                ${parseFloat(t.Shearing ?? 0).toFixed(2)}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="p-3 border rounded-3">
+                                            <div class="text-muted">Noise (dB)</div>
+                                            <div class="fs-5 fw-bold text-primary">
+                                                ${parseFloat(t.Noise ?? 0).toFixed(2)}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="p-3 border rounded-3">
+                                            <div class="text-muted">Normal (µ)</div>
+                                            <div class="fs-5 fw-bold text-primary">
+                                                ${parseFloat(t.Normal_Avg ?? 0).toFixed(2)}
+                                            </div>
+                                        </div>
+                                    </div>
 
-        <div class="col-md-12">
-            <div class="card border-0 shadow rounded-4">
-                <div class="card-header bg-white">
-                    <h5 class="mb-0 fw-bold">
-                        Density Analysis
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <div style="height:300px;">
-                        <canvas id="donutChart-${formulaId}"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
+                                    <div class="col-md-6">
+                                        <div class="p-3 border rounded-3">
+                                            <div class="text-muted">Hot (µ)</div>
+                                            <div class="fs-5 fw-bold text-primary">
+                                                ${parseFloat(t.Hot_Avg ?? 0).toFixed(2)}
+                                            </div>
+                                        </div>
+                                    </div>
 
-        <div class="col-md-12">
-            <div class="card border-0 shadow rounded-4">
-                <div class="card-header bg-white">
-                    <h5 class="mb-0 fw-bold">
-                        Weight Total Analysis
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <div style="height:300px;">
-                        <canvas id="pieChart-${formulaId}"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
+                                    <div class="col-md-6">
+                                        <div class="p-3 border rounded-3">
+                                            <div class="text-muted">Wear (10−7cm3/(N⋅m))</div>
+                                            <div class="fs-5 fw-bold text-primary">
+                                                ${parseFloat(t.Wear_Avg ?? 0).toFixed(2)}
+                                            </div>
+                                        </div>
+                                    </div>
 
-    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 `;
+            }
 
+            /*
+            |--------------------------------------------------------------------------
+            | CHART AREA
+            |--------------------------------------------------------------------------
+            */
+            html += `
+                <div class="row mt-4 g-4">
 
-                /*
-                |--------------------------------------------------------------------------
-                | Render HTML
-                |--------------------------------------------------------------------------
-                */
+                    <div class="col-md-12">
+                        <div class="card border-0 shadow rounded-4">
+                            <div class="card-header bg-white">
+                                <h5 class="mb-0 fw-bold">Density Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <div style="height:300px;">
+                                    <canvas id="donutChart-${formulaId}"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                $('#' + tableAreaId).html(html);
+                    <div class="col-md-12">
+                        <div class="card border-0 shadow rounded-4">
+                            <div class="card-header bg-white">
+                                <h5 class="mb-0 fw-bold">Weight Total Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <div style="height:300px;">
+                                    <canvas id="pieChart-${formulaId}"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
+                </div>
+            `;
 
-                /*
-                |--------------------------------------------------------------------------
-                | Render Charts
-                |--------------------------------------------------------------------------
-                */
+            /*
+            |--------------------------------------------------------------------------
+            | RENDER HTML
+            |--------------------------------------------------------------------------
+            */
+            $('#' + tableAreaId).html(html);
 
-              setTimeout(() => {
+            /*
+            |--------------------------------------------------------------------------
+            | RENDER CHART
+            |--------------------------------------------------------------------------
+            */
+            setTimeout(() => {
                 renderCharts(response.details, formulaId);
             }, 100);
-            },
+        },
 
-            error: function (xhr) {
-
-                console.log(xhr.responseText);
-
-                $('#' + tableAreaId).html(`
-                    <div class="alert alert-danger">
-                        เกิดข้อผิดพลาดในการโหลดข้อมูล
-                    </div>
-                `);
-            }
-        });
-    }
+        error: function (xhr) {
+            console.log(xhr.responseText);
+            $('#' + tableAreaId).html(`
+                <div class="alert alert-danger">
+                    เกิดข้อผิดพลาดในการโหลดข้อมูล
+                </div>
+            `);
+        }
+    });
+}
 
 
     /*
