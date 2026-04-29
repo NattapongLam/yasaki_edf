@@ -326,6 +326,654 @@ function renderCharts(details, formulaId) {
         plugins: [ChartDataLabels]
     });
 }
+function createLineChart(canvasId, labels, datasets, yMax = 1.2) {
+
+const canvas = document.getElementById(canvasId);
+
+if (!canvas) {
+    console.log("Canvas not found:", canvasId);
+    return;
+}
+    // destroy chart เก่าก่อน
+    if (window[canvasId] instanceof Chart) {
+        window[canvasId].destroy();
+        window[canvasId] = null;
+    }
+    datasets.forEach(ds => {
+    ds.borderWidth = 0.75;      // ลดจาก 0.5 → 0.3
+    ds.pointRadius = 0;        // เอาจุดออกเลย
+    ds.pointHoverRadius = 2;   // hover ค่อยแสดง
+    ds.pointBorderWidth = 0;
+    ds.tension = 0.1;
+    ds.fill = false;
+});
+const ctx = canvas.getContext('2d');
+
+    window[canvasId] = new Chart(ctx,{
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: datasets
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+
+            plugins: {
+                legend: {
+                    position: 'top'
+                }
+            },
+
+            scales: {
+                x: {
+                    type: 'linear', // << สำคัญมาก
+                    min: 0,
+                    max: 500,
+                    ticks: {
+                        stepSize: 50,
+                        autoSkip: false
+                    }
+                },
+                y: {
+                    min: 0,
+                    max: yMax,
+                    ticks: {
+                        stepSize: 0.4,
+                        autoSkip: false
+                    }
+                }
+            }
+        }
+    });
+}
+function createLineChartFall(canvasId, labels, datasets, yMax = 1.2) {
+
+    const canvas = document.getElementById(canvasId);
+
+    if (!canvas) {
+        console.log("Canvas not found:", canvasId);
+        return;
+    }
+
+    // destroy chart เก่าก่อน
+    if (window[canvasId] instanceof Chart) {
+        window[canvasId].destroy();
+        window[canvasId] = null;
+    }
+
+    datasets.forEach(ds => {
+        ds.borderWidth = 0.75;
+        ds.pointRadius = 0;
+        ds.pointHoverRadius = 2;
+        ds.pointBorderWidth = 0;
+        ds.tension = 0.1;
+        ds.fill = false;
+    });
+
+    const ctx = canvas.getContext('2d');
+
+    window[canvasId] = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: datasets
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+
+            plugins: {
+                legend: {
+                    position: 'top'
+                }
+            },
+
+            scales: {
+                x: {
+                    type: 'linear',
+                    min: 0,
+                    max: 750, // <<< ตรงนี้สำคัญ
+                    ticks: {
+                        stepSize: 50,
+                        autoSkip: false
+                    }
+                },
+
+                y: {
+                    min: 0,
+                    max: yMax,
+                    ticks: {
+                        stepSize: 0.4,
+                        autoSkip: false
+                    }
+                }
+            }
+        }
+    });
+}
+function renderFrictionCharts(frictions, formulaId) {
+
+    console.log("frictions =", frictions);
+
+    if (!frictions) return;
+
+    let n1 = frictions.n1 ?? [];
+    let n2 = frictions.n2 ?? [];
+    let n3 = frictions.n3 ?? [];
+
+    /*
+    |--------------------------------------------------------------------------
+    | Labels กลาง
+    |--------------------------------------------------------------------------
+    */
+
+    let labels = [
+        ...new Set([
+            ...n1.map(x => x.Listno),
+            ...n2.map(x => x.Listno),
+            ...n3.map(x => x.Listno),
+        ])
+    ].sort((a, b) => a - b);
+
+    /*
+    |--------------------------------------------------------------------------
+    | helper function
+    |--------------------------------------------------------------------------
+    */
+
+    function mapData(source, field) {
+    return labels.map(label => {
+
+        let rows = source.filter(x => x.Listno == label);
+
+        if (!rows.length) return null;
+
+        let total = rows.reduce((sum, row) => {
+            return sum + parseFloat(row[field] ?? 0);
+        }, 0);
+
+        return total / rows.length; // average
+    });
+}
+    /*
+    |--------------------------------------------------------------------------
+    | 100°C U
+    |--------------------------------------------------------------------------
+    */
+
+    createLineChart(
+        `chartU100-${formulaId}`,
+        labels,
+        [
+            {
+                label: 'N1 100°C (u)',
+                data: mapData(n1, 'Friction100_u'),
+                borderColor: '#1f77b4',
+                borderWidth: 0.75,
+                pointRadius: 0,
+                tension: 0.1,
+                fill: false
+            },
+            {
+                label: 'N2 100°C (u)',
+                data: mapData(n2, 'Friction100_u'),
+                borderColor: '#2ca02c',
+                borderWidth: 0.75,
+                pointRadius: 0,
+                tension: 0.1,
+                fill: false
+            },
+            {
+                label: 'N3 100°C (u)',
+                data: mapData(n3, 'Friction100_u'),
+                borderColor: '#9467bd',
+                borderWidth: 0.75,
+                pointRadius: 0,
+                tension: 0.1,
+                fill: false
+            },
+            {
+                label: 'N1 100°c_(°c)',
+                data: mapData(n1, 'Friction100_c').map(x => x / 4000),
+                borderColor: '#d62728',
+                borderWidth: 0.75,
+                pointRadius: 0,
+                tension: 0.1,
+                fill: false
+            },
+            {
+                label: 'N2 100°c_(°c)',
+                data: mapData(n2, 'Friction100_c').map(x => x / 4000),
+                borderColor: '#ff7f0e',
+                borderWidth: 0.75,
+                pointRadius: 0,
+                tension: 0.1,
+                fill: false
+            },
+            {
+                label: 'N3 100°c_(°c)',
+                data: mapData(n3, 'Friction100_c').map(x => x / 4000),
+                borderColor: '#8c564b',
+                borderWidth: 0.75,
+                pointRadius: 0,
+                tension: 0.1,
+                fill: false
+            }
+        ],
+        1.2
+    );
+    /*
+|--------------------------------------------------------------------------
+| 150°C U
+|--------------------------------------------------------------------------
+*/
+
+createLineChart(
+    `chartU150-${formulaId}`,
+    labels,
+    [
+        {
+            label: 'N1 150°C (u)',
+            data: mapData(n1, 'Friction150_u'),
+            borderColor: '#1f77b4',
+            borderWidth: 0.75,
+            pointRadius: 0,
+            tension: 0.1,
+            fill: false
+        },
+        {
+            label: 'N2 150°C (u)',
+            data: mapData(n2, 'Friction150_u'),
+            borderColor: '#2ca02c',
+            borderWidth: 0.75,
+            pointRadius: 0,
+            tension: 0.1,
+            fill: false
+        },
+        {
+            label: 'N3 150°C (u)',
+            data: mapData(n3, 'Friction150_u'),
+            borderColor: '#9467bd',
+            borderWidth: 0.75,
+            pointRadius: 0,
+            tension: 0.1,
+            fill: false
+        },
+
+        {
+            label: 'N1 150°C (°C)',
+            data: mapData(n1, 'Friction150_c').map(x => x / 4000),
+            borderColor: '#d62728',
+            borderWidth: 0.75,
+            pointRadius: 0,
+            tension: 0.1,
+            fill: false
+        },
+        {
+            label: 'N2 150°C (°C)',
+            data: mapData(n2, 'Friction150_c').map(x => x / 4000),
+            borderColor: '#ff7f0e',
+            borderWidth: 0.75,
+            pointRadius: 0,
+            tension: 0.1,
+            fill: false
+        },
+        {
+            label: 'N3 150°C (°C)',
+            data: mapData(n3, 'Friction150_c').map(x => x / 4000),
+            borderColor: '#8c564b',
+            borderWidth: 0.75,
+            pointRadius: 0,
+            tension: 0.1,
+            fill: false
+        }
+    ],
+    1.2
+);
+    /*
+|--------------------------------------------------------------------------
+| 200°C U
+|--------------------------------------------------------------------------
+*/
+
+createLineChart(
+    `chartU200-${formulaId}`,
+    labels,
+    [
+        {
+            label: 'N1 200°C (u)',
+            data: mapData(n1, 'Friction200_u'),
+            borderColor: '#1f77b4',
+            borderWidth: 0.75,
+            pointRadius: 0,
+            tension: 0.1,
+            fill: false
+        },
+        {
+            label: 'N2 200°C (u)',
+            data: mapData(n2, 'Friction200_u'),
+            borderColor: '#2ca02c',
+            borderWidth: 0.75,
+            pointRadius: 0,
+            tension: 0.1,
+            fill: false
+        },
+        {
+            label: 'N3 200°C (u)',
+            data: mapData(n3, 'Friction200_u'),
+            borderColor: '#9467bd',
+            borderWidth: 0.75,
+            pointRadius: 0,
+            tension: 0.1,
+            fill: false
+        },
+
+        {
+            label: 'N1 200°C (°C)',
+            data: mapData(n1, 'Friction200_c').map(x => x / 4000),
+            borderColor: '#d62728',
+            borderWidth: 0.75,
+            pointRadius: 0,
+            tension: 0.1,
+            fill: false
+        },
+        {
+            label: 'N2 200°C (°C)',
+            data: mapData(n2, 'Friction200_c').map(x => x / 4000),
+            borderColor: '#ff7f0e',
+            borderWidth: 0.75,
+            pointRadius: 0,
+            tension: 0.1,
+            fill: false
+        },
+        {
+            label: 'N3 200°C (°C)',
+            data: mapData(n3, 'Friction200_c').map(x => x / 4000),
+            borderColor: '#8c564b',
+            borderWidth: 0.75,
+            pointRadius: 0,
+            tension: 0.1,
+            fill: false
+        }
+    ],
+    1.2
+);
+    /*
+|--------------------------------------------------------------------------
+| 250°C U
+|--------------------------------------------------------------------------
+*/
+
+createLineChart(
+    `chartU250-${formulaId}`,
+    labels,
+    [
+        {
+            label: 'N1 250°C (u)',
+            data: mapData(n1, 'Friction250_u'),
+            borderColor: '#1f77b4',
+            borderWidth: 0.75,
+            pointRadius: 0,
+            tension: 0.1,
+            fill: false
+        },
+        {
+            label: 'N2 250°C (u)',
+            data: mapData(n2, 'Friction250_u'),
+            borderColor: '#2ca02c',
+            borderWidth: 0.75,
+            pointRadius: 0,
+            tension: 0.1,
+            fill: false
+        },
+        {
+            label: 'N3 250°C (u)',
+            data: mapData(n3, 'Friction250_u'),
+            borderColor: '#9467bd',
+            borderWidth: 0.75,
+            pointRadius: 0,
+            tension: 0.1,
+            fill: false
+        },
+
+        {
+            label: 'N1 250°C (°C)',
+            data: mapData(n1, 'Friction250_c').map(x => x / 4000),
+            borderColor: '#d62728',
+            borderWidth: 0.75,
+            pointRadius: 0,
+            tension: 0.1,
+            fill: false
+        },
+        {
+            label: 'N2 250°C (°C)',
+            data: mapData(n2, 'Friction250_c').map(x => x / 4000),
+            borderColor: '#ff7f0e',
+            borderWidth: 0.75,
+            pointRadius: 0,
+            tension: 0.1,
+            fill: false
+        },
+        {
+            label: 'N3 250°C (°C)',
+            data: mapData(n3, 'Friction250_c').map(x => x / 4000),
+            borderColor: '#8c564b',
+            borderWidth: 0.75,
+            pointRadius: 0,
+            tension: 0.1,
+            fill: false
+        }
+    ],
+    1.2
+);
+    /*
+|--------------------------------------------------------------------------
+| 300°C U
+|--------------------------------------------------------------------------
+*/
+
+createLineChart(
+    `chartU300-${formulaId}`,
+    labels,
+    [
+        {
+            label: 'N1 300°C (u)',
+            data: mapData(n1, 'Friction300_u'),
+            borderColor: '#1f77b4',
+            borderWidth: 0.75,
+            pointRadius: 0,
+            tension: 0.1,
+            fill: false
+        },
+        {
+            label: 'N2 300°C (u)',
+            data: mapData(n2, 'Friction300_u'),
+            borderColor: '#2ca02c',
+            borderWidth: 0.75,
+            pointRadius: 0,
+            tension: 0.1,
+            fill: false
+        },
+        {
+            label: 'N3 300°C (u)',
+            data: mapData(n3, 'Friction300_u'),
+            borderColor: '#9467bd',
+            borderWidth: 0.75,
+            pointRadius: 0,
+            tension: 0.1,
+            fill: false
+        },
+
+        {
+            label: 'N1 300°C (°C)',
+            data: mapData(n1, 'Friction300_c').map(x => x / 4000),
+            borderColor: '#d62728',
+            borderWidth: 0.75,
+            pointRadius: 0,
+            tension: 0.1,
+            fill: false
+        },
+        {
+            label: 'N2 300°C (°C)',
+            data: mapData(n2, 'Friction300_c').map(x => x / 4000),
+            borderColor: '#ff7f0e',
+            borderWidth: 0.75,
+            pointRadius: 0,
+            tension: 0.1,
+            fill: false
+        },
+        {
+            label: 'N3 300°C (°C)',
+            data: mapData(n3, 'Friction300_c').map(x => x / 4000),
+            borderColor: '#8c564b',
+            borderWidth: 0.75,
+            pointRadius: 0,
+            tension: 0.1,
+            fill: false
+        }
+    ],
+    1.2
+);
+    /*
+|--------------------------------------------------------------------------
+| 350°C U
+|--------------------------------------------------------------------------
+*/
+
+createLineChart(
+    `chartU350-${formulaId}`,
+    labels,
+    [
+        {
+            label: 'N1 350°C (u)',
+            data: mapData(n1, 'Friction350_u'),
+            borderColor: '#1f77b4',
+            borderWidth: 0.75,
+            pointRadius: 0,
+            tension: 0.1,
+            fill: false
+        },
+        {
+            label: 'N2 350°C (u)',
+            data: mapData(n2, 'Friction350_u'),
+            borderColor: '#2ca02c',
+            borderWidth: 0.75,
+            pointRadius: 0,
+            tension: 0.1,
+            fill: false
+        },
+        {
+            label: 'N3 350°C (u)',
+            data: mapData(n3, 'Friction350_u'),
+            borderColor: '#9467bd',
+            borderWidth: 0.75,
+            pointRadius: 0,
+            tension: 0.1,
+            fill: false
+        },
+
+        {
+            label: 'N1 350°C (°C)',
+            data: mapData(n1, 'Friction350_c').map(x => x / 4000),
+            borderColor: '#d62728',
+            borderWidth: 0.75,
+            pointRadius: 0,
+            tension: 0.1,
+            fill: false
+        },
+        {
+            label: 'N2 350°C (°C)',
+            data: mapData(n2, 'Friction350_c').map(x => x / 4000),
+            borderColor: '#ff7f0e',
+            borderWidth: 0.75,
+            pointRadius: 0,
+            tension: 0.1,
+            fill: false
+        },
+        {
+            label: 'N3 350°C (°C)',
+            data: mapData(n3, 'Friction350_c').map(x => x / 4000),
+            borderColor: '#8c564b',
+            borderWidth: 0.75,
+            pointRadius: 0,
+            tension: 0.1,
+            fill: false
+        }
+    ],
+    1.2
+);
+    /*
+|--------------------------------------------------------------------------
+| Fall°C U
+|--------------------------------------------------------------------------
+*/
+
+createLineChartFall(
+    `chartUfall-${formulaId}`,
+    labels,
+    [
+        {
+            label: 'N1 Fall°C (u)',
+            data: mapData(n1, 'FrictionFall_u'),
+            borderColor: '#1f77b4',
+            borderWidth: 0.75,
+            pointRadius: 0,
+            tension: 0.1,
+            fill: false
+        },
+        {
+            label: 'N2 Fall°C (u)',
+            data: mapData(n2, 'FrictionFall_u'),
+            borderColor: '#2ca02c',
+            borderWidth: 0.75,
+            pointRadius: 0,
+            tension: 0.1,
+            fill: false
+        },
+        {
+            label: 'N3 Fall°C (u)',
+            data: mapData(n3, 'FrictionFall_u'),
+            borderColor: '#9467bd',
+            borderWidth: 0.75,
+            pointRadius: 0,
+            tension: 0.1,
+            fill: false
+        },
+
+        {
+            label: 'N1 Fall°C (°C)',
+            data: mapData(n1, 'FrictionFall_c').map(x => x / 4000),
+            borderColor: '#d62728',
+            borderWidth: 0.75,
+            pointRadius: 0,
+            tension: 0.1,
+            fill: false
+        },
+        {
+            label: 'N2 Fall°C (°C)',
+            data: mapData(n2, 'FrictionFall_c').map(x => x / 4000),
+            borderColor: '#ff7f0e',
+            borderWidth: 0.75,
+            pointRadius: 0,
+            tension: 0.1,
+            fill: false
+        },
+        {
+            label: 'N3 Fall°C (°C)',
+            data: mapData(n3, 'FrictionFall_c').map(x => x / 4000),
+            borderColor: '#8c564b',
+            borderWidth: 0.75,
+            pointRadius: 0,
+            tension: 0.1,
+            fill: false
+        }
+    ],
+    1.2
+);
+}
+
+
 
     /*
     |--------------------------------------------------------------------------
@@ -491,7 +1139,7 @@ function loadFormulaTable(formulaId, tableAreaId) {
                     <div class="mt-4">
                         <div class="card border-0 shadow rounded-4">
                             <div class="card-header bg-dark text-white">
-                                <h6 class="mb-0">Test Average Summary</h6>
+                                <h6 class="mb-0">Test Average Summary  ${response.header?.ms_formule_name ?? '-'}: ${response.header?.chemistry_hd_name ?? '-'}</h6>
                             </div>
 
                             <div class="card-body">
@@ -565,7 +1213,7 @@ function loadFormulaTable(formulaId, tableAreaId) {
                     <div class="col-md-12">
                         <div class="card border-0 shadow rounded-4">
                             <div class="card-header bg-white">
-                                <h5 class="mb-0 fw-bold">Density Analysis</h5>
+                                <h5 class="mb-0 fw-bold">Density Analysis ${response.header?.ms_formule_name ?? '-'}: ${response.header?.chemistry_hd_name ?? '-'}</h5>
                             </div>
                             <div class="card-body">
                                 <div style="height:300px;">
@@ -578,7 +1226,7 @@ function loadFormulaTable(formulaId, tableAreaId) {
                     <div class="col-md-12">
                         <div class="card border-0 shadow rounded-4">
                             <div class="card-header bg-white">
-                                <h5 class="mb-0 fw-bold">Weight Total Analysis</h5>
+                                <h5 class="mb-0 fw-bold">Weight Total Analysis ${response.header?.ms_formule_name ?? '-'}: ${response.header?.chemistry_hd_name ?? '-'}</h5>
                             </div>
                             <div class="card-body">
                                 <div style="height:300px;">
@@ -590,7 +1238,54 @@ function loadFormulaTable(formulaId, tableAreaId) {
 
                 </div>
             `;
+            html += `
+<div class="mt-4">
 
+    <div class="card border-0 shadow rounded-4">
+        <div class="card-header bg-dark text-white">
+            <h6 class="mb-0">Friction Analysis ${response.header?.ms_formule_name ?? '-'}: ${response.header?.chemistry_hd_name ?? '-'}</h6>
+        </div>
+
+        <div class="card-body">
+
+            <div class="row g-3">
+
+                <div class="col-md-12">
+                    <canvas id="chartU100-${formulaId}" height="240"></canvas>
+                </div>
+                <div class="col-md-12">
+                    <canvas id="chartU150-${formulaId}" height="240"></canvas>
+                </div>
+
+                <div class="col-md-12">
+                    <canvas id="chartU200-${formulaId}" height="240"></canvas>
+                </div>
+
+                <div class="col-md-12">
+                    <canvas id="chartU250-${formulaId}" height="240"></canvas>
+                </div>
+
+                <div class="col-md-12">
+                    <canvas id="chartU300-${formulaId}" height="240"></canvas>
+                </div>
+
+                <div class="col-md-12">
+                    <canvas id="chartU350-${formulaId}" height="240"></canvas>
+                </div>
+
+
+                <!-- FALL -->
+                <div class="col-md-12">
+                    <canvas id="chartUfall-${formulaId}" height="240"></canvas>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+`;
             /*
             |--------------------------------------------------------------------------
             | RENDER HTML
@@ -605,6 +1300,7 @@ function loadFormulaTable(formulaId, tableAreaId) {
             */
             setTimeout(() => {
                 renderCharts(response.details, formulaId);
+                renderFrictionCharts(response.frictions, formulaId);
             }, 100);
         },
 
