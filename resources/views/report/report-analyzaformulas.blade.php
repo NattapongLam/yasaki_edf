@@ -371,7 +371,7 @@ const ctx = canvas.getContext('2d');
                     min: 0,
                     max: 500,
                     ticks: {
-                        stepSize: 50,
+                        stepSize: 100,
                         autoSkip: false
                     }
                 },
@@ -435,7 +435,7 @@ function createLineChartFall(canvasId, labels, datasets, yMax = 1.2) {
                     min: 0,
                     max: 750, // <<< ตรงนี้สำคัญ
                     ticks: {
-                        stepSize: 50,
+                        stepSize: 100,
                         autoSkip: false
                     }
                 },
@@ -1127,6 +1127,93 @@ function loadFormulaTable(formulaId, tableAreaId) {
 
 </div>
 `;
+/*
+|--------------------------------------------------------------------------
+| TEST DETAIL TABLE (WearRate / T_Inc / T_Dec)
+|--------------------------------------------------------------------------
+*/
+if (response.test_detail && response.test_detail.length > 0) {
+
+    let data = response.test_detail;
+
+    // group by Temperature
+    let grouped = {};
+    let samplesSet = new Set();
+
+    data.forEach(item => {
+        let temp = item.Temperature;
+        let sample = item.SampleSet;
+
+        samplesSet.add(sample);
+
+        if (!grouped[temp]) grouped[temp] = [];
+        grouped[temp].push(item);
+    });
+
+    let samples = Array.from(samplesSet);
+
+    html += `
+    <div class="mt-4">
+        <div class="card border-0 shadow rounded-4">
+            <div class="card-header bg-secondary text-white">
+                <h6 class="mb-0">Wear / Temperature Analysis  ${response.header?.ms_formule_name ?? '-'}: ${response.header?.chemistry_hd_name ?? '-'}</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered text-center table-sm">
+                        <thead>
+                            <tr>
+                                <th rowspan="2">Temperature</th>
+                                <th colspan="${samples.length}">WearRate</th>
+                                <th colspan="${samples.length}">T_Inc</th>
+                                <th colspan="${samples.length}">T_Dec</th>
+                            </tr>
+                            <tr>
+    `;
+
+    // header samples x3
+    for (let i = 0; i < 3; i++) {
+        samples.forEach(s => {
+            html += `<th>${s}</th>`;
+        });
+    }
+
+    html += `</tr></thead><tbody>`;
+
+    // rows
+    Object.keys(grouped).sort((a,b)=>a-b).forEach(temp => {
+
+        html += `<tr><td>${temp}</td>`;
+
+        // helper avg
+        function avg(rows, field, sample) {
+            let filtered = rows.filter(r => r.SampleSet === sample);
+            if (!filtered.length) return '-';
+
+            let sum = filtered.reduce((s, r) => s + parseFloat(r[field] || 0), 0);
+            return (sum / filtered.length).toFixed(2);
+        }
+
+        // WearRate
+        samples.forEach(s => {
+            html += `<td>${avg(grouped[temp], 'WearRate', s)}</td>`;
+        });
+
+        // T_Inc
+        samples.forEach(s => {
+            html += `<td>${avg(grouped[temp], 'T_Inc', s)}</td>`;
+        });
+
+        // T_Dec
+        samples.forEach(s => {
+            html += `<td>${avg(grouped[temp], 'T_Dec', s)}</td>`;
+        });
+
+        html += `</tr>`;
+    });
+
+    html += `</tbody></table></div></div></div></div>`;
+}
             let sumDensity = 0;
             let sumAdjust = 0;
             let sumWeight = 0;
