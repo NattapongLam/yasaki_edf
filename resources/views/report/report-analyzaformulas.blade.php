@@ -1287,21 +1287,7 @@ if (response.test_detail && response.test_detail.length > 0) {
     html += `</tbody></table></div></div></div></div>`;
 
 }
-    // ✅ Radar แยกออกมา
-html += `
-<div class="mt-4">
-    <div class="card border-0 shadow rounded-4">
-        <div class="card-header bg-info text-white">
-            <h6 class="mb-0">Performance Radar ${response.header?.ms_formule_name ?? '-'}: ${response.header?.chemistry_hd_name ?? '-'}</h6>
-        </div>
-        <div class="card-body">
-            <div style="height:400px; max-width:600px; margin:auto;">
-                <canvas id="radarChart-${formulaId}"></canvas>
-            </div>
-        </div>
-    </div>
-</div>
-`;
+
 
             let sumDensity = 0;
             let sumAdjust = 0;
@@ -1462,14 +1448,80 @@ html += `
 
                 </div>
             `;
-          
+            html += `
+            <div class="mt-4">
+                <div class="card border-0 shadow rounded-4">
+                    <div class="card-header bg-info text-white">
+                        <h6 class="mb-0">Performance Radar ${response.header?.ms_formule_name ?? '-'}: ${response.header?.chemistry_hd_name ?? '-'}</h6>
+                    </div>
+                    <div class="card-body">
+                        <div style="height:400px; max-width:600px; margin:auto;">
+                            <canvas id="radarChart-${formulaId}"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            `;  
+            let htmlRadarTable = `
+<div class="mt-4">
+    <div class="card border-0 shadow rounded-4">
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-sm text-center align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width:120px;">คะแนนความพึงพอใจ</th>
+                            <th>หมายเหตุ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+`;
+
+if (response.roadlist && response.roadlist.length > 0) {
+
+    response.roadlist.forEach(row => {
+        htmlRadarTable += `
+            <tr>
+                <td class="fw-bold text-primary">
+                    ${parseFloat(row.Avg5 ?? 0).toFixed(2)}
+                </td>
+                <td class="text-start">
+                   ${row.TestRoadName ?? '-'} : ${row.RoadTestRemark ?? '-'}
+                </td>
+            </tr>
+        `;
+    });
+
+} else {
+    htmlRadarTable += `
+        <tr>
+            <td colspan="2" class="text-muted text-center">
+                ไม่พบข้อมูล
+            </td>
+        </tr>
+    `;
+}
+
+htmlRadarTable += `
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+`;
+
+// ✅ สำคัญที่สุด: render ลงหน้า
+html += htmlRadarTable;
             /*
             |--------------------------------------------------------------------------
             | RENDER HTML
             |--------------------------------------------------------------------------
             */
             $('#' + tableAreaId).html(html);
-
+                // ✅ Radar แยกออกมา
+            
             /*
             |--------------------------------------------------------------------------
             | RENDER CHART

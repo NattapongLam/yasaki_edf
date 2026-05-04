@@ -364,6 +364,9 @@ class ReportFormulaController extends Controller
             'HighSpeed5',
             'Pillion1',
             'Pillion2',
+            'Avg5',
+            'RoadTestRemark',
+            'TestRoadName'
         ]);
         return response()->json([
             'header' => $header,
