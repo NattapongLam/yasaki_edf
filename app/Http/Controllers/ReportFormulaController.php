@@ -351,11 +351,26 @@ class ReportFormulaController extends Controller
             'T_Inc',
             'T_Dec'
         ]);
+        $roadlist = DB::table('TestRoads')
+        ->whereIn('TestID', $testIds)
+        ->get([
+            'LowSpeed1',
+            'LowSpeed4',
+            'LowSpeed5',
+            'HighSpeed1',
+            'HighSpeed2',
+            'HighSpeed3',
+            'HighSpeed4',
+            'HighSpeed5',
+            'Pillion1',
+            'Pillion2',
+        ]);
         return response()->json([
             'header' => $header,
             'details' => $details,
             'test' => $test,
             'test_detail' => $testDetail,
+            'roadlist' => $roadlist,
             'frictions' => [
                 'n1' => $frictionN1,
                 'n2' => $frictionN2,

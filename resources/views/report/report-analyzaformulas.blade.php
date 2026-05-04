@@ -973,6 +973,79 @@ createLineChartFall(
 );
 }
 
+function renderRadarChart(roadlist, formulaId) {
+
+    if (!roadlist || roadlist.length === 0) return;
+
+    function avg(field) {
+        let vals = roadlist.map(x => parseFloat(x[field] || 0));
+        let sum = vals.reduce((a,b)=>a+b,0);
+        return vals.length ? (sum / vals.length) : 0;
+    }
+
+    let avgData = [
+        avg('LowSpeed1'),
+        avg('LowSpeed4'),
+        avg('LowSpeed5'),
+        avg('HighSpeed1'),
+        avg('HighSpeed2'),
+        avg('HighSpeed3'),
+        avg('HighSpeed4'),
+        avg('HighSpeed5'),
+        avg('Pillion1'),
+        avg('Pillion2'),
+    ];
+
+    let ctx = document.getElementById(`radarChart-${formulaId}`);
+
+    if (!ctx) return;
+
+    // destroy เก่า
+    if (window[`radar_${formulaId}`]) {
+        window[`radar_${formulaId}`].destroy();
+    }
+
+    window[`radar_${formulaId}`] = new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: [
+                'การรันอินสัมผัสแรก',
+                'เบรคความเร็วสูง',
+                'เสียงครืดขณะเบรค',
+                'การทนความร้อนสะสม',
+                'การฟื้นตัวหลังเฟด',
+                'การเบรคขณะเปียก',
+                'เสียงแหลมจี๊ดรบกวน',
+                'ฝุ่นจากการเบรค',
+                'สภาพจาน',
+                'สภาพผ้าเบรค'
+            ],
+            datasets: [{
+                label: 'Average Result',
+                data: avgData,
+                fill: true,
+                backgroundColor: 'rgba(13,110,253,0.2)',
+                borderColor: 'rgba(13,110,253,1)',
+                borderWidth: 2,
+                pointBackgroundColor: 'rgba(13,110,253,1)'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                r: {
+                    min: 0,
+                    max: 10,
+                    ticks: {
+                        stepSize: 2,
+                        backdropColor: 'transparent'
+                    }
+                }
+            }
+        }
+    });
+}
 
 
     /*
@@ -1083,7 +1156,7 @@ function loadFormulaTable(formulaId, tableAreaId) {
 <div class="mt-4">
 
     <div class="card border-0 shadow rounded-4">
-        <div class="card-header bg-dark text-white">
+        <div class="card-header bg-danger text-white">
             <h6 class="mb-0">Friction Analysis ${response.header?.ms_formule_name ?? '-'}: ${response.header?.chemistry_hd_name ?? '-'}</h6>
         </div>
 
@@ -1211,9 +1284,25 @@ if (response.test_detail && response.test_detail.length > 0) {
 
         html += `</tr>`;
     });
-
     html += `</tbody></table></div></div></div></div>`;
+
 }
+    // ✅ Radar แยกออกมา
+html += `
+<div class="mt-4">
+    <div class="card border-0 shadow rounded-4">
+        <div class="card-header bg-info text-white">
+            <h6 class="mb-0">Performance Radar ${response.header?.ms_formule_name ?? '-'}: ${response.header?.chemistry_hd_name ?? '-'}</h6>
+        </div>
+        <div class="card-body">
+            <div style="height:400px; max-width:600px; margin:auto;">
+                <canvas id="radarChart-${formulaId}"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+`;
+
             let sumDensity = 0;
             let sumAdjust = 0;
             let sumWeight = 0;
@@ -1389,6 +1478,7 @@ if (response.test_detail && response.test_detail.length > 0) {
             setTimeout(() => {
                 renderCharts(response.details, formulaId);
                 renderFrictionCharts(response.frictions, formulaId);
+                renderRadarChart(response.roadlist, formulaId);
             }, 100);
         },
 
