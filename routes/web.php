@@ -42,6 +42,8 @@ Route::post('/confirmDelChemical' , [App\Http\Controllers\ChemicalListController
 Route::get('/chemical/functions/{group_id}', [App\Http\Controllers\ChemicalListController::class, 'getFunctions']);
 Route::resource('/chemistrys' , App\Http\Controllers\ChemistryController::class);
 Route::get('/chemistrys/{id}/print',[App\Http\Controllers\ChemistryController::class, 'print'])->name('chemistrys.print');
+Route::post('/confirmDelChemistryDt' , [App\Http\Controllers\ChemistryController::class , 'confirmDelChemistryDt']);
+Route::post('/confirmDelChemistryHd' , [App\Http\Controllers\ChemistryController::class , 'confirmDelChemistryHd']);
 Route::get('/compare-formulas' , [App\Http\Controllers\ReportFormulaController::class , 'CompareFormulas']);
 Route::post('/get-friction-chart',[App\Http\Controllers\ReportFormulaController::class,'getFrictionChart']);
 Route::get('/report/compareformulas',[App\Http\Controllers\ReportFormulaController::class, 'GetCompareFormulas'])->name('report.compareformulas');

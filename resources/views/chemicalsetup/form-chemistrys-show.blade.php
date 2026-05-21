@@ -19,6 +19,7 @@
     <div class="card-body">
         <div class="row">
             <div class="col-12 col-md-6"><h3 class="card-title">จัดการเคมี</h3></div>
+            <div class="col-12 col-md-6"><h3 class="card-title"><a href="{{route('chemistrys.edit',$hd->chemistry_hd_id)}}">อ้างอิงเอกสารเดิมเพื่อสร้างใหม่</a></h3></div>
         </div>
         <form method="POST" class="form-horizontal" action="{{ route('chemistrys.update',$hd->chemistry_hd_id) }}" enctype="multipart/form-data">
         @csrf     

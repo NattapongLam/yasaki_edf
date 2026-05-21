@@ -288,7 +288,19 @@ class ChemistryController extends Controller
      */
     public function edit($id)
     {
-        //
+        $hd = DB::table('chemistry_hd')->where('chemistry_hd_id',$id)->first();
+        $dt = DB::table('chemistry_dt')
+        ->leftjoin('chemical_lists','chemistry_dt.code','=','chemical_lists.chemical_lists_refcode')
+        ->leftjoin('chemical_groups','chemical_groups.chemical_groups_id','=','chemical_lists.chemical_groups_id')
+        ->leftjoin('chemical_funtions','chemical_funtions.chemical_funtions_id','=','chemical_lists.chemical_funtions_id')
+        ->where('chemistry_hd_id',$id)
+        ->where('flag',1)->get();
+        $formule = DB::table('ms_formule')->get();
+        $types = DB::table('chemistry_type')->get();
+        $products = DB::table('chemical_lists')
+        ->leftjoin('chemical_groups','chemical_groups.chemical_groups_id','=','chemical_lists.chemical_groups_id')
+        ->get();
+        return view('chemicalsetup.form-chemistrys-edit', compact('hd','dt','formule','types','products'));
     }
 
     /**
@@ -371,8 +383,57 @@ class ChemistryController extends Controller
             'chemical_groups.chemical_groups_name as group_name',
             'chemical_groups.chemical_groups_color as group_color'
         )
-        ->get();
-
+        ->get();       
         return view('chemicalsetup.form-chemistrys-print', compact('hd','dt'));
+    }
+
+    public function confirmDelChemistryDt(Request $request)
+    {
+        $id = $request->refid;
+        try {
+            DB::beginTransaction();
+            DB::table('chemistry_dt')
+            ->where('chemistry_dt_id',$id)
+            ->update([
+                'update_at' => Carbon::now(),
+                'flag' => 0,
+            ]);
+            DB::commit();                      
+            return response()->json([
+                'status' => true,
+                'message' => 'ยกเลิกเรียบร้อยแล้ว'
+            ]);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function confirmDelChemistryHd(Request $request)
+    {
+        $id = $request->refid;
+        try {
+            DB::beginTransaction();
+            DB::table('chemistry_hd')
+            ->where('chemistry_hd_id',$id)
+            ->update([
+                'update_at' => Carbon::now(),
+                'chemistry_hd_flag' => 0,
+            ]);
+            DB::commit();                      
+            return response()->json([
+                'status' => true,
+                'message' => 'ยกเลิกเรียบร้อยแล้ว'
+            ]);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
     }
 }
