@@ -155,8 +155,8 @@
                                         <select class="form-control select2-product" name="code[]">
                                             <option value="">เลือกสินค้า</option>
                                             @foreach ($products as $product)
-                                                <option value="{{$product->chemical_lists_refcode}}"
-                                                    {{$item->code == $product->chemical_lists_refcode ? 'selected' : '' }}
+                                                <option value="{{$product->chemical_lists_id}}"
+                                                    {{$item->chemical_lists_id == $product->chemical_lists_id ? 'selected' : '' }}
                                                     data-density="{{ number_format($product->chemical_lists_density,2,'.','') }}"
                                                     data-group="{{ $product->chemical_groups_name }}"
                                                     data-color="{{ $product->chemical_groups_color }}">
@@ -301,7 +301,7 @@ document.getElementById('addRowBtn').addEventListener('click', function () {
             <select class="form-control select2-product" name="code[]">
                 <option value="">เลือกสินค้า</option>
                 @foreach ($products as $item)
-                   <option value="{{$item->chemical_lists_refcode}}"
+                   <option value="{{$item->chemical_lists_id}}"
                         data-density="{{ number_format($item->chemical_lists_density,2,'.','') }}"
                         data-group="{{ $item->chemical_groups_name }}"
                         data-color="{{ $item->chemical_groups_color }}">
