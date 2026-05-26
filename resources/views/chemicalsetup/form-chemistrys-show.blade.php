@@ -753,20 +753,21 @@ function calculateTable(){
 
 
         /* ===== W% -> VOL ===== */
-
         if(mode === 'w')
         {
-            let raw =
-                row.data('adjustRaw') || 0;
+            let raw = row.data('adjustRaw') || 0;
 
             if(totalAdjustRaw > 0)
             {
-                adjust =
-                    (raw / totalAdjustRaw)
-                    * 100;
+                adjust = (raw / totalAdjustRaw) * 100;
 
-                row.find('.adjust')
-                    .val(adjust.toFixed(2));
+                // ✅ เพิ่ม: cap ไม่ให้ sumAdjust เกิน 100
+                if(sumAdjust + adjust > 100) {
+                    adjust = 100 - sumAdjust;
+                    if(adjust < 0) adjust = 0;
+                }
+
+                row.find('.adjust').val(adjust.toFixed(2));
 
                 sumAdjust += adjust;
             }
