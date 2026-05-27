@@ -131,7 +131,7 @@
                         <th style="width: 10%">Volume(1kg)</th>
                         <th style="width: 10%">W (%)</th>
                         <th style="width: 10%">Weght(g)</th>
-                        @if (Auth::user()->username == "A653615")
+                        @if (Auth::user()->username == "A653615" || Auth::user()->username == "A551528" || Auth::user()->username == "adviser")
                             <th>ยอดเงิน</th>
                         @endif
                         
@@ -189,10 +189,11 @@
                                 class="form-control weghttotal"
                                 value="{{ number_format($item->weghttotal, 2, '.', '') }}">
                         </td>
-                        @if (Auth::user()->username == "A653615")
+                        @if (Auth::user()->username == "A653615" || Auth::user()->username == "A551528" || Auth::user()->username == "adviser")
                             <td class="item-cost" 
                                 data-name="{{ $item->chemical_lists_name }}" 
-                                data-cost="{{ $item->chemical_lists_cost * $item->weghttotal }}">
+                                data-cost="{{ $item->chemical_lists_cost * $item->weghttotal }}"
+                                data-color="{{ $item->chemical_groups_color }}">
                                 <span class="cost-value">{{ number_format($item->chemical_lists_cost * $item->weghttotal, 2) }}</span>
                                 <br>
                                 <p class="text-bg-dark cost-proportion">(0.00%)</p>
@@ -209,7 +210,7 @@
                         <th><input class="form-control" name="total_volume" id="sumWeight" value="0" readonly></th>
                         <th><input class="form-control" name="total_wper" id="sumWeightPer" value="0" readonly></th>
                         <th><input class="form-control" name="total_weght" id="sumWeightTotal" value="0" readonly></th>
-                        @if (Auth::user()->username == "A653615")
+                        @if (Auth::user()->username == "A653615" || Auth::user()->username == "A551528" || Auth::user()->username == "adviser")
                             <th><input class="form-control" name="total_weght" id="sumCostTotal" value="0" readonly></th>
                         @endif
                     </tr>
@@ -240,7 +241,7 @@
                     <canvas id="pieChart"></canvas>
                 </div>
             </div>
-            @if (Auth::user()->username == "A653615")
+            @if (Auth::user()->username == "A653615" || Auth::user()->username == "A551528" || Auth::user()->username == "adviser")
                 <div class="col-12 mt-4">
                     <div class="card">
                         <div class="card-body">
@@ -2302,17 +2303,22 @@ function renderTreemapChart() {
     if (!ctx) return; 
 
     let chartData = [];
+    let colorMap = {}; // 🎨 สร้างตัวเก็บคู่สีไว้ เช่น { 'ชื่อเคมี A': '#FF5733' }
     
-    // 1. ดึงข้อมูลจากตาราง (ดึงเฉพาะชื่อกับราคาพอ)
+    // 1. ดึงข้อมูลจากตาราง
     $('.item-cost').each(function() {
         let name = $(this).data('name') || 'ไม่ระบุชื่อ';
         let cost = parseFloat($(this).data('cost')) || 0;
+        let color = $(this).data('color') || '#36A2EB'; // ดึงสีมา ถ้าไม่มีให้ใช้สีฟ้า Default
         
         if (cost > 0) {
             chartData.push({
                 material: name,
                 value: cost
             });
+            
+            // บันทึกสีคู่กับชื่อเคมีนั้นๆ
+            colorMap[name] = color;
         }
     });
 
@@ -2332,38 +2338,40 @@ function renderTreemapChart() {
                 spacing: 1,
                 borderWidth: 1,
                 borderColor: '#fff',
+                
+                // 🎨 🔥 จุดแก้ไขหลัก: เปลี่ยนไปดึงสีตามชื่อกลุ่ม (g) จาก colorMap ที่เราเตรียมไว้
                 backgroundColor: function(ctx) {
-                    if (!ctx.dataset.data[ctx.dataIndex]) return 'rgba(54, 162, 235, 0.5)';
-                    let value = ctx.dataset.data[ctx.dataIndex].v || 0;
-                    let base = 50 + (Math.floor(value) % 50); 
-                    return `rgba(54, 162, 235, 0.${base})`;
+                    const currentData = ctx.dataset.data[ctx.dataIndex];
+                    if (!currentData) return '#36A2EB';
+                    
+                    let materialName = currentData.g; // ดึงชื่อเคมีออกมา
+                    return colorMap[materialName] || '#36A2EB'; // ส่งคืนสีที่มาจาก data-color
                 },
+                
                 labels: {
                     display: true,
-                    // 🔥 จุดแก้ไขสำคัญ: คำนวณ % สดๆ จากข้อมูลที่ Chart.js แปลงแล้ว
                     formatter: function(ctx) {
                         const currentData = ctx.dataset.data[ctx.dataIndex];
                         if (!currentData) return '';
                         
-                        // ดึงชื่อวัตถุดิบ (สืบทอดมาจาก groups) และมูลค่าจริง (v)
                         let materialName = currentData.g || 'ไม่ระบุชื่อ'; 
                         let costValue = currentData.v || 0;
 
-                        // วนลูปหาผลรวมรวม (Total) จากข้อมูลทั้งหมดในกราฟเพื่อเอามาหารหา %
+                        // คำนวณ % สด
                         let totalCost = ctx.dataset.data.reduce((sum, row) => sum + (row.v || 0), 0);
                         let pct = totalCost > 0 ? ((costValue / totalCost) * 100).toFixed(2) : '0.00';
 
                         return [
                             '📦 ' + materialName,
                             costValue.toLocaleString(undefined, {minimumFractionDigits: 2}) + ' บาท',
-                            '📊 สันส่วน: ' + pct + '%'
+                            '📊 สัดส่วน: ' + pct + '%'
                         ];
                     },
                     font: {
                         size: 13,
                         weight: 'bold'
                     },
-                    color: '#fff'
+                    color: '#fff' 
                 }
             }]
         },
@@ -2373,7 +2381,6 @@ function renderTreemapChart() {
                 legend: { display: false },
                 tooltip: {
                     callbacks: {
-                        // 🔥 แก้ไข Tooltip ให้คำนวณสดแบบเดียวกันเพื่อไม่ให้ขึ้น undefined
                         label: function(context) {
                             const currentData = context.raw;
                             if (!currentData) return '';
