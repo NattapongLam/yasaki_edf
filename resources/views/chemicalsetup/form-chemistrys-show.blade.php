@@ -131,6 +131,10 @@
                         <th style="width: 10%">Volume(1kg)</th>
                         <th style="width: 10%">W (%)</th>
                         <th style="width: 10%">Weght(g)</th>
+                        @if (Auth::user()->username == "A653615")
+                            <th>ยอดเงิน</th>
+                        @endif
+                        
                     </tr>
                 </thead>
                 <tbody id="tableBody" style="color: black">
@@ -185,6 +189,13 @@
                                 class="form-control weghttotal"
                                 value="{{ number_format($item->weghttotal, 2, '.', '') }}">
                         </td>
+                        @if (Auth::user()->username == "A653615")
+                            <td class="item-cost" data-cost="{{ $item->chemical_lists_cost * $item->weghttotal }}">
+                                <span class="cost-value">{{ number_format($item->chemical_lists_cost * $item->weghttotal, 2) }}</span>
+                                <br>
+                                <p class="text-bg-dark cost-proportion">(0.00%)</p>
+                            </td>
+                        @endif
                     </tr>
                     @endforeach
                 </tbody>
@@ -196,6 +207,9 @@
                         <th><input class="form-control" name="total_volume" id="sumWeight" value="0" readonly></th>
                         <th><input class="form-control" name="total_wper" id="sumWeightPer" value="0" readonly></th>
                         <th><input class="form-control" name="total_weght" id="sumWeightTotal" value="0" readonly></th>
+                        @if (Auth::user()->username == "A653615")
+                            <th><input class="form-control" name="total_weght" id="sumCostTotal" value="0" readonly></th>
+                        @endif
                     </tr>
                 </tfoot>
             </table>
@@ -615,6 +629,7 @@ function calculateTable(){
     let sumWeightPer = 0;
     let sumWeightTotal = 0;
     let sumWeight = 0;
+    let sumCostTotal = 0;
 
     let totalAdjustRaw = 0;
 
@@ -814,6 +829,13 @@ function calculateTable(){
 
         sumWeightTotal += weightTotal;
 
+        // 🔥 เพิ่มโค้ดส่วนนี้เพื่อหาผลรวมของยอดเงิน (Cost Sum)
+        const itemCostTd = row.find('.item-cost');
+        if (itemCostTd.length > 0) {
+            let costVal = parseFloat(itemCostTd.attr('data-cost')) || 0;
+            sumCostTotal += costVal;
+        }
+
     });
 
 
@@ -836,11 +858,32 @@ function calculateTable(){
     $('#sumWeightTotal')
         .val(sumWeightTotal.toFixed(2));
 
+    // 🔥 1. แสดงยอดรวมราคาทั้งหมดลงในช่อง input #sumCostTotal
+    $('#sumCostTotal')
+        .val(sumCostTotal.toFixed(2));
 
     $('input[name="chemistry_hd_qty"]')
         .val(sumWeightTotal.toFixed(2));
 
 
+    // 🔥 2. วนลูปอีกครั้งเพื่อคำนวณ % สัดส่วนของแต่ละช่องเทียบกับยอดเงินรวมทั้งหมด
+    rows.each(function() {
+        const row = $(this);
+        const itemCostTd = row.find('.item-cost');
+        
+        if (itemCostTd.length > 0) {
+            let costVal = parseFloat(itemCostTd.attr('data-cost')) || 0;
+            let percentProportion = 0;
+
+            if (sumCostTotal > 0) {
+                // สูตรคิด % สัดส่วน: (ราคารายแถว / ราคารวมทั้งหมด) * 100
+                percentProportion = (costVal / sumCostTotal) * 100;
+            }
+
+            // แสดงผลลัพธ์ % ไปยังคลาส cost-proportion ในแถวนั้นๆ
+            row.find('.cost-proportion').text('(' + percentProportion.toFixed(2) + '%)');
+        }
+    });
 
     renderPieChart();
     renderDonutChart();
