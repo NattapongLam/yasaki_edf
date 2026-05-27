@@ -135,7 +135,7 @@
                                 <th style="width: 10%">Vol.% adjust</th>
                                 <th style="width: 10%">Volume(1kg)</th>
                                 <th style="width: 10%">W (%)</th>
-                                <th style="width: 10%">Weight (g)</th>
+                                <th style="width: 10%">Weight (kg)</th>
                                 <th style="width: 3%"></th>
                             </tr>
                         </thead>

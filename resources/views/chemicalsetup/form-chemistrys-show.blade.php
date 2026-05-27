@@ -130,7 +130,7 @@
                         <th style="width: 10%">Vol.% adjust</th>
                         <th style="width: 10%">Volume(1kg)</th>
                         <th style="width: 10%">W (%)</th>
-                        <th style="width: 10%">Weght(g)</th>
+                        <th style="width: 10%">Weght(kg)</th>
                         @if (Auth::user()->username == "A653615" || Auth::user()->username == "A551528" || Auth::user()->username == "adviser")
                             <th>ยอดเงิน</th>
                         @endif
@@ -211,7 +211,10 @@
                         <th><input class="form-control" name="total_wper" id="sumWeightPer" value="0" readonly></th>
                         <th><input class="form-control" name="total_weght" id="sumWeightTotal" value="0" readonly></th>
                         @if (Auth::user()->username == "A653615" || Auth::user()->username == "A551528" || Auth::user()->username == "adviser")
-                            <th><input class="form-control" name="total_weght" id="sumCostTotal" value="0" readonly></th>
+                            <th>
+                                <input class="form-control" name="total_cost" id="sumCostTotal" value="0" readonly>
+                                <input class="form-control" name="avg_cost" id="costPerWeight" value="0.00" readonly>
+                            </th>
                         @endif
                     </tr>
                 </tfoot>
@@ -900,7 +903,15 @@ function calculateTable(){
             row.find('.cost-proportion').text('(' + percentProportion.toFixed(2) + '%)');
         }
     });
-
+    if ($('#costPerWeight').length > 0) {
+        let costPerWeight = 0;
+        // ป้องกันการหารด้วย 0 (Division by zero)
+        if (sumWeightTotal > 0) {
+            costPerWeight = sumCostTotal / sumWeightTotal;
+        }
+        // นำผลลัพธ์ไปแสดงที่กล่อง #costPerWeight กำหนดทศนิยม 2 ตำแหน่ง
+        $('#costPerWeight').val(costPerWeight.toFixed(2));
+    }
     renderPieChart();
     renderDonutChart();
     renderTreemapChart();

@@ -314,21 +314,42 @@ class ChemistryController extends Controller
     {
         try{
             DB::beginTransaction();
-            DB::table('chemistry_hd')
-            ->where('chemistry_hd_id',$id)
-            ->update([
-                'chemistry_hd_calculate' => $request->chemistry_hd_calculate,
-                'chemistry_hd_note' => $request->chemistry_hd_note,
-                'chemistry_hd_type' => $request->chemistry_hd_type,
-                'chemistry_hd_save' => Auth::user()->name,
-                'update_at' => Carbon::now(),
-                'chemistry_hd_note' => $request->chemistry_hd_note,
-                'total_density' => $request->total_density,
-                'total_adjust' => $request->total_adjust,
-                'total_volume' => $request->total_volume,
-                'total_wper' => $request->total_wper,
-                'total_weght' => $request->total_weght,
-            ]);
+            if(Auth::user()->username == "A653615" || Auth::user()->username == "A551528" || Auth::user()->username == "adviser"){
+                DB::table('chemistry_hd')
+                    ->where('chemistry_hd_id',$id)
+                    ->update([
+                        'chemistry_hd_calculate' => $request->chemistry_hd_calculate,
+                        'chemistry_hd_note' => $request->chemistry_hd_note,
+                        'chemistry_hd_type' => $request->chemistry_hd_type,
+                        'chemistry_hd_save' => Auth::user()->name,
+                        'update_at' => Carbon::now(),
+                        'chemistry_hd_note' => $request->chemistry_hd_note,
+                        'total_density' => $request->total_density,
+                        'total_adjust' => $request->total_adjust,
+                        'total_volume' => $request->total_volume,
+                        'total_wper' => $request->total_wper,
+                        'total_weght' => $request->total_weght,
+                        'total_cost' => $request->total_cost,
+                        'avg_cost' => $request->avg_cost
+                    ]);
+            }else{
+                DB::table('chemistry_hd')
+                    ->where('chemistry_hd_id',$id)
+                    ->update([
+                        'chemistry_hd_calculate' => $request->chemistry_hd_calculate,
+                        'chemistry_hd_note' => $request->chemistry_hd_note,
+                        'chemistry_hd_type' => $request->chemistry_hd_type,
+                        'chemistry_hd_save' => Auth::user()->name,
+                        'update_at' => Carbon::now(),
+                        'chemistry_hd_note' => $request->chemistry_hd_note,
+                        'total_density' => $request->total_density,
+                        'total_adjust' => $request->total_adjust,
+                        'total_volume' => $request->total_volume,
+                        'total_wper' => $request->total_wper,
+                        'total_weght' => $request->total_weght,
+                    ]);
+            }
+            
             foreach ($request->chemistry_dt_id as $key => $value) {
                 $pd = DB::table('chemical_lists')->where('chemical_lists_refcode',$request->code[$key])->first();
                 DB::table('chemistry_dt')

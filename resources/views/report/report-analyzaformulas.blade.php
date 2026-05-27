@@ -564,7 +564,7 @@ $(document).ready(function () {
                 let mixKg = parseFloat(response.header?.chemistry_hd_mix ?? 0);
 
                 html += `
-                    <div class="mb-2"><h6 class="fw-bold mb-2">${response.header?.ms_formule_name ?? '-'} : ${response.header?.chemistry_hd_name ?? '-'}</h6></div>
+                    <div class="mb-2"><h6 class="fw-bold mb-2">${response.header?.ms_formule_name ?? '-'} : ${response.header?.chemistry_hd_name ?? '-'} ( ${response.header?.avg_cost ?? '0'} ต่อกิโลกรัม )</h6></div>
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover align-middle table-sm-custom">
                             <thead class="table-light">
