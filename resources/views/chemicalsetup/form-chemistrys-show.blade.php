@@ -190,7 +190,9 @@
                                 value="{{ number_format($item->weghttotal, 2, '.', '') }}">
                         </td>
                         @if (Auth::user()->username == "A653615")
-                            <td class="item-cost" data-cost="{{ $item->chemical_lists_cost * $item->weghttotal }}">
+                            <td class="item-cost" 
+                                data-name="{{ $item->chemical_lists_name }}" 
+                                data-cost="{{ $item->chemical_lists_cost * $item->weghttotal }}">
                                 <span class="cost-value">{{ number_format($item->chemical_lists_cost * $item->weghttotal, 2) }}</span>
                                 <br>
                                 <p class="text-bg-dark cost-proportion">(0.00%)</p>
@@ -238,6 +240,18 @@
                     <canvas id="pieChart"></canvas>
                 </div>
             </div>
+            @if (Auth::user()->username == "A653615")
+                <div class="col-12 mt-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title mb-3" style="color: black;">สัดส่วนต้นทุนเคมี (Treemap Cost Chart)</h5>
+                            <div style="width: 100%; height: 450px; position: relative;">
+                                <canvas id="treemapChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
         </div>         
         <hr>
         <div class="row">
@@ -530,6 +544,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-chart-treemap@2.3.0/dist/chartjs-chart-treemap.min.js"></script>
 <script>
 let pieChart = null;
 function showOverLimit(msg) {
@@ -887,6 +902,7 @@ function calculateTable(){
 
     renderPieChart();
     renderDonutChart();
+    renderTreemapChart();
 
 }
 
@@ -2274,6 +2290,102 @@ function renderDonutChart() {
                         weight: 'bold',
 
                         size: 12
+                    }
+                }
+            }
+        }
+    });
+}
+let treemapChart;
+function renderTreemapChart() {
+    const ctx = document.getElementById('treemapChart');
+    if (!ctx) return; 
+
+    let chartData = [];
+    
+    // 1. ดึงข้อมูลจากตาราง (ดึงเฉพาะชื่อกับราคาพอ)
+    $('.item-cost').each(function() {
+        let name = $(this).data('name') || 'ไม่ระบุชื่อ';
+        let cost = parseFloat($(this).data('cost')) || 0;
+        
+        if (cost > 0) {
+            chartData.push({
+                material: name,
+                value: cost
+            });
+        }
+    });
+
+    if (treemapChart) {
+        treemapChart.destroy();
+    }
+
+    // 2. สร้างกราฟ Treemap ใหม่
+    treemapChart = new Chart(ctx.getContext('2d'), {
+        type: 'treemap',
+        data: {
+            datasets: [{
+                label: 'ต้นทุนเคมีรวม',
+                tree: chartData,
+                key: 'value',
+                groups: ['material'],
+                spacing: 1,
+                borderWidth: 1,
+                borderColor: '#fff',
+                backgroundColor: function(ctx) {
+                    if (!ctx.dataset.data[ctx.dataIndex]) return 'rgba(54, 162, 235, 0.5)';
+                    let value = ctx.dataset.data[ctx.dataIndex].v || 0;
+                    let base = 50 + (Math.floor(value) % 50); 
+                    return `rgba(54, 162, 235, 0.${base})`;
+                },
+                labels: {
+                    display: true,
+                    // 🔥 จุดแก้ไขสำคัญ: คำนวณ % สดๆ จากข้อมูลที่ Chart.js แปลงแล้ว
+                    formatter: function(ctx) {
+                        const currentData = ctx.dataset.data[ctx.dataIndex];
+                        if (!currentData) return '';
+                        
+                        // ดึงชื่อวัตถุดิบ (สืบทอดมาจาก groups) และมูลค่าจริง (v)
+                        let materialName = currentData.g || 'ไม่ระบุชื่อ'; 
+                        let costValue = currentData.v || 0;
+
+                        // วนลูปหาผลรวมรวม (Total) จากข้อมูลทั้งหมดในกราฟเพื่อเอามาหารหา %
+                        let totalCost = ctx.dataset.data.reduce((sum, row) => sum + (row.v || 0), 0);
+                        let pct = totalCost > 0 ? ((costValue / totalCost) * 100).toFixed(2) : '0.00';
+
+                        return [
+                            '📦 ' + materialName,
+                            costValue.toLocaleString(undefined, {minimumFractionDigits: 2}) + ' บาท',
+                            '📊 สันส่วน: ' + pct + '%'
+                        ];
+                    },
+                    font: {
+                        size: 13,
+                        weight: 'bold'
+                    },
+                    color: '#fff'
+                }
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        // 🔥 แก้ไข Tooltip ให้คำนวณสดแบบเดียวกันเพื่อไม่ให้ขึ้น undefined
+                        label: function(context) {
+                            const currentData = context.raw;
+                            if (!currentData) return '';
+
+                            let materialName = currentData.g || 'ไม่ระบุชื่อ';
+                            let costValue = currentData.v || 0;
+
+                            let totalCost = context.dataset.data.reduce((sum, row) => sum + (row.v || 0), 0);
+                            let pct = totalCost > 0 ? ((costValue / totalCost) * 100).toFixed(2) : '0.00';
+
+                            return ` ${materialName}: ${costValue.toLocaleString(undefined, {minimumFractionDigits: 2})} บาท (${pct}%)`;
+                        }
                     }
                 }
             }
