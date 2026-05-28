@@ -489,14 +489,16 @@ $(document).ready(function () {
             type: "POST",
             data: { _token: "{{ csrf_token() }}", formula_name: formulaName },
             success: function (response) {
+                $('#' + tableAreaId).show();
                 let html = '';
                 if (response.test && response.test.length > 0) {
                     let t = response.test[0];
                     html += `
                         <div class="mt-4">
                             <div class="card border-0 shadow rounded-4">
-                                <div class="card-header bg-dark text-white">
+                                <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
                                     <h6 class="mb-0">Test Average Summary ${response.header?.ms_formule_name ?? '-'}: ${response.header?.chemistry_hd_name ?? '-'}</h6>
+                                    <button type="button" class="btn-close btn-close-white hide-summary-direct-btn" aria-label="Close"></button>
                                 </div>
                                 <div class="card-body">
                                     <div class="row text-center">
@@ -516,7 +518,10 @@ $(document).ready(function () {
                 html += `
                     <div class="mt-4">
                         <div class="card border-0 shadow rounded-4">
-                            <div class="card-header bg-danger text-white"><h6 class="mb-0">Friction Analysis</h6></div>
+                            <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+                                <h6 class="mb-0">Friction Analysis ${response.header?.ms_formule_name ?? '-'}: ${response.header?.chemistry_hd_name ?? '-'}</h6>
+                                <button type="button" class="btn-close btn-close-white hide-formula-direct-btn" data-target="${formulaId.replace('formula_', '')}" aria-label="Close"></button>
+                            </div>
                             <div class="card-body">
                                 <div class="row g-3">
                                     <div class="col-md-12"><canvas id="chartU100-${formulaId}" height="240"></canvas></div>
@@ -544,7 +549,10 @@ $(document).ready(function () {
                     html += `
                         <div class="mt-4">
                             <div class="card border-0 shadow rounded-4">
-                                <div class="card-header bg-secondary text-white"><h6 class="mb-0">Wear / Temperature Analysis</h6></div>
+                                <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0">Wear / Temperature Analysis ${response.header?.ms_formule_name ?? '-'}: ${response.header?.chemistry_hd_name ?? '-'}</h6>
+                                    <button type="button" class="btn-close btn-close-white hide-wear-direct-btn" aria-label="Close"></button>
+                                </div>
                                 <div class="card-body"><div class="table-responsive"><table class="table table-bordered text-center table-sm">
                                 <thead><tr><th rowspan="2">Temperature</th><th colspan="${samples.length}">WearRate</th><th colspan="${samples.length}">T_Inc</th><th colspan="${samples.length}">T_Dec</th></tr><tr>`;
                     for (let i = 0; i < 3; i++) { samples.forEach(s => { html += `<th>${s}</th>`; }); }
@@ -564,7 +572,9 @@ $(document).ready(function () {
                 let mixKg = parseFloat(response.header?.chemistry_hd_mix ?? 0);
 
                 html += `
-                    <div class="mb-2"><h6 class="fw-bold mb-2">${response.header?.ms_formule_name ?? '-'} : ${response.header?.chemistry_hd_name ?? '-'} ( ${response.header?.avg_cost ?? '0'} ต่อกิโลกรัม )</h6></div>
+                    <div class="mb-2">
+                        <h6 class="fw-bold mb-2">${response.header?.ms_formule_name ?? '-'} : ${response.header?.chemistry_hd_name ?? '-'} ( ${response.header?.avg_cost ?? '0'} ต่อกิโลกรัม )</h6>
+                    </div>
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover align-middle table-sm-custom">
                             <thead class="table-light">
@@ -589,7 +599,19 @@ $(document).ready(function () {
                         <div class="col-md-12"><div class="card border-0 shadow rounded-4"><div class="card-header bg-white"><h5 class="mb-0 fw-bold">Density Analysis</h5></div><div class="card-body"><div style="height:300px;"><canvas id="donutChart-${formulaId}"></canvas></div></div></div></div>
                         <div class="col-md-12"><div class="card border-0 shadow rounded-4"><div class="card-header bg-white"><h5 class="mb-0 fw-bold">Weight Total Analysis</h5></div><div class="card-body"><div style="height:300px;"><canvas id="pieChart-${formulaId}"></canvas></div></div></div></div>
                     </div>
-                    <div class="mt-4"><div class="card border-0 shadow rounded-4"><div class="card-header bg-info text-white"><h6 class="mb-0">Performance Radar</h6></div><div class="card-body"><div style="height:400px; max-width:600px; margin:auto;"><canvas id="radarChart-${formulaId}"></canvas></div></div></div></div>
+                    <div class="mt-4">
+                        <div class="card border-0 shadow rounded-4">
+                            <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                                <h6 class="mb-0">Performance Radar ${response.header?.ms_formule_name ?? '-'} : ${response.header?.chemistry_hd_name ?? '-'}</h6>
+                                <button type="button" class="btn-close btn-close-white hide-radar-direct-btn" aria-label="Close"></button>
+                            </div>
+                                <div class="card-body">
+                                    <div style="height:400px; max-width:600px; margin:auto;">
+                                        <canvas id="radarChart-${formulaId}"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                 `;
 
                 let htmlRadarTable = `<div class="mt-4"><div class="card border-0 shadow rounded-4"><div class="card-body"><div class="table-responsive"><table class="table table-bordered table-sm text-center align-middle"><thead class="table-light"><tr><th style="width:120px;">คะแนนความพึงพอใจ</th><th>หมายเหตุ</th></tr></thead><tbody>`;
@@ -618,6 +640,21 @@ $(document).ready(function () {
     $('#formula_3').on('change', function () { loadFormulaTable('formula_3', 'formula-table-area-3'); });
 
 });
+    $(document).on('click', '.hide-formula-direct-btn', function () {
+        // ใช้ .closest() เพื่อวิ่งหา Card ชั้นนอกสุดของ Friction Analysis ตัวนี้แล้วสั่งเฟดซ่อนตัวไป
+        $(this).closest('.card').parent().fadeOut(300);
+    });
+    $(document).on('click', '.hide-summary-direct-btn', function () {
+        // วิ่งหา Card ชั้นนอกสุดของ Test Average Summary ตัวนี้แล้วสั่งเฟดซ่อนไป
+        $(this).closest('.card').parent().fadeOut(300);
+    });
+    $(document).on('click', '.hide-wear-direct-btn', function () {
+        // ค้นหาตัว Card แล้วสั่งปิดจางหายไปโดยไม่ยุ่งกับส่วนอื่น
+        $(this).closest('.card').parent().fadeOut(300);
+    });
+    $(document).on('click', '.hide-radar-direct-btn', function () {
+        $(this).closest('.card').parent().fadeOut(300);
+    });
 </script>
 
 <style>
