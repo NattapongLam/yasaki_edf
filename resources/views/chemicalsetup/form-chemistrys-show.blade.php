@@ -415,7 +415,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($lap as $item)
+                    @foreach ($laplist as $item)
                         <tr>
                             <td>{{ \Carbon\Carbon::parse($item->TestDate)->format('d/m/Y') }}</td>
                             <td>{{ number_format($item->Hardness,4) }}</td>
@@ -431,13 +431,13 @@
                 <tfoot>
                     <tr style="font-weight:bold; background:#f2f2f2;">
                         <td>AVG</td>
-                        <td>{{ number_format($lap->avg('Hardness'),4) }}</td>
-                        <td>{{ number_format($lap->avg('Shearing'),4) }}</td>
-                        <td>{{ number_format($lap->avg('Noise'),4) }}</td>
-                        <td>{{ number_format($lap->avg('RoadTestAvg'),4) }}</td>
-                        <td>{{ number_format($lap->avg('Normal_Avg'),4) }}</td>
-                        <td>{{ number_format($lap->avg('Hot_Avg'),4) }}</td>
-                        <td>{{ number_format($lap->avg('Wear_Avg'),4) }}</td>
+                        <td>{{ number_format($laplist->avg('Hardness'),4) }}</td>
+                        <td>{{ number_format($laplist->avg('Shearing'),4) }}</td>
+                        <td>{{ number_format($laplist->avg('Noise'),4) }}</td>
+                        <td>{{ number_format($laplist->avg('RoadTestAvg'),4) }}</td>
+                        <td>{{ number_format($laplist->avg('Normal_Avg'),4) }}</td>
+                        <td>{{ number_format($laplist->avg('Hot_Avg'),4) }}</td>
+                        <td>{{ number_format($laplist->avg('Wear_Avg'),4) }}</td>
                     </tr>
                 </tfoot>
             </table>

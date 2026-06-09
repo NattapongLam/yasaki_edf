@@ -135,12 +135,16 @@ class ChemistryController extends Controller
         ->leftjoin('chemical_funtions','chemical_funtions.chemical_funtions_id','=','chemical_lists.chemical_funtions_id')
         ->where('chemistry_hd_id',$id)
         ->where('flag',1)->get();
-        $lap = DB::table('TestHeaders')
+        $laplist = DB::table('TestHeaders')
         ->where('FormulaNumber',$hd->chemistry_hd_name)
         ->get();
+        $lap = DB::table('TestHeaders')
+        ->where('FormulaNumber', $hd->chemistry_hd_name)
+        ->latest('TestID') // เรียงจากใหม่ไปเก่า (อิงจาก created_at หรือ id)
+        ->first(); // เอาเฉพาะข้อมูลล่าสุดแถวเดียว
         $test = DB::table('TestHeaders')
         ->leftjoin('TestDetails','TestHeaders.TestID','=','TestDetails.TestID')
-        ->where('TestHeaders.FormulaNumber',$hd->chemistry_hd_name)
+        ->where('TestHeaders.TestID',$lap->TestID)
         ->get();
         $feeavg = DB::table('vw_formula_feeavg')->where('FormulaNumber',$hd->chemistry_hd_name)->get();
         $datefeeavg = DB::table('vw_formula_datefeeavg')->where('FormulaNumber',$hd->chemistry_hd_name)->get();
@@ -149,7 +153,7 @@ class ChemistryController extends Controller
         ->leftjoin('chemical_groups','chemical_groups.chemical_groups_id','=','chemical_lists.chemical_groups_id')
         ->get();
         $testIds = DB::table('TestHeaders')
-            ->where('FormulaNumber', $hd->chemistry_hd_name)
+            ->where('TestID', $lap->TestID)
             ->pluck('TestID');
 
         $frictions1 = DB::table('TestFrictions')
@@ -276,7 +280,7 @@ class ChemistryController extends Controller
         'n1labels','n1u100','n1c100','n1u150','n1c150','n1u200','n1c200','n1u250','n1c250','n1u300','n1c300','n1u350','n1c350','n1ufall','n1cfall',
         'n2labels','n2u100','n2c100','n2u150','n2c150','n2u200','n2c200','n2u250','n2c250','n2u300','n2c300','n2u350','n2c350','n2ufall','n2cfall',
         'n3labels','n3u100','n3c100','n3u150','n3c150','n3u200','n3c200','n3u250','n3c250','n3u300','n3c300','n3u350','n3c350','n3ufall','n3cfall',
-        'labels','labels1','roadlist'
+        'labels','labels1','roadlist','laplist'
         ));
     }
 
