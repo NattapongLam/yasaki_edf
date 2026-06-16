@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class ChemistryController extends Controller
 {
@@ -88,6 +89,18 @@ class ChemistryController extends Controller
             'total_wper' => $request->total_wper,
             'total_weght' => $request->total_weght
         ];     
+        if ($request->hasFile('chemistry_hd_file1')) { 
+            $data['chemistry_hd_file1'] = $request->file('chemistry_hd_file1')->storeAs('images/Chemical_File', "IMG_" . carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('chemistry_hd_file1')->extension()); 
+        } 
+        if ($request->hasFile('chemistry_hd_file2')) { 
+            $data['chemistry_hd_file2'] = $request->file('chemistry_hd_file2')->storeAs('images/Chemical_File', "IMG_" . carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('chemistry_hd_file2')->extension());
+        }
+        if ($request->hasFile('chemistry_hd_file3')) { 
+            $data['chemistry_hd_file3'] = $request->file('chemistry_hd_file3')->storeAs('images/Chemical_File', "IMG_" . carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('chemistry_hd_file3')->extension());
+        }
+        if ($request->hasFile('chemistry_hd_file4')) { 
+            $data['chemistry_hd_file4'] = $request->file('chemistry_hd_file4')->storeAs('images/Chemical_File', "IMG_" . carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('chemistry_hd_file4')->extension());
+        }
         try{
             DB::beginTransaction();
             DB::table('chemistry_hd')->insert($data);
