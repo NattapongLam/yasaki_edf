@@ -118,6 +118,32 @@
                 </div>
             </div>
         </div>
+         <div class="row">
+            <div class="col-3">
+                <div class="form-group">
+                    <label for="chemistry_hd_file1" class="col-form-label">ไฟล์แนบ(หากมี)</label>
+                    <input type="file" class="form-control" name="chemistry_hd_file1" >
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-group">
+                    <label for="chemistry_hd_file2" class="col-form-label">ไฟล์แนบ(หากมี)</label>
+                    <input type="file" class="form-control" name="chemistry_hd_file2" >
+                </div>
+            </div> 
+            <div class="col-3">
+                <div class="form-group">
+                    <label for="chemistry_hd_file3" class="col-form-label">ไฟล์แนบ(หากมี)</label>
+                    <input type="file" class="form-control" name="chemistry_hd_file3" >
+                </div>
+            </div>  
+            <div class="col-3">
+                <div class="form-group">
+                    <label for="chemistry_hd_file4" class="col-form-label">ไฟล์แนบ(หากมี)</label>
+                    <input type="file" class="form-control" name="chemistry_hd_file4" >
+                </div>
+            </div> 
+        </div>
         <br>
         <div class="row">
             <div class="col-12">

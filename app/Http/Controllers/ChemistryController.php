@@ -332,29 +332,40 @@ class ChemistryController extends Controller
         try{
             DB::beginTransaction();
             if(Auth::user()->username == "A653615" || Auth::user()->username == "A551528" || Auth::user()->username == "adviser"){
+                $data = [
+                    'chemistry_hd_calculate' => $request->chemistry_hd_calculate,
+                    'chemistry_hd_note' => $request->chemistry_hd_note,
+                    'chemistry_hd_type' => $request->chemistry_hd_type,
+                    'chemistry_hd_save' => Auth::user()->name,
+                    'update_at' => Carbon::now(),
+                    'chemistry_hd_note' => $request->chemistry_hd_note,
+                    'total_density' => $request->total_density,
+                    'total_adjust' => $request->total_adjust,
+                    'total_volume' => $request->total_volume,
+                    'total_wper' => $request->total_wper,
+                    'total_weght' => $request->total_weght,
+                    'total_cost' => $request->total_cost,
+                    'avg_cost' => $request->avg_cost
+                ];
+                if ($request->hasFile('chemistry_hd_file1')) { 
+                    $data['chemistry_hd_file1'] = $request->file('chemistry_hd_file1')->storeAs('images/Chemical_File', "IMG_" . carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('chemistry_hd_file1')->extension()); 
+                } 
+                if ($request->hasFile('chemistry_hd_file2')) { 
+                    $data['chemistry_hd_file2'] = $request->file('chemistry_hd_file2')->storeAs('images/Chemical_File', "IMG_" . carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('chemistry_hd_file2')->extension());
+                }
+                if ($request->hasFile('chemistry_hd_file3')) { 
+                    $data['chemistry_hd_file3'] = $request->file('chemistry_hd_file3')->storeAs('images/Chemical_File', "IMG_" . carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('chemistry_hd_file3')->extension());
+                }
+                if ($request->hasFile('chemistry_hd_file4')) { 
+                    $data['chemistry_hd_file4'] = $request->file('chemistry_hd_file4')->storeAs('images/Chemical_File', "IMG_" . carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('chemistry_hd_file4')->extension());
+                }
                 DB::table('chemistry_hd')
                     ->where('chemistry_hd_id',$id)
-                    ->update([
-                        'chemistry_hd_calculate' => $request->chemistry_hd_calculate,
-                        'chemistry_hd_note' => $request->chemistry_hd_note,
-                        'chemistry_hd_type' => $request->chemistry_hd_type,
-                        'chemistry_hd_save' => Auth::user()->name,
-                        'update_at' => Carbon::now(),
-                        'chemistry_hd_note' => $request->chemistry_hd_note,
-                        'total_density' => $request->total_density,
-                        'total_adjust' => $request->total_adjust,
-                        'total_volume' => $request->total_volume,
-                        'total_wper' => $request->total_wper,
-                        'total_weght' => $request->total_weght,
-                        'total_cost' => $request->total_cost,
-                        'avg_cost' => $request->avg_cost
-                    ]);
+                    ->update($data);
             }else{
-                DB::table('chemistry_hd')
-                    ->where('chemistry_hd_id',$id)
-                    ->update([
-                        'chemistry_hd_calculate' => $request->chemistry_hd_calculate,
-                        'chemistry_hd_note' => $request->chemistry_hd_note,
+                $data = [
+                    'chemistry_hd_calculate' => $request->chemistry_hd_calculate,
+                    'chemistry_hd_note' => $request->chemistry_hd_note,
                         'chemistry_hd_type' => $request->chemistry_hd_type,
                         'chemistry_hd_save' => Auth::user()->name,
                         'update_at' => Carbon::now(),
@@ -364,7 +375,22 @@ class ChemistryController extends Controller
                         'total_volume' => $request->total_volume,
                         'total_wper' => $request->total_wper,
                         'total_weght' => $request->total_weght,
-                    ]);
+                ];
+                if ($request->hasFile('chemistry_hd_file1')) { 
+                    $data['chemistry_hd_file1'] = $request->file('chemistry_hd_file1')->storeAs('images/Chemical_File', "IMG_" . carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('chemistry_hd_file1')->extension()); 
+                } 
+                if ($request->hasFile('chemistry_hd_file2')) { 
+                    $data['chemistry_hd_file2'] = $request->file('chemistry_hd_file2')->storeAs('images/Chemical_File', "IMG_" . carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('chemistry_hd_file2')->extension());
+                }
+                if ($request->hasFile('chemistry_hd_file3')) { 
+                    $data['chemistry_hd_file3'] = $request->file('chemistry_hd_file3')->storeAs('images/Chemical_File', "IMG_" . carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('chemistry_hd_file3')->extension());
+                }
+                if ($request->hasFile('chemistry_hd_file4')) { 
+                    $data['chemistry_hd_file4'] = $request->file('chemistry_hd_file4')->storeAs('images/Chemical_File', "IMG_" . carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('chemistry_hd_file4')->extension());
+                }
+                DB::table('chemistry_hd')
+                    ->where('chemistry_hd_id',$id)
+                    ->update($data);
             }
             
             foreach ($request->chemistry_dt_id as $key => $value) {
