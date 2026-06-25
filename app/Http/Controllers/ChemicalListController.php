@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ChemicalFuntion;
 use App\Models\ChemicalGroup;
 use App\Models\ChemicalList;
+use App\Models\ChemicalSub;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -59,6 +60,7 @@ class ChemicalListController extends Controller
             'chemical_groups_id' => ['required'],
             'chemical_funtions_id' => ['required'],
         ]);                
+        
         $data = [
             'chemical_groups_id' => $request->chemical_groups_id,
             'chemical_funtions_id' => $request->chemical_funtions_id,
@@ -79,21 +81,59 @@ class ChemicalListController extends Controller
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
             'chemical_funtions_id_1' => $request->chemical_funtions_id_1,
+            'chemical_lists_department' => $request->chemical_lists_department,
+            'chemical_lists_substance' => $request->chemical_lists_substance,
+            'chemical_lists_vendor' => $request->chemical_lists_vendor,
         ];
+
+        // File 1 Upload
         if ($request->hasFile('chemical_lists_file1')) { 
-            $data['chemical_lists_file1'] = $request->file('chemical_lists_file1')->storeAs('images/Chemical_File', "IMG_" . carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('chemical_lists_file1')->extension()); 
-        } if ($request->hasFile('chemical_lists_file2')) { 
-            $data['chemical_lists_file2'] = $request->file('chemical_lists_file2')->storeAs('images/Chemical_File', "IMG_" . carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('chemical_lists_file2')->extension());
+            $data['chemical_lists_file1'] = $request->file('chemical_lists_file1')->storeAs(
+                'images/Chemical_File', 
+                "IMG_" . Carbon::now()->format('YmdHis') . "_" . Str::random(5) . "." . $request->file('chemical_lists_file1')->extension()
+            ); 
+        } 
+        
+        // File 2 Upload
+        if ($request->hasFile('chemical_lists_file2')) { 
+            $data['chemical_lists_file2'] = $request->file('chemical_lists_file2')->storeAs(
+                'images/Chemical_File', 
+                "IMG_" . Carbon::now()->format('YmdHis') . "_" . Str::random(5) . "." . $request->file('chemical_lists_file2')->extension()
+            );
         }
-        try{
+
+        try {
             DB::beginTransaction();
-            DB::table('chemical_lists')->insert($data);                     
+
+            // 1. Insert parent and get the generated ID
+            $chemicalListId = DB::table('chemical_lists')->insertGetId($data); 
+
+            // 2. Loop and insert sub-chemical items (if they exist)
+            if ($request->has('chemical_subs_listno') && is_array($request->chemical_subs_listno)) {
+                foreach ($request->chemical_subs_listno as $key => $value) {
+                    DB::table('chemical_subs')->insert([
+                        'calibration_lists_id'  => $chemicalListId, // Link to the newly created parent ID
+                        'chemical_subs_listno'  => $value,
+                        'chemical_subs_name'    => $request->chemical_subs_name[$key] ?? null,
+                        'chemical_subs_casno'   => $request->chemical_subs_casno[$key] ?? null,
+                        'chemical_subs_ecno'    => $request->chemical_subs_ecno[$key] ?? null,
+                        'chemical_subs_qty'     => $request->chemical_subs_qty[$key] ?? null,
+                        'chemical_subs_flag'    => 1,
+                        'created_at'            => Carbon::now(),
+                        'updated_at'            => Carbon::now(),
+                    ]);
+                }
+            }
+                        
             DB::commit();
             return redirect()->route('chemicallists.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
-        }catch(\Exception $e){
+
+        } catch (\Exception $e) {
+            DB::rollBack(); // CRITICAL: Rollback changes if something fails!
             Log::error($e->getMessage());
-            dd($e->getMessage());
-            return redirect()->back()->with('error', 'เกิดข้อผิดพลาด');
+            
+            // dd($e->getMessage()); // Keep for debugging; remove in production
+            return redirect()->back()->with('error', 'เกิดข้อผิดพลาด: ' . $e->getMessage());
         } 
     }
 
@@ -119,7 +159,8 @@ class ChemicalListController extends Controller
         $groups = ChemicalGroup::where('chemical_groups_flag',true)->get();
         $hd = ChemicalList::find($id);
         $funtions = ChemicalFuntion::where('chemical_groups_id',$hd->chemical_groups_id)->where('chemical_funtions_flag',true)->get();
-        return view('chemicalsetup.form-chemical-edit', compact('groups','hd','funtions'));
+        $dt = ChemicalSub::where('calibration_lists_id',$id)->where('chemical_subs_flag',true)->get();
+        return view('chemicalsetup.form-chemical-edit', compact('groups','hd','funtions','dt'));
     }
 
     /**
@@ -139,6 +180,7 @@ class ChemicalListController extends Controller
             'chemical_groups_id' => ['required'], 
             'chemical_funtions_id' => ['required'], 
         ]); 
+
         $data = [ 
             'chemical_groups_id' => $request->chemical_groups_id, 
             'chemical_funtions_id' => $request->chemical_funtions_id, 
@@ -158,19 +200,68 @@ class ChemicalListController extends Controller
             'person_at' => Auth::user()->name, 
             'updated_at' => Carbon::now(),
             'chemical_funtions_id_1' => $request->chemical_funtions_id_1,
+            // เพิ่มฟิลด์ใหม่ 3 ตัวที่ปรากฏในฟอร์มแก้ไข
+            'chemical_lists_department' => $request->chemical_lists_department,
+            'chemical_lists_hazard_type' => $request->chemical_lists_hazard_type,
+            'chemical_lists_supplier' => $request->chemical_lists_supplier,
         ]; 
+
+        // การจัดการไฟล์แนบ 1 (หากมีการอัปโหลดใหม่เข้ามา)
         if ($request->hasFile('chemical_lists_file1')) { 
-            $data['chemical_lists_file1'] = $request->file('chemical_lists_file1')->storeAs('images/Chemical_File', "IMG_" . carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('chemical_lists_file1')->extension()); 
-        } if ($request->hasFile('chemical_lists_file2')) { 
-            $data['chemical_lists_file2'] = $request->file('chemical_lists_file2')->storeAs('images/Chemical_File', "IMG_" . carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('chemical_lists_file2')->extension());
+            $data['chemical_lists_file1'] = $request->file('chemical_lists_file1')->storeAs(
+                'images/Chemical_File', 
+                "IMG_" . Carbon::now()->format('YmdHis') . "_" . Str::random(5) . "." . $request->file('chemical_lists_file1')->extension()
+            ); 
+        } 
+
+        // การจัดการไฟล์แนบ 2 (หากมีการอัปโหลดใหม่เข้ามา)
+        if ($request->hasFile('chemical_lists_file2')) { 
+            $data['chemical_lists_file2'] = $request->file('chemical_lists_file2')->storeAs(
+                'images/Chemical_File', 
+                "IMG_" . Carbon::now()->format('YmdHis') . "_" . Str::random(5) . "." . $request->file('chemical_lists_file2')->extension()
+            );
         }
-        try{ 
+
+        try { 
             DB::beginTransaction(); 
-            DB::table('chemical_lists')->where('chemical_lists_id',$id)->update($data); 
+
+            // 1. อัปเดตข้อมูลตารางหลัก (Parent)
+            DB::table('chemical_lists')->where('chemical_lists_id', $id)->update($data); 
+
+            // 2. ลบรายการสารย่อยเก่าออกทั้งหมด เพื่อเตรียมบันทึกชุดปัจจุบันที่ส่งมาจากหน้าฟอร์ม
+            DB::table('chemical_subs')->where('calibration_lists_id', $id)->delete();
+
+            // 3. วนลูปบันทึกรายการสารย่อยชุดใหม่ (ถ้าหน้าจอมีข้อมูลส่งมา)
+            if ($request->has('chemical_subs_listno') && is_array($request->chemical_subs_listno)) {
+                foreach ($request->chemical_subs_listno as $key => $value) {
+                    // ข้ามการบันทึกหากไม่มีชื่อสาร
+                    if (empty($request->chemical_subs_name[$key])) {
+                        continue;
+                    }
+
+                    DB::table('chemical_subs')->insert([
+                        'calibration_lists_id'  => $id, // ID ตารางหลักที่ทำการอัปเดต
+                        'chemical_subs_listno'  => $value,
+                        'chemical_subs_name'    => $request->chemical_subs_name[$key] ?? null,
+                        'chemical_subs_casno'   => $request->chemical_subs_casno[$key] ?? null,
+                        'chemical_subs_ecno'    => $request->chemical_subs_ecno[$key] ?? null,
+                        'chemical_subs_qty'     => $request->chemical_subs_qty[$key] ?? null,
+                        'chemical_subs_flag'    => 1,
+                        'created_at'            => Carbon::now(),
+                        'updated_at'            => Carbon::now(),
+                    ]);
+                }
+            }
+
             DB::commit(); 
-            return redirect()->route('chemicallists.index')->with('success', 'บันทึกข้อมูลเรียบร้อย'); 
-        }catch(\Exception $e){ 
-            Log::error($e->getMessage()); dd($e->getMessage()); return redirect()->back()->with('error', 'เกิดข้อผิดพลาด'); 
+            return redirect()->route('chemicallists.index')->with('success', 'บันทึกการแก้ไขข้อมูลเรียบร้อย'); 
+
+        } catch (\Exception $e) { 
+            DB::rollBack(); // ย้อนกลับคำสั่งทั้งหมดหากเกิด Error กลางคัน
+            Log::error($e->getMessage()); 
+            
+            // dd($e->getMessage()); // เปิดไว้ตรวจสอบกรณีเจอบั๊กในขั้นตอนพัฒนา
+            return redirect()->back()->with('error', 'เกิดข้อผิดพลาด: ' . $e->getMessage()); 
         } 
     }
 

@@ -189,6 +189,74 @@
                 </div>
             </div>
         </div>
+         <div class="row">
+            <div class="col-4">
+                <div class="form-group">
+                    <label for="chemical_lists_department" class="col-form-label">แผนก/หน่วยงาน</label>
+                    <input type="text" class="form-control" name="chemical_lists_department" id="chemical_lists_department" value="{{$hd->chemical_lists_department}}">
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group">
+                    <label for="chemical_lists_substance" class="col-form-label">ชนิดวัตถุอันตราย</label>
+                    <input type="text" class="form-control" name="chemical_lists_substance" id="chemical_lists_substance" value="{{$hd->chemical_lists_substance}}">
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group">
+                    <label for="chemical_lists_vendor" class="col-form-label">ผู้ผลิต/จำหน่าย</label>
+                    <input type="text" class="form-control" name="chemical_lists_vendor" id="chemical_lists_vendor" value="{{$hd->chemical_lists_vendor}}">
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-12">
+                 <div class="col-12" style="text-align: right;">
+                    <a href="javascript:void(0);" class="btn btn-secondary" id="addRowBtn">เพิ่มรายการ</a>
+                </div>
+                <hr>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-sm text-center">
+                        <thead>
+                            <tr>
+                                <th style="width: 5%">No.</th>
+                                <th style="width: 38%">ชื่อสาร</th>
+                                <th style="width: 15%">เลขทะเบียน CAS</th>
+                                <th style="width: 15%">เลขทะเบียน EC</th>
+                                <th style="width: 15%">% โดยน้ำหนัก</th>
+                                <th style="width: 12%">การกระทำ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            @foreach ($dt as $key => $item)
+                                <tr>
+                                    <td>
+                                        <span class="row-number">{{ $key + 1 }}</span>
+                                        <input type="hidden" name="chemical_subs_listno[]" class="row-number-hidden" value="{{ $item->chemical_subs_listno }}"/>
+                                    </td>
+                                    <td>
+                                        <input class="form-control" name="chemical_subs_name[]" value="{{$item->chemical_subs_name}}">
+                                    </td>
+                                    <td>
+                                        <input class="form-control" name="chemical_subs_casno[]" value="{{$item->chemical_subs_casno}}">
+                                    </td>
+                                    <td>
+                                        <input class="form-control" name="chemical_subs_ecno[]" value="{{$item->chemical_subs_ecno}}">
+                                    </td>
+                                    <td>
+                                        <input class="form-control" name="chemical_subs_qty[]" value="{{$item->chemical_subs_qty}}">
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-danger btn-sm deleteRow">ลบ</button>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>       
+                    </table>
+                </div>          
+            </div>
+        </div>
          <br>
             <div class="col-12 col-md-1">
                 <div class="form-group">
@@ -237,6 +305,7 @@
             $('#chemical_funtions_id_1').html('<option value="">กรุณาเลือก</option>');
         }
     });
+
 document.querySelectorAll('#chemical_lists_tempstart, #chemical_lists_tempend,#chemical_lists_density')
     .forEach(el => {
         el.addEventListener('input', function() {
@@ -244,5 +313,50 @@ document.querySelectorAll('#chemical_lists_tempstart, #chemical_lists_tempend,#c
             this.value = this.value.replace(/(\..*)\./g, '$1');   // ห้ามมีจุดทศนิยมมากกว่า 1 จุด
         });
     });
+
+/* ===================== UPDATE ROW NUMBER ===================== */
+function updateRowNumbers() {
+    const rows = document.querySelectorAll('#tableBody tr');
+    rows.forEach((row, index) => {
+        const displayNo = index + 1;
+        const numberSpan = row.querySelector('.row-number');
+        const hiddenInput = row.querySelector('.row-number-hidden');
+        
+        if(numberSpan) numberSpan.textContent = displayNo;
+        if(hiddenInput) hiddenInput.value = displayNo;
+    });
+}
+
+/* ===================== GLOBAL ===================== */
+let pieChart = null;
+
+/* ===================== ADD ROW ===================== */
+document.getElementById('addRowBtn').addEventListener('click', function () {
+    const tbody = document.getElementById('tableBody');
+    const newRow = document.createElement('tr');
+    
+    newRow.innerHTML = `
+        <td>
+            <span class="row-number"></span>
+            <input type="hidden" name="chemical_subs_listno[]" class="row-number-hidden"/>
+        </td>
+        <td><input type="text" name="chemical_subs_name[]" class="form-control"/></td>
+        <td><input type="text" name="chemical_subs_casno[]" class="form-control"/></td>
+        <td><input type="text" name="chemical_subs_ecno[]" class="form-control"/></td>
+        <td><input type="text" name="chemical_subs_qty[]" class="form-control"/></td>
+        <td><button type="button" class="btn btn-danger btn-sm deleteRow">ลบ</button></td>
+    `;
+
+    tbody.appendChild(newRow);
+    updateRowNumbers();
+});
+
+/* ===================== DELETE ROW ===================== */
+document.getElementById('tableBody').addEventListener('click', function (e) {
+    if (e.target.classList.contains('deleteRow')) {
+        e.target.closest('tr').remove();
+        updateRowNumbers();
+    }
+});
 </script>
 @endpush

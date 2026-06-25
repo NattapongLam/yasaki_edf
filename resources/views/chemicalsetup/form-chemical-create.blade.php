@@ -162,6 +162,50 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-4">
+                <div class="form-group">
+                    <label for="chemical_lists_department" class="col-form-label">แผนก/หน่วยงาน</label>
+                    <input type="text" class="form-control" name="chemical_lists_department" id="chemical_lists_department">
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group">
+                    <label for="chemical_lists_substance" class="col-form-label">ชนิดวัตถุอันตราย</label>
+                    <input type="text" class="form-control" name="chemical_lists_substance" id="chemical_lists_substance">
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group">
+                    <label for="chemical_lists_vendor" class="col-form-label">ผู้ผลิต/จำหน่าย</label>
+                    <input type="text" class="form-control" name="chemical_lists_vendor" id="chemical_lists_vendor">
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-12">
+                 <div class="col-12" style="text-align: right;">
+                    <a href="javascript:void(0);" class="btn btn-secondary" id="addRowBtn">เพิ่มรายการ</a>
+                </div>
+                <hr>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-sm text-center">
+                        <thead>
+                            <tr>
+                                <th style="width: 3%">No.</th>
+                                <th style="width: 40%">ชื่อสาร</th>
+                                <th style="width: 10%">เลขทะเบียน CAS</th>
+                                <th style="width: 10%">เลขทะเบียน EC</th>
+                                <th style="width: 10%">% โดยน้ำหนัก</th>
+                                <th style="width: 3%"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody"></tbody>       
+                    </table>
+                </div>          
+            </div>
+        </div>
          <br>
             <div class="col-12 col-md-1">
                 <div class="form-group">
@@ -217,5 +261,48 @@ document.querySelectorAll('#chemical_lists_tempstart, #chemical_lists_tempend,#c
             this.value = this.value.replace(/(\..*)\./g, '$1');   // ห้ามมีจุดทศนิยมมากกว่า 1 จุด
         });
     });
+/* ===================== UPDATE ROW NUMBER ===================== */
+function updateRowNumbers() {
+    const rows = document.querySelectorAll('#tableBody tr');
+    rows.forEach((row, index) => {
+        row.querySelector('.row-number').textContent = index + 1;
+        row.querySelector('.row-number-hidden').value = index + 1;
+    });
+}
+/* ===================== GLOBAL ===================== */
+let pieChart = null;
+/* ===================== ADD ROW ===================== */
+document.getElementById('addRowBtn').addEventListener('click', function () {
+    const tbody = document.getElementById('tableBody');
+
+    const newRow = document.createElement('tr');
+    newRow.innerHTML = `
+        <td>
+            <span class="row-number"></span>
+            <input type="hidden" name="chemical_subs_listno[]" class="row-number-hidden"/>
+        </td>
+        <td><input type="text" name="chemical_subs_name[]" class="form-control"/></td>
+        <td><input type="text" name="chemical_subs_casno[]" class="form-control"/></td>
+        <td><input type="text" name="chemical_subs_ecno[]" class="form-control"/></td>
+        <td><input type="text" name="chemical_subs_qty[]" class="form-control"/></td>
+        <td><button type="button" class="btn btn-danger btn-sm deleteRow">ลบ</button></td>
+    `;
+
+    tbody.appendChild(newRow);
+
+    $(newRow).find('.select2-product').select2({
+        placeholder: 'เลือกสินค้า'
+    });
+
+    updateRowNumbers();
+});
+
+/* ===================== DELETE ROW ===================== */
+document.getElementById('tableBody').addEventListener('click', function (e) {
+    if (e.target.classList.contains('deleteRow')) {
+        e.target.closest('tr').remove();
+        updateRowNumbers();
+    }
+});
 </script>
 @endpush
