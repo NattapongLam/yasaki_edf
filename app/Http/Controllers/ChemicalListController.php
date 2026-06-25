@@ -202,8 +202,8 @@ class ChemicalListController extends Controller
             'chemical_funtions_id_1' => $request->chemical_funtions_id_1,
             // เพิ่มฟิลด์ใหม่ 3 ตัวที่ปรากฏในฟอร์มแก้ไข
             'chemical_lists_department' => $request->chemical_lists_department,
-            'chemical_lists_hazard_type' => $request->chemical_lists_hazard_type,
-            'chemical_lists_supplier' => $request->chemical_lists_supplier,
+            'chemical_lists_substance' => $request->chemical_lists_substance,
+            'chemical_lists_vendor' => $request->chemical_lists_vendor,
         ]; 
 
         // การจัดการไฟล์แนบ 1 (หากมีการอัปโหลดใหม่เข้ามา)
