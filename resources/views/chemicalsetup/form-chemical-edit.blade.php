@@ -122,7 +122,7 @@
                         id="chemical_lists_tempstart" 
                         pattern="^\d+(\.\d+)?$" 
                         title="กรอกได้เฉพาะตัวเลข หรือเลขทศนิยมเท่านั้น" 
-                        value="{{number_format($hd->chemical_lists_tempstart,2)}}" required>
+                        value="{{$hd->chemical_lists_tempstart}}" required>
                 </div>
             </div>
             <div class="col-3">
@@ -135,7 +135,7 @@
                         id="chemical_lists_tempend" 
                         pattern="^\d+(\.\d+)?$" 
                         title="กรอกได้เฉพาะตัวเลข หรือเลขทศนิยมเท่านั้น" 
-                        value="{{number_format($hd->chemical_lists_tempend,2)}}" required>
+                        value="{{$hd->chemical_lists_tempend}}" required>
                 </div>
             </div>
             <div class="col-6">
