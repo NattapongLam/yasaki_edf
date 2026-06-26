@@ -112,7 +112,7 @@ class ChemicalListController extends Controller
             if ($request->has('chemical_subs_listno') && is_array($request->chemical_subs_listno)) {
                 foreach ($request->chemical_subs_listno as $key => $value) {
                     DB::table('chemical_subs')->insert([
-                        'calibration_lists_id'  => $chemicalListId, // Link to the newly created parent ID
+                        'chemical_lists_id'  => $chemicalListId, // Link to the newly created parent ID
                         'chemical_subs_listno'  => $value,
                         'chemical_subs_name'    => $request->chemical_subs_name[$key] ?? null,
                         'chemical_subs_casno'   => $request->chemical_subs_casno[$key] ?? null,
@@ -159,7 +159,7 @@ class ChemicalListController extends Controller
         $groups = ChemicalGroup::where('chemical_groups_flag',true)->get();
         $hd = ChemicalList::find($id);
         $funtions = ChemicalFuntion::where('chemical_groups_id',$hd->chemical_groups_id)->where('chemical_funtions_flag',true)->get();
-        $dt = ChemicalSub::where('calibration_lists_id',$id)->where('chemical_subs_flag',true)->get();
+        $dt = ChemicalSub::where('chemical_lists_id',$id)->where('chemical_subs_flag',true)->get();
         return view('chemicalsetup.form-chemical-edit', compact('groups','hd','funtions','dt'));
     }
 
@@ -229,7 +229,7 @@ class ChemicalListController extends Controller
             DB::table('chemical_lists')->where('chemical_lists_id', $id)->update($data); 
 
             // 2. ลบรายการสารย่อยเก่าออกทั้งหมด เพื่อเตรียมบันทึกชุดปัจจุบันที่ส่งมาจากหน้าฟอร์ม
-            DB::table('chemical_subs')->where('calibration_lists_id', $id)->delete();
+            DB::table('chemical_subs')->where('chemical_lists_id', $id)->delete();
 
             // 3. วนลูปบันทึกรายการสารย่อยชุดใหม่ (ถ้าหน้าจอมีข้อมูลส่งมา)
             if ($request->has('chemical_subs_listno') && is_array($request->chemical_subs_listno)) {
@@ -240,7 +240,7 @@ class ChemicalListController extends Controller
                     }
 
                     DB::table('chemical_subs')->insert([
-                        'calibration_lists_id'  => $id, // ID ตารางหลักที่ทำการอัปเดต
+                        'chemical_lists_id'  => $id, // ID ตารางหลักที่ทำการอัปเดต
                         'chemical_subs_listno'  => $value,
                         'chemical_subs_name'    => $request->chemical_subs_name[$key] ?? null,
                         'chemical_subs_casno'   => $request->chemical_subs_casno[$key] ?? null,

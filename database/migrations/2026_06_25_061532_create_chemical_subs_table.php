@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('chemical_subs', function (Blueprint $table) {
             $table->id('chemical_subs_id');
-            $table->unsignedBigInteger('calibration_lists_id');
-            $table->foreign('calibration_lists_id')->references('calibration_lists_id')->on('calibration_lists')->onDelete('cascade');
+            $table->unsignedBigInteger('chemical_lists_id');
+            $table->foreign('chemical_lists_id')->references('chemical_lists_id')->on('chemical_lists')->onDelete('cascade');
             $table->integer('chemical_subs_listno');  
             $table->string('chemical_subs_name');
             $table->string('chemical_subs_casno')->nullable();
