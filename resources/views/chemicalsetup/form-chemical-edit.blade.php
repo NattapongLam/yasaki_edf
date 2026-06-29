@@ -146,17 +146,15 @@
             </div>
         </div>     
         <div class="row">
-            <div class="col-12">
+            <div class="col-9">
                 <div class="form-group">
                     <label for="chemical_lists_academic" class="col-form-label">เหตุผลทางวิชาการ(Academic Rationale)</label>
                     <input type="text" class="form-control" name="chemical_lists_academic" id="chemical_lists_academic" value="{{$hd->chemical_lists_academic}}">
                 </div>
             </div>
-        </div>
-        <div class="row">
             <div class="col-3">
                 <div class="form-group">
-                    <label for="chemical_lists_file1" class="col-form-label">ไฟล์แนบ(หากมี)</label>
+                    <label for="chemical_lists_file1" class="col-form-label">ไฟล์แนบ(SDS)</label>
                     <input type="file" class="form-control" name="chemical_lists_file1" >
                     @if($hd->chemical_lists_file1)
                         <a href="{{asset($hd->chemical_lists_file1)}}" target=”_blank”>
@@ -165,6 +163,8 @@
                     @endif
                 </div>
             </div>
+        </div>
+        <div class="row">          
             <div class="col-3">
                 <div class="form-group">
                     <label for="chemical_lists_file2" class="col-form-label">ไฟล์แนบ(หากมี)</label>
@@ -188,24 +188,36 @@
                     <input type="text" class="form-control" name="chemical_lists_file4" id="chemical_lists_file4" value="{{$hd->chemical_lists_file4}}">
                 </div>
             </div>
-        </div>
-         <div class="row">
-            <div class="col-4">
+            <div class="col-3">
                 <div class="form-group">
                     <label for="chemical_lists_department" class="col-form-label">แผนก/หน่วยงาน</label>
                     <input type="text" class="form-control" name="chemical_lists_department" id="chemical_lists_department" value="{{$hd->chemical_lists_department}}">
                 </div>
             </div>
-            <div class="col-4">
+        </div>
+         <div class="row">         
+            <div class="col-3">
                 <div class="form-group">
                     <label for="chemical_lists_substance" class="col-form-label">ชนิดวัตถุอันตราย</label>
                     <input type="text" class="form-control" name="chemical_lists_substance" id="chemical_lists_substance" value="{{$hd->chemical_lists_substance}}">
                 </div>
             </div>
-            <div class="col-4">
+            <div class="col-3">
                 <div class="form-group">
                     <label for="chemical_lists_vendor" class="col-form-label">ผู้ผลิต/จำหน่าย</label>
                     <input type="text" class="form-control" name="chemical_lists_vendor" id="chemical_lists_vendor" value="{{$hd->chemical_lists_vendor}}">
+                </div>
+            </div>
+             <div class="col-3">
+                <div class="form-group">
+                    <label for="chemical_lists_refdocuno" class="col-form-label">เลขทะเบียน SDS</label>
+                    <input type="text" class="form-control" name="chemical_lists_refdocuno" id="chemical_lists_refdocuno" value="{{$hd->chemical_lists_refdocuno}}">
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-group">
+                    <label for="chemical_lists_bom" class="col-form-label">สูตรเคมี</label>
+                    <input type="text" class="form-control" name="chemical_lists_bom" id="chemical_lists_bom" value="{{$hd->chemical_lists_bom}}">
                 </div>
             </div>
         </div>

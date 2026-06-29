@@ -84,6 +84,8 @@ class ChemicalListController extends Controller
             'chemical_lists_department' => $request->chemical_lists_department,
             'chemical_lists_substance' => $request->chemical_lists_substance,
             'chemical_lists_vendor' => $request->chemical_lists_vendor,
+            'chemical_lists_bom' => $request->chemical_lists_bom,
+            'chemical_lists_refdocuno' => $request->chemical_lists_refdocuno,
         ];
 
         // File 1 Upload
@@ -204,6 +206,8 @@ class ChemicalListController extends Controller
             'chemical_lists_department' => $request->chemical_lists_department,
             'chemical_lists_substance' => $request->chemical_lists_substance,
             'chemical_lists_vendor' => $request->chemical_lists_vendor,
+            'chemical_lists_bom' => $request->chemical_lists_bom,
+            'chemical_lists_refdocuno' => $request->chemical_lists_refdocuno,
         ]; 
 
         // การจัดการไฟล์แนบ 1 (หากมีการอัปโหลดใหม่เข้ามา)
