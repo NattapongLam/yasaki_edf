@@ -107,7 +107,10 @@ class MachineryListController extends Controller
     {
         $hd = MachineryList::find($id);
         $ck = MachineryChecksheetHd::where('machinery_lists_id',$id)->latest()->first(); 
-        $dt = MachineryChecksheetDt::where('machinery_checksheet_hds_id',$ck->machinery_checksheet_hds_id)->get();
+        $dt = null;
+        if($ck){
+            $dt = MachineryChecksheetDt::where('machinery_checksheet_hds_id',$ck->machinery_checksheet_hds_id)->get();
+        }
         return view('machinerysetup.form-machinerychecksheet-create', compact('hd','dt'));
     }
 

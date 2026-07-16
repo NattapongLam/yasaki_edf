@@ -67,30 +67,32 @@
                     </tr>
                 </thead>
                 <tbody id="tableBody">
-                    @foreach ($dt as $index => $item)
-                    <tr>
-                        <td>
-                            <span class="row-number">{{ $index+1 }}</span>
-                            <input type="hidden"
-                                name="machinery_checksheet_dts_listno[]"
-                                value="{{ $index+1 }}"
-                                class="row-number-hidden">
-                        </td>
+                    @if ($dt)
+                        @foreach ($dt as $index => $item)
+                        <tr>
+                            <td>
+                                <span class="row-number">{{ $index+1 }}</span>
+                                <input type="hidden"
+                                    name="machinery_checksheet_dts_listno[]"
+                                    value="{{ $index+1 }}"
+                                    class="row-number-hidden">
+                            </td>
 
-                        <td>
-                            <input type="text"
-                                name="machinery_checksheet_dts_remark[]"
-                                value="{{ $item->machinery_checksheet_dts_remark }}"
-                                class="form-control" required>
-                        </td>
+                            <td>
+                                <input type="text"
+                                    name="machinery_checksheet_dts_remark[]"
+                                    value="{{ $item->machinery_checksheet_dts_remark }}"
+                                    class="form-control" required>
+                            </td>
 
-                        <td>
-                            <button type="button" class="btn btn-danger btn-sm deleteRow">
-                                ลบ
-                            </button>
-                        </td>
-                    </tr>
-                    @endforeach
+                            <td>
+                                <button type="button" class="btn btn-danger btn-sm deleteRow">
+                                    ลบ
+                                </button>
+                            </td>
+                        </tr>
+                        @endforeach
+                    @endif                    
                 </tbody>   
             </table>          
         </div>
