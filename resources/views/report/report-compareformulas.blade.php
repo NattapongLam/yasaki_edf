@@ -89,7 +89,7 @@
                                 {{-- <th>Normal (µ)</th>
                                 <th>Hot (µ)</th>
                                 <th>Wear (10−7cm3/(N⋅m))</th> --}}
-                                <th>พิมพ์</th>
+                                {{-- <th>พิมพ์</th> --}}
                             </tr>
                         </thead> 
                        <tbody>
@@ -127,7 +127,7 @@
                                 <td>{{number_format($item->Normal_Avg,2)}}</td>
                                 <td>{{number_format($item->Hot_Avg,2)}}</td>
                                 <td>{{number_format($item->Wear_Avg,2)}}</td> --}}
-                                <td>                                   
+                                {{-- <td>                                   
                                     <a
                                         href="{{ route('report.compareformulas.print',$item->TestID) }}"
                                         target="_blank"
@@ -136,7 +136,7 @@
                                         <i class="fas fa-print"></i>
 
                                     </a>  
-                                </td>
+                                </td> --}}
                             </tr>
 
 

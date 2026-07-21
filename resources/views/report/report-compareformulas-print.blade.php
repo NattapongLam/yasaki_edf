@@ -709,7 +709,7 @@ Coefficient of Friction Test Report
             <b>ค่ามาตรฐาน:</b> {{ number_format($caldimensions->calibration_lists_measuringrange,2) }}
             +{{ number_format($caldimensions->calibration_lists_measuringrange_add,2) }}
             /-{{ number_format($caldimensions->calibration_lists_measuringrange_del,2) }}<br>
-            <b>ค่าความไม่แน่นอน:</b> {{ number_format($caldimensions->calibration_lists_uncertainty,2) }}
+            <b>{{ $caldimensions->calibration_lists_reamrk}}  ExpireDate {{ \Carbon\Carbon::parse($caldimensions->calibration_lists_nextdate)->format('d/m/Y') }}</b>
         </div>
     </div>
 
@@ -721,7 +721,7 @@ Coefficient of Friction Test Report
             <b>ค่ามาตรฐาน:</b> {{ number_format($calweight->calibration_lists_measuringrange,2) }}
             +{{ number_format($calweight->calibration_lists_measuringrange_add,2) }}
             /-{{ number_format($calweight->calibration_lists_measuringrange_del,2) }}<br>
-            <b>ค่าความไม่แน่นอน:</b> {{ number_format($calweight->calibration_lists_uncertainty,2) }}
+            <b>{{ $calweight->calibration_lists_reamrk}}  ExpireDate {{ \Carbon\Carbon::parse($calweight->calibration_lists_nextdate)->format('d/m/Y') }}</b>
         </div>
     </div>
 
@@ -734,7 +734,7 @@ Coefficient of Friction Test Report
             <b>ค่ามาตรฐาน:</b> {{ number_format($item->calibration_lists_measuringrange,2) }}
             +{{ number_format($item->calibration_lists_measuringrange_add,2) }}
             /-{{ number_format($item->calibration_lists_measuringrange_del,2) }}<br>
-            <b>ค่าความไม่แน่นอน:</b> {{ number_format($item->calibration_lists_uncertainty,2) }}
+            <b>{{ $item->calibration_lists_reamrk}}  ExpireDate {{ \Carbon\Carbon::parse($item->calibration_lists_nextdate)->format('d/m/Y') }}</b>
         </div>
     </div>
     @endforeach
