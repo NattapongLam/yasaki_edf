@@ -19,7 +19,7 @@
         <form method="POST" class="form-horizontal" action="{{ route('requestorders.update',$hd->ar_requestorder_hds_id) }}" enctype="multipart/form-data">
         @csrf      
         @method('PUT')
-        <input name="reftype" value="Edit" type="hidden">
+        <input name="reftype" value="Approved" type="hidden">
         <div class="row">
             <div class="col-12 col-md-6"><h3 class="card-title">คำร้องขอใช้บริการ (ISO/IEC 17025)</h3></div>
         </div>
@@ -31,7 +31,7 @@
                             name="ar_requestorder_hds_date" 
                             id="ar_requestorder_hds_date"
                             value="{{ $hd->ar_requestorder_hds_date }}" 
-                            required>
+                            disabled>
                 </div>
             </div>
             <div class="col-3">
@@ -51,7 +51,7 @@
                             name="ar_requestorder_hds_customer" 
                             id="ar_requestorder_hds_customer"
                             value="{{$hd->ar_requestorder_hds_customer}}"
-                            required>
+                            readonly>
                 </div>
             </div>
         </div>
@@ -63,7 +63,7 @@
                             name="ar_requestorder_hds_contact" 
                             id="ar_requestorder_hds_contact"
                             value="{{$hd->ar_requestorder_hds_contact}}"
-                            required>
+                            readonly>
                 </div>
             </div>
             <div class="col-9">
@@ -72,14 +72,15 @@
                     <input type="text" class="form-control" 
                             name="ar_requestorder_hd_remark" 
                             id="ar_requestorder_hd_remark"
-                            value="{{$hd->ar_requestorder_hd_remark}}">
+                            value="{{$hd->ar_requestorder_hd_remark}}"
+                            readonly>
                 </div>
             </div>
         </div>
         <div class="row mt-3">
-             <div class="col-12" style="text-align: right;">
+             {{-- <div class="col-12" style="text-align: right;">
                 <a href="javascript:void(0);" class="btn btn-secondary" id="addRowBtn">เพิ่มรายการ</a>
-            </div>
+            </div> --}}
             <hr>
             <table class="table table-bordered dt-responsive nowrap w-100 text-center">
                 <thead>
@@ -90,7 +91,7 @@
                         <th style="width: 15%">มิติชิ้นงาน ก×ย×ส (mm)</th>
                         <th style="width: 8%">จำนวน</th>
                         <th style="width: 27%">รายละเอียดเพิ่มเติม</th>
-                        <th style="width: 5%"></th>
+                        {{-- <th style="width: 5%"></th> --}}
                     </tr>
                 </thead>
                 <tbody id="tableBody">
@@ -105,10 +106,10 @@
                                     <input type="hidden" name="ar_requestorder_dts_id[]" value="{{$item->ar_requestorder_dts_id}}">
                             </td>
                             <td>
-                                <input class="form-control" name="ar_requestorder_dts_product[]" value="{{$item->ar_requestorder_dts_product}}">
+                                <input class="form-control" name="ar_requestorder_dts_product[]" value="{{$item->ar_requestorder_dts_product}}" readonly>
                             </td>
                             <td>
-                                <select class="form-control" name="ar_requestorder_dts_jis_class[]">
+                                <select class="form-control" name="ar_requestorder_dts_jis_class[]" disabled>
                                     @if ($item->ar_requestorder_dts_jis_class == "CLASS_3")
                                         <option value="CLASS_3">JIS D 4411 Class 3 (Heavy Loads)</option>
                                         <option value="CLASS_4">JIS D 4411 Class 4 (Disc Brakes)</option>
@@ -119,21 +120,38 @@
                                 </select>
                             </td>
                             <td>
-                                <input class="form-control" name="ar_requestorder_dts_dimensions[]" value="{{$item->ar_requestorder_dts_dimensions}}">
+                                <input class="form-control" name="ar_requestorder_dts_dimensions[]" value="{{$item->ar_requestorder_dts_dimensions}}" readonly>
                             </td>
                             <td>
-                                <input class="form-control" name="ar_requestorder_dts_qty[]" type="number" value="{{$item->ar_requestorder_dts_qty}}">
+                                <input class="form-control" name="ar_requestorder_dts_qty[]" type="number" value="{{$item->ar_requestorder_dts_qty}}" readonly>
                             </td>
                             <td>
-                                <textarea class="form-control" name="ar_requestorder_hds_remark[]">{{$item->ar_requestorder_hds_remark}}</textarea>
+                                <textarea class="form-control" name="ar_requestorder_hds_remark[]" readonly>{{$item->ar_requestorder_hds_remark}}</textarea>
                             </td>
-                            <td>
+                            {{-- <td>
                                 <a href="javascript:void(0)" class="btn btn-danger btn-sm" onclick="confirmDel('{{ $item->ar_requestorder_dts_id }}')"><i class="fas fa-trash"></i></a>
-                            </td>
+                            </td> --}}
                         </tr>
                     @endforeach
                 </tbody>       
             </table>          
+        </div>
+        <div class="row mt-3">
+            <div class="col-2">
+                <label for="ar_requestorder_statuses_id" class="col-form-label">สถานะ</label>
+                <select class="form-control" name="ar_requestorder_statuses_id">
+                    @foreach ($sta as $item)
+                        <option value="{{$item->ar_requestorder_statuses_id}}"
+                            {{ $item->ar_requestorder_statuses_id == $hd->ar_requestorder_statuses_id ? 'selected' : '' }}>
+                            {{$item->ar_requestorder_statuses_name}}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-10">
+                <label for="approved_remark" class="col-form-label">หมายเหตุ</label>
+                <input class="form-control" name="approved_remark" value="{{$hd->approved_remark}}">
+            </div>
         </div> 
         <br>
             <div class="col-12 col-md-1">

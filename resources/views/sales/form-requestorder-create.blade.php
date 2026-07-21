@@ -19,7 +19,7 @@
         <form method="POST" class="form-horizontal" action="{{ route('requestorders.store') }}" enctype="multipart/form-data">
         @csrf      
         <div class="row">
-            <div class="col-12 col-md-6"><h3 class="card-title">คำร้องขอใช้บริการ</h3></div>
+            <div class="col-12 col-md-6"><h3 class="card-title">คำร้องขอใช้บริการ (ISO/IEC 17025)</h3></div>
         </div>
         <div class="row mt-3">
             <div class="col-3">
@@ -80,8 +80,10 @@
                     <tr>
                         <th style="width: 5%">#</th>
                         <th style="width: 20%">สินค้า</th>
-                        <th style="width: 10%">จำนวน</th>
-                        <th style="width: 60%">รายละเอียด</th>
+                        <th style="width: 20%">มาตรฐานที่อ้างอิง (JIS D 4411)</th>
+                        <th style="width: 15%">มิติชิ้นงาน ก×ย×ส (mm)</th>
+                        <th style="width: 8%">จำนวน</th>
+                        <th style="width: 27%">รายละเอียดเพิ่มเติม</th>
                         <th style="width: 5%"></th>
                     </tr>
                 </thead>
@@ -101,6 +103,7 @@
 </div>
 </div>
 @endsection
+
 @push('scriptjs')
 <script>
 function loadDocNo() {
@@ -127,6 +130,7 @@ $("#ar_requestorder_hds_date").on('change', function () {
 $(document).ready(function () {
     loadDocNo();
 });
+
 function updateRowNumbers() {
     const rows = document.querySelectorAll('#tableBody tr');
     rows.forEach((row, index) => {
@@ -134,6 +138,7 @@ function updateRowNumbers() {
         row.querySelector('.row-number-hidden').value = index + 1;
     });
 }
+
 document.getElementById('addRowBtn').addEventListener('click', function () {
         const tbody = document.getElementById('tableBody');
 
@@ -143,17 +148,34 @@ document.getElementById('addRowBtn').addEventListener('click', function () {
                 <span class="row-number"></span>
                 <input type="hidden" name="ar_requestorder_dts_listno[]" class="row-number-hidden"/>
             </td>
-            <td><input type="text" name="ar_requestorder_dts_product[]" class="form-control"/></td>
-            <td><input type="number" name="ar_requestorder_dts_qty[]" class="form-control" value="0"/></td>
             <td>
-                <textarea class="form-control" name="ar_requestorder_hds_remark[]"></textarea>
+                <input type="text" name="ar_requestorder_dts_product[]" class="form-control" placeholder="เช่น ผ้าเบรก" required/>
             </td>
-            <td><button type="button" class="btn btn-danger btn-sm deleteRow">ลบ</button></td>
+            <td>
+                <select name="ar_requestorder_dts_jis_class[]" class="form-select" required>
+                    <option value="">-- เลือกคลาสมาตรฐาน --</option>
+                    <option value="CLASS_3">JIS D 4411 Class 3 (Heavy Loads)</option>
+                    <option value="CLASS_4">JIS D 4411 Class 4 (Disc Brakes)</option>
+                </select>
+            </td>
+            <td>
+                <input type="text" name="ar_requestorder_dts_dimensions[]" class="form-control" placeholder="เช่น 50x120x15" required/>
+            </td>
+            <td>
+                <input type="number" name="ar_requestorder_dts_qty[]" class="form-control" value="1" min="1"/>
+            </td>
+            <td>
+                <textarea class="form-control" name="ar_requestorder_hds_remark[]" rows="1" placeholder="ระบุ Lot no. หรือสภาวะทดสอบพิเศษ"></textarea>
+            </td>
+            <td>
+                <button type="button" class="btn btn-danger btn-sm deleteRow">ลบ</button>
+            </td>
         `;
 
         tbody.appendChild(newRow);
         updateRowNumbers(); 
 });
+
 document.getElementById('tableBody').addEventListener('click', function (e) {
     if (e.target.classList.contains('deleteRow')) {
         e.target.closest('tr').remove();

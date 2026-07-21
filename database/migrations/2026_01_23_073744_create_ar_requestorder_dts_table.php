@@ -21,6 +21,8 @@ return new class extends Migration
             $table->string('ar_requestorder_dts_product');
             $table->string('ar_requestorder_hds_remark');
             $table->integer('ar_requestorder_dts_qty');
+            $table->string('ar_requestorder_dts_jis_class');
+            $table->string('ar_requestorder_dts_dimensions');
             $table->boolean('ar_requestorder_dts_flag')->default(true);
             $table->string('person_at');
             $table->timestamps();

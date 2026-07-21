@@ -2,6 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ArRequestorderDt;
+use App\Models\ArRequestorderHd;
+use App\Models\CalibrationList;
+use App\Models\ReceiveTestList;
+use App\Models\ReceiveTestSub;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -203,9 +208,26 @@ class ReportFormulaController extends Controller
             $targetUpper[] = $targetMu + $tolerance;
             $targetLower[] = $targetMu - $tolerance;
         }
+        $reqhd = ArRequestorderHd::where('ar_requestorder_hds_docuno',$hd->Lot)->first();
+        $reqdt = ArRequestorderDt::where('ar_requestorder_hds_id',$reqhd->ar_requestorder_hds_id)->where('ar_requestorder_dts_flag',true)->first();
+        $rechd = ReceiveTestList::where('ar_requestorder_hds_id',$reqhd->ar_requestorder_hds_id)->where('receive_test_lists_flag',true)->first();
+        $caldimensions = CalibrationList::where('calibration_lists_id',$rechd->dimensions_id)->first();
+        $calweight = CalibrationList::where('calibration_lists_id',$rechd->weight_id)->first();
+        $cal = ReceiveTestSub::leftjoin('calibration_lists','receive_test_subs.calibration_lists_id','=','calibration_lists.calibration_lists_id')
+        ->where('receive_test_subs.receive_test_lists_id',$rechd->receive_test_lists_id)
+        ->where('receive_test_subs.receive_test_lists_flag',true)
+        ->get();
+        $bomhd = DB::table('chemistry_hd')->where('chemistry_hd_id',$rechd->chemistry_hd_id)->first();
+        $bomdt = DB::table('chemistry_dt')
+            ->leftjoin('chemical_lists', 'chemistry_dt.code', '=', 'chemical_lists.chemical_lists_refcode')
+            ->leftjoin('chemical_groups', 'chemical_groups.chemical_groups_id', '=', 'chemical_lists.chemical_groups_id')
+            ->leftjoin('chemical_funtions', 'chemical_funtions.chemical_funtions_id', '=', 'chemical_lists.chemical_funtions_id')
+            ->where('chemistry_hd_id', $bomhd->chemistry_hd_id)
+            ->where('flag', 1)->get();
         return view(
             'report.report-compareformulas-print',compact(
                 'hd','friction','dt','frictionPoints','wearRatePoints','temps','safeUpper','safeLower','jisMin','jisMax','targetUpper','targetLower'
+                ,'reqhd','reqdt','rechd','caldimensions','calweight','cal','bomdt'
             )
         );
     }

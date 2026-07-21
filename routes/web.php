@@ -50,6 +50,8 @@ Route::get('/report/compareformulas',[App\Http\Controllers\ReportFormulaControll
 Route::get('/report/compareformulas/print/{id}',[App\Http\Controllers\ReportFormulaController::class,'PrintCompareFormula'])->name('report.compareformulas.print');
 Route::get('/analyze-formulas' , [App\Http\Controllers\ReportFormulaController::class , 'AnalyzeFormulas']);
 Route::post('/get-formula-detail', [App\Http\Controllers\ReportFormulaController::class, 'getFormulaDetail'])->name('report.get.formula.detail');
+Route::resource('/receive-test' , App\Http\Controllers\ReceiveTestController::class);
+Route::get('/receive-result' , [App\Http\Controllers\ReceiveTestController::class , 'ReceiveResult']);
 // เคมี
 
 // ทั่วไป
@@ -131,6 +133,8 @@ Route::get('/report-stock' , [App\Http\Controllers\ReportStockController::class 
 Route::resource('/requestorders' , App\Http\Controllers\ArRequestOrderListController::class);
 Route::get('/requestorder/runno', [App\Http\Controllers\ArRequestOrderListController::class, 'runNo'])->name('requestorder.runno');
 Route::post('/CancelRequestOrderDoc' , [App\Http\Controllers\ArRequestOrderListController::class , 'CancelRequestOrderDoc']);
+Route::post('/CancelRequestOrderDt' , [App\Http\Controllers\ArRequestOrderListController::class , 'CancelRequestOrderDt']);
+Route::get('requestorders/print/{id}', [App\Http\Controllers\ArRequestOrderListController::class, 'print'])->name('requestorders.print');
 Route::resource('/quotations' , App\Http\Controllers\ArQuotationListController::class);
 Route::get('/quotation/runno', [App\Http\Controllers\ArQuotationListController::class, 'runNo'])->name('quotation.runno');
 Route::get('/customer/address-text', [App\Http\Controllers\ArQuotationListController::class, 'addressText'])->name('customer.addressText');

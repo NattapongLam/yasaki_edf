@@ -1,0 +1,454 @@
+@extends('layouts.main')
+@section('content')
+<div class="row">
+    @if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="mdi mdi-check-all me-2"></i>
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @elseif(session('error'))
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="mdi mdi-block-helper me-2"></i>
+        {{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12 col-md-6"><h3 class="card-title">คำร้องขอใช้บริการ (ISO/IEC 17025)</h3></div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-3">
+                <div class="form-group">
+                    <label for="ar_requestorder_hds_date" class="col-form-label">วันที่</label>
+                    <input type="date" class="form-control" 
+                            name="ar_requestorder_hds_date" 
+                            id="ar_requestorder_hds_date"
+                            value="{{ $hd->ar_requestorder_hds_date }}" 
+                            disabled>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-group">
+                    <label for="ar_requestorder_hds_docuno" class="col-form-label">เลขที่</label>
+                    <input type="text" class="form-control" 
+                            name="ar_requestorder_hds_docuno" 
+                            id="ar_requestorder_hds_docuno" 
+                            value="{{$hd->ar_requestorder_hds_docuno}}"
+                            readonly>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label for="ar_requestorder_hds_customer" class="col-form-label">ชื่อบริษัท</label>
+                     <input type="text" class="form-control" 
+                            name="ar_requestorder_hds_customer" 
+                            id="ar_requestorder_hds_customer"
+                            value="{{$hd->ar_requestorder_hds_customer}}"
+                            readonly>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-3">
+                <div class="form-group">
+                    <label for="ar_requestorder_hds_contact" class="col-form-label">ติดต่อ</label>
+                    <input type="text" class="form-control" 
+                            name="ar_requestorder_hds_contact" 
+                            id="ar_requestorder_hds_contact"
+                            value="{{$hd->ar_requestorder_hds_contact}}"
+                            readonly>
+                </div>
+            </div>
+            <div class="col-9">
+                <div class="form-group">
+                    <label for="ar_requestorder_hd_remark" class="col-form-label">หมายเหตุ</label>
+                    <input type="text" class="form-control" 
+                            name="ar_requestorder_hd_remark" 
+                            id="ar_requestorder_hd_remark"
+                            value="{{$hd->ar_requestorder_hd_remark}}"
+                            readonly>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <table class="table table-bordered dt-responsive nowrap w-100 text-center">
+                <thead>
+                    <tr>
+                        <th style="width: 5%">#</th>
+                        <th style="width: 20%">สินค้า</th>
+                        <th style="width: 20%">มาตรฐานที่อ้างอิง (JIS D 4411)</th>
+                        <th style="width: 15%">มิติชิ้นงาน ก×ย×ส (mm)</th>
+                        <th style="width: 8%">จำนวน</th>
+                        <th style="width: 27%">รายละเอียดเพิ่มเติม</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($dt as $item)
+                        <tr>
+                            <td>
+                                <span class="row-number">{{ $loop->iteration }}</span>
+                                <input type="hidden"
+                                    class="row-number-hidden"
+                                    name="ar_requestorder_dts_listno[]"
+                                    value="{{ $loop->iteration }}">
+                                    <input type="hidden" name="ar_requestorder_dts_id[]" value="{{$item->ar_requestorder_dts_id}}">
+                            </td>
+                            <td>
+                                <input class="form-control" name="ar_requestorder_dts_product[]" value="{{$item->ar_requestorder_dts_product}}" readonly>
+                            </td>
+                            <td>
+                                <select class="form-control" name="ar_requestorder_dts_jis_class[]" disabled>
+                                    @if ($item->ar_requestorder_dts_jis_class == "CLASS_3")
+                                        <option value="CLASS_3">JIS D 4411 Class 3 (Heavy Loads)</option>
+                                        <option value="CLASS_4">JIS D 4411 Class 4 (Disc Brakes)</option>
+                                    @else
+                                        <option value="CLASS_4">JIS D 4411 Class 4 (Disc Brakes)</option>
+                                        <option value="CLASS_3">JIS D 4411 Class 3 (Heavy Loads)</option>
+                                    @endif
+                                </select>
+                            </td>
+                            <td>
+                                <input class="form-control" name="ar_requestorder_dts_dimensions[]" value="{{$item->ar_requestorder_dts_dimensions}}" readonly>
+                            </td>
+                            <td>
+                                <input class="form-control" name="ar_requestorder_dts_qty[]" type="number" value="{{$item->ar_requestorder_dts_qty}}" readonly>
+                            </td>
+                            <td>
+                                <textarea class="form-control" name="ar_requestorder_hds_remark[]" disabled>{{$item->ar_requestorder_hds_remark}}</textarea>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>       
+            </table>          
+        </div>
+        <div class="row mt-3">
+            <div class="col-3">
+                <label for="approved_at" class="col-form-label">ผู้อนุมัติ</label>
+                <input class="form-control" name="approved_at" value="{{$hd->approved_at}}" readonly>
+            </div>
+            <div class="col-9">
+                <label for="approved_remark" class="col-form-label">หมายเหคุ</label>
+                <input class="form-control" name="approved_remark" value="{{$hd->approved_remark}}" readonly>
+            </div>
+        </div>      
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12 col-md-6"><h3 class="card-title">รับชิ้นงานทดสอบ</h3></div>
+        </div>       
+        <div class="row mt-3">
+             <div class="col-2">
+                <div class="form-group">
+                    <label for="receive_test_lists_date" class="col-form-label">วันที่รับ</label>
+                    <input type="date" class="form-control" 
+                            name="receive_test_lists_date" 
+                            id="receive_test_lists_date"
+                            value="{{$pd->receive_test_lists_date}}"
+                            readonly>
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="form-group">
+                    <label for="receive_test_lists_dimensions" class="col-form-label">มิติชิ้นงานวัดจริง ก×ย×ส (mm)</label>
+                    <input type="text" class="form-control" 
+                            name="receive_test_lists_dimensions" 
+                            id="receive_test_lists_dimensions"
+                            value="{{$pd->receive_test_lists_dimensions}}"
+                            readonly>
+                </div>
+            </div>
+             <div class="col-3">
+                <div class="form-group">
+                    <label for="dimensions_id" class="col-form-label">เครื่องวัดชิ้นงาน</label>
+                    <select class="form-control" name="dimensions_id" disabled>
+                        <option value="">กรุณาเลือกเครื่องวัด</option>
+                        @foreach ($cal as $item)
+                            <option value="{{$item->calibration_lists_id}}"
+                                {{ $item->calibration_lists_id == $pd->dimensions_id ? 'selected' : '' }}>
+                                {{$item->calibration_lists_name1}} ({{$item->calibration_lists_code}})
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="form-group">
+                    <label for="receive_test_lists_weight" class="col-form-label">น้ำหนักชิ้นงานชั่งจริง</label>
+                    <input type="text" class="form-control" 
+                            name="receive_test_lists_weight" 
+                            id="receive_test_lists_weight"
+                            value="{{$pd->receive_test_lists_weight}}"
+                            readonly>
+                </div>
+            </div>
+             <div class="col-3">
+                <div class="form-group">
+                    <label for="weight_id" class="col-form-label">เครื่องชั่งชิ้นงาน</label>
+                    <select class="form-control" name="weight_id" disabled>
+                        <option value="">กรุณาเลือกเครื่องชั่ง</option>
+                        @foreach ($cal as $item)
+                            <option value="{{$item->calibration_lists_id}}"
+                                {{ $item->calibration_lists_id == $pd->weight_id ? 'selected' : '' }}>
+                                {{$item->calibration_lists_name1}} ({{$item->calibration_lists_code}})
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div> 
+        </div>
+        <div class="row mt-3">
+            <div class="col-3">
+                <div class="form-group">
+                    <label for="chemistry_hd_id" class="col-form-label">สูตรเคมี</label>
+                    <select class="form-control" name="chemistry_hd_id" disabled>
+                        <option value="">กรุณาเลือกสูตร</option>
+                        @foreach ($bom as $item)
+                            <option value="{{$item->chemistry_hd_id}}"
+                                {{ $item->chemistry_hd_id == $pd->chemistry_hd_id ? 'selected' : '' }}>
+                                {{$item->ms_formule_name}} ({{$item->chemistry_hd_name}})
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="col-9">
+                <div class="form-group">
+                    <label for="" class="col-form-label">หมายเหตุ</label>
+                    <input class="form-control" name="receive_test_lists_note" value="{{$pd->receive_test_lists_note}}" readonly>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-6 text-center">
+                <img src="{{asset($pd->receive_test_lists_file1)}}" class="img-thumbnail" width="50%">
+            </div>
+            <div class="col-6 text-center">
+                <img src="{{asset($pd->receive_test_lists_file2)}}" class="img-thumbnail" width="50%">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        <form method="POST" class="form-horizontal" action="{{ route('receive-test.update',$pd->receive_test_lists_id) }}" enctype="multipart/form-data">
+        @csrf      
+        @method('PUT')
+        <div class="row">
+            <div class="col-12 col-md-6"><h3 class="card-title">ชิ้นงานหลังทดสอบ</h3></div>
+        </div>
+        <input type="hidden" name="ar_requestorder_hds_id" value="{{$pd->ar_requestorder_hds_id}}">    
+        <input type="hidden" name="receive_test_lists_id" value="{{$pd->receive_test_lists_id}}">    
+        <div class="row mt-3">
+             <div class="col-3">
+                <div class="form-group">
+                    <label for="result_test_lists_date" class="col-form-label">วันที่ทดสอบเสร็จ</label>
+                    <input type="date" class="form-control" 
+                            name="result_test_lists_date" 
+                            id="result_test_lists_date"
+                            value=""
+                            required>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-group">
+                    <label for="result_test_lists_file1" class="col-form-label">แนบรูปชิ้นงาน</label>
+                    <input type="file" class="form-control" id="inputGroupFile01"  name="result_test_lists_file1" onchange="prevFile(this,'result_test_lists_file1')">
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-group">
+                    <label for="result_test_lists_file2" class="col-form-label">แนบรูปชิ้นงาน</label>
+                    <input type="file" class="form-control" id="inputGroupFile02"  name="result_test_lists_file2" onchange="prevFile(this,'result_test_lists_file2')">
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-group">
+                    <label for="result_test_lists_file3" class="col-form-label">แนบไฟล์</label>
+                    <input type="file" class="form-control" id="inputGroupFile03"  name="result_test_lists_file3" onchange="prevFile(this,'result_test_lists_file3')">
+                </div>
+            </div>
+        </div>
+         <div class="row mt-3">
+            <div class="col-3">
+                <div class="form-group">
+                    <label for="result_test_lists_dimensions" class="col-form-label">มิติชิ้นงานวัดจริง ก×ย×ส (mm)</label>
+                    <input type="text" class="form-control" 
+                            name="result_test_lists_dimensions" 
+                            id="result_test_lists_dimensions"
+                            value=""
+                            required>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-group">
+                    <label for="result_dimensions_id" class="col-form-label">เครื่องวัดชิ้นงาน</label>
+                    <select class="form-control" name="result_dimensions_id" required>
+                        <option value="">กรุณาเลือกเครื่องวัด</option>
+                        @foreach ($cal as $item)
+                            <option value="{{$item->calibration_lists_id}}">{{$item->calibration_lists_name1}} ({{$item->calibration_lists_code}})</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-group">
+                    <label for="result_test_lists_weight" class="col-form-label">น้ำหนักชิ้นงานชั่งจริง</label>
+                    <input type="text" class="form-control" 
+                            name="result_test_lists_weight" 
+                            id="result_test_lists_weight"
+                            value=""
+                            required>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-group">
+                    <label for="result_weight_id" class="col-form-label">เครื่องชั่งชิ้นงาน</label>
+                    <select class="form-control" name="result_weight_id" required>
+                        <option value="">กรุณาเลือกเครื่องชั่ง</option>
+                        @foreach ($cal as $item)
+                            <option value="{{$item->calibration_lists_id}}">{{$item->calibration_lists_name1}} ({{$item->calibration_lists_code}})</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>           
+        </div>
+        <div class="row mt-3">
+            <div class="col-3">
+                <div class="form-group">
+                    <label for="result_test_lists_temp" class="col-form-label">อุณหภูมิห้อง</label>
+                    <input type="text" class="form-control" 
+                            name="result_test_lists_temp" 
+                            id="result_test_lists_temp"
+                            value=""
+                            required>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-group">
+                    <label for="result_test_lists_moisture" class="col-form-label">ความชื้น</label>
+                    <input type="text" class="form-control" 
+                            name="result_test_lists_moisture" 
+                            id="result_test_lists_moisture"
+                            value=""
+                            required>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-group">
+                    <label for="result_test_lists_plate" class="col-form-label">วัสดุจานทดสอบ</label>
+                    <input type="text" class="form-control" 
+                            name="result_test_lists_plate" 
+                            id="result_test_lists_plate"
+                            value=""
+                            required>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-group">
+                    <label for="result_test_lists_test" class="col-form-label">ผลการทดสอบ</label>
+                    <input type="text" class="form-control" 
+                            name="result_test_lists_test" 
+                            id="result_test_lists_test"
+                            value=""
+                            required>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+             <div class="col-12" style="text-align: right;">
+                <a href="javascript:void(0);" class="btn btn-secondary" id="addRowBtn">เพิ่มรายการ (เครื่องมือที่ใช้ทดสอบ)</a>
+            </div>
+            <hr>
+            <table class="table table-bordered dt-responsive nowrap w-100 text-center">
+                <thead>
+                    <tr>
+                        <th style="width: 5%">#</th>
+                        <th style="width: 30%">เครื่องมือวัด</th>
+                        <th style="width: 60%">รายละเอียดเพิ่มเติม</th>
+                        <th style="width: 5%"></th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>       
+            </table>
+        </div>
+        <div class="row mt-3">
+            <div class="form-group">
+                <label for="receive_test_lists_weight" class="col-form-label">หมายเหตุ</label>
+                <textarea class="form-control" name="result_test_lists_note"></textarea>
+            </div>
+        </div>
+        <br>
+            <div class="col-12 col-md-1">
+                <div class="form-group">
+                    <button type="submit" class="btn btn-block btn-primary">
+                        บันทึก
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+@endsection
+@push('scriptjs')
+<script>
+function prevFile(input, elm) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            $('.' + elm).attr('src', e.target.result);
+            file = input.files[0];
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+function updateRowNumbers() {
+    const rows = document.querySelectorAll('#tableBody tr');
+    rows.forEach((row, index) => {
+        row.querySelector('.row-number').textContent = index + 1;
+        row.querySelector('.row-number-hidden').value = index + 1;
+    });
+}
+
+document.getElementById('addRowBtn').addEventListener('click', function () {
+        const tbody = document.getElementById('tableBody');
+
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+            <td>
+                <span class="row-number"></span>
+                <input type="hidden" name="receive_test_subs_listno[]" class="row-number-hidden"/>
+            </td>
+            <td>
+                <select class="form-control" name="calibration_lists_id[]">
+                        <option value="">กรุณาเลือกเครื่องมือ</option>
+                        @foreach ($cal as $item)
+                            <option value="{{$item->calibration_lists_id}}">{{$item->calibration_lists_name1}} ({{$item->calibration_lists_code}})</option>
+                        @endforeach
+                </select>
+            </td>
+            <td>
+                <textarea class="form-control" name="receive_test_subs_note[]" rows="1" placeholder="เพิ่มเติม"></textarea>
+            </td>
+            <td>
+                <button type="button" class="btn btn-danger btn-sm deleteRow">ลบ</button>
+            </td>
+        `;
+
+        tbody.appendChild(newRow);
+        updateRowNumbers(); 
+});
+
+document.getElementById('tableBody').addEventListener('click', function (e) {
+    if (e.target.classList.contains('deleteRow')) {
+        e.target.closest('tr').remove();
+        updateRowNumbers(); // อัปเดตลำดับหลังจากลบ
+    }
+});
+</script>
+@endpush

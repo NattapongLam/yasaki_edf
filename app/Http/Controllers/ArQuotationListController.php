@@ -45,7 +45,7 @@ class ArQuotationListController extends Controller
         $currencys = AccCurrency::get();
         $discounts = DB::table('acc_discount')->get();
         $products = WhProductList::whereIn('wh_product_types_id',[4,5])->where('wh_product_lists_flag',true)->get();
-        $orders = ArRequestorderHd::where('ar_requestorder_statuses_id',1)->get();
+        $orders = ArRequestorderHd::where('ar_requestorder_statuses_id',2)->get();
         return view('sales.form-quotation-create', compact('customers','typevats','currencys','discounts','products','orders'));
     }
 
@@ -135,7 +135,7 @@ class ArQuotationListController extends Controller
             if($request->ar_requestorder_hds_id <> 0){
                 ArRequestorderHd::where('ar_requestorder_hds_id',$request->ar_requestorder_hds_id)
                 ->update([
-                    'ar_requestorder_statuses_id' => 2
+                    'ar_requestorder_statuses_id' => 5
                 ]);   
             }   
            

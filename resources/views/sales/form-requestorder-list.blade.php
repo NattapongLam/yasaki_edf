@@ -31,14 +31,14 @@
                     <th>หมายเหตุ</th>
                     <th>แก้ไข</th>
                     <th>ยกเลิก</th>
-                    <th></th>
+                    <th>อนุมัติ</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($hd as $item)
                     <tr>
                         <td>
-                             @if ($item->ar_requestorder_statuses_id == 1)
+                            @if ($item->ar_requestorder_statuses_id == 1)
                                 <span class="bg-warning bg-soft">
                                     {{$item->ar_requestorder_statuses_name}}
                                 </span>
@@ -46,7 +46,19 @@
                                 <span class="bg-success bg-soft">
                                     {{$item->ar_requestorder_statuses_name}}
                                 </span>
-                            @elseif($item->ar_requestorder_statuses_id == 3)
+                            @elseif($item->ar_requestorder_statuses_id == 5)
+                                <span class="bg-success bg-soft">
+                                    {{$item->ar_requestorder_statuses_name}}
+                                </span>
+                            @elseif($item->ar_requestorder_statuses_id == 6)
+                                <span class="bg-primary bg-soft">
+                                    {{$item->ar_requestorder_statuses_name}}
+                                </span>
+                            @elseif($item->ar_requestorder_statuses_id == 7)
+                                <span class="bg-primary bg-soft">
+                                    {{$item->ar_requestorder_statuses_name}}
+                                </span>
+                            @else
                                 <span class="bg-danger bg-soft">
                                     {{$item->ar_requestorder_statuses_name}}
                                 </span>
@@ -71,7 +83,12 @@
                             @if ($item->ar_requestorder_statuses_id == 1)
                                 <a href="{{route('requestorders.edit',$item->ar_requestorder_hds_id)}}" class="btn btn-sm btn-warning" >
                                     <i class="fas fa-edit"></i>
-                                </a> 
+                                </a>                               
+                            @else
+                                <a href="{{ route('requestorders.print', $item->ar_requestorder_hds_id) }}" 
+                                    target="_blank" class="btn btn-info">
+                                        <i class="mdi mdi-printer"></i> พิมพ์เอกสาร
+                                </a>
                             @endif
                         </td>
                         <td>
@@ -79,7 +96,11 @@
                             <a href="javascript:void(0)" class="btn btn-danger btn-sm" onclick="confirmDel('{{ $item->ar_requestorder_hds_id }}')"><i class="fas fa-trash"></i></a>
                             @endif
                         </td>
-                        <td></td>
+                        <td>
+                            @if ($item->ar_requestorder_statuses_id == 1)
+                             <a href="{{route('requestorders.show',$item->ar_requestorder_hds_id)}}" class="btn btn-success btn-sm"><i class="fas fa-paint-brush"></i></a>
+                            @endif
+                        </td>
                     </tr>
                 @endforeach
             </tbody>

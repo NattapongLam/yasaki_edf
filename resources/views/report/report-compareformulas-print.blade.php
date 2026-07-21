@@ -4,13 +4,33 @@
 
 <meta charset="utf-8">
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+
 <style>
 
+:root{
+    --navy:#1c3a5e;
+    --navy-dark:#122844;
+    --steel:#3d6d99;
+    --steel-light:#eaf1f7;
+    --hairline:#c7d2dc;
+    --ink:#1c1c1c;
+    --muted:#5b6b78;
+    --alert:#b3261e;
+    --band:#f4f7fa;
+}
+
+*{
+    box-sizing:border-box;
+}
+
 body{
-    font-family: Arial, Helvetica, sans-serif;
+    font-family:'Sarabun', Arial, Helvetica, sans-serif;
     font-size:10px;
     margin:0;
-    line-height:1.25;
+    line-height:1.35;
+    color:var(--ink);
 }
 
 /* A4 */
@@ -20,36 +40,98 @@ body{
     margin:6mm;
 }
 
-/* header */
+/* ============ HEADER ============ */
+
+.doc-frame{
+    border:1.5px solid var(--navy);
+}
+
+.accent-bar{
+    height:4px;
+    background:linear-gradient(90deg, var(--navy) 0%, var(--steel) 100%);
+}
 
 .header{
-    margin-bottom:4px;
+    padding:8px 10px 6px 10px;
+    border-bottom:1px solid var(--hairline);
 }
 
 .header-top{
     display:flex;
     align-items:center;
+    justify-content:space-between;
+}
+
+.header-left{
+    display:flex;
+    align-items:center;
 }
 
 .logo{
-    width:75px;
+    width:68px;
 }
 
 .company{
-    flex:1;
-    padding-left:6px;
-    font-size:10px;
+    padding-left:8px;
+    font-size:9.5px;
+    color:var(--muted);
+    max-width:330px;
 }
 
 .company b{
-    font-size:12px;
+    display:block;
+    font-size:12.5px;
+    color:var(--navy-dark);
+    letter-spacing:.2px;
+    margin-bottom:1px;
+}
+
+.accred-badge{
+    text-align:right;
+    font-size:8.5px;
+    color:var(--steel);
+    line-height:1.5;
+}
+
+.accred-badge .tag{
+    display:inline-block;
+    border:1px solid var(--steel);
+    color:var(--navy);
+    font-weight:600;
+    font-size:8px;
+    letter-spacing:.6px;
+    padding:2px 7px;
+    border-radius:2px;
+    background:var(--steel-light);
 }
 
 .report-title{
     text-align:center;
-    font-size:14px;
-    font-weight:bold;
-    margin:4px 0 5px 0;
+    font-size:15px;
+    font-weight:700;
+    color:var(--navy-dark);
+    margin:8px 0 2px 0;
+    letter-spacing:.3px;
+}
+
+.report-subtitle{
+    text-align:center;
+    font-size:9px;
+    color:var(--muted);
+    margin-bottom:2px;
+}
+
+.title-rule{
+    width:70px;
+    height:2px;
+    background:var(--steel);
+    margin:4px auto 0 auto;
+}
+
+/* ============ BODY WRAP ============ */
+
+.doc-body{
+    padding:8px 10px 6px 10px;
 }
 
 /* layout */
@@ -57,7 +139,7 @@ body{
 .grid{
     display:grid;
     grid-template-columns:1fr 1fr;
-    gap:6px;
+    gap:8px;
 }
 
 /* table */
@@ -68,59 +150,99 @@ table{
 }
 
 table,th,td{
-    border:1px solid #000;
+    border:1px solid var(--hairline);
 }
 
 th{
     text-align:left;
-    font-weight:bold;
-    background:#f7f7f7;
-    width:55%;
+    font-weight:600;
+    background:var(--steel-light);
+    color:var(--navy-dark);
+    width:52%;
 }
 
 td{
     text-align:left;
+    color:var(--ink);
 }
 
 th,td{
-    padding:3px 4px;
+    padding:3.5px 6px;
+}
+
+tr:nth-child(even) td{
+    background:var(--band);
 }
 
 /* section */
 
 .section-title{
-    text-align:center;
-    font-size:13px;
-    font-weight:bold;
-    margin:6px 0 4px 0;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:12px;
+    font-weight:700;
+    color:var(--navy-dark);
+    margin:10px 0 5px 0;
+}
+
+.section-title::before,
+.section-title::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:var(--hairline);
 }
 
 /* note */
 
 .note{
     margin-top:6px;
-    font-size:10px;
-    color:#c00000;
+    font-size:9.5px;
+    color:var(--alert);
     text-align:center;
     font-style:italic;
+    background:#fdf2f1;
+    border:1px dashed #e3b3af;
+    border-radius:2px;
+    padding:3px 6px;
 }
 
 /* result table */
 
 .result-table{
     table-layout:fixed;
-    font-size:10px;
+    font-size:9.5px;
 }
 
 .result-table th,
 .result-table td{
-    padding:2px 3px;
+    padding:3px 3px;
     text-align:center;
 }
 
-.result-table thead th{
-    background:#efefef;
-    font-weight:bold;
+.result-table thead tr:first-child th{
+    background:var(--navy);
+    color:#fff;
+    font-weight:700;
+    letter-spacing:.3px;
+    border-color:var(--navy-dark);
+}
+
+.result-table thead tr:last-child th{
+    background:var(--steel-light);
+    color:var(--navy-dark);
+    font-weight:600;
+}
+
+.result-table tbody tr:nth-child(even) td{
+    background:var(--band);
+}
+
+.result-table tbody td:nth-last-child(-n+2){
+    font-weight:700;
+    color:var(--navy-dark);
+    background:#eef4fa;
 }
 
 /* column width */
@@ -130,38 +252,185 @@ th,td{
 .col-wr{width:11%}
 .col-avg{width:14%}
 
+/* images */
+
+.spec-photo th{
+    width:22%;
+}
+
+.spec-photo td{
+    text-align:center;
+    padding:4px;
+}
+
+.spec-photo img{
+    border:1px solid var(--hairline);
+    border-radius:2px;
+}
+
+/* ============ EQUIPMENT / CALIBRATION CARDS ============ */
+
+.equip-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:8px;
+}
+
+.equip-card{
+    border:1px solid var(--hairline);
+    border-radius:3px;
+    background:#fff;
+    padding:6px 8px 7px 8px;
+}
+
+.equip-role{
+    font-size:7.5px;
+    font-weight:700;
+    letter-spacing:.5px;
+    text-transform:uppercase;
+    color:#fff;
+    background:var(--steel);
+    display:inline-block;
+    padding:1.5px 6px;
+    border-radius:2px;
+    margin-bottom:4px;
+}
+
+.equip-name{
+    font-size:10px;
+    font-weight:700;
+    color:var(--navy-dark);
+    margin-bottom:1px;
+}
+
+.equip-code{
+    font-size:8.5px;
+    color:var(--muted);
+    margin-bottom:4px;
+}
+
+.equip-detail{
+    font-size:8.5px;
+    color:var(--ink);
+    line-height:1.55;
+    border-top:1px dashed var(--hairline);
+    padding-top:3px;
+    margin-top:3px;
+}
+
+.equip-detail b{
+    color:var(--navy-dark);
+    font-weight:600;
+}
+
+/* charts */
+
+.chart-box{
+    height:180px;
+    width:660px;
+    margin:6px auto;
+    border:1px solid var(--hairline);
+    border-radius:3px;
+    padding:6px 8px 4px 8px;
+    background:#fff;
+}
+
+.chart-box canvas{
+    height:95px !important;
+    width:100% !important;
+}
+
+.chart-title{
+    text-align:center;
+    font-size:9px;
+    font-weight:500;
+    color:var(--muted);
+    margin-top:2px;
+}
+
+/* ============ PIE / COMPOSITION BOX ============ */
+
+.pie-box{
+    width:500px;
+    margin:6px auto;
+    border:1px solid var(--hairline);
+    border-radius:3px;
+    padding:8px 10px 6px 10px;
+    background:#fff;
+    page-break-inside:avoid;
+}
+
+.pie-box-title{
+    text-align:center;
+    font-size:10.5px;
+    font-weight:700;
+    color:var(--navy-dark);
+    margin-bottom:4px;
+}
+
+.pie-canvas-wrap{
+    height:320px;
+    width:100%;
+}
+
+.pie-empty{
+    text-align:center;
+    font-size:9px;
+    color:var(--muted);
+    padding:20px 0;
+}
+
 /* signature */
 
 .signature{
-    border:1.5px solid #000;
-    margin-top:6px;
-    padding:6px 8px 5px 8px;
+    border:1.5px solid var(--navy);
+    border-radius:3px;
+    margin-top:10px;
+    padding:8px 10px 6px 10px;
     page-break-inside:avoid;
+    background:var(--steel-light);
 }
 
 .signature-grid{
     display:grid;
     grid-template-columns:1fr 1fr;
-    gap:20px;
+    gap:24px;
 }
 
 .sign-box{
     text-align:center;
     font-size:11px;
+    color:var(--navy-dark);
+    font-weight:600;
 }
 
 .sign-line{
-    margin-top:28px;
-    border-top:1px solid #000;
+    margin-top:30px;
+    border-top:1px solid var(--navy);
     padding-top:3px;
-    font-size:10px;
+    font-size:9.5px;
+    color:var(--muted);
+    font-weight:400;
 }
 
 .tester{
-    margin-top:6px;
-    border-top:1px dashed #000;
-    padding-top:4px;
-    font-size:10px;
+    margin-top:8px;
+    border-top:1px dashed var(--hairline);
+    padding-top:5px;
+    font-size:9.5px;
+    color:var(--muted);
+    text-align:center;
+}
+
+/* footer strip */
+
+.doc-footer{
+    display:flex;
+    justify-content:space-between;
+    font-size:7.5px;
+    color:var(--muted);
+    padding:4px 10px;
+    border-top:1px solid var(--hairline);
 }
 
 /* prevent cut */
@@ -172,25 +441,8 @@ th,td{
 
 hr{
     border:0;
-    border-top:1px solid #000;
+    border-top:1px solid var(--hairline);
     margin:5px 0;
-}
-.chart-box{
-    height:180px;
-    width:660px;     /* ไม่เกิน printable width */
-    margin:3px auto; /* จัดกลาง */
-}
-
-.chart-box canvas{
-    height:95px !important;
-    width:100% !important;
-}
-
-.chart-title{
-    text-align:center;
-    font-size:10px;
-    font-weight:bold;
-    margin-bottom:1px;
 }
 </style>
 
@@ -198,18 +450,28 @@ hr{
 
 <body>
 
+<div class="doc-frame">
+
+<div class="accent-bar"></div>
 
 <div class="header">
 
 <div class="header-top">
 
+<div class="header-left">
 <div class="logo">
 <img src="{{ URL::asset('assets/images/KK-C.png') }}" height="50">
 </div>
 
 <div class="company">
-<b>บริษัท เคเคแอนด์ซี พาร์ท จำกัด</b><br>
+<b>บริษัท เคเคแอนด์ซี พาร์ท จำกัด</b>
 588/35 ชั้น M ถ.สาธุประดิษฐ์ แขวงบางโพงพาง เขตยานนาวา กรุงเทพมหานคร 10120
+</div>
+</div>
+
+<div class="accred-badge">
+<span class="tag">LABORATORY REPORT</span><br>
+ISO/IEC 17025
 </div>
 
 </div>
@@ -217,9 +479,15 @@ hr{
 <div class="report-title">
 รายงานผลการทดสอบค่าสัมประสิทธิ์แรงเสียดทาน
 </div>
+<div class="report-subtitle">
+Coefficient of Friction Test Report
+</div>
+<div class="title-rule"></div>
 
 </div>
 
+
+<div class="doc-body">
 
 <!-- general -->
 
@@ -229,27 +497,27 @@ hr{
 
 <tr>
 <th>หมายเลขห้องปฏิบัติการ</th>
-<td></td>
+<td>XXX-XXXX</td>
 </tr>
 
 <tr>
 <th>หมายเลขอ้างอิง</th>
-<td></td>
+<td>{{$reqhd->ar_requestorder_hds_docuno}}</td>
 </tr>
 
 <tr>
 <th>รายละเอียดตัวอย่าง</th>
-<td></td>
+<td>{{$reqdt->ar_requestorder_dts_product}}</td>
 </tr>
 
 <tr>
 <th>หมายเลขตัวอย่าง</th>
-<td></td>
+<td>{{$reqhd->ar_requestorder_hds_docuno}}</td>
 </tr>
 
 <tr>
 <th>วันที่รับตัวอย่าง</th>
-<td></td>
+<td>{{ \Carbon\Carbon::parse($rechd->receive_test_lists_date)->format('d/m/Y') }}</td>
 </tr>
 
 </table>
@@ -259,22 +527,28 @@ hr{
 
 <tr>
 <th>วันที่ทดสอบ</th>
-<td>{{ $hd->TestDate }}</td>
+<td>{{ \Carbon\Carbon::parse($hd->TestDate)->format('d/m/Y') }}</td>
 </tr>
 
 <tr>
 <th>วันที่ออกรายงาน</th>
-<td></td>
+<td>{{ date('d/m/Y') }} </td>
 </tr>
 
 <tr>
 <th>มาตรฐานทดสอบ</th>
-<td>XXX-XXXX</td>
+<td>
+    @if ($reqdt->ar_requestorder_dts_jis_class == "CLASS_3")
+        JIS D 4411 Class 3 (Heavy Loads)
+    @else
+        JIS D 4411 Class 4 (Disc Brakes)
+    @endif
+</td>
 </tr>
 
 <tr>
 <th>ผลการทดสอบ</th>
-<td>XXX-XXXX</td>
+<td>{{$rechd->result_test_lists_test}}</td>
 </tr>
 
 </table>
@@ -284,9 +558,7 @@ hr{
 
 <!-- condition -->
 
-<div class="section-title">
-ค่าควบคุมการทดสอบ
-</div>
+<div class="section-title">ค่าควบคุมการทดสอบ</div>
 
 <div class="grid no-break">
 
@@ -294,17 +566,17 @@ hr{
 
 <tr>
 <th>อุณหภูมิห้อง 25-31 °C</th>
-<td>XXX-XXXX</td>
+<td>{{$rechd->result_test_lists_temp}}</td>
 </tr>
 
 <tr>
 <th>ความชื้น 40-60% RH</th>
-<td>XXX-XXXX</td>
+<td>{{$rechd->result_test_lists_moisture}}</td>
 </tr>
 
 <tr>
 <th>วัสดุจานทดสอบ</th>
-<td>XXX-XXXX</td>
+<td>{{$rechd->result_test_lists_plate}}</td>
 </tr>
 
 <tr>
@@ -348,9 +620,7 @@ hr{
 
 <!-- sample detail -->
 
-<div class="section-title">
-รายละเอียดงานตัวอย่างทดสอบ
-</div>
+<div class="section-title">รายละเอียดงานตัวอย่างทดสอบ</div>
 
 <div class="grid no-break">
 
@@ -373,12 +643,12 @@ hr{
 
 <tr>
 <th>ล๊อตผลิต</th>
-<td>XXX-XXXX</td>
+<td>{{ $reqdt->ar_requestorder_hds_remark }}</td>
 </tr>
 
 <tr>
 <th>โรงงานผลิต</th>
-<td>บริษัท สื่ออินดัสเทรียล จำกัด</td>
+<td>{{ $reqhd->ar_requestorder_hds_customer }}</td>
 </tr>
 
 </table>
@@ -393,28 +663,90 @@ hr{
 
 <tr>
 <th>ขนาดตัวอย่าง</th>
-<td>25X25X7 มม. (ความหนา ± 0.2 มม.)</td>
+<td>ขนาด(mm): {{$reqdt->ar_requestorder_dts_dimensions}}</td>
 </tr>
 
 <tr>
 <th>ก่อนทดสอบ</th>
-<td>ไม่แตก/ไม่หัก/ไม่ร้าว</td>
+<td>ขนาด(mm): {{$rechd->receive_test_lists_dimensions}} (น้ำหนัก(g): {{$rechd->receive_test_lists_weight}})</td>
 </tr>
 
 <tr>
 <th>หลังทดสอบ</th>
-<td>ไม่แตก/ไม่หัก/ไม่ร้าว</td>
+<td>ขนาด(mm): {{$rechd->result_test_lists_dimensions}} (น้ำหนัก(g): {{$rechd->result_test_lists_weight}})</td>
 </tr>
 
 </table>
 
+<table class="spec-photo">
+    <tr>
+        <th colspan="2">รูปชิ้นงานก่อนทดสอบ</th>
+        <td class="text-center"><img src="{{asset($rechd->receive_test_lists_file1)}}" class="img-thumbnail" width="50%"></td>
+        <td class="text-center"><img src="{{asset($rechd->receive_test_lists_file2)}}" class="img-thumbnail" width="50%"></td>      
+    </tr>
+</table>
+<table class="spec-photo">
+    <tr>
+        <th colspan="2">รูปชิ้นงานหลังทดสอบ</th>
+        <td class="text-center"><img src="{{asset($rechd->result_test_lists_file1)}}" class="img-thumbnail" width="50%"></td>
+        <td class="text-center"><img src="{{asset($rechd->result_test_lists_file2)}}" class="img-thumbnail" width="50%"></td>
+    </tr>
+</table>
 </div>
 
+
+<!-- calibration / equipment -->
+
+<div class="section-title">เครื่องมือวัด/เครื่องมือทดสอบ</div>
+
+<div class="equip-grid no-break">
+
+    <div class="equip-card">
+        <span class="equip-role">เครื่องมือวัดขนาด</span>
+        <div class="equip-name">{{ $caldimensions->calibration_lists_name1 }}</div>
+        <div class="equip-code">รหัส: {{ $caldimensions->calibration_lists_code }}</div>
+        <div class="equip-detail">
+            <b>ค่ามาตรฐาน:</b> {{ number_format($caldimensions->calibration_lists_measuringrange,2) }}
+            +{{ number_format($caldimensions->calibration_lists_measuringrange_add,2) }}
+            /-{{ number_format($caldimensions->calibration_lists_measuringrange_del,2) }}<br>
+            <b>ค่าความไม่แน่นอน:</b> {{ number_format($caldimensions->calibration_lists_uncertainty,2) }}
+        </div>
+    </div>
+
+    <div class="equip-card">
+        <span class="equip-role">เครื่องชั่งน้ำหนัก</span>
+        <div class="equip-name">{{ $calweight->calibration_lists_name1 }}</div>
+        <div class="equip-code">รหัส: {{ $calweight->calibration_lists_code }}</div>
+        <div class="equip-detail">
+            <b>ค่ามาตรฐาน:</b> {{ number_format($calweight->calibration_lists_measuringrange,2) }}
+            +{{ number_format($calweight->calibration_lists_measuringrange_add,2) }}
+            /-{{ number_format($calweight->calibration_lists_measuringrange_del,2) }}<br>
+            <b>ค่าความไม่แน่นอน:</b> {{ number_format($calweight->calibration_lists_uncertainty,2) }}
+        </div>
+    </div>
+
+    @foreach ($cal as $item)
+    <div class="equip-card">
+        <span class="equip-role">เครื่องมือทดสอบ</span>
+        <div class="equip-name">{{ $item->calibration_lists_name1 }}</div>
+        <div class="equip-code">รหัส: {{ $item->calibration_lists_code }}</div>
+        <div class="equip-detail">
+            <b>ค่ามาตรฐาน:</b> {{ number_format($item->calibration_lists_measuringrange,2) }}
+            +{{ number_format($item->calibration_lists_measuringrange_add,2) }}
+            /-{{ number_format($item->calibration_lists_measuringrange_del,2) }}<br>
+            <b>ค่าความไม่แน่นอน:</b> {{ number_format($item->calibration_lists_uncertainty,2) }}
+        </div>
+    </div>
+    @endforeach
+
+</div>
 
 <br>
 
 
 <!-- result -->
+
+<div class="section-title">ผลการทดสอบโดยละเอียด</div>
 
 <table class="result-table no-break">
 
@@ -475,7 +807,6 @@ hr{
 
 <div class="chart-box no-break">
 
-
 <canvas id="frictionChart"></canvas>
 <div class="chart-title">
 หมายเหตุ: หน่วยของสัมประสิทธิ์แรงเสียดทาน (Coefficient of Friction - COF) ใช้เป็น µ
@@ -484,11 +815,35 @@ hr{
 </div>
 
 <div class="chart-box no-break">
-   
+
     <canvas id="wearRateChart"></canvas>
      <div class="chart-title">
        หมายเหตุ: ค่าอัตราการสึกหรอ Wear Rate ใช้หน่วยเป็น( 10^-7 cm^3/N.m )
     </div>
+</div>
+
+
+<!-- ===================== COMPOSITION PIE CHART ===================== -->
+<!--
+    ส่วนนี้ผูกกับตัวแปร $bomdt (รายการ chemistry_dt join chemical_lists/groups/functions)
+    Pie chart จะ "รวมน้ำหนักตามกลุ่มสาร" คือ:
+      - label ต่อชิ้น (slice) = chemical_groups_name
+      - ค่าที่รวม (sum)       = weghttotal
+      - สีของแต่ละกลุ่ม        = chemical_groups_color (ถ้าไม่มีจะสุ่มจาก fallback palette)
+-->
+
+<div class="section-title">สัดส่วนน้ำหนักส่วนผสม (Weight Composition)</div>
+
+<div class="pie-box no-break">
+    <div class="pie-box-title">Weight (g)</div>
+
+    @if(isset($bomdt) && count($bomdt) > 0)
+        <div class="pie-canvas-wrap">
+            <canvas id="pieChart"></canvas>
+        </div>
+    @else
+        <div class="pie-empty">ไม่มีข้อมูลส่วนผสม (BOM) สำหรับสูตรนี้</div>
+    @endif
 </div>
 
 <!-- signature -->
@@ -514,7 +869,16 @@ hr{
 </div>
 
 <div class="tester">
-ผู้ทดสอบ {{ $hd->TesterName }} | วันที่ {{ $hd->TestDate }}
+ผู้ทดสอบ {{ $hd->TesterName }} | วันที่ {{ \Carbon\Carbon::parse($hd->TestDate)->format('d/m/Y') }}
+</div>
+
+</div>
+
+</div>
+
+<div class="doc-footer">
+<span>KK&C Parts Co., Ltd. — Friction Coefficient Test Report</span>
+<span>Document generated {{ date('d/m/Y H:i') }}</span>
 </div>
 
 </div>
@@ -524,11 +888,8 @@ hr{
 
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 <script>
-
-window.onload=function(){
-    window.print();
-}
 
 const temps = @json($temps);
 
@@ -564,6 +925,7 @@ datasets:[
 data:safeUpper,
 borderWidth:0,
 pointRadius:0,
+backgroundColor:'rgba(61,109,153,0.10)',
 fill:'+1'
 },
 
@@ -582,6 +944,7 @@ fill:false
 
 {
 data:jisMax,
+borderColor:'#b3261e',
 borderDash:[6,6],
 borderWidth:1,
 pointRadius:0
@@ -589,6 +952,7 @@ pointRadius:0
 
 {
 data:jisMin,
+borderColor:'#b3261e',
 borderDash:[6,6],
 borderWidth:1,
 pointRadius:0
@@ -602,6 +966,7 @@ pointRadius:0
 
 {
 data:targetUpper,
+borderColor:'#3d6d99',
 borderDash:[2,2],
 borderWidth:1,
 pointRadius:0
@@ -609,6 +974,7 @@ pointRadius:0
 
 {
 data:targetLower,
+borderColor:'#3d6d99',
 borderDash:[2,2],
 borderWidth:1,
 pointRadius:0
@@ -623,6 +989,8 @@ pointRadius:0
 {
 label:'Friction Avg',
 data:frictionPoints,
+borderColor:'#122844',
+backgroundColor:'#122844',
 borderWidth:2,
 pointRadius:3,
 tension:0.2
@@ -688,6 +1056,8 @@ datasets:[
 {
 label:'Wear Rate Avg',
 data:wearRatePoints,
+borderColor:'#122844',
+backgroundColor:'#122844',
 borderWidth:2,
 pointRadius:3,
 tension:0.2
@@ -726,194 +1096,106 @@ stepSize:0.2
 }
 
 });
-// document.addEventListener("DOMContentLoaded", function () {
 
-//     const points = @json($frictionPoints ?? []);
 
-//     const labels = Object.keys(points);
-//     const values = Object.values(points);
+/*
+|--------------------------------------------------------------------------
+| COMPOSITION PIE CHART (Weight, g)
+|--------------------------------------------------------------------------
+| รวมน้ำหนักตามกลุ่มสาร (chemical_groups_name) จากผลรวม weghttotal
+| สีของ slice ใช้ chemical_groups_color ของแต่ละกลุ่มโดยตรง
+*/
 
-//     const chart = new Chart(document.getElementById('frictionChart'), {
+let pieChart = null;
 
-//         type: 'line',
+function buildPieData(){
+    const bomdt = @json($bomdt ?? []);
 
-//         data: {
+    // fallback palette used only if a group has no chemical_groups_color
+    const fallbackPalette = [
+        '#1c3a5e','#3d6d99','#6f9bc4','#a9c6e0',
+        '#b3261e','#e0a458','#4a7c59','#8e7cc3'
+    ];
 
-//             labels: labels,
+    // group rows by chemical_groups_name, summing weghttotal per group
+    const groups = {};
+    let fallbackIdx = 0;
 
-//             datasets: [
+    bomdt.forEach(function(item){
+        const key = item.chemical_groups_name || 'อื่นๆ';
+        const val = parseFloat(item.weghttotal) || 0;
 
-//                 {
-//                     label: 'Friction Avg',
-//                     data: values,
-//                     borderWidth: 2,
-//                     pointRadius: 3,
-//                     tension: 0.2
-//                 },
+        if(!groups[key]){
+            let color = item.chemical_groups_color;
+            if(!color){
+                color = fallbackPalette[fallbackIdx % fallbackPalette.length];
+                fallbackIdx++;
+            }
+            groups[key] = { total: 0, color: color };
+        }
 
-//                 {
-//                     label: 'Limit Min',
-//                     data: labels.map(() => 0.35),
-//                     borderDash: [4,4],
-//                     borderWidth: 1,
-//                     pointRadius: 0
-//                 },
+        groups[key].total += val;
+    });
 
-//                 {
-//                     label: 'Limit Max',
-//                     data: labels.map(() => 0.55),
-//                     borderDash: [4,4],
-//                     borderWidth: 1,
-//                     pointRadius: 0
-//                 }
+    const labels = Object.keys(groups);
+    const data = labels.map(function(l){ return groups[l].total; });
+    const colors = labels.map(function(l){ return groups[l].color; });
+    const total = data.reduce(function(a,b){ return a + b; }, 0);
 
-//             ]
+    return { labels: labels, data: data, colors: colors, total: total };
+}
 
-//         },
+function renderPieChart(){
 
-//         options: {
+    const canvas = document.getElementById('pieChart');
+    if(!canvas) return;
 
-//             responsive: true,
-//             maintainAspectRatio: false,
+    const pieCtx = canvas.getContext('2d');
+    const pieData = buildPieData();
 
-//             animation:false, // สำคัญสำหรับ print
-//             layout:{
-//                 padding:0
-//                 },
-//             plugins:{
-//                 legend:{ display:false }
-//             },
+    if(pieChart) pieChart.destroy();
 
-//             scales: {
+    pieChart = new Chart(pieCtx, {
+        type:'pie',
+        data:{
+            labels: pieData.labels,
+            datasets:[{ data: pieData.data, backgroundColor: pieData.colors }]
+        },
+        plugins:[ChartDataLabels],
+        options:{
+            responsive:true,
+            maintainAspectRatio:false,
+            animation:false,
+            plugins:{
+                legend:{ position:'right', labels:{ font:{ size:9 } } },
+                tooltip:{
+                    callbacks:{
+                        label:function(ctx){
+                            const value = ctx.raw;
+                            const percent = (value / pieData.total * 100).toFixed(2);
+                            return ctx.label + ': ' + value.toFixed(2) + ' g (' + percent + '%)';
+                        }
+                    }
+                },
+                datalabels:{
+                    color:'#000',
+                    formatter:function(value){
+                        const percent = (value / pieData.total * 100).toFixed(1);
+                        return value.toFixed(1) + 'g\n' + percent + '%';
+                    },
+                    font:{ weight:'bold', size:9 }
+                }
+            }
+        }
+    });
+}
 
-//                 x: {
-//                     title:{
-//                         display:true,
-//                         text:'Temperature °C'
-//                     }
-//                 },
-
-//                 y: {
-
-//                     title:{
-//                         display:true,
-//                         text:'Friction (μ)'
-//                     },
-
-//                     min:0,
-//                     max:0.8,
-
-//                     ticks:{
-//                         stepSize:0.2,
-//                         callback:(v)=>v.toFixed(1)
-//                     }
-
-//                 }
-
-//             }
-
-//         }
-
-//     });
-
-//     // รอ render เสร็จแล้วค่อย print
-//     setTimeout(()=>window.print(),500);
-
-// });
-// document.addEventListener("DOMContentLoaded", function () {
-
-//     const points = @json($wearRatePoints ?? []);
-
-//     const labels = Object.keys(points);
-//     const values = Object.values(points);
-
-//     const chart = new Chart(document.getElementById('wearRateChart'), {
-
-//         type: 'line',
-
-//         data: {
-
-//             labels: labels,
-
-//             datasets: [
-
-//                 {
-//                     label: 'Wear Rate Avg',
-//                     data: values,
-//                     borderWidth: 2,
-//                     pointRadius: 3,
-//                     tension: 0.2
-//                 },
-
-//                 {
-//                     label: 'Limit Min',
-//                     data: labels.map(() => 0.35),
-//                     borderDash: [4,4],
-//                     borderWidth: 1,
-//                     pointRadius: 0
-//                 },
-
-//                 {
-//                     label: 'Limit Max',
-//                     data: labels.map(() => 0.55),
-//                     borderDash: [4,4],
-//                     borderWidth: 1,
-//                     pointRadius: 0
-//                 }
-
-//             ]
-
-//         },
-
-//         options: {
-
-//             responsive: true,
-//             maintainAspectRatio: false,
-
-//             animation:false, // สำคัญสำหรับ print
-//             layout:{
-//                 padding:0
-//                 },
-//             plugins:{
-//                 legend:{ display:false }
-//             },
-
-//             scales: {
-
-//                 x: {
-//                     title:{
-//                         display:true,
-//                         text:'Temperature °C'
-//                     }
-//                 },
-
-//                 y: {
-
-//                     title:{
-//                         display:true,
-//                         text:'"WEAR RATE (10⁻⁷ cm³/N·m)'
-//                     },
-
-//                     min:0,
-//                     max:1.6,
-
-//                     ticks:{
-//                         stepSize:0.2,
-//                         callback:(v)=>v.toFixed(1)
-//                     }
-
-//                 }
-
-//             }
-
-//         }
-
-//     });
-
-//     // รอ render เสร็จแล้วค่อย print
-//     setTimeout(()=>window.print(),500);
-
-// });
+window.onload = function(){
+    renderPieChart();
+    requestAnimationFrame(function(){
+        setTimeout(function(){ window.print(); }, 500);
+    });
+};
 </script>
 
 </body>

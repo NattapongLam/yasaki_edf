@@ -109,6 +109,14 @@
                                 <li><a href="{{route('machinerychecksheets.index')}}" key="t-default">เครื่องจักร</a></li> 
                             </ul>
                         </li>
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow" key="t-vertical">ชิ้นงาน</a>
+                            <ul class="sub-menu" aria-expanded="true">
+                                <li><a href="{{route('receive-test.index')}}" key="t-default">รับชิ้นงานทดสอบ</a></li> 
+                                <li><a href="{{route('receive-test.create')}}" key="t-default">ชิ้นงานหลังทดสอบ</a></li> 
+                                <li><a href="{{ url('/receive-result') }}" key="t-default">ชิ้นงานทดสอบเรียบร้อย</a></li>
+                            </ul>
+                        </li>
                     </ul>                                         
                 </li>
                 <li>
