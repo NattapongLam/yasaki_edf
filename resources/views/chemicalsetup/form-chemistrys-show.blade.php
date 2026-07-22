@@ -369,13 +369,88 @@
             </div> 
             <hr>
             <div class="row">
+                <h5 class="text-center">เครื่องมือ/เครื่องทดสอบ</h5>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="card text-center">
+                                    <div class="card-body">
+                                        <h5 class="font-size-15 mb-1"><a href="javascript: void(0);" class="text-dark">เครื่องวัดขนาด</a></h5>
+                                        @if ($caldimensions)
+                                            <p class="text-muted">
+                                                {{$caldimensions->calibration_lists_name1}} ({{$caldimensions->calibration_lists_code}}) <br>
+                                                {{$caldimensions->calibration_lists_reamrk}} Expire Date {{ \Carbon\Carbon::parse($caldimensions->calibration_lists_nextdate)->format('d/m/Y') }}
+                                            </p>
+                                        @else
+                                            <p class="text-muted">-</p>
+                                        @endif                                      
+                                    </div>
+                                    <div class="card-footer bg-transparent border-top">
+                                        <div class="contact-links d-flex font-size-20">
+                                            <div class="flex-fill">
+                                                <a href="javascript: void(0);"><i class="bx bx-user-circle"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                    </div>
+                   <div class="col-6">
+                        <div class="card text-center">
+                                    <div class="card-body">
+                                        <h5 class="font-size-15 mb-1"><a href="javascript: void(0);" class="text-dark">เครื่องชั่งน้ำหนัก</a></h5>
+                                        @if ($calweight)
+                                            <p class="text-muted">
+                                                {{$calweight->calibration_lists_name1}} ({{$calweight->calibration_lists_code}}) <br>
+                                                {{$calweight->calibration_lists_reamrk}} Expire Date {{ \Carbon\Carbon::parse($calweight->calibration_lists_nextdate)->format('d/m/Y') }}
+                                            </p>
+                                        @else
+                                            <p class="text-muted">-</p>
+                                        @endif                                      
+                                    </div>
+                                    <div class="card-footer bg-transparent border-top">
+                                        <div class="contact-links d-flex font-size-20">
+                                            <div class="flex-fill">
+                                                <a href="javascript: void(0);"><i class="bx bx-user-circle"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                    </div>                                   
+                </div>
+                <div class="row">
+                    @if ($cal)
+                        @foreach ($cal as $item)
+                            <div class="col-6">
+                                <div class="card text-center">
+                                            <div class="card-body">
+                                                <h5 class="font-size-15 mb-1"><a href="javascript: void(0);" class="text-dark">เครื่องทดสอบ</a></h5>
+                                                    <p class="text-muted">
+                                                        {{$item->calibration_lists_name1}} ({{$item->calibration_lists_code}}) <br>
+                                                        {{$item->calibration_lists_reamrk}} Expire Date {{ \Carbon\Carbon::parse($item->calibration_lists_nextdate)->format('d/m/Y') }}
+                                                    </p>                                 
+                                            </div>
+                                            <div class="card-footer bg-transparent border-top">
+                                                <div class="contact-links d-flex font-size-20">
+                                                    <div class="flex-fill">
+                                                        <a href="javascript: void(0);"><i class="bx bx-user-circle"></i></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                            </div>
+                        @endforeach   
+                    @endif                  
+                </div>
+            </div>
+            <hr>
+            <div class="row">
                 <div class="col-12">
                     <div style="height: 1200; max-width: 1200px; margin:auto;">
                         <canvas id="radarChart"></canvas>
                     </div>
                 </div>
             </div>
-            <div class="table-responsive">
+            <div class="row">
+                <div class="table-responsive">
                 <table class="table table-bordered table-sm">
                     <thead>
                         <tr>
@@ -444,6 +519,8 @@
                 </tfoot>
                 </table>
             </div>
+            </div>
+            
            
             <hr>
             <div class="table-responsive">
