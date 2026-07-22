@@ -272,7 +272,7 @@ tr:nth-child(even) td{
 
 .equip-grid{
     display:grid;
-    grid-template-columns:repeat(3, 1fr);
+    grid-template-columns:repeat(2, 1fr);
     gap:8px;
 }
 
@@ -351,7 +351,7 @@ tr:nth-child(even) td{
 /* ============ PIE / COMPOSITION BOX ============ */
 
 .pie-box{
-    width:500px;
+    width:480px;
     margin:6px auto;
     border:1px solid var(--hairline);
     border-radius:3px;
@@ -369,7 +369,7 @@ tr:nth-child(even) td{
 }
 
 .pie-canvas-wrap{
-    height:320px;
+    height:300px;
     width:100%;
 }
 
@@ -464,8 +464,8 @@ hr{
 </div>
 
 <div class="company">
-<b>บริษัท เคเคแอนด์ซี พาร์ท จำกัด</b>
-588/35 ชั้น M ถ.สาธุประดิษฐ์ แขวงบางโพงพาง เขตยานนาวา กรุงเทพมหานคร 10120
+<b>KK&C PARTS CO., LTD.</b>
+588/35 M Floor, Sathu Pradit Rd., Bang Phong Phang, Yan Nawa, Bangkok 10120
 </div>
 </div>
 
@@ -477,7 +477,7 @@ ISO/IEC 17025
 </div>
 
 <div class="report-title">
-รายงานผลการทดสอบค่าสัมประสิทธิ์แรงเสียดทาน
+Coefficient of Friction Test Report
 </div>
 <div class="report-subtitle">
 Coefficient of Friction Test Report
@@ -496,27 +496,27 @@ Coefficient of Friction Test Report
 <table>
 
 <tr>
-<th>หมายเลขห้องปฏิบัติการ</th>
+<th>Laboratory No.</th>
 <td>XXX-XXXX</td>
 </tr>
 
 <tr>
-<th>หมายเลขอ้างอิง</th>
+<th>Reference No.</th>
 <td>{{$reqhd->ar_requestorder_hds_docuno}}</td>
 </tr>
 
 <tr>
-<th>รายละเอียดตัวอย่าง</th>
+<th>Sample Description</th>
 <td>{{$reqdt->ar_requestorder_dts_product}}</td>
 </tr>
 
 <tr>
-<th>หมายเลขตัวอย่าง</th>
+<th>Sample No.</th>
 <td>{{$reqhd->ar_requestorder_hds_docuno}}</td>
 </tr>
 
 <tr>
-<th>วันที่รับตัวอย่าง</th>
+<th>Date Received</th>
 <td>{{ \Carbon\Carbon::parse($rechd->receive_test_lists_date)->format('d/m/Y') }}</td>
 </tr>
 
@@ -526,17 +526,17 @@ Coefficient of Friction Test Report
 <table>
 
 <tr>
-<th>วันที่ทดสอบ</th>
+<th>Test Date</th>
 <td>{{ \Carbon\Carbon::parse($hd->TestDate)->format('d/m/Y') }}</td>
 </tr>
 
 <tr>
-<th>วันที่ออกรายงาน</th>
+<th>Issue Date</th>
 <td>{{ date('d/m/Y') }} </td>
 </tr>
 
 <tr>
-<th>มาตรฐานทดสอบ</th>
+<th>Test Standard</th>
 <td>
     @if ($reqdt->ar_requestorder_dts_jis_class == "CLASS_3")
         JIS D 4411 Class 3 (Heavy Loads)
@@ -547,7 +547,7 @@ Coefficient of Friction Test Report
 </tr>
 
 <tr>
-<th>ผลการทดสอบ</th>
+<th>Test Result</th>
 <td>{{$rechd->result_test_lists_test}}</td>
 </tr>
 
@@ -558,29 +558,29 @@ Coefficient of Friction Test Report
 
 <!-- condition -->
 
-<div class="section-title">ค่าควบคุมการทดสอบ</div>
+<div class="section-title">Test Environment & Conditions</div>
 
 <div class="grid no-break">
 
 <table>
 
 <tr>
-<th>อุณหภูมิห้อง 25-31 °C</th>
+<th>Room Temp. (25-31 °C)</th>
 <td>{{$rechd->result_test_lists_temp}}</td>
 </tr>
 
 <tr>
-<th>ความชื้น 40-60% RH</th>
+<th>Humidity (40-60% RH)</th>
 <td>{{$rechd->result_test_lists_moisture}}</td>
 </tr>
 
 <tr>
-<th>วัสดุจานทดสอบ</th>
+<th>Test Disc Material</th>
 <td>{{$rechd->result_test_lists_plate}}</td>
 </tr>
 
 <tr>
-<th>ประเภทการทดสอบ</th>
+<th>Test Type</th>
 <td>{{ $hd->TestType }}</td>
 </tr>
 
@@ -590,17 +590,17 @@ Coefficient of Friction Test Report
 <table>
 
 <tr>
-<th>จำนวนชุดที่ทดสอบ</th>
-<td>3 ชุด</td>
+<th>Tested Sets</th>
+<td>3 Sets</td>
 </tr>
 
 <tr>
-<th>ช่วงอุณหภูมิที่ทดสอบได้</th>
+<th>Test Temperature Range</th>
 <td>100-350 °C</td>
 </tr>
 
 <tr>
-<th>ช่วงค่าแรงเสียดทาน</th>
+<th>Friction Range</th>
 <td>0.00-0.080 (μ) </td>
 </tr>
 
@@ -614,40 +614,40 @@ Coefficient of Friction Test Report
 </div>
 
 <div class="note">
-หมายเหตุ: Uncertainty ที่รายงาน มีระดับความเชื่อมั่น 95% (k=2)
+Note: The reported uncertainty is based on a standard uncertainty multiplied by a coverage factor k=2, providing a level of confidence of approximately 95%.
 </div>
 
 
 <!-- sample detail -->
 
-<div class="section-title">รายละเอียดงานตัวอย่างทดสอบ</div>
+<div class="section-title">Sample Details</div>
 
 <div class="grid no-break">
 
 <table>
 
 <tr>
-<th>เครื่องหมายการค้า</th>
+<th>Trademark</th>
 <td>XXX-XXXX</td>
 </tr>
 
 <tr>
-<th>ชื่อสูตร</th>
+<th>Formula Name</th>
 <td>{{ $hd->FormulaName }}</td>
 </tr>
 
 <tr>
-<th>รหัสสูตร</th>
+<th>Formula No.</th>
 <td>{{ $hd->FormulaNumber }}</td>
 </tr>
 
 <tr>
-<th>ล๊อตผลิต</th>
+<th>Lot No.</th>
 <td>{{ $reqdt->ar_requestorder_hds_remark }}</td>
 </tr>
 
 <tr>
-<th>โรงงานผลิต</th>
+<th>Manufacturer</th>
 <td>{{ $reqhd->ar_requestorder_hds_customer }}</td>
 </tr>
 
@@ -657,37 +657,37 @@ Coefficient of Friction Test Report
 <table>
 
 <tr>
-<th>ประเภทงานทดสอบ</th>
-<td>ผ้าเบรก/ดิสเบรค</td>
+<th>Test Sample Category</th>
+<td>Brake Pad / Disc Brake</td>
 </tr>
 
 <tr>
-<th>ขนาดตัวอย่าง</th>
-<td>ขนาด(mm): {{$reqdt->ar_requestorder_dts_dimensions}}</td>
+<th>Sample Size</th>
+<td>Size (mm): {{$reqdt->ar_requestorder_dts_dimensions}}</td>
 </tr>
 
 <tr>
-<th>ก่อนทดสอบ</th>
-<td>ขนาด(mm): {{$rechd->receive_test_lists_dimensions}} (น้ำหนัก(g): {{$rechd->receive_test_lists_weight}})</td>
+<th>Before Test</th>
+<td>Size (mm): {{$rechd->receive_test_lists_dimensions}} (Weight (g): {{$rechd->receive_test_lists_weight}})</td>
 </tr>
 
 <tr>
-<th>หลังทดสอบ</th>
-<td>ขนาด(mm): {{$rechd->result_test_lists_dimensions}} (น้ำหนัก(g): {{$rechd->result_test_lists_weight}})</td>
+<th>After Test</th>
+<td>Size (mm): {{$rechd->result_test_lists_dimensions}} (Weight (g): {{$rechd->result_test_lists_weight}})</td>
 </tr>
 
 </table>
 
 <table class="spec-photo">
     <tr>
-        <th colspan="2">รูปชิ้นงานก่อนทดสอบ</th>
+        <th colspan="2">Sample Photo Before Test</th>
         <td class="text-center"><img src="{{asset($rechd->receive_test_lists_file1)}}" class="img-thumbnail" width="50%"></td>
         <td class="text-center"><img src="{{asset($rechd->receive_test_lists_file2)}}" class="img-thumbnail" width="50%"></td>      
     </tr>
 </table>
 <table class="spec-photo">
     <tr>
-        <th colspan="2">รูปชิ้นงานหลังทดสอบ</th>
+        <th colspan="2">Sample Photo After Test</th>
         <td class="text-center"><img src="{{asset($rechd->result_test_lists_file1)}}" class="img-thumbnail" width="50%"></td>
         <td class="text-center"><img src="{{asset($rechd->result_test_lists_file2)}}" class="img-thumbnail" width="50%"></td>
     </tr>
@@ -697,44 +697,71 @@ Coefficient of Friction Test Report
 
 <!-- calibration / equipment -->
 
-<div class="section-title">เครื่องมือวัด/เครื่องมือทดสอบ</div>
+<div class="section-title">Measuring & Test Equipment</div>
 
 <div class="equip-grid no-break">
 
     <div class="equip-card">
-        <span class="equip-role">เครื่องมือวัดขนาด</span>
+        <span class="equip-role">Dimension Measuring Tool</span>
         <div class="equip-name">{{ $caldimensions->calibration_lists_name1 }}</div>
-        <div class="equip-code">รหัส: {{ $caldimensions->calibration_lists_code }}</div>
+        <div class="equip-code">Code: {{ $caldimensions->calibration_lists_code }}</div>
         <div class="equip-detail">
-            <b>ค่ามาตรฐาน:</b> {{ number_format($caldimensions->calibration_lists_measuringrange,2) }}
-            +{{ number_format($caldimensions->calibration_lists_measuringrange_add,2) }}
-            /-{{ number_format($caldimensions->calibration_lists_measuringrange_del,2) }}<br>
-            <b>{{ $caldimensions->calibration_lists_reamrk}}  ExpireDate {{ \Carbon\Carbon::parse($caldimensions->calibration_lists_nextdate)->format('d/m/Y') }}</b>
+            @if ($caldimensions->calibration_lists_code == "3318-001")
+                <b>Temperature:</b> {{ number_format($caldimensions->calibration_lists_temperature,2) }}
+                +{{ number_format($caldimensions->calibration_lists_temperature_add,2) }}
+                /-{{ number_format($caldimensions->calibration_lists_temperature_del,2) }}
+                <b>Humidity:</b> {{ number_format($caldimensions->calibration_lists_humidity,2) }}
+                +{{ number_format($caldimensions->calibration_lists_humidity_add,2) }}
+                /-{{ number_format($caldimensions->calibration_lists_humidity_del,2) }}<br>
+            @else
+               <b>Standard Value:</b> {{ number_format($caldimensions->calibration_lists_areaofuse,2) }}
+               +{{ number_format($caldimensions->calibration_lists_areaofuse_add,2) }}
+               /-{{ number_format($caldimensions->calibration_lists_areaofuse_del,2) }}<br> 
+            @endif            
+            <b>{{ $caldimensions->calibration_lists_reamrk}}  Expire Date {{ \Carbon\Carbon::parse($caldimensions->calibration_lists_nextdate)->format('d/m/Y') }}</b>
         </div>
     </div>
 
     <div class="equip-card">
-        <span class="equip-role">เครื่องชั่งน้ำหนัก</span>
+        <span class="equip-role">Weighing Scale</span>
         <div class="equip-name">{{ $calweight->calibration_lists_name1 }}</div>
-        <div class="equip-code">รหัส: {{ $calweight->calibration_lists_code }}</div>
+        <div class="equip-code">Code: {{ $calweight->calibration_lists_code }}</div>
         <div class="equip-detail">
-            <b>ค่ามาตรฐาน:</b> {{ number_format($calweight->calibration_lists_measuringrange,2) }}
-            +{{ number_format($calweight->calibration_lists_measuringrange_add,2) }}
-            /-{{ number_format($calweight->calibration_lists_measuringrange_del,2) }}<br>
-            <b>{{ $calweight->calibration_lists_reamrk}}  ExpireDate {{ \Carbon\Carbon::parse($calweight->calibration_lists_nextdate)->format('d/m/Y') }}</b>
+            @if ($calweight->calibration_lists_code == "3318-001")
+                <b>Temperature:</b> {{ number_format($calweight->calibration_lists_temperature,2) }}
+                +{{ number_format($calweight->calibration_lists_temperature_add,2) }}
+                /-{{ number_format($calweight->calibration_lists_temperature_del,2) }}
+                <b>Humidity:</b> {{ number_format($calweight->calibration_lists_humidity,2) }}
+                +{{ number_format($calweight->calibration_lists_humidity_add,2) }}
+                /-{{ number_format($calweight->calibration_lists_humidity_del,2) }}<br>
+            @else
+               <b>Standard Value:</b> {{ number_format($calweight->calibration_lists_areaofuse,2) }}
+               +{{ number_format($calweight->calibration_lists_areaofuse_add,2) }}
+               /-{{ number_format($calweight->calibration_lists_areaofuse_del,2) }}<br> 
+            @endif      
+            <b>{{ $calweight->calibration_lists_reamrk}}  Expire Date {{ \Carbon\Carbon::parse($calweight->calibration_lists_nextdate)->format('d/m/Y') }}</b>
         </div>
     </div>
 
     @foreach ($cal as $item)
     <div class="equip-card">
-        <span class="equip-role">เครื่องมือทดสอบ</span>
+        <span class="equip-role">Testing Machine</span>
         <div class="equip-name">{{ $item->calibration_lists_name1 }}</div>
-        <div class="equip-code">รหัส: {{ $item->calibration_lists_code }}</div>
+        <div class="equip-code">Code: {{ $item->calibration_lists_code }}</div>
         <div class="equip-detail">
-            <b>ค่ามาตรฐาน:</b> {{ number_format($item->calibration_lists_measuringrange,2) }}
-            +{{ number_format($item->calibration_lists_measuringrange_add,2) }}
-            /-{{ number_format($item->calibration_lists_measuringrange_del,2) }}<br>
-            <b>{{ $item->calibration_lists_reamrk}}  ExpireDate {{ \Carbon\Carbon::parse($item->calibration_lists_nextdate)->format('d/m/Y') }}</b>
+            @if ($item->calibration_lists_code == "3318-001")
+                <b>Temperature:</b> {{ number_format($item->calibration_lists_temperature,2) }}
+                +{{ number_format($item->calibration_lists_temperature_add,2) }}
+                /-{{ number_format($item->calibration_lists_temperature_del,2) }}
+                <b>Humidity:</b> {{ number_format($item->calibration_lists_humidity,2) }}
+                +{{ number_format($item->calibration_lists_humidity_add,2) }}
+                /-{{ number_format($item->calibration_lists_humidity_del,2) }}<br>
+            @else
+               <b>Standard Value:</b> {{ number_format($item->calibration_lists_areaofuse,2) }}
+               +{{ number_format($item->calibration_lists_areaofuse_add,2) }}
+               /-{{ number_format($item->calibration_lists_areaofuse_del,2) }}<br> 
+            @endif      
+            <b>{{ $item->calibration_lists_reamrk}}  Expire Date {{ \Carbon\Carbon::parse($item->calibration_lists_nextdate)->format('d/m/Y') }}</b>
         </div>
     </div>
     @endforeach
@@ -742,11 +769,9 @@ Coefficient of Friction Test Report
 </div>
 
 <br>
-
-
 <!-- result -->
 
-<div class="section-title">ผลการทดสอบโดยละเอียด</div>
+<div class="section-title">Detailed Test Results</div>
 
 <table class="result-table no-break">
 
@@ -760,7 +785,7 @@ Coefficient of Friction Test Report
 
 <tr>
 
-<th class="col-temp">Temp °C</th>
+<th class="col-temp">Temp (°C)</th>
 
 <th class="col-fr">N1</th>
 <th class="col-fr">N2</th>
@@ -809,7 +834,7 @@ Coefficient of Friction Test Report
 
 <canvas id="frictionChart"></canvas>
 <div class="chart-title">
-หมายเหตุ: หน่วยของสัมประสิทธิ์แรงเสียดทาน (Coefficient of Friction - COF) ใช้เป็น µ
+Note: Coefficient of Friction (COF) unit is represented as µ
 </div>
 
 </div>
@@ -818,21 +843,14 @@ Coefficient of Friction Test Report
 
     <canvas id="wearRateChart"></canvas>
      <div class="chart-title">
-       หมายเหตุ: ค่าอัตราการสึกหรอ Wear Rate ใช้หน่วยเป็น( 10^-7 cm^3/N.m )
+       Note: Wear Rate unit is represented as ( 10^-7 cm^3/N.m )
     </div>
 </div>
 
 
 <!-- ===================== COMPOSITION PIE CHART ===================== -->
-<!--
-    ส่วนนี้ผูกกับตัวแปร $bomdt (รายการ chemistry_dt join chemical_lists/groups/functions)
-    Pie chart จะ "รวมน้ำหนักตามกลุ่มสาร" คือ:
-      - label ต่อชิ้น (slice) = chemical_groups_name
-      - ค่าที่รวม (sum)       = weghttotal
-      - สีของแต่ละกลุ่ม        = chemical_groups_color (ถ้าไม่มีจะสุ่มจาก fallback palette)
--->
 
-<div class="section-title">สัดส่วนน้ำหนักส่วนผสม (Weight Composition)</div>
+<div class="section-title">Weight Composition</div>
 
 <div class="pie-box no-break">
     <div class="pie-box-title">Weight (g)</div>
@@ -842,7 +860,7 @@ Coefficient of Friction Test Report
             <canvas id="pieChart"></canvas>
         </div>
     @else
-        <div class="pie-empty">ไม่มีข้อมูลส่วนผสม (BOM) สำหรับสูตรนี้</div>
+        <div class="pie-empty">No BOM (Bill of Materials) data available for this formula.</div>
     @endif
 </div>
 
@@ -853,23 +871,23 @@ Coefficient of Friction Test Report
 <div class="signature-grid">
 
 <div class="sign-box">
-ผู้ตรวจสอบ
+Checked by
 <div class="sign-line">
-วันที่ ....../....../......
+Date ....../....../......
 </div>
 </div>
 
 <div class="sign-box">
-ผู้รับรอง
+Approved by
 <div class="sign-line">
-วันที่ ....../....../......
+Date ....../....../......
 </div>
 </div>
 
 </div>
 
 <div class="tester">
-ผู้ทดสอบ {{ $hd->TesterName }} | วันที่ {{ \Carbon\Carbon::parse($hd->TestDate)->format('d/m/Y') }}
+Tested by {{ $hd->TesterName }} | Date {{ \Carbon\Carbon::parse($hd->TestDate)->format('d/m/Y') }}
 </div>
 
 </div>
@@ -915,12 +933,6 @@ labels:temps,
 
 datasets:[
 
-/*
-|--------------------------------------------------------------------------
-| SAFE ZONE (background)
-|--------------------------------------------------------------------------
-*/
-
 {
 data:safeUpper,
 borderWidth:0,
@@ -935,12 +947,6 @@ borderWidth:0,
 pointRadius:0,
 fill:false
 },
-
-/*
-|--------------------------------------------------------------------------
-| JIS LIMIT
-|--------------------------------------------------------------------------
-*/
 
 {
 data:jisMax,
@@ -958,12 +964,6 @@ borderWidth:1,
 pointRadius:0
 },
 
-/*
-|--------------------------------------------------------------------------
-| TARGET LIMIT
-|--------------------------------------------------------------------------
-*/
-
 {
 data:targetUpper,
 borderColor:'#3d6d99',
@@ -979,12 +979,6 @@ borderDash:[2,2],
 borderWidth:1,
 pointRadius:0
 },
-
-/*
-|--------------------------------------------------------------------------
-| ACTUAL LINE
-|--------------------------------------------------------------------------
-*/
 
 {
 label:'Friction Avg',
@@ -1015,7 +1009,7 @@ scales:{
 x:{
 title:{
 display:true,
-text:'Temperature °C'
+text:'Temperature (°C)'
 }
 },
 
@@ -1098,31 +1092,21 @@ stepSize:0.2
 });
 
 
-/*
-|--------------------------------------------------------------------------
-| COMPOSITION PIE CHART (Weight, g)
-|--------------------------------------------------------------------------
-| รวมน้ำหนักตามกลุ่มสาร (chemical_groups_name) จากผลรวม weghttotal
-| สีของ slice ใช้ chemical_groups_color ของแต่ละกลุ่มโดยตรง
-*/
-
 let pieChart = null;
 
 function buildPieData(){
     const bomdt = @json($bomdt ?? []);
 
-    // fallback palette used only if a group has no chemical_groups_color
     const fallbackPalette = [
         '#1c3a5e','#3d6d99','#6f9bc4','#a9c6e0',
         '#b3261e','#e0a458','#4a7c59','#8e7cc3'
     ];
 
-    // group rows by chemical_groups_name, summing weghttotal per group
     const groups = {};
     let fallbackIdx = 0;
 
     bomdt.forEach(function(item){
-        const key = item.chemical_groups_name || 'อื่นๆ';
+        const key = item.chemical_groups_name || 'Others';
         const val = parseFloat(item.weghttotal) || 0;
 
         if(!groups[key]){
