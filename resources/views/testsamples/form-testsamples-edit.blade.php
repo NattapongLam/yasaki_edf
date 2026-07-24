@@ -141,7 +141,7 @@
         <div class="row">
             <div class="col-12 col-md-6"><h3 class="card-title">รับชิ้นงานทดสอบ</h3></div>
         </div>       
-        <div class="row mt-3">
+        <div class="row mt-2">
              <div class="col-2">
                 <div class="form-group">
                     <label for="receive_test_lists_date" class="col-form-label">วันที่รับ</label>
@@ -162,7 +162,7 @@
                             readonly>
                 </div>
             </div>
-             <div class="col-3">
+             <div class="col-2">
                 <div class="form-group">
                     <label for="dimensions_id" class="col-form-label">เครื่องวัดชิ้นงาน</label>
                     <select class="form-control" name="dimensions_id" disabled>
@@ -170,6 +170,20 @@
                         @foreach ($cal as $item)
                             <option value="{{$item->calibration_lists_id}}"
                                 {{ $item->calibration_lists_id == $pd->dimensions_id ? 'selected' : '' }}>
+                                {{$item->calibration_lists_name1}} ({{$item->calibration_lists_code}})
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="form-group">
+                    <label for="dimensions_id1" class="col-form-label">เครื่องวัดชิ้นงาน</label>
+                    <select class="form-control" name="dimensions_id1" disabled>
+                        <option value="">กรุณาเลือกเครื่องวัด</option>
+                        @foreach ($cal as $item)
+                            <option value="{{$item->calibration_lists_id}}"
+                                {{ $item->calibration_lists_id == $pd->dimensions_id1 ? 'selected' : '' }}>
                                 {{$item->calibration_lists_name1}} ({{$item->calibration_lists_code}})
                             </option>
                         @endforeach
@@ -186,7 +200,7 @@
                             readonly>
                 </div>
             </div>
-             <div class="col-3">
+             <div class="col-2">
                 <div class="form-group">
                     <label for="weight_id" class="col-form-label">เครื่องชั่งชิ้นงาน</label>
                     <select class="form-control" name="weight_id" disabled>
@@ -201,8 +215,8 @@
                 </div>
             </div> 
         </div>
-        <div class="row mt-3">
-            <div class="col-3">
+        <div class="row mt-2">
+            <div class="col-2">
                 <div class="form-group">
                     <label for="chemistry_hd_id" class="col-form-label">สูตรเคมี</label>
                     <select class="form-control" name="chemistry_hd_id" disabled>
@@ -216,9 +230,9 @@
                     </select>
                 </div>
             </div>
-            <div class="col-9">
+            <div class="col-10">
                 <div class="form-group">
-                    <label for="" class="col-form-label">หมายเหตุ</label>
+                    <label for="" class="col-form-label">สถาพทั่วไป/ความสมบูรณ์ของชิ้นงาน</label>
                     <input class="form-control" name="receive_test_lists_note" value="{{$pd->receive_test_lists_note}}" readonly>
                 </div>
             </div>
@@ -273,7 +287,7 @@
                 </div>
             </div>
         </div>
-         <div class="row mt-3">
+         <div class="row mt-2">
             <div class="col-3">
                 <div class="form-group">
                     <label for="result_test_lists_dimensions" class="col-form-label">มิติชิ้นงานวัดจริง ก×ย×ส (mm)</label>
@@ -286,13 +300,34 @@
             </div>
             <div class="col-3">
                 <div class="form-group">
-                    <label for="result_dimensions_id" class="col-form-label">เครื่องวัดชิ้นงาน</label>
+                    <label for="result_dimensions_id" class="col-form-label">เครื่องวัดชิ้นงานที่1</label>
                     <select class="form-control" name="result_dimensions_id" required>
                         <option value="">กรุณาเลือกเครื่องวัด</option>
                         @foreach ($cal as $item)
                             <option value="{{$item->calibration_lists_id}}">{{$item->calibration_lists_name1}} ({{$item->calibration_lists_code}})</option>
                         @endforeach
                     </select>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-group">
+                    <label for="result_dimensions_id1" class="col-form-label">เครื่องวัดชิ้นงานที่2</label>
+                    <select class="form-control" name="result_dimensions_id1" required>
+                        <option value="">กรุณาเลือกเครื่องวัด</option>
+                        @foreach ($cal as $item)
+                            <option value="{{$item->calibration_lists_id}}">{{$item->calibration_lists_name1}} ({{$item->calibration_lists_code}})</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-group">
+                    <label for="result_test_lists_plate" class="col-form-label">วัสดุจานทดสอบ</label>
+                    <input type="text" class="form-control" 
+                            name="result_test_lists_plate" 
+                            id="result_test_lists_plate"
+                            value=""
+                            required>
                 </div>
             </div>
             <div class="col-3">
@@ -315,9 +350,7 @@
                         @endforeach
                     </select>
                 </div>
-            </div>           
-        </div>
-        <div class="row mt-3">
+            </div>
             <div class="col-3">
                 <div class="form-group">
                     <label for="result_test_lists_temp" class="col-form-label">อุณหภูมิห้อง</label>
@@ -337,23 +370,25 @@
                             value=""
                             required>
                 </div>
-            </div>
-            <div class="col-3">
-                <div class="form-group">
-                    <label for="result_test_lists_plate" class="col-form-label">วัสดุจานทดสอบ</label>
-                    <input type="text" class="form-control" 
-                            name="result_test_lists_plate" 
-                            id="result_test_lists_plate"
-                            value=""
-                            required>
-                </div>
-            </div>
+            </div>           
+        </div>
+        <div class="row mt-2">                    
             <div class="col-3">
                 <div class="form-group">
                     <label for="result_test_lists_test" class="col-form-label">ผลการทดสอบ</label>
                     <input type="text" class="form-control" 
                             name="result_test_lists_test" 
                             id="result_test_lists_test"
+                            value=""
+                            required>
+                </div>
+            </div>
+            <div class="col-9">
+                <div class="form-group">
+                    <label for="result_test_lists_remark" class="col-form-label">สภาพพื้นผิวสัมผัส</label>
+                    <input type="text" class="form-control" 
+                            name="result_test_lists_remark" 
+                            id="result_test_lists_remark"
                             value=""
                             required>
                 </div>
@@ -378,7 +413,7 @@
         </div>
         <div class="row mt-3">
             <div class="form-group">
-                <label for="receive_test_lists_weight" class="col-form-label">หมายเหตุ</label>
+                <label for="receive_test_lists_weight" class="col-form-label">สถาพทั่วไป/ความสมบูรณ์ของชิ้นงาน</label>
                 <textarea class="form-control" name="result_test_lists_note"></textarea>
             </div>
         </div>

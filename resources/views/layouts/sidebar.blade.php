@@ -110,11 +110,17 @@
                             </ul>
                         </li>
                         <li>
-                            <a href="javascript: void(0);" class="has-arrow" key="t-vertical">ชิ้นงาน</a>
+                            <a href="javascript: void(0);" class="has-arrow" key="t-vertical">ทดสอบ</a>
                             <ul class="sub-menu" aria-expanded="true">
-                                <li><a href="{{route('receive-test.index')}}" key="t-default">รับชิ้นงานทดสอบ</a></li> 
-                                <li><a href="{{route('receive-test.create')}}" key="t-default">ชิ้นงานหลังทดสอบ</a></li> 
-                                <li><a href="{{ url('/receive-result') }}" key="t-default">ชิ้นงานทดสอบเรียบร้อย</a></li>
+                                <li><a href="{{route('receive-test.index')}}" key="t-default">ใบเปิดงาน</a></li> 
+                                <li><a href="{{route('receive-test.create')}}" key="t-default">ปิดงาน</a></li> 
+                                <li><a href="{{ url('/receive-result') }}" key="t-default">รายการ</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow" key="t-vertical">ซ่อมบำรุง</a>
+                            <ul class="sub-menu" aria-expanded="true">
+                                <li><a href="{{route('maintenances.index')}}" key="t-default">ใบแจ้งซ่อม</a></li> 
                             </ul>
                         </li>
                     </ul>                                         
@@ -125,7 +131,7 @@
                         <span key="t-layouts">ฝ่ายขาย</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="true">
-                        <li><a href="{{route('requestorders.index')}}" key="t-default">คำร้องขอใช้บริการ</a></li> 
+                        <li><a href="{{route('requestorders.index')}}" key="t-default">ใบรับคำร้องขอใช้บริการ</a></li> 
                         <li><a href="{{route('quotations.index')}}" key="t-default">ใบเสนอราคา</a></li> 
                         <li><a href="{{route('invoices.index')}}" key="t-default">ใบแจ้งหนี้</a></li> 
                         <li><a href="{{route('saleorders.index')}}" key="t-default">บิลขาย/บริการ</a></li> 

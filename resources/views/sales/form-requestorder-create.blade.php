@@ -19,7 +19,7 @@
         <form method="POST" class="form-horizontal" action="{{ route('requestorders.store') }}" enctype="multipart/form-data">
         @csrf      
         <div class="row">
-            <div class="col-12 col-md-6"><h3 class="card-title">คำร้องขอใช้บริการ (ISO/IEC 17025)</h3></div>
+            <div class="col-12 col-md-6"><h3 class="card-title">ใบรับคำร้องขอใช้บริการ (ISO/IEC 17025)</h3></div>
         </div>
         <div class="row mt-3">
             <div class="col-3">
@@ -61,14 +61,24 @@
                             required>
                 </div>
             </div>
-            <div class="col-9">
+            <div class="col-3">
+                <div class="form-group">
+                    <label for="ar_requestorder_hds_duedate" class="col-form-label">กำหนดส่ง</label>
+                    <input type="date" class="form-control" 
+                            name="ar_requestorder_hds_duedate" 
+                            id="ar_requestorder_hds_duedate"
+                            value="{{ old('ar_requestorder_hds_duedate', now()->format('Y-m-d')) }}" 
+                            required>
+                </div>
+            </div>
+            <div class="col-6">
                 <div class="form-group">
                     <label for="ar_requestorder_hd_remark" class="col-form-label">หมายเหตุ</label>
                     <input type="text" class="form-control" 
                             name="ar_requestorder_hd_remark" 
                             id="ar_requestorder_hd_remark">
                 </div>
-            </div>
+            </div>            
         </div>
         <div class="row mt-3">
              <div class="col-12" style="text-align: right;">

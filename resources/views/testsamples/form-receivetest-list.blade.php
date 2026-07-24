@@ -17,7 +17,7 @@
 <div class="card">
     <div class="card-body">
         <div class="row">
-            <div class="col-12 col-md-6"><h3 class="card-title">รับชิ้นงานทดสอบ</h3></div>           
+            <div class="col-12 col-md-6"><h3 class="card-title">ใบเปิดงานทดสอบ</h3></div>           
         </div>       
         <table id="tb_job" class="table table-bordered dt-responsive nowrap w-100 text-center">
             <thead>
@@ -66,7 +66,7 @@
                            {{\Carbon\Carbon::parse($item->approved_date)->format('d/m/Y') ?? ''}}
                         </td>
                         <td>
-                            @if ($item->ar_requestorder_statuses_id == 5)
+                            @if ($item->ar_requestorder_statuses_id == 2)
                             <a href="{{route('receive-test.edit',$item->ar_requestorder_hds_id)}}" class="btn btn-sm btn-warning" >
                                     <i class="fas fa-edit"></i>
                                 </a> 

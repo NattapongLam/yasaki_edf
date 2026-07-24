@@ -705,19 +705,7 @@ Note: The reported uncertainty is based on a standard uncertainty multiplied by 
         <span class="equip-role">Dimension Measuring Tool</span>
         <div class="equip-name">{{ $caldimensions->calibration_lists_name1 }}</div>
         <div class="equip-code">Code: {{ $caldimensions->calibration_lists_code }}</div>
-        <div class="equip-detail">
-            @if ($caldimensions->calibration_lists_code == "3318-001")
-                <b>Temperature:</b> {{ number_format($caldimensions->calibration_lists_temperature,2) }}
-                +{{ number_format($caldimensions->calibration_lists_temperature_add,2) }}
-                /-{{ number_format($caldimensions->calibration_lists_temperature_del,2) }}
-                <b>Humidity:</b> {{ number_format($caldimensions->calibration_lists_humidity,2) }}
-                +{{ number_format($caldimensions->calibration_lists_humidity_add,2) }}
-                /-{{ number_format($caldimensions->calibration_lists_humidity_del,2) }}<br>
-            @else
-               <b>Standard Value:</b> {{ number_format($caldimensions->calibration_lists_areaofuse,2) }}
-               +{{ number_format($caldimensions->calibration_lists_areaofuse_add,2) }}
-               /-{{ number_format($caldimensions->calibration_lists_areaofuse_del,2) }}<br> 
-            @endif            
+        <div class="equip-detail">           
             <b>{{ $caldimensions->calibration_lists_reamrk}}  Expire Date {{ \Carbon\Carbon::parse($caldimensions->calibration_lists_nextdate)->format('d/m/Y') }}</b>
         </div>
     </div>
@@ -726,19 +714,7 @@ Note: The reported uncertainty is based on a standard uncertainty multiplied by 
         <span class="equip-role">Weighing Scale</span>
         <div class="equip-name">{{ $calweight->calibration_lists_name1 }}</div>
         <div class="equip-code">Code: {{ $calweight->calibration_lists_code }}</div>
-        <div class="equip-detail">
-            @if ($calweight->calibration_lists_code == "3318-001")
-                <b>Temperature:</b> {{ number_format($calweight->calibration_lists_temperature,2) }}
-                +{{ number_format($calweight->calibration_lists_temperature_add,2) }}
-                /-{{ number_format($calweight->calibration_lists_temperature_del,2) }}
-                <b>Humidity:</b> {{ number_format($calweight->calibration_lists_humidity,2) }}
-                +{{ number_format($calweight->calibration_lists_humidity_add,2) }}
-                /-{{ number_format($calweight->calibration_lists_humidity_del,2) }}<br>
-            @else
-               <b>Standard Value:</b> {{ number_format($calweight->calibration_lists_areaofuse,2) }}
-               +{{ number_format($calweight->calibration_lists_areaofuse_add,2) }}
-               /-{{ number_format($calweight->calibration_lists_areaofuse_del,2) }}<br> 
-            @endif      
+        <div class="equip-detail">     
             <b>{{ $calweight->calibration_lists_reamrk}}  Expire Date {{ \Carbon\Carbon::parse($calweight->calibration_lists_nextdate)->format('d/m/Y') }}</b>
         </div>
     </div>
@@ -748,19 +724,7 @@ Note: The reported uncertainty is based on a standard uncertainty multiplied by 
         <span class="equip-role">Testing Machine</span>
         <div class="equip-name">{{ $item->calibration_lists_name1 }}</div>
         <div class="equip-code">Code: {{ $item->calibration_lists_code }}</div>
-        <div class="equip-detail">
-            @if ($item->calibration_lists_code == "3318-001")
-                <b>Temperature:</b> {{ number_format($item->calibration_lists_temperature,2) }}
-                +{{ number_format($item->calibration_lists_temperature_add,2) }}
-                /-{{ number_format($item->calibration_lists_temperature_del,2) }}
-                <b>Humidity:</b> {{ number_format($item->calibration_lists_humidity,2) }}
-                +{{ number_format($item->calibration_lists_humidity_add,2) }}
-                /-{{ number_format($item->calibration_lists_humidity_del,2) }}<br>
-            @else
-               <b>Standard Value:</b> {{ number_format($item->calibration_lists_areaofuse,2) }}
-               +{{ number_format($item->calibration_lists_areaofuse_add,2) }}
-               /-{{ number_format($item->calibration_lists_areaofuse_del,2) }}<br> 
-            @endif      
+        <div class="equip-detail">      
             <b>{{ $item->calibration_lists_reamrk}}  Expire Date {{ \Carbon\Carbon::parse($item->calibration_lists_nextdate)->format('d/m/Y') }}</b>
         </div>
     </div>

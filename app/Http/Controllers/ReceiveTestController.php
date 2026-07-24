@@ -16,6 +16,10 @@ use Illuminate\Support\Str;
 
 class ReceiveTestController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -24,7 +28,7 @@ class ReceiveTestController extends Controller
     public function index()
     {
         $hd = ArRequestorderHd::leftjoin('ar_requestorder_statuses','ar_requestorder_hds.ar_requestorder_statuses_id','=','ar_requestorder_statuses.ar_requestorder_statuses_id')
-        ->where('ar_requestorder_hds.ar_requestorder_statuses_id',5)
+        ->where('ar_requestorder_hds.ar_requestorder_statuses_id',2)
         ->get();
         return view('testsamples.form-receivetest-list', compact('hd'));
     }
@@ -59,6 +63,7 @@ class ReceiveTestController extends Controller
             'receive_test_lists_weight' => ['required'],
             'weight_id' => ['required'],
             'chemistry_hd_id' => ['required'],
+            'dimensions_id1' => ['required'],
         ]);
         $data = [
             'ar_requestorder_hds_id' => $request->ar_requestorder_hds_id,
@@ -73,6 +78,7 @@ class ReceiveTestController extends Controller
             'receive_test_lists_flag' => 1,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
+            'dimensions_id1' => $request->dimensions_id1
         ];
         if ($request->hasFile('receive_test_lists_file1')) {
             $data['receive_test_lists_file1'] = $request->file('receive_test_lists_file1')->storeAs('images/Receivetest_File', "IMG_" . Carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('receive_test_lists_file1')->extension());
@@ -145,6 +151,7 @@ class ReceiveTestController extends Controller
             'result_test_lists_weight' => ['required'],
             'result_weight_id' => ['required'],
             'receive_test_subs_listno' => ['required'],
+            'result_dimensions_id1' => ['required'],
         ]);
         $data = [
             'result_test_lists_date' => $request->result_test_lists_date,
@@ -158,7 +165,9 @@ class ReceiveTestController extends Controller
             'result_test_lists_temp' => $request->result_test_lists_temp,
             'result_test_lists_moisture' => $request->result_test_lists_moisture,
             'result_test_lists_plate' => $request->result_test_lists_plate,
-            'result_test_lists_test' => $request->result_test_lists_test
+            'result_test_lists_test' => $request->result_test_lists_test,
+            'result_dimensions_id1' => $request->result_dimensions_id1,
+            'result_test_lists_remark' => $request->result_test_lists_remark,
 
         ];
         if ($request->hasFile('result_test_lists_file1')) {

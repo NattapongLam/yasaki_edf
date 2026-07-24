@@ -187,7 +187,7 @@
             </div>
             <div class="col-3">
                 <div class="form-group">
-                    <label for="dimensions_id" class="col-form-label">เครื่องวัดชิ้นงาน</label>
+                    <label for="dimensions_id" class="col-form-label">เครื่องวัดชิ้นงานที่1</label>
                     <select class="form-control" name="dimensions_id" required>
                         <option value="">กรุณาเลือกเครื่องวัด</option>
                         @foreach ($cal as $item)
@@ -196,6 +196,30 @@
                     </select>
                 </div>
             </div>
+            <div class="col-3">
+                <div class="form-group">
+                    <label for="dimensions_id1" class="col-form-label">เครื่องวัดชิ้นงานที่2</label>
+                    <select class="form-control" name="dimensions_id1" required>
+                        <option value="">กรุณาเลือกเครื่องวัด</option>
+                        @foreach ($cal as $item)
+                            <option value="{{$item->calibration_lists_id}}">{{$item->calibration_lists_name1}} ({{$item->calibration_lists_code}})</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-group">
+                    <label for="chemistry_hd_id" class="col-form-label">สูตรเคมี</label>
+                    <select class="form-control" name="chemistry_hd_id" required>
+                        <option value="">กรุณาเลือกสูตร</option>
+                        @foreach ($bom as $item)
+                            <option value="{{$item->chemistry_hd_id}}">{{$item->ms_formule_name}} ({{$item->chemistry_hd_name}})</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>                      
+        </div>
+        <div class="row mt-3">
             <div class="col-3">
                 <div class="form-group">
                     <label for="receive_test_lists_weight" class="col-form-label">น้ำหนักชิ้นงานชั่งจริง</label>
@@ -216,23 +240,10 @@
                         @endforeach
                     </select>
                 </div>
-            </div>           
-        </div>
-        <div class="row mt-3">
-            <div class="col-3">
-                <div class="form-group">
-                    <label for="chemistry_hd_id" class="col-form-label">สูตรเคมี</label>
-                    <select class="form-control" name="chemistry_hd_id" required>
-                        <option value="">กรุณาเลือกสูตร</option>
-                        @foreach ($bom as $item)
-                            <option value="{{$item->chemistry_hd_id}}">{{$item->ms_formule_name}} ({{$item->chemistry_hd_name}})</option>
-                        @endforeach
-                    </select>
-                </div>
             </div>
-            <div class="col-9">
+            <div class="col-6">
                 <div class="form-group">
-                    <label for="" class="col-form-label">หมายเหตุ</label>
+                    <label for="" class="col-form-label">สถาพทั่วไป/ความสมบูรณ์ของชิ้นงาน</label>
                     <input class="form-control" name="receive_test_lists_note">
                 </div>
             </div>

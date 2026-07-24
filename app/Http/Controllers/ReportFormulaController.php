@@ -174,10 +174,10 @@ class ReportFormulaController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $targetMu   = 0.45;   // DefaultDesignated
-        $tolerance  = 0.08;   // ±
-        $jisMaxVal  = 0.55;
-        $jisMinVal  = 0.35;
+        $targetMu   = 0.45;   // ค่าสัมประสิทธิ์แรงเสียดทานที่กำหนด ตาม JIS D 4411
+        $tolerance  = 0.08;   // ค่าความเบี่ยงเบนที่ยอมรับได้ ตาม JIS D 4411
+        $jisMaxVal  = 0.55;   // การคำนวณช่วงการยอมรับ ตาม JIS D 4411
+        $jisMinVal  = 0.35;   // การคำนวณช่วงการยอมรับ ตาม JIS D 4411
 
 
         /*
