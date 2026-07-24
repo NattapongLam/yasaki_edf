@@ -218,12 +218,15 @@ class ReportFormulaController extends Controller
         ->where('receive_test_subs.receive_test_lists_flag',true)
         ->get();
         $bomhd = DB::table('chemistry_hd')->where('chemistry_hd_id',$rechd->chemistry_hd_id)->first();
-        $bomdt = DB::table('chemistry_dt')
+        $bomdt = null;
+        if($bomhd){
+            $bomdt = DB::table('chemistry_dt')
             ->leftjoin('chemical_lists', 'chemistry_dt.code', '=', 'chemical_lists.chemical_lists_refcode')
             ->leftjoin('chemical_groups', 'chemical_groups.chemical_groups_id', '=', 'chemical_lists.chemical_groups_id')
             ->leftjoin('chemical_funtions', 'chemical_funtions.chemical_funtions_id', '=', 'chemical_lists.chemical_funtions_id')
             ->where('chemistry_hd_id', $bomhd->chemistry_hd_id)
             ->where('flag', 1)->get();
+        }       
         return view(
             'report.report-compareformulas-print',compact(
                 'hd','friction','dt','frictionPoints','wearRatePoints','temps','safeUpper','safeLower','jisMin','jisMax','targetUpper','targetLower'
