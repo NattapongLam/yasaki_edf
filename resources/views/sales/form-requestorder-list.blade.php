@@ -26,8 +26,9 @@
                     <th>สถานะ</th>
                     <th>วันที่</th>
                     <th>เลขที่</th>
-                    <th>ลูกค้า</th>
-                    <th>ติดต่อ</th>
+                    <th>กำหนดส่ง</th>
+                    <th>ชื่อบริษัท</th>
+                    <th>ผู้ติดต่อ</th>
                     <th>หมายเหตุ</th>
                     <th>แก้ไข</th>
                     <th>ยกเลิก</th>
@@ -69,6 +70,9 @@
                         </td>
                         <td>
                             {{$item->ar_requestorder_hds_docuno}}
+                        </td>
+                        <td>
+                            {{$item->ar_requestorder_hds_duedate}}
                         </td>
                         <td>
                             {{$item->ar_requestorder_hds_customer}}

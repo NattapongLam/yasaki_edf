@@ -31,7 +31,8 @@
                     <th>ผู้อนุมัติ</th>
                     <th>ผู้รับชิ้นงาน</th>
                     <th>รูปชิ้นงาน</th>
-                    <th></th>
+                    <th>พิมพ์รายงาน</th>
+                    <th>เอกสารส่งมอบ</th>
                 </tr>
             </thead>
             <tbody>
@@ -84,6 +85,9 @@
                             <a href="{{ route('report.compareformulas.print',$item->TestID) }}" target="_blank" class="btn btn-sm btn-warning">
                                 <i class="fas fa-print"></i>
                             </a>
+                        </td>
+                        <td>
+                            <a href="{{ route('delivered.edit',$item->ar_requestorder_hds_id) }}" class="btn btn-sm btn-primary"><i class="fas fa-plus"></i> สร้าง</a>
                         </td>
                     </tr>
                 @endforeach

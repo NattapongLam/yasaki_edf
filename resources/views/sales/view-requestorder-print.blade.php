@@ -183,8 +183,8 @@
         </div>
         <div class="sig-box">
             <p style="margin: 0;">ลูกค้ายืนยัน</p>
-            <div class="sig-line">( {{ $hd->approved_at ?? '............................................' }} )</div>
-            <p style="margin: 0;">วันที่: {{ !empty($hd->approved_date) ? \Carbon\Carbon::parse($hd->approved_date)->format('d/m/Y') : '............................................' }}</p>
+            <div class="sig-line">( ............................................ )</div>
+            <p style="margin: 0;">วันที่: ............................................</p>
         </div>
     </div>
     

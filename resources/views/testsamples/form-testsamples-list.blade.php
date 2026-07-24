@@ -25,6 +25,7 @@
                     <th>สถานะ</th>
                     <th>วันที่</th>
                     <th>เลขที่</th>
+                    <th>กำหนดส่ง</th>
                     <th>ลูกค้า</th>
                     <th>ติดต่อ</th>
                     <th>หมายเหตุ</th>
@@ -55,6 +56,9 @@
                             {{$item->ar_requestorder_hds_docuno}}
                         </td>
                         <td>
+                            {{$item->ar_requestorder_hds_duedate}}
+                        </td>
+                        <td>
                             {{$item->ar_requestorder_hds_customer}}
                         </td>
                         <td>
@@ -74,8 +78,8 @@
                            น้ำหนักชิ้นงานชั่งจริง: {{$item->receive_test_lists_weight}}
                         </td>
                         <td>
-                            <img src="{{asset($item->receive_test_lists_file1)}}" class="img-thumbnail" width="25%">
-                            <img src="{{asset($item->receive_test_lists_file2)}}" class="img-thumbnail" width="25%">
+                            <img src="{{asset($item->receive_test_lists_file1)}}" class="img-thumbnail" width="10%">
+                            <img src="{{asset($item->receive_test_lists_file2)}}" class="img-thumbnail" width="10%">
                         </td>
                         <td>
                             @if ($item->ar_requestorder_statuses_id == 6)

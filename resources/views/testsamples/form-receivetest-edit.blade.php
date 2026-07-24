@@ -211,7 +211,7 @@
                 <div class="form-group">
                     <label for="chemistry_hd_id" class="col-form-label">สูตรเคมี</label>
                     <select class="form-control" name="chemistry_hd_id" required>
-                        <option value="">กรุณาเลือกสูตร</option>
+                        <option value="0">กรุณาเลือกสูตร</option>
                         @foreach ($bom as $item)
                             <option value="{{$item->chemistry_hd_id}}">{{$item->ms_formule_name}} ({{$item->chemistry_hd_name}})</option>
                         @endforeach

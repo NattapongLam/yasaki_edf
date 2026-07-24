@@ -112,7 +112,8 @@
                         <li>
                             <a href="javascript: void(0);" class="has-arrow" key="t-vertical">ทดสอบ</a>
                             <ul class="sub-menu" aria-expanded="true">
-                                <li><a href="{{route('receive-test.index')}}" key="t-default">ใบเปิดงาน</a></li> 
+                                <li><a href="{{route('requestorders.index')}}" key="t-default">รับคำร้องขอใช้บริการ</a></li> 
+                                <li><a href="{{route('receive-test.index')}}" key="t-default">เปิดงาน</a></li> 
                                 <li><a href="{{route('receive-test.create')}}" key="t-default">ปิดงาน</a></li> 
                                 <li><a href="{{ url('/receive-result') }}" key="t-default">รายการ</a></li>
                             </ul>
@@ -130,8 +131,7 @@
                         <i class="bx bx-layout"></i>
                         <span key="t-layouts">ฝ่ายขาย</span>
                     </a>
-                    <ul class="sub-menu" aria-expanded="true">
-                        <li><a href="{{route('requestorders.index')}}" key="t-default">ใบรับคำร้องขอใช้บริการ</a></li> 
+                    <ul class="sub-menu" aria-expanded="true">                       
                         <li><a href="{{route('quotations.index')}}" key="t-default">ใบเสนอราคา</a></li> 
                         <li><a href="{{route('invoices.index')}}" key="t-default">ใบแจ้งหนี้</a></li> 
                         <li><a href="{{route('saleorders.index')}}" key="t-default">บิลขาย/บริการ</a></li> 

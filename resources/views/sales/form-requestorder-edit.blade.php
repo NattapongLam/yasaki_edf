@@ -58,7 +58,7 @@
         <div class="row mt-3">
             <div class="col-3">
                 <div class="form-group">
-                    <label for="ar_requestorder_hds_contact" class="col-form-label">ติดต่อ</label>
+                    <label for="ar_requestorder_hds_contact" class="col-form-label">ผู้ติดต่อ</label>
                     <input type="text" class="form-control" 
                             name="ar_requestorder_hds_contact" 
                             id="ar_requestorder_hds_contact"

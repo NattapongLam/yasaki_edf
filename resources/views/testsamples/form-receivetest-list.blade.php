@@ -25,11 +25,13 @@
                     <th>สถานะ</th>
                     <th>วันที่</th>
                     <th>เลขที่</th>
+                    <th>กำหนดส่ง</th>
                     <th>ลูกค้า</th>
                     <th>ติดต่อ</th>
                     <th>หมายเหตุ</th>
                     <th>ผู้อนุมัติ</th>
                     <th>รับชิ้นงาน</th>
+                    <th>เอกสารส่งมอบ</th>
                 </tr>
             </thead>
             <tbody>
@@ -53,6 +55,9 @@
                             {{$item->ar_requestorder_hds_docuno}}
                         </td>
                         <td>
+                            {{$item->ar_requestorder_hds_duedate}}
+                        </td>
+                        <td>
                             {{$item->ar_requestorder_hds_customer}}
                         </td>
                         <td>
@@ -71,6 +76,9 @@
                                     <i class="fas fa-edit"></i>
                                 </a> 
                             @endif
+                        </td>
+                        <td>
+                            <a href="{{ route('delivered.edit',$item->ar_requestorder_hds_id) }}" class="btn btn-sm btn-primary"><i class="fas fa-plus"></i> สร้าง</a>
                         </td>
                     </tr>
                 @endforeach
