@@ -52,6 +52,7 @@ Route::get('/analyze-formulas' , [App\Http\Controllers\ReportFormulaController::
 Route::post('/get-formula-detail', [App\Http\Controllers\ReportFormulaController::class, 'getFormulaDetail'])->name('report.get.formula.detail');
 Route::resource('/receive-test' , App\Http\Controllers\ReceiveTestController::class);
 Route::get('/receive-result' , [App\Http\Controllers\ReceiveTestController::class , 'ReceiveResult']);
+Route::resource('/delivered' , App\Http\Controllers\DeliveredController::class);
 // เคมี
 
 // ทั่วไป
