@@ -57,7 +57,6 @@ class ChemistryController extends Controller
             'ms_formule_name' => ['required'],
             'chemistry_hd_name' => ['required'],
             'chemistry_hd_type' => ['required'],
-            'no' => ['required'],
         ]); 
         $year = date('Y');
 
@@ -107,26 +106,29 @@ class ChemistryController extends Controller
         try{
             DB::beginTransaction();
             DB::table('chemistry_hd')->insert($data);
-            foreach ($request->no as $key => $value) {
-                $pd = DB::table('chemical_lists')->where('chemical_lists_id',$request->code[$key])->first();
-                $lastDtId = DB::table('chemistry_dt')->max('chemistry_dt_id');
-                $newDtId = $lastDtId + 1;
-                DB::table('chemistry_dt')->insert([
-                    'chemistry_dt_id' => $newDtId,
-                    'chemistry_hd_id' => $newId,
-                    'no' =>  $value,
-                    'code' => $pd->chemical_lists_refcode,
-                    'material' => $pd->chemical_lists_name,
-                    'grade' => $pd->chemical_lists_grade,
-                    'density' => $request->density[$key],
-                    'adjust' => $request->adjust[$key],
-                    'weght' => $request->weght[$key],
-                    'weghtper' => $request->weghtper[$key],
-                    'weghttotal' => $request->weghttotal[$key],
-                    'flag' => true,
-                    'update_at' => Carbon::now(),
-                ]);
-            }  
+            if($request->no){
+                foreach ($request->no as $key => $value) {
+                    $pd = DB::table('chemical_lists')->where('chemical_lists_id',$request->code[$key])->first();
+                    $lastDtId = DB::table('chemistry_dt')->max('chemistry_dt_id');
+                    $newDtId = $lastDtId + 1;
+                    DB::table('chemistry_dt')->insert([
+                        'chemistry_dt_id' => $newDtId,
+                        'chemistry_hd_id' => $newId,
+                        'no' =>  $value,
+                        'code' => $pd->chemical_lists_refcode,
+                        'material' => $pd->chemical_lists_name,
+                        'grade' => $pd->chemical_lists_grade,
+                        'density' => $request->density[$key],
+                        'adjust' => $request->adjust[$key],
+                        'weght' => $request->weght[$key],
+                        'weghtper' => $request->weghtper[$key],
+                        'weghttotal' => $request->weghttotal[$key],
+                        'flag' => true,
+                        'update_at' => Carbon::now(),
+                    ]);
+                }  
+            }
+            
             DB::commit();
             return redirect()->route('chemistrys.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
         }catch(\Exception $e){

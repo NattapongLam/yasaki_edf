@@ -24,20 +24,22 @@
         <div class="row mt-2">
             <div class="col-3">
                 <div class="form-group">
-                     <label for="" class="col-form-label">วันที่ส่งมอบ</label>
+                     <label for="delivered_test_hds_date" class="col-form-label">วันที่ส่งมอบ</label>
                     <input type="date" class="form-control" 
-                            name="" 
-                            id=""
-                            value="">
+                            name="delivered_test_hds_date" 
+                            id="delivered_test_hds_date"
+                            value=""
+                            required>
                 </div>
             </div>
             <div class="col-3">
                 <div class="form-group">
-                     <label for="" class="col-form-label">เลขที่</label>
+                     <label for="delivered_test_hds_docuno" class="col-form-label">เลขที่</label>
                     <input type="text" class="form-control" 
-                            name="" 
-                            id=""
-                            value="">
+                            name="delivered_test_hds_docuno" 
+                            id="delivered_test_hds_docuno"
+                            value="{{ $newDocNo ?? '' }}"
+                            readonly>
                 </div>
             </div>
             <div class="col-3">
@@ -52,10 +54,10 @@
             </div>
             <div class="col-3">
                 <div class="form-group">
-                    <label for="ar_requestorder_hds_contact" class="col-form-label">ผู้ติดต่อ</label>
+                    <label for="delivered_test_hds_contact" class="col-form-label">ผู้ติดต่อ</label>
                     <input type="text" class="form-control" 
-                            name="ar_requestorder_hds_contact" 
-                            id="ar_requestorder_hds_contact"
+                            name="delivered_test_hds_contact" 
+                            id="delivered_test_hds_contact"
                             value="{{$hd->ar_requestorder_hds_contact}}"
                             readonly>
                 </div>
@@ -64,19 +66,19 @@
         <div class="row mt-2">               
             <div class="col-3">
                 <div class="form-group">
-                    <label for="ar_requestorder_hds_customer" class="col-form-label">ชื่อบริษัท</label>
+                    <label for="delivered_test_hds_customer" class="col-form-label">ชื่อบริษัท</label>
                      <input type="text" class="form-control" 
-                            name="ar_requestorder_hds_customer" 
-                            id="ar_requestorder_hds_customer"
+                            name="delivered_test_hds_customer" 
+                            id="delivered_test_hds_customer"
                             value="{{$hd->ar_requestorder_hds_customer}}"
                             readonly>
                 </div>
             </div>
             <div class="col-3">
                 <div class="form-group">
-                    <label for="ar_requestorder_hds_customer" class="col-form-label">ประเภทการส่งมอบ</label>
-                    <select class="form-control" name="">
-                        <option value="">กรุณาเลือก</option>
+                    <label for="ar_requestorder_statuses_id" class="col-form-label">ประเภทการส่งมอบ</label>
+                    <select class="form-control" name="ar_requestorder_statuses_id">
+                        <option value="0">กรุณาเลือก</option>
                         <option value="8">ส่งมอบผลทดสอบเรียบร้อย</option>
                         <option value="9">ส่งคืนชิ้นงานไม่ตรงสเปค</option>
                     </select>
@@ -84,10 +86,10 @@
             </div>
             <div class="col-6">
                 <div class="form-group">
-                    <label for="" class="col-form-label">หมายเหตุ</label>
+                    <label for="delivered_test_hds_remark" class="col-form-label">หมายเหตุ</label>
                     <input type="text" class="form-control" 
-                            name="" 
-                            id=""
+                            name="delivered_test_hds_remark" 
+                            id="delivered_test_hds_remark"
                             value="">
                 </div>
             </div>
@@ -121,6 +123,33 @@
         </form> 
     </div>
 </div>
+<div class="card">
+    <div class="card-body">
+        <h3 class="card-title">เอกสารส่งมอบ</h3>
+        <div class="row">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>วันที่</th>
+                        <th>เลขที่</th>
+                        <th>รายละเอียด</th>
+                        <th>จำนวน</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($dehd as $item)
+                        <tr>
+                            <td>{{$item->delivered_test_hds_date}}</td>
+                            <td>{{$item->delivered_test_hds_docuno}}</td>
+                            <td>{{$item->delivered_test_dts_remark}}</td>
+                            <td>{{$item->delivered_test_dts_qty}}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 </div>
 @endsection
 @push('scriptjs')
@@ -140,13 +169,13 @@ document.getElementById('addRowBtn').addEventListener('click', function () {
         newRow.innerHTML = `
             <td>
                 <span class="row-number"></span>
-                <input type="hidden" name="[]" class="row-number-hidden"/>
+                <input type="hidden" name="delivered_test_dts_listno[]" class="row-number-hidden"/>
             </td>           
             <td>
-                <textarea class="form-control" name="[]" rows="1" placeholder="เพิ่มเติม"></textarea>
+                <textarea class="form-control" name="delivered_test_dts_remark[]" rows="1" placeholder="เพิ่มเติม"></textarea>
             </td>
             <td>
-                 <input type="text" name="[]" class="form-control"/>
+                 <input type="text" name="delivered_test_dts_qty[]" class="form-control"/>
             </td>
             <td>
                 <button type="button" class="btn btn-danger btn-sm deleteRow">ลบ</button>
