@@ -212,6 +212,7 @@ class ReportFormulaController extends Controller
         $reqdt = ArRequestorderDt::where('ar_requestorder_hds_id',$reqhd->ar_requestorder_hds_id)->where('ar_requestorder_dts_flag',true)->first();
         $rechd = ReceiveTestList::where('ar_requestorder_hds_id',$reqhd->ar_requestorder_hds_id)->where('receive_test_lists_flag',true)->first();
         $caldimensions = CalibrationList::where('calibration_lists_id',$rechd->dimensions_id)->first();
+        $caldimensions1 = CalibrationList::where('calibration_lists_id',$rechd->dimensions_id1)->first();
         $calweight = CalibrationList::where('calibration_lists_id',$rechd->weight_id)->first();
         $cal = ReceiveTestSub::leftjoin('calibration_lists','receive_test_subs.calibration_lists_id','=','calibration_lists.calibration_lists_id')
         ->where('receive_test_subs.receive_test_lists_id',$rechd->receive_test_lists_id)
@@ -230,7 +231,7 @@ class ReportFormulaController extends Controller
         return view(
             'report.report-compareformulas-print',compact(
                 'hd','friction','dt','frictionPoints','wearRatePoints','temps','safeUpper','safeLower','jisMin','jisMax','targetUpper','targetLower'
-                ,'reqhd','reqdt','rechd','caldimensions','calweight','cal','bomdt'
+                ,'reqhd','reqdt','rechd','caldimensions','calweight','cal','bomdt','caldimensions1'
             )
         );
     }

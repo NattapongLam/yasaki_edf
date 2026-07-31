@@ -272,7 +272,7 @@ tr:nth-child(even) td{
 
 .equip-grid{
     display:grid;
-    grid-template-columns:repeat(2, 1fr);
+    grid-template-columns:repeat(3, 1fr);
     gap:8px;
 }
 
@@ -694,7 +694,6 @@ Note: The reported uncertainty is based on a standard uncertainty multiplied by 
 </table>
 </div>
 
-
 <!-- calibration / equipment -->
 
 <div class="section-title">Measuring & Test Equipment</div>
@@ -709,7 +708,14 @@ Note: The reported uncertainty is based on a standard uncertainty multiplied by 
             <b>{{ $caldimensions->calibration_lists_reamrk}}  Expire Date {{ \Carbon\Carbon::parse($caldimensions->calibration_lists_nextdate)->format('d/m/Y') }}</b>
         </div>
     </div>
-
+    <div class="equip-card">
+        <span class="equip-role">Dimension Measuring Tool</span>
+        <div class="equip-name">{{ $caldimensions1->calibration_lists_name1 }}</div>
+        <div class="equip-code">Code: {{ $caldimensions1->calibration_lists_code }}</div>
+        <div class="equip-detail">           
+            <b>{{ $caldimensions1->calibration_lists_reamrk}}  Expire Date {{ \Carbon\Carbon::parse($caldimensions1->calibration_lists_nextdate)->format('d/m/Y') }}</b>
+        </div>
+    </div>
     <div class="equip-card">
         <span class="equip-role">Weighing Scale</span>
         <div class="equip-name">{{ $calweight->calibration_lists_name1 }}</div>
