@@ -618,6 +618,51 @@ Note: The reported uncertainty is based on a standard uncertainty multiplied by 
 </div>
 
 
+
+<!-- calibration / equipment -->
+
+<div class="section-title">Measuring & Test Equipment</div>
+
+<div class="equip-grid no-break">
+
+    <div class="equip-card">
+        <span class="equip-role">Dimension Measuring Tool</span>
+        <div class="equip-name">{{ $caldimensions->calibration_lists_name1 }}</div>
+        <div class="equip-code">Code: {{ $caldimensions->calibration_lists_code }}</div>
+        <div class="equip-detail">           
+            <b>{{ $caldimensions->calibration_lists_reamrk}}  Expire Date {{ \Carbon\Carbon::parse($caldimensions->calibration_lists_nextdate)->format('d/m/Y') }}</b>
+        </div>
+    </div>
+    <div class="equip-card">
+        <span class="equip-role">Dimension Measuring Tool</span>
+        <div class="equip-name">{{ $caldimensions1->calibration_lists_name1 }}</div>
+        <div class="equip-code">Code: {{ $caldimensions1->calibration_lists_code }}</div>
+        <div class="equip-detail">           
+            <b>{{ $caldimensions1->calibration_lists_reamrk}}  Expire Date {{ \Carbon\Carbon::parse($caldimensions1->calibration_lists_nextdate)->format('d/m/Y') }}</b>
+        </div>
+    </div>
+    <div class="equip-card">
+        <span class="equip-role">Weighing Scale</span>
+        <div class="equip-name">{{ $calweight->calibration_lists_name1 }}</div>
+        <div class="equip-code">Code: {{ $calweight->calibration_lists_code }}</div>
+        <div class="equip-detail">     
+            <b>{{ $calweight->calibration_lists_reamrk}}  Expire Date {{ \Carbon\Carbon::parse($calweight->calibration_lists_nextdate)->format('d/m/Y') }}</b>
+        </div>
+    </div>
+
+    @foreach ($cal as $item)
+    <div class="equip-card">
+        <span class="equip-role">Testing Machine</span>
+        <div class="equip-name">{{ $item->calibration_lists_name1 }}</div>
+        <div class="equip-code">Code: {{ $item->calibration_lists_code }}</div>
+        <div class="equip-detail">      
+            <b>{{ $item->calibration_lists_reamrk}}  Expire Date {{ \Carbon\Carbon::parse($item->calibration_lists_nextdate)->format('d/m/Y') }}</b>
+        </div>
+    </div>
+    @endforeach
+
+</div>
+<div style="page-break-before: always;"></div>
 <!-- sample detail -->
 
 <div class="section-title">Sample Details</div>
@@ -677,7 +722,6 @@ Note: The reported uncertainty is based on a standard uncertainty multiplied by 
 </tr>
 
 </table>
-
 <table class="spec-photo">
     <tr>
         <th colspan="2">Sample Photo Before Test</th>
@@ -694,49 +738,7 @@ Note: The reported uncertainty is based on a standard uncertainty multiplied by 
 </table>
 </div>
 
-<!-- calibration / equipment -->
 
-<div class="section-title">Measuring & Test Equipment</div>
-
-<div class="equip-grid no-break">
-
-    <div class="equip-card">
-        <span class="equip-role">Dimension Measuring Tool</span>
-        <div class="equip-name">{{ $caldimensions->calibration_lists_name1 }}</div>
-        <div class="equip-code">Code: {{ $caldimensions->calibration_lists_code }}</div>
-        <div class="equip-detail">           
-            <b>{{ $caldimensions->calibration_lists_reamrk}}  Expire Date {{ \Carbon\Carbon::parse($caldimensions->calibration_lists_nextdate)->format('d/m/Y') }}</b>
-        </div>
-    </div>
-    <div class="equip-card">
-        <span class="equip-role">Dimension Measuring Tool</span>
-        <div class="equip-name">{{ $caldimensions1->calibration_lists_name1 }}</div>
-        <div class="equip-code">Code: {{ $caldimensions1->calibration_lists_code }}</div>
-        <div class="equip-detail">           
-            <b>{{ $caldimensions1->calibration_lists_reamrk}}  Expire Date {{ \Carbon\Carbon::parse($caldimensions1->calibration_lists_nextdate)->format('d/m/Y') }}</b>
-        </div>
-    </div>
-    <div class="equip-card">
-        <span class="equip-role">Weighing Scale</span>
-        <div class="equip-name">{{ $calweight->calibration_lists_name1 }}</div>
-        <div class="equip-code">Code: {{ $calweight->calibration_lists_code }}</div>
-        <div class="equip-detail">     
-            <b>{{ $calweight->calibration_lists_reamrk}}  Expire Date {{ \Carbon\Carbon::parse($calweight->calibration_lists_nextdate)->format('d/m/Y') }}</b>
-        </div>
-    </div>
-
-    @foreach ($cal as $item)
-    <div class="equip-card">
-        <span class="equip-role">Testing Machine</span>
-        <div class="equip-name">{{ $item->calibration_lists_name1 }}</div>
-        <div class="equip-code">Code: {{ $item->calibration_lists_code }}</div>
-        <div class="equip-detail">      
-            <b>{{ $item->calibration_lists_reamrk}}  Expire Date {{ \Carbon\Carbon::parse($item->calibration_lists_nextdate)->format('d/m/Y') }}</b>
-        </div>
-    </div>
-    @endforeach
-
-</div>
 
 <br>
 <!-- result -->
