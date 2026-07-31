@@ -326,7 +326,7 @@ tr:nth-child(even) td{
 /* charts */
 
 .chart-box{
-    height:180px;
+    height:160px;
     width:660px;
     margin:6px auto;
     border:1px solid var(--hairline);
@@ -336,7 +336,7 @@ tr:nth-child(even) td{
 }
 
 .chart-box canvas{
-    height:95px !important;
+    height:85px !important;
     width:100% !important;
 }
 
@@ -369,7 +369,7 @@ tr:nth-child(even) td{
 }
 
 .pie-canvas-wrap{
-    height:300px;
+    height:200px;
     width:100%;
 }
 
@@ -739,8 +739,6 @@ Note: The reported uncertainty is based on a standard uncertainty multiplied by 
 </div>
 
 
-
-<br>
 <!-- result -->
 
 <div class="section-title">Detailed Test Results</div>
