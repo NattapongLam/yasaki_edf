@@ -725,15 +725,15 @@ Note: The reported uncertainty is based on a standard uncertainty multiplied by 
 <table class="spec-photo">
     <tr>
         <th colspan="2">Sample Photo Before Test</th>
-        <td class="text-center"><img src="{{asset($rechd->receive_test_lists_file1)}}" class="img-thumbnail" width="50%"></td>
-        <td class="text-center"><img src="{{asset($rechd->receive_test_lists_file2)}}" class="img-thumbnail" width="50%"></td>      
+        <td class="text-center"><img src="{{asset($rechd->receive_test_lists_file1)}}" class="img-thumbnail" width="35%"></td>
+        <td class="text-center"><img src="{{asset($rechd->receive_test_lists_file2)}}" class="img-thumbnail" width="35%"></td>      
     </tr>
 </table>
 <table class="spec-photo">
     <tr>
         <th colspan="2">Sample Photo After Test</th>
-        <td class="text-center"><img src="{{asset($rechd->result_test_lists_file1)}}" class="img-thumbnail" width="50%"></td>
-        <td class="text-center"><img src="{{asset($rechd->result_test_lists_file2)}}" class="img-thumbnail" width="50%"></td>
+        <td class="text-center"><img src="{{asset($rechd->result_test_lists_file1)}}" class="img-thumbnail" width="35%"></td>
+        <td class="text-center"><img src="{{asset($rechd->result_test_lists_file2)}}" class="img-thumbnail" width="35%"></td>
     </tr>
 </table>
 </div>
