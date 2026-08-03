@@ -159,4 +159,18 @@ class DeliveredController extends Controller
     {
         //
     }
+    public function printDocument($id)
+    {
+        // ดึงข้อมูลหลักและรายการย่อย (ยึดตาม row ของตาราง)
+        $dt = DB::table('delivered_test_dts')
+            ->where('delivered_test_hds_id', $id)         
+            ->get();
+
+        // ดึงข้อมูลหัวข้อ (Header) ตัวเดี่ยวๆ มาแสดงส่วนหัวเอกสาร (ถ้าต้องการ)
+        $header = DB::table('delivered_test_hds')
+            ->where('delivered_test_hds_id', $id)
+            ->first();
+
+        return view('testsamples.form-deliveredtest-print', compact('dt', 'header'));
+    }
 }

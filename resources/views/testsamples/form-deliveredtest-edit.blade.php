@@ -134,6 +134,7 @@
                         <th>เลขที่</th>
                         <th>รายละเอียด</th>
                         <th>จำนวน</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -143,6 +144,11 @@
                             <td>{{$item->delivered_test_hds_docuno}}</td>
                             <td>{{$item->delivered_test_dts_remark}}</td>
                             <td>{{$item->delivered_test_dts_qty}}</td>
+                            <td>
+                                <a href="{{ route('delivered-test.print', $item->delivered_test_hds_id) }}" target="_blank" class="btn btn-success">
+                                    <i class="mdi mdi-printer me-1"></i> พิมพ์เอกสาร
+                                </a>
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
