@@ -27,7 +27,7 @@
 
 body{
     font-family:'Sarabun', Arial, Helvetica, sans-serif;
-    font-size:10px;
+    font-size:9.5px;
     margin:0;
     line-height:1.35;
     color:var(--ink);
@@ -73,14 +73,14 @@ body{
 
 .company{
     padding-left:8px;
-    font-size:9.5px;
+    font-size:9px;
     color:var(--muted);
     max-width:330px;
 }
 
 .company b{
     display:block;
-    font-size:12.5px;
+    font-size:12px;
     color:var(--navy-dark);
     letter-spacing:.2px;
     margin-bottom:1px;
@@ -88,7 +88,7 @@ body{
 
 .accred-badge{
     text-align:right;
-    font-size:8.5px;
+    font-size:8px;
     color:var(--steel);
     line-height:1.5;
 }
@@ -98,7 +98,7 @@ body{
     border:1px solid var(--steel);
     color:var(--navy);
     font-weight:600;
-    font-size:8px;
+    font-size:7.5px;
     letter-spacing:.6px;
     padding:2px 7px;
     border-radius:2px;
@@ -107,7 +107,7 @@ body{
 
 .report-title{
     text-align:center;
-    font-size:15px;
+    font-size:14px;
     font-weight:700;
     color:var(--navy-dark);
     margin:8px 0 2px 0;
@@ -116,7 +116,7 @@ body{
 
 .report-subtitle{
     text-align:center;
-    font-size:9px;
+    font-size:8.5px;
     color:var(--muted);
     margin-bottom:2px;
 }
@@ -180,7 +180,7 @@ tr:nth-child(even) td{
     display:flex;
     align-items:center;
     gap:8px;
-    font-size:12px;
+    font-size:11px;
     font-weight:700;
     color:var(--navy-dark);
     margin:10px 0 5px 0;
@@ -198,7 +198,7 @@ tr:nth-child(even) td{
 
 .note{
     margin-top:6px;
-    font-size:9.5px;
+    font-size:9px;
     color:var(--alert);
     text-align:center;
     font-style:italic;
@@ -212,7 +212,7 @@ tr:nth-child(even) td{
 
 .result-table{
     table-layout:fixed;
-    font-size:9.5px;
+    font-size:9px;
 }
 
 .result-table th,
@@ -284,7 +284,7 @@ tr:nth-child(even) td{
 }
 
 .equip-role{
-    font-size:7.5px;
+    font-size:7px;
     font-weight:700;
     letter-spacing:.5px;
     text-transform:uppercase;
@@ -304,13 +304,13 @@ tr:nth-child(even) td{
 }
 
 .equip-code{
-    font-size:8.5px;
+    font-size:8px;
     color:var(--muted);
     margin-bottom:4px;
 }
 
 .equip-detail{
-    font-size:8.5px;
+    font-size:8px;
     color:var(--ink);
     line-height:1.55;
     border-top:1px dashed var(--hairline);
@@ -342,7 +342,7 @@ tr:nth-child(even) td{
 
 .chart-title{
     text-align:center;
-    font-size:9px;
+    font-size:8.5px;
     font-weight:500;
     color:var(--muted);
     margin-top:2px;
@@ -362,7 +362,7 @@ tr:nth-child(even) td{
 
 .pie-box-title{
     text-align:center;
-    font-size:10.5px;
+    font-size:10px;
     font-weight:700;
     color:var(--navy-dark);
     margin-bottom:4px;
@@ -375,7 +375,7 @@ tr:nth-child(even) td{
 
 .pie-empty{
     text-align:center;
-    font-size:9px;
+    font-size:8.5px;
     color:var(--muted);
     padding:20px 0;
 }
@@ -399,7 +399,7 @@ tr:nth-child(even) td{
 
 .sign-box{
     text-align:center;
-    font-size:11px;
+    font-size:10px;
     color:var(--navy-dark);
     font-weight:600;
 }
@@ -408,7 +408,7 @@ tr:nth-child(even) td{
     margin-top:30px;
     border-top:1px solid var(--navy);
     padding-top:3px;
-    font-size:9.5px;
+    font-size:9px;
     color:var(--muted);
     font-weight:400;
 }
@@ -417,7 +417,7 @@ tr:nth-child(even) td{
     margin-top:8px;
     border-top:1px dashed var(--hairline);
     padding-top:5px;
-    font-size:9.5px;
+    font-size:9px;
     color:var(--muted);
     text-align:center;
 }
@@ -427,7 +427,7 @@ tr:nth-child(even) td{
 .doc-footer{
     display:flex;
     justify-content:space-between;
-    font-size:7.5px;
+    font-size:7px;
     color:var(--muted);
     padding:4px 10px;
     border-top:1px solid var(--hairline);
@@ -725,15 +725,15 @@ Note: The reported uncertainty is based on a standard uncertainty multiplied by 
 <table class="spec-photo">
     <tr>
         <th colspan="2">Sample Photo Before Test</th>
-        <td class="text-center"><img src="{{asset($rechd->receive_test_lists_file1)}}" class="img-thumbnail" width="35%"></td>
-        <td class="text-center"><img src="{{asset($rechd->receive_test_lists_file2)}}" class="img-thumbnail" width="35%"></td>      
+        <td class="text-center"><img src="{{asset($rechd->receive_test_lists_file1)}}" class="img-thumbnail" width="40%"></td>
+        <td class="text-center"><img src="{{asset($rechd->receive_test_lists_file2)}}" class="img-thumbnail" width="40%"></td>      
     </tr>
 </table>
 <table class="spec-photo">
     <tr>
         <th colspan="2">Sample Photo After Test</th>
-        <td class="text-center"><img src="{{asset($rechd->result_test_lists_file1)}}" class="img-thumbnail" width="35%"></td>
-        <td class="text-center"><img src="{{asset($rechd->result_test_lists_file2)}}" class="img-thumbnail" width="35%"></td>
+        <td class="text-center"><img src="{{asset($rechd->result_test_lists_file1)}}" class="img-thumbnail" width="40%"></td>
+        <td class="text-center"><img src="{{asset($rechd->result_test_lists_file2)}}" class="img-thumbnail" width="40%"></td>
     </tr>
 </table>
 </div>
