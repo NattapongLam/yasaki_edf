@@ -78,7 +78,31 @@ class ReceiveTestController extends Controller
             'receive_test_lists_flag' => 1,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
-            'dimensions_id1' => $request->dimensions_id1
+            'dimensions_id1' => $request->dimensions_id1,
+            'receive_n1_width1' => $request->receive_n1_width1,
+            'receive_n1_width2' => $request->receive_n1_width2,
+            'receive_n1_length1' => $request->receive_n1_length1,
+            'receive_n1_length2' => $request->receive_n1_length2,
+            'receive_n1_height1' => $request->receive_n1_height1,
+            'receive_n1_height2' => $request->receive_n1_height2,
+            'receive_n2_width1' => $request->receive_n2_width1,
+            'receive_n2_width2' => $request->receive_n2_width2,
+            'receive_n2_length1' => $request->receive_n2_length1,
+            'receive_n2_length2' => $request->receive_n2_length2,
+            'receive_n2_height1' => $request->receive_n2_height1,
+            'receive_n2_height2' => $request->receive_n2_height2,
+            'receive_n3_width1' => $request->receive_n3_width1,
+            'receive_n3_width2' => $request->receive_n3_width2,
+            'receive_n3_length1' => $request->receive_n3_length1,
+            'receive_n3_length2' => $request->receive_n3_length2,
+            'receive_n3_height1' => $request->receive_n3_height1,
+            'receive_n3_height2' => $request->receive_n3_height2,
+            'receive_n1_weight1' => $request->receive_n1_weight1,
+            'receive_n1_weight2' => $request->receive_n1_weight2,
+            'receive_n2_weight1' => $request->receive_n2_weight1,
+            'receive_n2_weight2' => $request->receive_n2_weight2,
+            'receive_n3_weight1' => $request->receive_n3_weight1,
+            'receive_n3_weight2' => $request->receive_n3_weight2
         ];
         if ($request->hasFile('receive_test_lists_file1')) {
             $data['receive_test_lists_file1'] = $request->file('receive_test_lists_file1')->storeAs('images/Receivetest_File', "IMG_" . Carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('receive_test_lists_file1')->extension());
@@ -117,7 +141,8 @@ class ReceiveTestController extends Controller
         $bom = DB::table('chemistry_hd')->where('chemistry_hd_flag',true)->get();
         $cal = CalibrationList::get();
         $pd = ReceiveTestList::where('ar_requestorder_hds_id',$id)->first();
-        return view('testsamples.form-testsamples-edit', compact('hd','dt','bom','cal','pd'));
+        $test = DB::table('TestHeaders')->where('Lot',$hd->ar_requestorder_hds_docuno)->first();
+        return view('testsamples.form-testsamples-edit', compact('hd','dt','bom','cal','pd','test'));
     }
 
     /**
@@ -168,7 +193,66 @@ class ReceiveTestController extends Controller
             'result_test_lists_test' => $request->result_test_lists_test,
             'result_dimensions_id1' => $request->result_dimensions_id1,
             'result_test_lists_remark' => $request->result_test_lists_remark,
-
+            'result_n1_width1' => $request->result_n1_width1,
+            'result_n1_width2' => $request->result_n1_width2,
+            'result_n1_length1' => $request->result_n1_length1,
+            'result_n1_length2' => $request->result_n1_length2,
+            'result_n1_height1' => $request->result_n1_height1,
+            'result_n1_height2' => $request->result_n1_height2,
+            'result_n2_width1' => $request->result_n2_width1,
+            'result_n2_width2' => $request->result_n2_width2,
+            'result_n2_length1' => $request->result_n2_length1,
+            'result_n2_length2' => $request->result_n2_length2,
+            'result_n2_height1' => $request->result_n2_height1,
+            'result_n2_height2' => $request->result_n2_height2,
+            'result_n3_width1' => $request->result_n3_width1,
+            'result_n3_width2' => $request->result_n3_width2,
+            'result_n3_length1' => $request->result_n3_length1,
+            'result_n3_length2' => $request->result_n3_length2,
+            'result_n3_height1' => $request->result_n3_height1,
+            'result_n3_height2' => $request->result_n3_height2,
+            'result_n1_weight1' => $request->result_n1_weight1,
+            'result_n1_weight2' => $request->result_n1_weight2,
+            'result_n2_weight1' => $request->result_n2_weight1,
+            'result_n2_weight2' => $request->result_n2_weight2,
+            'result_n3_weight1' => $request->result_n3_weight1,
+            'result_n3_weight2' => $request->result_n3_weight2,
+            'result100_n1temp' => $request->result100_n1temp,
+            'result100_n1moisture' => $request->result100_n1moisture,
+            'result100_n2temp' => $request->result100_n2temp,
+            'result100_n2moisture' => $request->result100_n2moisture,
+            'result100_n3temp' => $request->result100_n3temp,
+            'result100_n3moisture' => $request->result100_n3moisture,
+            'result150_n1temp' => $request->result150_n1temp,
+            'result150_n1moisture' => $request->result150_n1moisture,
+            'result150_n2temp' => $request->result150_n2temp,
+            'result150_n2moisture' => $request->result150_n2moisture,
+            'result150_n3temp' => $request->result150_n3temp,
+            'result150_n3moisture' => $request->result150_n3moisture,
+            'result200_n1temp' => $request->result200_n1temp,
+            'result200_n1moisture' => $request->result200_n1moisture,
+            'result200_n2temp' => $request->result200_n2temp,
+            'result200_n2moisture' => $request->result200_n2moisture,
+            'result200_n3temp' => $request->result200_n3temp,
+            'result200_n3moisture' => $request->result200_n3moisture,
+            'result250_n1temp' => $request->result250_n1temp,
+            'result250_n1moisture' => $request->result250_n1moisture,
+            'result250_n2temp' => $request->result250_n2temp,
+            'result250_n2moisture' => $request->result250_n2moisture,
+            'result250_n3temp' => $request->result250_n3temp,
+            'result250_n3moisture' => $request->result250_n3moisture,
+            'result300_n1temp' => $request->result300_n1temp,
+            'result300_n1moisture' => $request->result300_n1moisture,
+            'result300_n2temp' => $request->result300_n2temp,
+            'result300_n2moisture' => $request->result300_n2moisture,
+            'result300_n3temp' => $request->result300_n3temp,
+            'result300_n3moisture' => $request->result300_n3moisture,
+            'result350_n1temp' => $request->result350_n1temp,
+            'result350_n1moisture' => $request->result350_n1moisture,
+            'result350_n2temp' => $request->result350_n2temp,
+            'result350_n2moisture' => $request->result350_n2moisture,
+            'result350_n3temp' => $request->result350_n3temp,
+            'result350_n3moisture' => $request->result350_n3moisture
         ];
         if ($request->hasFile('result_test_lists_file1')) {
             $data['result_test_lists_file1'] = $request->file('result_test_lists_file1')->storeAs('images/Receivetest_File', "IMG_" . Carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('result_test_lists_file1')->extension());

@@ -326,7 +326,7 @@ tr:nth-child(even) td{
 /* charts */
 
 .chart-box{
-    height:160px;
+    height:155px;
     width:660px;
     margin:6px auto;
     border:1px solid var(--hairline);
@@ -369,7 +369,7 @@ tr:nth-child(even) td{
 }
 
 .pie-canvas-wrap{
-    height:200px;
+    height:150px;
     width:100%;
 }
 
