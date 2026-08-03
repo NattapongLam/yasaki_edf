@@ -351,7 +351,7 @@ tr:nth-child(even) td{
 /* ============ PIE / COMPOSITION BOX ============ */
 
 .pie-box{
-    width:480px;
+    width:460px;
     margin:6px auto;
     border:1px solid var(--hairline);
     border-radius:3px;
@@ -369,7 +369,7 @@ tr:nth-child(even) td{
 }
 
 .pie-canvas-wrap{
-    height:140px;
+    height:120px;
     width:100%;
 }
 
