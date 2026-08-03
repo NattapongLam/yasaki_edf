@@ -362,20 +362,20 @@ tr:nth-child(even) td{
 
 .pie-box-title{
     text-align:center;
-    font-size:10px;
-    font-weight:700;
+    font-size:9px;
+    font-weight:600;
     color:var(--navy-dark);
     margin-bottom:4px;
 }
 
 .pie-canvas-wrap{
-    height:150px;
+    height:140px;
     width:100%;
 }
 
 .pie-empty{
     text-align:center;
-    font-size:8.5px;
+    font-size:8px;
     color:var(--muted);
     padding:20px 0;
 }
