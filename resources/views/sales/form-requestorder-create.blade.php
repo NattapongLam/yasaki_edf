@@ -160,7 +160,11 @@ document.getElementById('addRowBtn').addEventListener('click', function () {
                 <input type="hidden" name="ar_requestorder_dts_listno[]" class="row-number-hidden"/>
             </td>
             <td>
-                <input type="text" name="ar_requestorder_dts_product[]" class="form-control" placeholder="เช่น ผ้าเบรก" required/>
+                <select name="ar_requestorder_dts_product[]" class="form-select" required>
+                    <option value="">-- เลือกสินค้า --</option>
+                    <option value="Brake Pad">Brake Pad</option>
+                    <option value="Disc Brake">Disc Brake</option>
+                </select>
             </td>
             <td>
                 <select name="ar_requestorder_dts_jis_class[]" class="form-select" required>

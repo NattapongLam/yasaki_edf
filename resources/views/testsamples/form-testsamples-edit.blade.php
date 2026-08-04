@@ -442,11 +442,10 @@
             <div class="col-3">
                 <div class="form-group">
                     <label for="result_test_lists_test" class="col-form-label">ผลการทดสอบ</label>
-                    <input type="text" class="form-control" 
-                            name="result_test_lists_test" 
-                            id="result_test_lists_test"
-                            value=""
-                            required>
+                     <select class="form-control" name="result_test_lists_test" required>
+                        <option value="Pass">Pass</option>
+                        <option value="Fail">Fail</option>
+                    </select>
                 </div>
             </div>
             <div class="col-9">
