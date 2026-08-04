@@ -105,6 +105,8 @@ Route::resource('/machineryplans' , App\Http\Controllers\MachineryPlanController
 Route::get('/machinery/calendar', [App\Http\Controllers\MachineryPlanController::class, 'getMachineryCalendar'])->name('machinery.calendar');
 Route::resource('/maintenances' , App\Http\Controllers\MaintenanceController::class);
 Route::get('/repair/get-items', [App\Http\Controllers\MaintenanceController::class, 'getItems'])->name('repair.getItems');
+Route::get('/repair/get-doc-no', [App\Http\Controllers\MaintenanceController::class, 'getDocNo'])->name('repair.getDocNo');
+Route::post('/confirmDelMaintenances' , [App\Http\Controllers\MaintenanceController::class , 'confirmDelMaintenances']);
 //เครื่องจักร
 
 // สินค้า
