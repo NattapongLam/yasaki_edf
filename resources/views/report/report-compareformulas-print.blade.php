@@ -708,17 +708,17 @@ Note: The reported uncertainty is based on a standard uncertainty multiplied by 
 
 <tr>
 <th>Sample Size</th>
-<td>Size (mm): {{$reqdt->ar_requestorder_dts_dimensions}}</td>
+<td>Size (cm): {{$reqdt->ar_requestorder_dts_dimensions}}  (Weight (g): {{$reqdt->ar_requestorder_dts_weight}})</td>
 </tr>
 
 <tr>
 <th>Before Test</th>
-<td>Size (mm): {{$rechd->receive_test_lists_dimensions}} (Weight (g): {{$rechd->receive_test_lists_weight}})</td>
+<td>Size (cm): {{$rechd->receive_test_lists_dimensions}} (Weight (g): {{$rechd->receive_test_lists_weight}})</td>
 </tr>
 
 <tr>
 <th>After Test</th>
-<td>Size (mm): {{$rechd->result_test_lists_dimensions}} (Weight (g): {{$rechd->result_test_lists_weight}})</td>
+<td>Size (cm): {{$rechd->result_test_lists_dimensions}} (Weight (g): {{$rechd->result_test_lists_weight}})</td>
 </tr>
 
 </table>

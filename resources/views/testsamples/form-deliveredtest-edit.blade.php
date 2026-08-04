@@ -104,8 +104,10 @@
                 <thead>
                     <tr>
                         <th style="width: 5%">#</th>
-                        <th style="width: 70%">รายละเอียดเพิ่มเติม</th>
+                        <th style="width: 50%">รายละเอียดเพิ่มเติม</th>
                         <th style="width: 10%">จำนวน</th>
+                        <th style="width: 10%">สภาพภายนอก</th>
+                        <th style="width: 10%">ผลการประเมิน</th>
                         <th style="width: 5%"></th>
                     </tr>
                 </thead>
@@ -183,6 +185,18 @@ document.getElementById('addRowBtn').addEventListener('click', function () {
             <td>
                  <input type="text" name="delivered_test_dts_qty[]" class="form-control"/>
             </td>
+            <td>
+                <select class="form-control" name="delivered_test_dts_type[]">
+                    <option value="ปกติ (No Defects)">ปกติ (No Defects)</option>
+                    <option value="ไม่ปกติ (Defects)">ไม่ปกติ (Defects)</option>
+                </select>
+            </td>
+             <td>
+                <select class="form-control" name="delivered_test_dts_status[]">
+                    <option value="ผ่าน (Pass)">ผ่าน (Pass)</option>
+                    <option value="ไม่ผ่าน (Fail)">ไม่ผ่าน (Fail)</option>
+                </select>
+            </td>           
             <td>
                 <button type="button" class="btn btn-danger btn-sm deleteRow">ลบ</button>
             </td>

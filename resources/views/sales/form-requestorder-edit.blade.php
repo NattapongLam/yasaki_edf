@@ -97,7 +97,8 @@
                         <th style="width: 5%">#</th>
                         <th style="width: 20%">สินค้า</th>
                         <th style="width: 20%">มาตรฐานที่อ้างอิง (JIS D 4411)</th>
-                        <th style="width: 15%">มิติชิ้นงาน ก×ย×ส (mm)</th>
+                        <th style="width: 15%">มิติชิ้นงาน ก×ย×ส (เซนติเมตร)</th>
+                        <th style="width: 15%">น้ำหนัก (กรัม)</th>
                         <th style="width: 8%">จำนวน</th>
                         <th style="width: 27%">รายละเอียดเพิ่มเติม</th>
                         <th style="width: 5%"></th>
@@ -130,6 +131,9 @@
                             </td>
                             <td>
                                 <input class="form-control" name="ar_requestorder_dts_dimensions[]" value="{{$item->ar_requestorder_dts_dimensions}}">
+                            </td>
+                            <td>
+                                <input class="form-control" name="ar_requestorder_dts_weight[]" value="{{$item->ar_requestorder_dts_weight}}">
                             </td>
                             <td>
                                 <input class="form-control" name="ar_requestorder_dts_qty[]" type="number" value="{{$item->ar_requestorder_dts_qty}}">
@@ -186,6 +190,9 @@ document.getElementById('addRowBtn').addEventListener('click', function () {
             </td>
             <td>
                 <input type="text" name="ar_requestorder_dts_dimensions[]" class="form-control" placeholder="เช่น 50x120x15" required/>
+            </td>
+            <td>
+                <input type="text" name="ar_requestorder_dts_weight[]" class="form-control" placeholder="เช่น 10" required/>
             </td>
             <td><input type="number" name="ar_requestorder_dts_qty[]" class="form-control" value="0"/></td>
             <td>

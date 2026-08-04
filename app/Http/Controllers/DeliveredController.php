@@ -82,6 +82,8 @@ class DeliveredController extends Controller
                         'person_at' => Auth::user()->name,
                         'created_at' => Carbon::now(), 
                         'updated_at' => Carbon::now(), 
+                        'delivered_test_dts_type' => $request->delivered_test_dts_type[$key],
+                        'delivered_test_dts_status' => $request->delivered_test_dts_status[$key],
                     ]);
                 }
             }                       

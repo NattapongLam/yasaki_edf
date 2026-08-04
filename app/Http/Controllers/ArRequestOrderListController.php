@@ -84,6 +84,7 @@ class ArRequestOrderListController extends Controller
                     'updated_at'=> Carbon::now(),
                     'ar_requestorder_dts_jis_class' => $request->ar_requestorder_dts_jis_class[$key],
                     'ar_requestorder_dts_dimensions' => $request->ar_requestorder_dts_dimensions[$key],
+                    'ar_requestorder_dts_weight' => $request->ar_requestorder_dts_weight[$key],
                 ]);
             }            
             DB::commit();
@@ -166,6 +167,7 @@ class ArRequestOrderListController extends Controller
                             'person_at' => Auth::user()->name,
                             'ar_requestorder_dts_jis_class' => $request->input("ar_requestorder_dts_jis_class.$key"),
                             'ar_requestorder_dts_dimensions' => $request->input("ar_requestorder_dts_dimensions.$key"),
+                            'ar_requestorder_dts_weight' => $request->input("ar_requestorder_dts_weight.$key"),
                             'updated_at' => Carbon::now(),
                         ];
 

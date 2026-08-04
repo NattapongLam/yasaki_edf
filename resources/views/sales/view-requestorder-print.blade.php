@@ -144,7 +144,8 @@
                 <th style="width: 5%;">#</th>
                 <th style="width: 23%;">สินค้า</th>
                 <th style="width: 25%;">มาตรฐาน</th>
-                <th style="width: 15%;">มิติ (mm)</th>
+                <th style="width: 15%;">มิติ (เซนติเมตร)</th>
+                <th style="width: 15%;">น้ำหนัก (กรัม)</th>
                 <th style="width: 10%;">จำนวน</th>
                 <th style="width: 22%;">หมายเหตุ</th>
             </tr>
@@ -156,6 +157,7 @@
                 <td>{{ $item->ar_requestorder_dts_product }}</td>
                 <td>{{ $item->ar_requestorder_dts_jis_class == "CLASS_3" ? "JIS D 4411 Class 3" : "JIS D 4411 Class 4" }}</td>
                 <td style="text-align: center;">{{ $item->ar_requestorder_dts_dimensions }}</td>
+                <td style="text-align: center;">{{ $item->ar_requestorder_dts_weight }}</td>
                 <td style="text-align: center;">{{ number_format($item->ar_requestorder_dts_qty) }}</td>
                 <td>{{ $item->ar_requestorder_hds_remark }}</td>
             </tr>
