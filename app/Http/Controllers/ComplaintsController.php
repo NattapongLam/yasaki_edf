@@ -110,7 +110,6 @@ class ComplaintsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if($request->checkdoc == "Edit"){
             $data = [
                 'customer_complaints_lists_type' => $request->customer_complaints_lists_type,
                 'customer_complaints_lists_level' => $request->customer_complaints_lists_level,
@@ -132,7 +131,6 @@ class ComplaintsController extends Controller
                 dd($e->getMessage());
                 return redirect()->back()->with('error', 'เกิดข้อผิดพลาด');
             }  
-        }
     }
 
     /**

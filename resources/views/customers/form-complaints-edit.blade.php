@@ -28,7 +28,6 @@
     <form method="POST" class="form-horizontal" action="{{ route('complaints.update',$hd->customer_complaints_lists_id) }}">
         @csrf  
         @method('PUT')  
-        <input type="hidden" name="checkdoc" value="Edit">
 
         <div class="card iso-card shadow-sm border-0 mb-4">
             <div class="card-body p-3">
@@ -110,13 +109,24 @@
                         <div class="form-group">
                             <label class="form-label fw-semibold small mb-1">ประเภทปัญหา</label>
                             <select class="form-control" name="customer_complaints_lists_type">
+                                @if ($hd->customer_complaints_lists_type)
+                                <option value="{{$hd->customer_complaints_lists_type}}">{{$hd->customer_complaints_lists_type}}</option>
+                                <option value="InComing">InComing</option>
+                                <option value="InProcess">InProcess</option>
+                                <option value="Uncertainty">Uncertainty</option>
+                                <option value="Environmental">Environmental</option>
+                                <option value="Pearlite">Pearlite</option>
+                                <option value="Defects">Defects</option> 
+                                @else
                                 <option value="-">กรุณาเลือก</option>
                                 <option value="InComing">InComing</option>
                                 <option value="InProcess">InProcess</option>
                                 <option value="Uncertainty">Uncertainty</option>
                                 <option value="Environmental">Environmental</option>
                                 <option value="Pearlite">Pearlite</option>
-                                <option value="Defects">Defects</option>
+                                <option value="Defects">Defects</option>   
+                                @endif
+                               
                             </select>
                         </div>
                     </div> 
@@ -124,10 +134,18 @@
                         <div class="form-group">
                             <label class="form-label fw-semibold small mb-1">ระดับความรุนแรง</label>
                             <select class="form-control" name="customer_complaints_lists_level">
+                                @if ($hd->customer_complaints_lists_level)
+                                <option value="{{$hd->customer_complaints_lists_level}}">{{$hd->customer_complaints_lists_level}}</option>
+                                <option value="Critical">Critical</option>
+                                <option value="Major">Major</option>
+                                <option value="Minor">Minor</option>
+                                @else
                                 <option value="-">กรุณาเลือก</option>
                                 <option value="Critical">Critical</option>
                                 <option value="Major">Major</option>
                                 <option value="Minor">Minor</option>
+                                @endif
+                                
                             </select>
                         </div>
                     </div>
@@ -137,25 +155,25 @@
                     <div class="col-12">
                         <div class="form-group">
                             <label class="form-label fw-semibold small mb-1">สาเหตุของปัญหา (Root Cause Analysis)</label>
-                            <textarea class="form-control" rows="5" name="customer_complaints_lists_causes"></textarea>
+                            <textarea class="form-control" rows="5" name="customer_complaints_lists_causes">{{$hd->customer_complaints_lists_causes}}</textarea>
                         </div>
                     </div>
                     <div class="col-12">
                         <div class="form-group">
                             <label class="form-label fw-semibold small mb-1">วิธีแก้ไขปัญหาเฉพาะหน้า (Correction / Issue Resolution)</label>
-                            <textarea class="form-control" rows="5" name="customer_complaints_lists_issue"></textarea>
+                            <textarea class="form-control" rows="5" name="customer_complaints_lists_issue">{{$hd->customer_complaints_lists_issue}}</textarea>
                         </div>
                     </div>
                     <div class="col-12">
                         <div class="form-group">
                             <label class="form-label fw-semibold small mb-1">การป้องกันไม่ให้เกิดซ้ำ (Corrective Action / Prevention)</label>
-                            <textarea class="form-control" rows="5" name="customer_complaints_lists_prevention"></textarea>
+                            <textarea class="form-control" rows="5" name="customer_complaints_lists_prevention">{{$hd->customer_complaints_lists_prevention}}</textarea>
                         </div>
                     </div>
                     <div class="col-12">
                         <div class="form-group">
                             <label class="form-label fw-semibold small mb-1">ข้อเสนอแนะเพิ่มเติม</label>
-                            <textarea class="form-control" rows="5" name="customer_complaints_lists_additional"></textarea>
+                            <textarea class="form-control" rows="5" name="customer_complaints_lists_additional">{{$hd->customer_complaints_lists_additional}}</textarea>
                         </div>
                     </div>
                 </div>
@@ -164,19 +182,19 @@
                     <div class="col-4">
                         <div class="form-group">
                             <label class="form-label fw-semibold small mb-1">วันที่เริ่มดำเนินการ</label>
-                            <input class="form-control" name="customer_complaints_lists_datestart" type="date">
+                            <input class="form-control" name="customer_complaints_lists_datestart" type="date" value="{{$hd->customer_complaints_lists_duedate}}">
                         </div>
                     </div>
                     <div class="col-4">
                         <div class="form-group">
                             <label class="form-label fw-semibold small mb-1">กำหนดเสร็จ (Due Date)</label>
-                            <input class="form-control" name="customer_complaints_lists_duedate" type="date">
+                            <input class="form-control" name="customer_complaints_lists_duedate" type="date" value="{{$hd->customer_complaints_lists_duedate}}">
                         </div>
                     </div>
                     <div class="col-4">
                         <div class="form-group">
                             <label class="form-label fw-semibold small mb-1">ผู้รับผิดชอบ / หน่วยงานที่เกี่ยวข้อง</label>
-                            <input class="form-control" name="customer_complaints_lists_responsible" type="text">
+                            <input class="form-control" name="customer_complaints_lists_responsible" type="text" value="{{$hd->customer_complaints_lists_responsible}}">
                         </div>
                     </div>
                 </div>
