@@ -675,7 +675,11 @@
                     <tr>
                         <th style="width: 5%">#</th>
                         <th style="width: 30%">เครื่องมือวัด</th>
-                        <th style="width: 60%">รายละเอียดเพิ่มเติม</th>
+                        <th style="width: 30%">รายละเอียดเพิ่มเติม</th>
+                        <th style="width: 7%">ระยะเวลา(นาที)</th>
+                        <th style="width: 7%">ความหนาก่อนทดสอบ</th>
+                        <th style="width: 7%">ความหนาหลังทดสอบ</th>
+                        <th style="width: 7%">ระยะสึกหรอ</th>
                         <th style="width: 5%"></th>
                     </tr>
                 </thead>
@@ -740,6 +744,18 @@ document.getElementById('addRowBtn').addEventListener('click', function () {
             </td>
             <td>
                 <textarea class="form-control" name="receive_test_subs_note[]" rows="1" placeholder="เพิ่มเติม"></textarea>
+            </td>
+            <td>
+                <input class="form-control" type="text" name="receive_test_subs_time[]" value="0">
+            </td>
+            <td>
+                <input class="form-control" type="text" name="before_testing[]" value="0">
+            </td>
+             <td>
+                <input class="form-control" type="text" name="after_testing[]" value="0">
+            </td>
+            <td>
+                <input class="form-control" type="text" name="total_testing[]" value="0">
             </td>
             <td>
                 <button type="button" class="btn btn-danger btn-sm deleteRow">ลบ</button>

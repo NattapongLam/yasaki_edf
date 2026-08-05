@@ -279,6 +279,10 @@ class ReceiveTestController extends Controller
                     'receive_test_lists_flag' => 1,
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now(),
+                    'receive_test_subs_time' => $request->receive_test_subs_time[$key],
+                    'before_testing' => $request->before_testing[$key],
+                    'after_testing' => $request->after_testing[$key],
+                    'total_testing' => $request->total_testing[$key]
                 ];
                 ReceiveTestSub::insert($dtData);
             }
