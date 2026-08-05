@@ -673,7 +673,7 @@ Note: The reported uncertainty is based on a standard uncertainty multiplied by 
 
 <tr>
 <th>Trademark</th>
-<td>XXX-XXXX</td>
+<td>{{$reqhd->ar_requestorder_hds_trademark}}</td>
 </tr>
 
 <tr>

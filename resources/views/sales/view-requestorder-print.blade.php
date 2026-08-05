@@ -134,7 +134,8 @@
         </div>
         <div class="info-box">
             <strong>บริษัท:</strong> {{ $hd->ar_requestorder_hds_customer }}<br>
-            <strong>ผู้ติดต่อ:</strong> {{ $hd->ar_requestorder_hds_contact }}
+            <strong>ผู้ติดต่อ:</strong> {{ $hd->ar_requestorder_hds_contact }}<br>
+            <strong>เบอร์:</strong> {{ $hd->ar_requestorder_hds_tel }}
         </div>
     </div>
 

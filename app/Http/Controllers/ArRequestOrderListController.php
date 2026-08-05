@@ -66,7 +66,9 @@ class ArRequestOrderListController extends Controller
             'person_at' => Auth::user()->name,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
-            'ar_requestorder_hds_duedate' => $request->ar_requestorder_hds_duedate
+            'ar_requestorder_hds_duedate' => $request->ar_requestorder_hds_duedate,
+            'ar_requestorder_hds_trademark' => $request->ar_requestorder_hds_trademark,
+            'ar_requestorder_hds_tel' => $request->ar_requestorder_hds_tel
         ];
         try{
             DB::beginTransaction();
@@ -141,7 +143,9 @@ class ArRequestOrderListController extends Controller
                 'ar_requestorder_hd_remark' => $request->ar_requestorder_hd_remark,
                 'person_at' => Auth::user()->name,
                 'updated_at' => Carbon::now(),
-                'ar_requestorder_hds_duedate' => $request->ar_requestorder_hds_duedate
+                'ar_requestorder_hds_duedate' => $request->ar_requestorder_hds_duedate,
+                'ar_requestorder_hds_trademark' => $request->ar_requestorder_hds_trademark,
+                'ar_requestorder_hds_tel' => $request->ar_requestorder_hds_tel
             ];
 
             try {

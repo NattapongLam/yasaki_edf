@@ -54,11 +54,11 @@
         <div class="row mt-3">
             <div class="col-3">
                 <div class="form-group">
-                    <label for="ar_requestorder_hds_contact" class="col-form-label">ติดต่อ</label>
+                    <label for="ar_requestorder_hds_trademark" class="col-form-label">เครื่องหมายการค้า</label>
                     <input type="text" class="form-control" 
-                            name="ar_requestorder_hds_contact" 
-                            id="ar_requestorder_hds_contact"
-                            value="{{$hd->ar_requestorder_hds_contact}}"
+                            name="ar_requestorder_hds_trademark" 
+                            id="ar_requestorder_hds_trademark"
+                            value="{{$hd->ar_requestorder_hds_trademark}}"
                             readonly>
                 </div>
             </div>

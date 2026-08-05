@@ -131,7 +131,8 @@
                         <i class="bx bx-layout"></i>
                         <span key="t-layouts">ฝ่ายขาย</span>
                     </a>
-                    <ul class="sub-menu" aria-expanded="true">                       
+                    <ul class="sub-menu" aria-expanded="true">      
+                        <li><a href="{{route('complaints.index')}}" key="t-default">รับข้อร้องเรียนจากลูกค้า</a></li>                  
                         <li><a href="{{route('quotations.index')}}" key="t-default">ใบเสนอราคา</a></li> 
                         <li><a href="{{route('invoices.index')}}" key="t-default">ใบแจ้งหนี้</a></li> 
                         <li><a href="{{route('saleorders.index')}}" key="t-default">บิลขาย/บริการ</a></li> 

@@ -78,6 +78,8 @@ Route::resource('/customergroups' , App\Http\Controllers\ArCustomerGroupControll
 Route::resource('/customerlists' , App\Http\Controllers\ArCustomerListController::class);
 Route::get('/get-districts/{province_id}', [App\Http\Controllers\ArCustomerListController::class, 'getDistricts']);
 Route::get('/get-subdistricts/{district_id}', [App\Http\Controllers\ArCustomerListController::class, 'getSubDistricts']);
+Route::resource('/complaints' , App\Http\Controllers\ComplaintsController::class);
+Route::post('/CancelComplaints' , [App\Http\Controllers\ComplaintsController::class , 'CancelComplaints']);
 // ลูกค้า
 
 //ผู้จำหน่าย

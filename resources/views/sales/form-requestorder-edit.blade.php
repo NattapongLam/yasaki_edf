@@ -76,6 +76,26 @@
                             required>
                 </div>
             </div>
+            <div class="col-3">
+                <div class="form-group">
+                    <label for="ar_requestorder_hds_tel" class="col-form-label">เบอร์ติดต่อ</label>
+                    <input type="text" class="form-control" 
+                            name="ar_requestorder_hds_tel" 
+                            id="ar_requestorder_hds_tel"
+                            value="{{$hd->ar_requestorder_hds_tel}}" 
+                            required>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-group">
+                    <label for="ar_requestorder_hds_trademark" class="col-form-label">เครื่องหมายการค้า</label>
+                    <input type="text" class="form-control" 
+                            name="ar_requestorder_hds_trademark" 
+                            id="ar_requestorder_hds_trademark"
+                            value="{{$hd->ar_requestorder_hds_trademark}}" 
+                            required>
+                </div>
+            </div>
             <div class="col-6">
                 <div class="form-group">
                     <label for="ar_requestorder_hd_remark" class="col-form-label">หมายเหตุ</label>

@@ -29,6 +29,7 @@
                     <th>กำหนดส่ง</th>
                     <th>ชื่อบริษัท</th>
                     <th>ผู้ติดต่อ</th>
+                    <th>เครื่องหมายการค้า</th>
                     <th>หมายเหตุ</th>
                     <th>แก้ไข</th>
                     <th>ยกเลิก</th>
@@ -78,7 +79,11 @@
                             {{$item->ar_requestorder_hds_customer}}
                         </td>
                         <td>
-                            {{$item->ar_requestorder_hds_contact}}
+                            {{$item->ar_requestorder_hds_contact}}<br>
+                            ({{$item->ar_requestorder_hds_tel}})
+                        </td>
+                        <td>
+                            {{$item->ar_requestorder_hds_trademark}}
                         </td>
                         <td>
                             {{$item->ar_requestorder_hd_remark}}
