@@ -312,7 +312,7 @@
 </div>
 <div class="card">
     <div class="card-body">
-        <form method="POST" class="form-horizontal" action="{{ route('receive-test.update',$pd->receive_test_lists_id) }}" enctype="multipart/form-data">
+        <form method="POST" class="form-horizontal" action="{{ route('receive-test.update-result', $pd->receive_test_lists_id) }}" enctype="multipart/form-data">
         @csrf      
         @method('PUT')
         <div class="row">
@@ -328,43 +328,23 @@
         <input type="hidden" name="ar_requestorder_hds_id" value="{{$pd->ar_requestorder_hds_id}}">    
         <input type="hidden" name="receive_test_lists_id" value="{{$pd->receive_test_lists_id}}">    
         <div class="row mt-3">
-             <div class="col-3">
+            <div class="col-3">
                 <div class="form-group">
                     <label for="result_test_lists_date" class="col-form-label">วันที่ทดสอบเสร็จ</label>
                     <input type="date" class="form-control" 
                             name="result_test_lists_date" 
                             id="result_test_lists_date"
-                            value=""
+                            value="{{$pd->result_test_lists_date}}"
                             required>
                 </div>
             </div>
-            <div class="col-3">
-                <div class="form-group">
-                    <label for="result_test_lists_file1" class="col-form-label">แนบรูปชิ้นงาน</label>
-                    <input type="file" class="form-control" id="inputGroupFile01"  name="result_test_lists_file1" onchange="prevFile(this,'result_test_lists_file1')">
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="form-group">
-                    <label for="result_test_lists_file2" class="col-form-label">แนบรูปชิ้นงาน</label>
-                    <input type="file" class="form-control" id="inputGroupFile02"  name="result_test_lists_file2" onchange="prevFile(this,'result_test_lists_file2')">
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="form-group">
-                    <label for="result_test_lists_file3" class="col-form-label">แนบไฟล์</label>
-                    <input type="file" class="form-control" id="inputGroupFile03"  name="result_test_lists_file3" onchange="prevFile(this,'result_test_lists_file3')">
-                </div>
-            </div>
-        </div>
-         <div class="row mt-2">
             <div class="col-3">
                 <div class="form-group">
                     <label for="result_test_lists_dimensions" class="col-form-label">มิติชิ้นงานเฉลี่ย ก×ย×ส (มิลลิเมตร)</label>
                     <input type="text" class="form-control" 
                             name="result_test_lists_dimensions" 
                             id="result_test_lists_dimensions"
-                            value=""
+                            value="{{$pd->result_test_lists_dimensions}}"
                             readonly>
                 </div>
             </div>
@@ -374,7 +354,10 @@
                     <select class="form-control" name="result_dimensions_id" required>
                         <option value="">กรุณาเลือกเครื่องวัด</option>
                         @foreach ($cal as $item)
-                            <option value="{{$item->calibration_lists_id}}">{{$item->calibration_lists_name1}} ({{$item->calibration_lists_code}})</option>
+                            <option value="{{$item->calibration_lists_id}}"
+                                {{ $item->calibration_lists_id == $pd->result_dimensions_id ? 'selected' : '' }}>
+                                {{$item->calibration_lists_name1}} ({{$item->calibration_lists_code}})
+                            </option>
                         @endforeach
                     </select>
                 </div>
@@ -385,18 +368,23 @@
                     <select class="form-control" name="result_dimensions_id1" required>
                         <option value="">กรุณาเลือกเครื่องวัด</option>
                         @foreach ($cal as $item)
-                            <option value="{{$item->calibration_lists_id}}">{{$item->calibration_lists_name1}} ({{$item->calibration_lists_code}})</option>
+                            <option value="{{$item->calibration_lists_id}}"
+                                {{ $item->calibration_lists_id == $pd->result_dimensions_id1 ? 'selected' : '' }}>
+                                {{$item->calibration_lists_name1}} ({{$item->calibration_lists_code}})
+                            </option>
                         @endforeach
                     </select>
                 </div>
             </div>
+        </div>
+        <div class="row mt-2">    
             <div class="col-3">
                 <div class="form-group">
                     <label for="result_test_lists_plate" class="col-form-label">วัสดุจานทดสอบ</label>
                     <input type="text" class="form-control" 
                             name="result_test_lists_plate" 
                             id="result_test_lists_plate"
-                            value=""
+                            value="{{$pd->result_test_lists_plate}}"
                             required>
                 </div>
             </div>
@@ -406,7 +394,7 @@
                     <input type="text" class="form-control" 
                             name="result_test_lists_weight" 
                             id="result_test_lists_weight"
-                            value=""
+                            value="{{$pd->result_test_lists_weight}}"
                             readonly>
                 </div>
             </div>
@@ -416,7 +404,10 @@
                     <select class="form-control" name="result_weight_id" required>
                         <option value="">กรุณาเลือกเครื่องชั่ง</option>
                         @foreach ($cal as $item)
-                            <option value="{{$item->calibration_lists_id}}">{{$item->calibration_lists_name1}} ({{$item->calibration_lists_code}})</option>
+                            <option value="{{$item->calibration_lists_id}}"
+                                {{ $item->calibration_lists_id == $pd->result_weight_id ? 'selected' : '' }}>
+                                {{$item->calibration_lists_name1}} ({{$item->calibration_lists_code}})
+                            </option>
                         @endforeach
                     </select>
                 </div>
@@ -427,7 +418,7 @@
                     <input type="text" class="form-control" 
                             name="result_test_lists_temp" 
                             id="result_test_lists_temp"
-                            value=""
+                            value="{{$pd->result_test_lists_temp}}"
                             readonly>
                 </div>
             </div>
@@ -437,30 +428,37 @@
                     <input type="text" class="form-control" 
                             name="result_test_lists_moisture" 
                             id="result_test_lists_moisture"
-                            value=""
+                            value="{{$pd->result_test_lists_moisture}}"
                             readonly>
                 </div>
-            </div>           
-        </div>
-        <div class="row mt-2">                    
+            </div>
             <div class="col-3">
                 <div class="form-group">
                     <label for="result_test_lists_test" class="col-form-label">ผลการทดสอบ</label>
                      <select class="form-control" name="result_test_lists_test" required>
+                        <option value="{{$pd->result_test_lists_test}}">{{$pd->result_test_lists_test}}</option>
                         <option value="Pass">Pass</option>
                         <option value="Fail">Fail</option>
                     </select>
                 </div>
-            </div>
-            <div class="col-9">
+            </div>   
+            <div class="col-6">
                 <div class="form-group">
                     <label for="result_test_lists_remark" class="col-form-label">สภาพพื้นผิวสัมผัส</label>
                     <input type="text" class="form-control" 
                             name="result_test_lists_remark" 
                             id="result_test_lists_remark"
-                            value=""
+                            value="{{$pd->result_test_lists_remark}}"
                             required>
                 </div>
+            </div>        
+        </div>
+         <div class="row mt-3">
+            <div class="col-6 text-center">
+                <img src="{{asset($pd->result_test_lists_file1)}}" class="img-thumbnail" width="25%">
+            </div>
+            <div class="col-6 text-center">
+                <img src="{{asset($pd->result_test_lists_file2)}}" class="img-thumbnail" width="25%">
             </div>
         </div>
                 <div class="row mt-2">
@@ -487,36 +485,36 @@
         <tbody>
             <tr>
                 <td><strong>N1</strong></td>
-                <td><input type="text" class="form-control" name="result_n1_width1" aria-label="ความกว้าง 1 สำหรับ N1"></td>
-                <td><input type="text" class="form-control" name="result_n1_width2" aria-label="ความกว้าง 2 สำหรับ N1"></td>
-                <td><input type="text" class="form-control" name="result_n1_length1" aria-label="ความยาว 1 สำหรับ N1"></td>
-                <td><input type="text" class="form-control" name="result_n1_length2" aria-label="ความยาว 2 สำหรับ N1"></td>
-                <td><input type="text" class="form-control" name="result_n1_height1" aria-label="ความสูง 1 สำหรับ N1"></td>
-                <td><input type="text" class="form-control" name="result_n1_height2" aria-label="ความสูง 2 สำหรับ N1"></td>
-                <td><input type="text" class="form-control" name="result_n1_weight1" aria-label="น้ำหนัก 1 สำหรับ N1"></td>
-                <td><input type="text" class="form-control" name="result_n1_weight2" aria-label="น้ำหนัก 2 สำหรับ N1"></td>
+                <td><input type="text" class="form-control" name="result_n1_width1" value="{{$pd->result_n1_width1}}" aria-label="ความกว้าง 1 สำหรับ N1"></td>
+                <td><input type="text" class="form-control" name="result_n1_width2" value="{{$pd->result_n1_width2}}" aria-label="ความกว้าง 2 สำหรับ N1"></td>
+                <td><input type="text" class="form-control" name="result_n1_length1" value="{{$pd->result_n1_length1}}" aria-label="ความยาว 1 สำหรับ N1"></td>
+                <td><input type="text" class="form-control" name="result_n1_length2" value="{{$pd->result_n1_length2}}" aria-label="ความยาว 2 สำหรับ N1"></td>
+                <td><input type="text" class="form-control" name="result_n1_height1" value="{{$pd->result_n1_height1}}" aria-label="ความสูง 1 สำหรับ N1"></td>
+                <td><input type="text" class="form-control" name="result_n1_height2" value="{{$pd->result_n1_height2}}" aria-label="ความสูง 2 สำหรับ N1"></td>
+                <td><input type="text" class="form-control" name="result_n1_weight1" value="{{$pd->result_n1_weight1}}" aria-label="น้ำหนัก 1 สำหรับ N1"></td>
+                <td><input type="text" class="form-control" name="result_n1_weight2" value="{{$pd->result_n1_weight2}}" aria-label="น้ำหนัก 2 สำหรับ N1"></td>
             </tr>
             <tr>
                 <td><strong>N2</strong></td>
-                <td><input type="text" class="form-control" name="result_n2_width1" aria-label="ความกว้าง 1 สำหรับ N2"></td>
-                <td><input type="text" class="form-control" name="result_n2_width2" aria-label="ความกว้าง 2 สำหรับ N2"></td>
-                <td><input type="text" class="form-control" name="result_n2_length1" aria-label="ความยาว 1 สำหรับ N2"></td>
-                <td><input type="text" class="form-control" name="result_n2_length2" aria-label="ความยาว 2 สำหรับ N2"></td>
-                <td><input type="text" class="form-control" name="result_n2_height1" aria-label="ความสูง 1 สำหรับ N2"></td>
-                <td><input type="text" class="form-control" name="result_n2_height2" aria-label="ความสูง 2 สำหรับ N2"></td>
-                <td><input type="text" class="form-control" name="result_n2_weight1" aria-label="น้ำหนัก 1 สำหรับ N2"></td>
-                <td><input type="text" class="form-control" name="result_n2_weight2" aria-label="น้ำหนัก 2 สำหรับ N2"></td>
+                <td><input type="text" class="form-control" name="result_n2_width1" value="{{$pd->result_n2_width1}}" aria-label="ความกว้าง 1 สำหรับ N2"></td>
+                <td><input type="text" class="form-control" name="result_n2_width2" value="{{$pd->result_n2_width2}}" aria-label="ความกว้าง 2 สำหรับ N2"></td>
+                <td><input type="text" class="form-control" name="result_n2_length1" value="{{$pd->result_n2_length1}}" aria-label="ความยาว 1 สำหรับ N2"></td>
+                <td><input type="text" class="form-control" name="result_n2_length2" value="{{$pd->result_n2_length2}}" aria-label="ความยาว 2 สำหรับ N2"></td>
+                <td><input type="text" class="form-control" name="result_n2_height1" value="{{$pd->result_n2_height1}}" aria-label="ความสูง 1 สำหรับ N2"></td>
+                <td><input type="text" class="form-control" name="result_n2_height2" value="{{$pd->result_n2_height2}}" aria-label="ความสูง 2 สำหรับ N2"></td>
+                <td><input type="text" class="form-control" name="result_n2_weight1" value="{{$pd->result_n2_weight1}}" aria-label="น้ำหนัก 1 สำหรับ N2"></td>
+                <td><input type="text" class="form-control" name="result_n2_weight2" value="{{$pd->result_n2_weight2}}" aria-label="น้ำหนัก 2 สำหรับ N2"></td>
             </tr>
             <tr>
                 <td><strong>N3</strong></td>
-                <td><input type="text" class="form-control" name="result_n3_width1" aria-label="ความกว้าง 1 สำหรับ N3"></td>
-                <td><input type="text" class="form-control" name="result_n3_width2" aria-label="ความกว้าง 2 สำหรับ N3"></td>
-                <td><input type="text" class="form-control" name="result_n3_length1" aria-label="ความยาว 1 สำหรับ N3"></td>
-                <td><input type="text" class="form-control" name="result_n3_length2" aria-label="ความยาว 2 สำหรับ N3"></td>
-                <td><input type="text" class="form-control" name="result_n3_height1" aria-label="ความสูง 1 สำหรับ N3"></td>
-                <td><input type="text" class="form-control" name="result_n3_height2" aria-label="ความสูง 2 สำหรับ N3"></td>
-                <td><input type="text" class="form-control" name="result_n3_weight1" aria-label="น้ำหนัก 1 สำหรับ N3"></td>
-                <td><input type="text" class="form-control" name="result_n3_weight2" aria-label="น้ำหนัก 2 สำหรับ N3"></td>
+                <td><input type="text" class="form-control" name="result_n3_width1" value="{{$pd->result_n3_width1}}" aria-label="ความกว้าง 1 สำหรับ N3"></td>
+                <td><input type="text" class="form-control" name="result_n3_width2" value="{{$pd->result_n3_width2}}" aria-label="ความกว้าง 2 สำหรับ N3"></td>
+                <td><input type="text" class="form-control" name="result_n3_length1" value="{{$pd->result_n3_length1}}" aria-label="ความยาว 1 สำหรับ N3"></td>
+                <td><input type="text" class="form-control" name="result_n3_length2" value="{{$pd->result_n3_length2}}" aria-label="ความยาว 2 สำหรับ N3"></td>
+                <td><input type="text" class="form-control" name="result_n3_height1" value="{{$pd->result_n3_height1}}" aria-label="ความสูง 1 สำหรับ N3"></td>
+                <td><input type="text" class="form-control" name="result_n3_height2" value="{{$pd->result_n3_height2}}" aria-label="ความสูง 2 สำหรับ N3"></td>
+                <td><input type="text" class="form-control" name="result_n3_weight1" value="{{$pd->result_n3_weight1}}" aria-label="น้ำหนัก 1 สำหรับ N3"></td>
+                <td><input type="text" class="form-control" name="result_n3_weight2" value="{{$pd->result_n3_weight2}}" aria-label="น้ำหนัก 2 สำหรับ N3"></td>
             </tr>
         </tbody>
     </table>
@@ -543,137 +541,133 @@
             <tr>
                 <td>100</td>
                 <td>
-                    <input class="form-control" name="result100_n1temp">
+                    <input class="form-control" name="result100_n1temp" value="{{$pd->result100_n1temp}}">
                 </td>
                 <td>
-                    <input class="form-control" name="result100_n1moisture">
+                    <input class="form-control" name="result100_n1moisture" value="{{$pd->result100_n1moisture}}">
                 </td>
                 <td>
-                    <input class="form-control" name="result100_n2temp">
+                    <input class="form-control" name="result100_n2temp" value="{{$pd->result100_n2temp}}">
                 </td>
                 <td>
-                    <input class="form-control" name="result100_n2moisture">
+                    <input class="form-control" name="result100_n2moisture" value="{{$pd->result100_n2moisture}}">
                 </td>
                 <td>
-                    <input class="form-control" name="result100_n3temp">
+                    <input class="form-control" name="result100_n3temp" value="{{$pd->result100_n3temp}}">
                 </td>
                 <td>
-                    <input class="form-control" name="result100_n3moisture">
+                    <input class="form-control" name="result100_n3moisture" value="{{$pd->result100_n3moisture}}">
                 </td>
             </tr>
             <tr>
                 <td>150</td>
                 <td>
-                    <input class="form-control" name="result150_n1temp">
+                    <input class="form-control" name="result150_n1temp" value="{{$pd->result150_n1temp}}">
                 </td>
                 <td>
-                    <input class="form-control" name="result150_n1moisture">
+                    <input class="form-control" name="result150_n1moisture" value="{{$pd->result150_n1moisture}}">
                 </td>
                 <td>
-                    <input class="form-control" name="result150_n2temp">
+                    <input class="form-control" name="result150_n2temp" value="{{$pd->result150_n2temp}}">
                 </td>
                 <td>
-                    <input class="form-control" name="result150_n2moisture">
+                    <input class="form-control" name="result150_n2moisture" value="{{$pd->result150_n2moisture}}">
                 </td>
                 <td>
-                    <input class="form-control" name="result150_n3temp">
+                    <input class="form-control" name="result150_n3temp" value="{{$pd->result150_n3temp}}">
                 </td>
                 <td>
-                    <input class="form-control" name="result150_n3moisture">
+                    <input class="form-control" name="result150_n3moisture" value="{{$pd->result150_n3moisture}}">
                 </td>
             </tr>
             <tr>
                 <td>200</td>
                 <td>
-                    <input class="form-control" name="result200_n1temp">
+                    <input class="form-control" name="result200_n1temp" value="{{$pd->result200_n1temp}}">
                 </td>
                 <td>
-                    <input class="form-control" name="result200_n1moisture">
+                    <input class="form-control" name="result200_n1moisture" value="{{$pd->result200_n1moisture}}">
                 </td>
                 <td>
-                    <input class="form-control" name="result200_n2temp">
+                    <input class="form-control" name="result200_n2temp" value="{{$pd->result200_n2temp}}">
                 </td>
                 <td>
-                    <input class="form-control" name="result200_n2moisture">
+                    <input class="form-control" name="result200_n2moisture" value="{{$pd->result200_n2moisture}}">
                 </td>
                 <td>
-                    <input class="form-control" name="result200_n3temp">
+                    <input class="form-control" name="result200_n3temp" value="{{$pd->result200_n3temp}}">
                 </td>
                 <td>
-                    <input class="form-control" name="result200_n3moisture">
+                    <input class="form-control" name="result200_n3moisture" value="{{$pd->result200_n3moisture}}">
                 </td>
             </tr>
             <tr>
                 <td>250</td>
                 <td>
-                    <input class="form-control" name="result250_n1temp">
+                    <input class="form-control" name="result250_n1temp" value="{{$pd->result250_n1temp}}">
                 </td>
                 <td>
-                    <input class="form-control" name="result250_n1moisture">
+                    <input class="form-control" name="result250_n1moisture" value="{{$pd->result250_n1moisture}}">
                 </td>
                 <td>
-                    <input class="form-control" name="result250_n2temp">
+                    <input class="form-control" name="result250_n2temp" value="{{$pd->result250_n2temp}}">
                 </td>
                 <td>
-                    <input class="form-control" name="result250_n2moisture">
+                    <input class="form-control" name="result250_n2moisture" value="{{$pd->result250_n2moisture}}">
                 </td>
                 <td>
-                    <input class="form-control" name="result250_n3temp">
+                    <input class="form-control" name="result250_n3temp" value="{{$pd->result250_n3temp}}">
                 </td>
                 <td>
-                    <input class="form-control" name="result250_n3moisture">
+                    <input class="form-control" name="result250_n3moisture" value="{{$pd->result250_n3moisture}}">
                 </td>
             </tr>
             <tr>
                 <td>300</td>
                 <td>
-                    <input class="form-control" name="result300_n1temp">
+                    <input class="form-control" name="result300_n1temp" value="{{$pd->result300_n1temp}}">
                 </td>
                 <td>
-                    <input class="form-control" name="result300_n1moisture">
+                    <input class="form-control" name="result300_n1moisture" value="{{$pd->result300_n1moisture}}">
                 </td>
                 <td>
-                    <input class="form-control" name="result300_n2temp">
+                    <input class="form-control" name="result300_n2temp" value="{{$pd->result300_n2temp}}">
                 </td>
                 <td>
-                    <input class="form-control" name="result300_n2moisture">
+                    <input class="form-control" name="result300_n2moisture" value="{{$pd->result300_n2moisture}}">
                 </td>
                 <td>
-                    <input class="form-control" name="result300_n3temp">
+                    <input class="form-control" name="result300_n3temp" value="{{$pd->result300_n3temp}}">
                 </td>
                 <td>
-                    <input class="form-control" name="result300_n3moisture">
+                    <input class="form-control" name="result300_n3moisture" value="{{$pd->result300_n3moisture}}">
                 </td>
             </tr>
             <tr>
                 <td>350</td>
                 <td>
-                    <input class="form-control" name="result350_n1temp">
+                    <input class="form-control" name="result350_n1temp" value="{{$pd->result350_n1temp}}">
                 </td>
                 <td>
-                    <input class="form-control" name="result350_n1moisture">
+                    <input class="form-control" name="result350_n1moisture" value="{{$pd->result350_n1moisture}}">
                 </td>
                 <td>
-                    <input class="form-control" name="result350_n2temp">
+                    <input class="form-control" name="result350_n2temp" value="{{$pd->result350_n2temp}}">
                 </td>
                 <td>
-                    <input class="form-control" name="result350_n2moisture">
+                    <input class="form-control" name="result350_n2moisture" value="{{$pd->result350_n2moisture}}">
                 </td>
                 <td>
-                    <input class="form-control" name="result350_n3temp">
+                    <input class="form-control" name="result350_n3temp" value="{{$pd->result350_n3temp}}">
                 </td>
                 <td>
-                    <input class="form-control" name="result350_n3moisture">
+                    <input class="form-control" name="result350_n3moisture" value="{{$pd->result350_n3moisture}}">
                 </td>
             </tr>
         </tbody>
     </table>
 </div>
         <div class="row mt-3">
-             <div class="col-12" style="text-align: right;">
-                <a href="javascript:void(0);" class="btn btn-secondary" id="addRowBtn">เพิ่มรายการ (เครื่องมือที่ใช้ทดสอบ)</a>
-            </div>
-            <hr>
             <table class="table table-bordered dt-responsive nowrap w-100 text-center">
                 <thead>
                     <tr>
@@ -684,16 +678,40 @@
                         <th style="width: 7%">ความหนาก่อนทดสอบ</th>
                         <th style="width: 7%">ความหนาหลังทดสอบ</th>
                         <th style="width: 7%">ระยะสึกหรอ</th>
-                        <th style="width: 5%"></th>
                     </tr>
                 </thead>
-                <tbody id="tableBody"></tbody>       
+                <tbody id="tableBody">
+                    @foreach ($sub as $item)
+                        <tr>
+                            <td>
+                                {{$item->receive_test_subs_listno}}
+                                <input type="hidden" name="receive_test_subs_id[]" value="{{$item->receive_test_subs_id}}">
+                            </td>
+                            <td>{{$item->calibration_lists_name1}} ({{$item->calibration_lists_code}})</td>
+                            <td>
+                                <input class="form-control" name="receive_test_subs_note[]" value="{{$item->receive_test_subs_note}}">
+                            </td>
+                            <td>
+                                <input class="form-control" name="receive_test_subs_time[]" value="{{$item->receive_test_subs_time}}">
+                            </td>
+                            <td>
+                                <input class="form-control" name="before_testing[]" value="{{$item->before_testing}}">
+                            </td>
+                            <td>
+                                <input class="form-control" name="after_testing[]" value="{{$item->after_testing}}">
+                            </td>
+                            <td>
+                                <input class="form-control" name="total_testing[]" value="{{$item->total_testing}}">
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>       
             </table>
         </div>
         <div class="row mt-3">
             <div class="form-group">
                 <label for="receive_test_lists_weight" class="col-form-label">สถาพทั่วไป/ความสมบูรณ์ของชิ้นงาน</label>
-                <textarea class="form-control" name="result_test_lists_note"></textarea>
+                <textarea class="form-control" name="result_test_lists_note">{{$pd->result_test_lists_note}}</textarea>
             </div>
         </div>
         <br>
@@ -721,62 +739,6 @@ function prevFile(input, elm) {
         reader.readAsDataURL(input.files[0]);
     }
 }
-function updateRowNumbers() {
-    const rows = document.querySelectorAll('#tableBody tr');
-    rows.forEach((row, index) => {
-        row.querySelector('.row-number').textContent = index + 1;
-        row.querySelector('.row-number-hidden').value = index + 1;
-    });
-}
-
-document.getElementById('addRowBtn').addEventListener('click', function () {
-        const tbody = document.getElementById('tableBody');
-
-        const newRow = document.createElement('tr');
-        newRow.innerHTML = `
-            <td>
-                <span class="row-number"></span>
-                <input type="hidden" name="receive_test_subs_listno[]" class="row-number-hidden"/>
-            </td>
-            <td>
-                <select class="form-control" name="calibration_lists_id[]">
-                        <option value="">กรุณาเลือกเครื่องมือ</option>
-                        @foreach ($cal as $item)
-                            <option value="{{$item->calibration_lists_id}}">{{$item->calibration_lists_name1}} ({{$item->calibration_lists_code}})</option>
-                        @endforeach
-                </select>
-            </td>
-            <td>
-                <textarea class="form-control" name="receive_test_subs_note[]" rows="1" placeholder="เพิ่มเติม"></textarea>
-            </td>
-            <td>
-                <input class="form-control" type="text" name="receive_test_subs_time[]" value="0">
-            </td>
-            <td>
-                <input class="form-control" type="text" name="before_testing[]" value="0">
-            </td>
-             <td>
-                <input class="form-control" type="text" name="after_testing[]" value="0">
-            </td>
-            <td>
-                <input class="form-control" type="text" name="total_testing[]" value="0">
-            </td>
-            <td>
-                <button type="button" class="btn btn-danger btn-sm deleteRow">ลบ</button>
-            </td>
-        `;
-
-        tbody.appendChild(newRow);
-        updateRowNumbers(); 
-});
-
-document.getElementById('tableBody').addEventListener('click', function (e) {
-    if (e.target.classList.contains('deleteRow')) {
-        e.target.closest('tr').remove();
-        updateRowNumbers(); // อัปเดตลำดับหลังจากลบ
-    }
-});
-// ฟังก์ชันคำนวณค่าเฉลี่ยน้ำหนัก
 function calculateAverageWeight() {
     const weightFields = [
         'result_n1_weight1', 'result_n1_weight2',

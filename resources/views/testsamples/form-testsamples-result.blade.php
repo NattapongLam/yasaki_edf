@@ -31,6 +31,7 @@
                     <th>ผู้อนุมัติ</th>
                     <th>ผู้รับชิ้นงาน</th>
                     <th>รูปชิ้นงาน</th>
+                    <th>อัพเดท</th>
                     <th>พิมพ์รายงาน</th>
                     <th>เอกสารส่งมอบ</th>
                 </tr>
@@ -80,6 +81,11 @@
                             <img src="{{asset($item->receive_test_lists_file2)}}" class="img-thumbnail" width="25%">
                             <img src="{{asset($item->result_test_lists_file1)}}" class="img-thumbnail" width="25%">
                             <img src="{{asset($item->result_test_lists_file2)}}" class="img-thumbnail" width="25%">
+                        </td>
+                        <td>
+                            <a href="{{ route('receive-result.detail.edit', $item->ar_requestorder_hds_id) }}" class="btn btn-sm btn-info">
+                                <i class="fas fa-edit"></i>
+                            </a>
                         </td>
                         <td>
                             <a href="{{ route('report.compareformulas.print',$item->TestID) }}" target="_blank" class="btn btn-sm btn-warning">

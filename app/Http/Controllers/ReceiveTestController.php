@@ -341,5 +341,110 @@ class ReceiveTestController extends Controller
             ]);
         }
     }
+    
+    public function editDetail($id)
+    {
+        $hd = ArRequestorderHd::find($id);
+        $dt = ArRequestorderDt::where('ar_requestorder_hds_id',$id)->where('ar_requestorder_dts_flag',true)->get();
+        $bom = DB::table('chemistry_hd')->where('chemistry_hd_flag',true)->get();
+        $cal = CalibrationList::get();
+        $pd = ReceiveTestList::where('ar_requestorder_hds_id',$id)->first();
+        $test = DB::table('TestHeaders')->where('Lot',$hd->ar_requestorder_hds_docuno)->first();
+        $sub = ReceiveTestSub::leftjoin('calibration_lists','receive_test_subs.calibration_lists_id','=','calibration_lists.calibration_lists_id')
+        ->where('receive_test_subs.receive_test_lists_id',$pd->receive_test_lists_id)->get();
+        return view('testsamples.form-testsamples-update', compact('hd','dt','bom','cal','pd','test','sub'));
+    }
+    public function updateReceiveTest(Request $request, $id)
+{
+    // 1. ค้นหาข้อมูลหลัก (ตาม $id ของ receive_test_lists_id)
+    $pd = ReceiveTestList::findOrFail($id); // เปลี่ยน Model ให้ตรงกับฐานข้อมูลของคุณ
 
+    // 2. บันทึกข้อมูลอัปเดตจากฟอร์มชิ้นงานหลังทดสอบ
+    $pd->update([
+        'result_test_lists_date'     => $request->result_test_lists_date,
+        'result_test_lists_dimensions' => $request->result_test_lists_dimensions,
+        'result_dimensions_id'       => $request->result_dimensions_id,
+        'result_dimensions_id1'      => $request->result_dimensions_id1,
+        'result_test_lists_plate'    => $request->result_test_lists_plate,
+        'result_test_lists_weight'   => $request->result_test_lists_weight,
+        'result_weight_id'           => $request->result_weight_id,
+        'result_test_lists_temp'     => $request->result_test_lists_temp,
+        'result_test_lists_moisture' => $request->result_test_lists_moisture,
+        'result_test_lists_test'     => $request->result_test_lists_test,
+        'result_test_lists_remark'   => $request->result_test_lists_remark,
+        'result_test_lists_note'     => $request->result_test_lists_note,
+
+        // บันทึกข้อมูล N1, N2, N3
+        'result_n1_width1' => $request->result_n1_width1,
+        'result_n1_width2' => $request->result_n1_width2,
+        'result_n1_length1' => $request->result_n1_length1,
+        'result_n1_length2' => $request->result_n1_length2,
+        'result_n1_height1' => $request->result_n1_height1,
+        'result_n1_height2' => $request->result_n1_height2,
+        'result_n1_weight1' => $request->result_n1_weight1,
+        'result_n1_weight2' => $request->result_n1_weight2,
+
+        'result_n2_width1' => $request->result_n2_width1,
+        'result_n2_width2' => $request->result_n2_width2,
+        'result_n2_length1' => $request->result_n2_length1,
+        'result_n2_length2' => $request->result_n2_length2,
+        'result_n2_height1' => $request->result_n2_height1,
+        'result_n2_height2' => $request->result_n2_height2,
+        'result_n2_weight1' => $request->result_n2_weight1,
+        'result_n2_weight2' => $request->result_n2_weight2,
+
+        'result_n3_width1' => $request->result_n3_width1,
+        'result_n3_width2' => $request->result_n3_width2,
+        'result_n3_length1' => $request->result_n3_length1,
+        'result_n3_length2' => $request->result_n3_length2,
+        'result_n3_height1' => $request->result_n3_height1,
+        'result_n3_height2' => $request->result_n3_height2,
+        'result_n3_weight1' => $request->result_n3_weight1,
+        'result_n3_weight2' => $request->result_n3_weight2,
+
+        // ข้อมูลตารางอุณหภูมิและความชื้น 100-350 องศา
+        'result100_n1temp' => $request->result100_n1temp, 'result100_n1moisture' => $request->result100_n1moisture,
+        'result100_n2temp' => $request->result100_n2temp, 'result100_n2moisture' => $request->result100_n2moisture,
+        'result100_n3temp' => $request->result100_n3temp, 'result100_n3moisture' => $request->result100_n3moisture,
+        
+        'result150_n1temp' => $request->result150_n1temp, 'result150_n1moisture' => $request->result150_n1moisture,
+        'result150_n2temp' => $request->result150_n2temp, 'result150_n2moisture' => $request->result150_n2moisture,
+        'result150_n3temp' => $request->result150_n3temp, 'result150_n3moisture' => $request->result150_n3moisture,
+
+        'result200_n1temp' => $request->result200_n1temp, 'result200_n1moisture' => $request->result200_n1moisture,
+        'result200_n2temp' => $request->result200_n2temp, 'result200_n2moisture' => $request->result200_n2moisture,
+        'result200_n3temp' => $request->result200_n3temp, 'result200_n3moisture' => $request->result200_n3moisture,
+
+        'result250_n1temp' => $request->result250_n1temp, 'result250_n1moisture' => $request->result250_n1moisture,
+        'result250_n2temp' => $request->result250_n2temp, 'result250_n2moisture' => $request->result250_n2moisture,
+        'result250_n3temp' => $request->result250_n3temp, 'result250_n3moisture' => $request->result250_n3moisture,
+
+        'result300_n1temp' => $request->result300_n1temp, 'result300_n1moisture' => $request->result300_n1moisture,
+        'result300_n2temp' => $request->result300_n2temp, 'result300_n2moisture' => $request->result300_n2moisture,
+        'result300_n3temp' => $request->result300_n3temp, 'result300_n3moisture' => $request->result300_n3moisture,
+
+        'result350_n1temp' => $request->result350_n1temp, 'result350_n1moisture' => $request->result350_n1moisture,
+        'result350_n2temp' => $request->result350_n2temp, 'result350_n2moisture' => $request->result350_n2moisture,
+        'result350_n3temp' => $request->result350_n3temp, 'result350_n3moisture' => $request->result350_n3moisture,
+    ]);
+
+    // 3. วนลูปอัปเดตข้อมูลตารางย่อย (receive_test_subs)
+    if ($request->has('receive_test_subs_id')) {
+        foreach ($request->receive_test_subs_id as $index => $subId) {
+            $sub = ReceiveTestSub::find($subId); // เปลี่ยน Model ตามที่คุณใช้งาน
+            if ($sub) {
+                $sub->update([
+                    'receive_test_subs_note' => $request->receive_test_subs_note[$index] ?? null,
+                    'receive_test_subs_time' => $request->receive_test_subs_time[$index] ?? null,
+                    'before_testing'         => $request->before_testing[$index] ?? null,
+                    'after_testing'          => $request->after_testing[$index] ?? null,
+                    'total_testing'          => $request->total_testing[$index] ?? null,
+                ]);
+            }
+        }
+    }
+
+    // 4. พาผู้ใช้กลับหน้าเดิมพร้อมแจ้งเตือน
+    return redirect()->back()->with('success', 'อัปเดตผลการทดสอบสำเร็จเรียบร้อยแล้ว');
+}
 }

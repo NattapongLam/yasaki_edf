@@ -80,7 +80,8 @@
                         <th style="width: 5%">#</th>
                         <th style="width: 20%">สินค้า</th>
                         <th style="width: 20%">มาตรฐานที่อ้างอิง (JIS D 4411)</th>
-                        <th style="width: 15%">มิติชิ้นงาน ก×ย×ส (mm)</th>
+                        <th style="width: 15%">มิติชิ้นงาน ก×ย×ส (มิลลิเมตร)</th>
+                        <th style="width: 15%">น้ำหนัก (กรัม)</th>
                         <th style="width: 8%">จำนวน</th>
                         <th style="width: 27%">รายละเอียดเพิ่มเติม</th>
                     </tr>
@@ -112,6 +113,9 @@
                             </td>
                             <td>
                                 <input class="form-control" name="ar_requestorder_dts_dimensions[]" value="{{$item->ar_requestorder_dts_dimensions}}" readonly>
+                            </td>
+                            <td>
+                                <input class="form-control" name="ar_requestorder_dts_weight[]" value="{{$item->ar_requestorder_dts_weight}}" readonly>
                             </td>
                             <td>
                                 <input class="form-control" name="ar_requestorder_dts_qty[]" type="number" value="{{$item->ar_requestorder_dts_qty}}" readonly>
@@ -177,7 +181,7 @@
         <div class="row mt-3">
             <div class="col-3">
                 <div class="form-group">
-                    <label for="receive_test_lists_dimensions" class="col-form-label">มิติชิ้นงานเฉลี่ย ก×ย×ส (เซนติเมตร)</label>
+                    <label for="receive_test_lists_dimensions" class="col-form-label">มิติชิ้นงานเฉลี่ย ก×ย×ส (มิลลิเมตร)</label>
                     <input type="text" class="form-control" 
                             name="receive_test_lists_dimensions" 
                             id="receive_test_lists_dimensions"
@@ -254,9 +258,9 @@
         <thead>
             <tr>
                 <th rowspan="2" class="align-middle"></th>
-                <th colspan="2">ความกว้าง(เซนติเมตร)</th>
-                <th colspan="2">ความยาว(เซนติเมตร)</th>
-                <th colspan="2">ความสูง(เซนติเมตร)</th>
+                <th colspan="2">ความกว้าง(มิลลิเมตร)</th>
+                <th colspan="2">ความยาว(มิลลิเมตร)</th>
+                <th colspan="2">ความสูง(มิลลิเมตร)</th>
                 <th colspan="2">น้ำหนัก(กรัม)</th>
             </tr>
             <tr>

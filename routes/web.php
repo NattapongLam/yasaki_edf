@@ -53,6 +53,8 @@ Route::post('/get-formula-detail', [App\Http\Controllers\ReportFormulaController
 Route::resource('/receive-test' , App\Http\Controllers\ReceiveTestController::class);
 Route::get('/receive-result' , [App\Http\Controllers\ReceiveTestController::class , 'ReceiveResult']);
 Route::post('/confirmDelReceiveTest' , [App\Http\Controllers\ReceiveTestController::class , 'confirmDelReceiveTest']);
+Route::get('/receive-result/detail/{id}/edit', [App\Http\Controllers\ReceiveTestController::class, 'editDetail'])->name('receive-result.detail.edit');
+Route::put('/receive-test/update-result/{id}', [App\Http\Controllers\ReceiveTestController::class, 'updateReceiveTest'])->name('receive-test.update-result');
 Route::resource('/delivered' , App\Http\Controllers\DeliveredController::class);
 Route::get('/delivered-test/print/{id}', [App\Http\Controllers\DeliveredController::class, 'printDocument'])->name('delivered-test.print');
 // เคมี

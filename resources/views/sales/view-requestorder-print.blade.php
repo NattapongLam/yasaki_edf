@@ -144,7 +144,7 @@
                 <th style="width: 5%;">#</th>
                 <th style="width: 23%;">สินค้า</th>
                 <th style="width: 25%;">มาตรฐาน</th>
-                <th style="width: 15%;">มิติ (เซนติเมตร)</th>
+                <th style="width: 15%;">มิติ (มิลลิเมตร)</th>
                 <th style="width: 15%;">น้ำหนัก (กรัม)</th>
                 <th style="width: 10%;">จำนวน</th>
                 <th style="width: 22%;">หมายเหตุ</th>

@@ -97,7 +97,7 @@
                         <th style="width: 5%">#</th>
                         <th style="width: 20%">สินค้า</th>
                         <th style="width: 20%">มาตรฐานที่อ้างอิง (JIS D 4411)</th>
-                        <th style="width: 15%">มิติชิ้นงาน ก×ย×ส (เซนติเมตร)</th>
+                        <th style="width: 15%">มิติชิ้นงาน ก×ย×ส (มิลลิเมตร)</th>
                         <th style="width: 15%">น้ำหนัก (กรัม)</th>
                         <th style="width: 8%">จำนวน</th>
                         <th style="width: 27%">รายละเอียดเพิ่มเติม</th>
