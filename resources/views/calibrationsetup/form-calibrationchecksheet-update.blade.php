@@ -1,7 +1,6 @@
 @extends('layouts.main')
 @push('styles')
 <style>
-
 /* สำคัญมาก */
 .custom-table {
     border-collapse: separate !important;
@@ -20,9 +19,10 @@
 .custom-table td {
     border-right: 1px solid #dee2e6;
     border-bottom: 1px solid #dee2e6;
-    padding: 8px 6px;
+    padding: 6px 4px;
     background: #ffffff;
-    font-size: 14px;
+    font-size: 13px;
+    vertical-align: middle;
 }
 
 /* เส้นซ้ายสุด */
@@ -52,17 +52,17 @@
     left: 0;
     background: #f8f9fa;
     z-index: 11;
-    min-width: 60px;
+    min-width: 50px;
 }
 
 /* Sticky คอลัมน์ รายละเอียด */
 .custom-table th:nth-child(2),
 .custom-table td:nth-child(2) {
     position: sticky;
-    left: 60px; /* ต้องเท่ากับความกว้างคอลัมน์แรก */
+    left: 50px; /* ต้องเท่ากับความกว้างคอลัมน์แรก */
     background: #ffffff;
     z-index: 9;
-    min-width: 250px;
+    min-width: 220px;
 }
 
 /* Hover */
@@ -70,15 +70,30 @@
     background-color: #eef4ff;
 }
 
-/* Checkbox */
+/* ปรับแต่งช่องกรอกข้อมูลในตารางให้กะทัดรัด */
+.cell-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    min-width: 45px;
+}
+
 .day-check {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     cursor: pointer;
 }
 
+.cell-input {
+    height: 26px;
+    padding: 2px 4px;
+    font-size: 12px;
+    text-align: center;
+}
 </style>
 @endpush
+
 @section('content')
 <div class="row">
     @if(session('success'))
@@ -94,111 +109,133 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     @endif
-<div class="card">
-    <div class="card-body">
-        <form method="POST" class="form-horizontal" action="{{ route('calibrationchecksheets.update',$hd->calibration_checksheet_hds_id) }}" enctype="multipart/form-data">
-        @csrf 
-        @method('PUT')
-        <div class="row">
-            <div class="col-12 col-md-6"><h3 class="card-title">ตรวจประจำวัน</h3></div>
-        </div>    
-        <div class="row">
-            <div class="col-3">
-                <div class="form-group">
-                    <label for="calibration_checksheet_hds_date" class="col-form-label">วันที่</label>
-                    <input type="date" class="form-control" 
-                        name="calibration_checksheet_hds_date" 
-                        id="calibration_checksheet_hds_date" 
-                        value="{{$hd->calibration_checksheet_hds_date}}"
-                        readonly>
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="form-group">
-                    <label for="calibration_lists_code" class="col-form-label">รหัสเครื่องมือวัด</label>
-                    <input class="form-control" value="{{$hd->calibration_lists_code}}" name="calibration_lists_code" readonly>
-                    <input type="hidden" class="form-control" value="{{$hd->calibration_lists_id}}" name="calibration_lists_id" readonly>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="form-group">
-                    <label for="calibration_lists_name" class="col-form-label">ชื่อเครื่องมือวัด</label>
-                    <input class="form-control" value="{{$hd->calibration_lists_name}}" name="calibration_lists_name" readonly>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-12">
-                <div class="form-group">
-                    <label for="calibration_checksheet_hds_remark" class="col-form-label">หมายเหตุ</label>
-                    <input class="form-control" name="calibration_checksheet_hds_remark" value="{{$hd->calibration_checksheet_hds_remark}}" readonly>
-                </div>
-            </div>
-        </div>
-        <br>
-        <div class="row">
-    <div class="table-responsive">
-        <table class="table custom-table text-center">
-            <thead>
-                <tr>
-                    <th style="width:60px;">#</th>
-                    <th style="min-width:250px;">รายละเอียด</th>
 
-                    @for ($i = 1; $i <= 31; $i++)
-                        <th>
-                            {{ str_pad($i, 2, '0', STR_PAD_LEFT) }}
-                        </th>
-                    @endfor
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($dt as $index => $item)
-                    <tr>
-                        <td>
-                            {{ $item->calibration_checksheet_dts_listno }}
-                            <input type="hidden" name="calibration_checksheet_dts_id[]" value="{{ $item->calibration_checksheet_dts_id }}">
-                        </td>
+    <div class="card">
+        <div class="card-body">
+            <form method="POST" class="form-horizontal" action="{{ route('calibrationchecksheets.update',$hd->calibration_checksheet_hds_id) }}" enctype="multipart/form-data">
+                @csrf 
+                @method('PUT')
+                
+                <div class="row">
+                    <div class="col-12 col-md-6"><h3 class="card-title">ตรวจประจำวัน</h3></div>
+                </div>    
+                
+                <div class="row">
+                    <div class="col-3">
+                        <div class="form-group">
+                            <label for="calibration_checksheet_hds_date" class="col-form-label">วันที่</label>
+                            <input type="date" class="form-control" 
+                                name="calibration_checksheet_hds_date" 
+                                id="calibration_checksheet_hds_date" 
+                                value="{{$hd->calibration_checksheet_hds_date}}"
+                                readonly>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="form-group">
+                            <label for="calibration_lists_code" class="col-form-label">รหัสเครื่องมือวัด</label>
+                            <input class="form-control" value="{{$hd->calibration_lists_code}}" name="calibration_lists_code" readonly>
+                            <input type="hidden" class="form-control" value="{{$hd->calibration_lists_id}}" name="calibration_lists_id" readonly>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label for="calibration_lists_name" class="col-form-label">ชื่อเครื่องมือวัด</label>
+                            <input class="form-control" value="{{$hd->calibration_lists_name}}" name="calibration_lists_name" readonly>
+                        </div>
+                    </div>
+                </div>
 
-                        <td>
-                            <input class="form-control" name="calibration_checksheet_dts_remark[]" value="{{$item->calibration_checksheet_dts_remark}}">
-                        </td>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="calibration_checksheet_hds_remark" class="col-form-label">หมายเหตุ</label>
+                            <input class="form-control" name="calibration_checksheet_hds_remark" value="{{$hd->calibration_checksheet_hds_remark}}" readonly>
+                        </div>
+                    </div>
+                </div>
+                
+                <br>
 
-                        @for ($i = 1; $i <= 31; $i++)
-                            @php
-                                $field = 'action_' . str_pad($i, 2, '0', STR_PAD_LEFT);
-                            @endphp
-                            <td>
-                                <input 
-                                    type="checkbox"
-                                    class="day-check"
-                                    name="action[{{ $index }}][{{ $field }}]"
-                                    value="1"
-                                    {{ $item->$field ? 'checked' : '' }}
-                                >
-                            </td>
-                        @endfor
+                <div class="row">
+                    <div class="table-responsive">
+                        <table class="table custom-table text-center">
+                            <thead>
+                                <tr>
+                                    <th style="width:50px;">#</th>
+                                    <th style="min-width:220px;">รายละเอียด</th>
+                                    @for ($i = 1; $i <= 31; $i++)
+                                        <th>{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</th>
+                                    @endfor
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($dt as $index => $item)
+                                    <tr>
+                                        <td>
+                                            {{ $item->calibration_checksheet_dts_listno }}
+                                            <input type="hidden" name="calibration_checksheet_dts_id[]" value="{{ $item->calibration_checksheet_dts_id }}">
+                                        </td>
+                                        <td>
+                                            <input class="form-control" name="calibration_checksheet_dts_remark[]" value="{{$item->calibration_checksheet_dts_remark}}">
+                                        </td>
 
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
-</div>
-  
-        <br>
-                <div class="col-12 col-md-1">
-                    <div class="form-group">
+                                        @for ($i = 1; $i <= 31; $i++)
+                                            @php
+                                                $field = 'action_' . str_pad($i, 2, '0', STR_PAD_LEFT);
+                                                // สมมติว่ามีค่า standard เก็บไว้ด้วย หรือกำหนดค่าเริ่มต้นเป็น 0
+                                                $standardField = 'standard_' . str_pad($i, '0', STR_PAD_LEFT); // ปรับชื่อตัวแปรตาม Database จริงของคุณ
+                                            @endphp
+                                            <td>
+                                                <div class="cell-box">
+                                                    <!-- Checkbox สำหรับติ๊กผ่าน/ไม่ผ่าน -->
+                                                    <input 
+                                                        type="checkbox"
+                                                        class="day-check"
+                                                        name="action[{{ $index }}][{{ $field }}]"
+                                                        value="1"
+                                                        {{ $item->$field ? 'checked' : '' }}
+                                                        title="ติ๊กเพื่อเลือก"
+                                                    >
+                                                    <!-- Input สำหรับกรอกค่าตัวเลข/ข้อความ -->
+                                                    <input 
+                                                        type="text"
+                                                        class="form-control cell-input"
+                                                        name="standard[{{ $index }}][{{ $field }}]"
+                                                        value="0"
+                                                        title="กรอกค่า"
+                                                    >
+                                                </div>
+                                            </td>
+                                        @endfor
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+   
+                <br>
+                <div class="row">
+                    <div class="col-12 col-md-2">
                         <button type="submit" class="btn btn-block btn-primary">
-                            บันทึก
+                            <i class="mdi mdi-content-save me-1"></i> บันทึกข้อมูล
                         </button>
                     </div>
                 </div>
-                </form>
+            </form>
+        </div>
     </div>
 </div>
-</div>
 @endsection
+
 @push('scriptjs')
 <script>
+    // เพิ่มเติมความสะดวก เช่น เมื่อคลิกที่ Input ให้เลือกข้อความทั้งหมดทันที (พิมพ์ทับได้ง่าย)
+    document.addEventListener('focus', function(e) {
+        if (e.target && e.target.classList.contains('cell-input')) {
+            e.target.select();
+        }
+    }, true);
 </script>
 @endpush

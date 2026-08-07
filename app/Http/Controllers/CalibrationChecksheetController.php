@@ -103,7 +103,7 @@ class CalibrationChecksheetController extends Controller
     public function edit($id)
     {
         $hd = CalibrationChecksheetHd::find($id);
-        $dt = CalibrationChecksheetDt::where('calibration_checksheet_dts_flag',true)->where('calibration_checksheet_hds_id',$id)->get();
+        $dt = CalibrationChecksheetDt::where('calibration_checksheet_dts_flag',true)->where('calibration_checksheet_hds_id',$id)->get();        
         return view('calibrationsetup.form-calibrationchecksheet-update', compact('hd','dt'));
     }
 
@@ -119,27 +119,44 @@ class CalibrationChecksheetController extends Controller
         try
         {
             DB::beginTransaction();
+            
             $detailIds = $request->calibration_checksheet_dts_id ?? [];
             $actions   = $request->action ?? [];
+            $standards = $request->standard ?? []; // รับค่า standard จากฟอร์ม
+            
             foreach ($detailIds as $index => $detailId) {
+                // อัปเดตหมายเหตุของรายการ
                 CalibrationChecksheetDt::where('calibration_checksheet_dts_id', $detailId)->update([
-                    'calibration_checksheet_dts_remark' => $request->calibration_checksheet_dts_remark[$index]
+                    'calibration_checksheet_dts_remark' => $request->calibration_checksheet_dts_remark[$index] ?? null
                 ]);
+                
                 $updateData = [];
                 for ($i = 1; $i <= 31; $i++) {
-                    $field = 'action_' . str_pad($i, 2, '0', STR_PAD_LEFT);
-                    $updateData[$field] =
-                        isset($actions[$index][$field]) ? 1 : 0;
+                    $field = str_pad($i, 2, '0', STR_PAD_LEFT);
+                    
+                    // 1. จัดการฟิลด์ action (เช่น action_01, action_02)
+                    $actionField = 'action_' . $field;
+                    $updateData[$actionField] = isset($actions[$index][$actionField]) ? 1 : 0;
+                    
+                    // 2. จัดการฟิลด์ standard (เช่น standard_01, standard_02) 
+                    // *หมายเหตุ: เปลี่ยนชื่อ 'standard_' ให้ตรงกับชื่อคอลัมน์จริงใน Database ของคุณ
+                    $standardField = 'standard_' . $field; 
+                    $updateData[$standardField] = $standards[$index][$actionField] ?? null; 
                 }
+                
+                // บันทึกข้อมูลทั้งหมดลงในตาราง
                 CalibrationChecksheetDt::where('calibration_checksheet_dts_id', $detailId)->update($updateData);
             }
+            
             DB::commit();
             return redirect()->route('calibrationchecksheets.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
-        }catch(\Exception $e){
+
+        } catch(\Exception $e) {
+            DB::rollBack(); // อย่าลืม rollback เมื่อเกิดข้อผิดพลาด
             Log::error($e->getMessage());
-            dd($e->getMessage());
-            return redirect()->back()->with('error', 'เกิดข้อผิดพลาด');
-        }  
+            // dd($e->getMessage()); // เปิดใช้ตอน Debug ได้ แต่เวลาใช้งานจริงแนะนำให้คอมเมนต์ไว้
+            return redirect()->back()->with('error', 'เกิดข้อผิดพลาด: ' . $e->getMessage());
+        }
     }
 
     /**

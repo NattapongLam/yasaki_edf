@@ -178,3 +178,9 @@ Route::get('/purchasereceive/runno', [App\Http\Controllers\ApPurchaseReceiveList
 Route::get('purchase/items', [App\Http\Controllers\ApPurchaseReceiveListController::class, 'getItems'])->name('purchase.items');
 Route::post('/CancelPurchaseReceiveDoc' , [App\Http\Controllers\ApPurchaseReceiveListController::class , 'CancelPurchaseReceiveDoc']);
 //จัดซื้อ
+
+//DCC
+Route::resource('/master-list' , App\Http\Controllers\MasterListController::class);
+Route::post('/CancelMasterList' , [App\Http\Controllers\MasterListController::class , 'CancelMasterList']);
+Route::resource('/ncr' , App\Http\Controllers\NcrController::class);
+//DCC

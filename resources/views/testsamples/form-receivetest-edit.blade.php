@@ -264,14 +264,14 @@
                 <th colspan="2">น้ำหนัก(กรัม)</th>
             </tr>
             <tr>
-                <th>1</th>
-                <th>2</th>
-                <th>1</th>
-                <th>2</th>
-                <th>1</th>
-                <th>2</th>
-                <th>1</th>
-                <th>2</th>
+                <th>L</th>
+                <th>R</th>
+                <th>L</th>
+                <th>R</th>
+                <th>L</th>
+                <th>R</th>
+                <th>L</th>
+                <th>R</th>
             </tr>
         </thead>
         <tbody>

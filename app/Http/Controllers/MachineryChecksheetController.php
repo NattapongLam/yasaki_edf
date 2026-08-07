@@ -103,7 +103,7 @@ class MachineryChecksheetController extends Controller
     public function edit($id)
     {
         $hd = MachineryChecksheetHd::find($id);
-        $dt = MachineryChecksheetDt::where('machinery_checksheet_dts_flag',true)->where('machinery_checksheet_hds_id',$id)->get();
+        $dt = MachineryChecksheetDt::where('machinery_checksheet_dts_flag',true)->where('machinery_checksheet_hds_id',$id)->get();       
         return view('machinerysetup.form-machinerychecksheet-update', compact('hd','dt'));
     }
 
@@ -116,30 +116,46 @@ class MachineryChecksheetController extends Controller
      */
     public function update(Request $request, $id)
     {
-        try
-        {
+        try {
             DB::beginTransaction();
+            
             $detailIds = $request->machinery_checksheet_dts_id ?? [];
             $actions   = $request->action ?? [];
+            $standards = $request->standard ?? []; // รับค่าจากช่องกรอก standard
+            
             foreach ($detailIds as $index => $detailId) {
+                // อัปเดตหมายเหตุของแต่ละแถว
                 MachineryChecksheetDt::where('machinery_checksheet_dts_id', $detailId)->update([
-                    'machinery_checksheet_dts_remark' => $request->machinery_checksheet_dts_remark[$index]
+                    'machinery_checksheet_dts_remark' => $request->machinery_checksheet_dts_remark[$index] ?? null
                 ]);
+                
                 $updateData = [];
                 for ($i = 1; $i <= 31; $i++) {
-                    $field = 'action_' . str_pad($i, 2, '0', STR_PAD_LEFT);
-                    $updateData[$field] =
-                        isset($actions[$index][$field]) ? 1 : 0;
+                    $field = str_pad($i, 2, '0', STR_PAD_LEFT);
+                    
+                    // 1. จัดการข้อมูล Checkbox (action_01, action_02, ...)
+                    $actionField = 'action_' . $field;
+                    $updateData[$actionField] = isset($actions[$index][$actionField]) ? 1 : 0;
+                    
+                    // 2. จัดการข้อมูลช่องกรอก (standard_01, standard_02, ...)
+                    // *หมายเหตุ: ตรวจสอบชื่อคอลัมน์ใน Database ว่าขึ้นต้นด้วย standard_ หรือไม่ ถ้าไม่ใช่ให้ปรับชื่อให้ตรงกัน
+                    $standardField = 'standard_' . $field;
+                    $updateData[$standardField] = $standards[$index][$actionField] ?? null;
                 }
+                
+                // ทำการอัปเดตข้อมูลรายวันทั้งหมดลงในฐานข้อมูล
                 MachineryChecksheetDt::where('machinery_checksheet_dts_id', $detailId)->update($updateData);
             }
+            
             DB::commit();
             return redirect()->route('machinerychecksheets.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
-        }catch(\Exception $e){
+
+        } catch (\Exception $e) {
+            DB::rollBack(); // ยกเลิกการทำงานทั้งหมดหากเกิดข้อผิดพลาด
             Log::error($e->getMessage());
-            dd($e->getMessage());
-            return redirect()->back()->with('error', 'เกิดข้อผิดพลาด');
-        }  
+            // dd($e->getMessage()); // เปิดใช้งานเฉพาะตอนที่ต้องการ Debug เท่านั้น
+            return redirect()->back()->with('error', 'เกิดข้อผิดพลาด: ' . $e->getMessage());
+        } 
     }
 
     /**
