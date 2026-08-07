@@ -27,6 +27,7 @@
                     <th>รหัส</th>
                     <th>ชื่อ</th>
                     <th>กลุ่ม</th>
+                    <th>PM ครั้งถัดไป</th>
                     <th>แก้ไข</th>
                     <th>ยกเลิก</th>
                     <th>ตรวจประจำวัน</th>
@@ -45,6 +46,7 @@
                         <td>{{$item->machinery_lists_code}}</td>
                         <td>{{$item->machinery_lists_name1}}</td>
                         <td>{{$item->Groups->machinery_groups_name}}</td>
+                        <td>{{$item->machinery_lists_nextdate}}</td>
                         <td>
                             <a href="{{route('machinerylists.edit',$item->machinery_lists_id)}}" class="btn btn-sm btn-warning" >
                                 <i class="fas fa-edit"></i>

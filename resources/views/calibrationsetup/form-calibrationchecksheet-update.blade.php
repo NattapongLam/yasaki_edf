@@ -5,6 +5,7 @@
 .custom-table {
     border-collapse: separate !important;
     border-spacing: 0;
+    width: 100%;
 }
 
 /* Scroll container */
@@ -19,24 +20,23 @@
 .custom-table td {
     border-right: 1px solid #dee2e6;
     border-bottom: 1px solid #dee2e6;
-    padding: 6px 4px;
+    padding: 3px 1px;
     background: #ffffff;
-    font-size: 13px;
+    font-size: 10px;
     vertical-align: middle;
+    text-align: center;
 }
 
-/* เส้นซ้ายสุด */
+/* เส้นซ้ายสุดและบนสุด */
 .custom-table tr td:first-child,
 .custom-table tr th:first-child {
     border-left: 1px solid #dee2e6;
 }
-
-/* เส้นบนสุด */
 .custom-table thead tr th {
     border-top: 1px solid #dee2e6;
 }
 
-/* Header */
+/* Header Sticky */
 .custom-table thead th {
     position: sticky;
     top: 0;
@@ -52,17 +52,19 @@
     left: 0;
     background: #f8f9fa;
     z-index: 11;
-    min-width: 50px;
+    min-width: 25px;
 }
 
 /* Sticky คอลัมน์ รายละเอียด */
 .custom-table th:nth-child(2),
 .custom-table td:nth-child(2) {
     position: sticky;
-    left: 50px; /* ต้องเท่ากับความกว้างคอลัมน์แรก */
+    left: 25px; 
     background: #ffffff;
     z-index: 9;
-    min-width: 220px;
+    min-width: 130px;
+    text-align: left;
+    padding-left: 4px;
 }
 
 /* Hover */
@@ -70,26 +72,104 @@
     background-color: #eef4ff;
 }
 
-/* ปรับแต่งช่องกรอกข้อมูลในตารางให้กะทัดรัด */
+/* ช่องกรอกข้อมูลในตาราง */
 .cell-box {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
-    min-width: 45px;
+    gap: 1px;
+    min-width: 24px;
 }
 
 .day-check {
-    width: 18px;
-    height: 18px;
+    width: 12px;
+    height: 12px;
     cursor: pointer;
 }
 
 .cell-input {
-    height: 26px;
-    padding: 2px 4px;
-    font-size: 12px;
+    height: 18px;
+    padding: 0px;
+    font-size: 9px;
     text-align: center;
+}
+
+/* ส่วนสำหรับลายเซ็น */
+.sig-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+}
+.sig-box {
+    flex: 1;
+    text-align: center;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 4px;
+    background-color: #fdfdfd;
+}
+
+/* ---------------------------------------------------- */
+/* ตั้งค่าเฉพาะตอนสั่งพิมพ์ (Print Mode A4 แนวนอน)       */
+/* ---------------------------------------------------- */
+@media print {
+    @page {
+        size: A4 landscape;
+        margin: 3mm; /* ลดขอบกระดาษเหลือน้อยที่สุดเพื่อให้ตารางกว้างขึ้น */
+    }
+    body {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        font-size: 8.5px !important;
+        -webkit-print-color-adjust: exact;
+    }
+    .d-print-none {
+        display: none !important;
+    }
+    .card {
+        border: none !important;
+        box-shadow: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    .card-body {
+        padding: 0 !important;
+    }
+    .table-responsive {
+        max-height: none !important;
+        overflow: visible !important;
+        border: none !important;
+    }
+    .custom-table thead th {
+        background: #2f3e5c !important;
+        color: #fff !important;
+        -webkit-print-color-adjust: exact;
+    }
+    .custom-table th,
+    .custom-table td {
+        padding: 2px 0px !important;
+        font-size: 8px !important;
+    }
+    .form-control {
+        border: none !important;
+        border-bottom: 1px dotted #6c757d !important;
+        border-radius: 0 !important;
+        padding: 1px 0 !important;
+        background-color: transparent !important;
+        box-shadow: none !important;
+        font-size: 8.5px !important;
+    }
+    .cell-input {
+        height: 15px !important;
+        font-size: 8px !important;
+        border: 1px solid #ced4da !important;
+    }
+    .sig-box {
+        border: 1px solid #ced4da !important;
+        background-color: transparent !important;
+        padding: 2px !important;
+    }
 }
 </style>
 @endpush
@@ -111,59 +191,65 @@
     @endif
 
     <div class="card">
-        <div class="card-body">
+        <div class="card-body p-2">
             <form method="POST" class="form-horizontal" action="{{ route('calibrationchecksheets.update',$hd->calibration_checksheet_hds_id) }}" enctype="multipart/form-data">
                 @csrf 
                 @method('PUT')
                 
-                <div class="row">
-                    <div class="col-12 col-md-6"><h3 class="card-title">ตรวจประจำวัน</h3></div>
+                <!-- ส่วนหัวและปุ่มพิมพ์ -->
+                <div class="row align-items-center mb-1">
+                    <div class="col-6">
+                        <h3 class="card-title mb-0 fs-6 fw-bold">บันทึกผลการตรวจสอบเครื่องมือวัดประจำวัน (Checksheet)</h3>
+                    </div>
+                    <div class="col-6 text-end d-print-none">
+                        <button type="button" class="btn btn-dark btn-sm shadow-sm" onclick="window.print()">
+                            <i class="mdi mdi-printer me-1"></i> พิมพ์เอกสาร / บันทึก PDF (A4 แนวนอน)
+                        </button>
+                    </div>
                 </div>    
                 
-                <div class="row">
-                    <div class="col-3">
+                <div class="row g-1 mb-1">
+                    <div class="col-md-3">
                         <div class="form-group">
-                            <label for="calibration_checksheet_hds_date" class="col-form-label">วันที่</label>
-                            <input type="date" class="form-control" 
+                            <label for="calibration_checksheet_hds_date" class="col-form-label form-label-sm fw-semibold" style="font-size: 11px;">วันที่</label>
+                            <input type="date" class="form-control form-control-sm" 
                                 name="calibration_checksheet_hds_date" 
                                 id="calibration_checksheet_hds_date" 
                                 value="{{$hd->calibration_checksheet_hds_date}}"
                                 readonly>
                         </div>
                     </div>
-                    <div class="col-3">
+                    <div class="col-md-3">
                         <div class="form-group">
-                            <label for="calibration_lists_code" class="col-form-label">รหัสเครื่องมือวัด</label>
-                            <input class="form-control" value="{{$hd->calibration_lists_code}}" name="calibration_lists_code" readonly>
+                            <label for="calibration_lists_code" class="col-form-label form-label-sm fw-semibold" style="font-size: 11px;">รหัสเครื่องมือวัด</label>
+                            <input class="form-control form-control-sm" value="{{$hd->calibration_lists_code}}" name="calibration_lists_code" readonly>
                             <input type="hidden" class="form-control" value="{{$hd->calibration_lists_id}}" name="calibration_lists_id" readonly>
                         </div>
                     </div>
-                    <div class="col-6">
+                    <div class="col-md-6">
                         <div class="form-group">
-                            <label for="calibration_lists_name" class="col-form-label">ชื่อเครื่องมือวัด</label>
-                            <input class="form-control" value="{{$hd->calibration_lists_name}}" name="calibration_lists_name" readonly>
+                            <label for="calibration_lists_name" class="col-form-label form-label-sm fw-semibold" style="font-size: 11px;">ชื่อเครื่องมือวัด</label>
+                            <input class="form-control form-control-sm" value="{{$hd->calibration_lists_name}}" name="calibration_lists_name" readonly>
                         </div>
                     </div>
                 </div>
 
-                <div class="row">
+                <div class="row g-1 mb-2">
                     <div class="col-12">
                         <div class="form-group">
-                            <label for="calibration_checksheet_hds_remark" class="col-form-label">หมายเหตุ</label>
-                            <input class="form-control" name="calibration_checksheet_hds_remark" value="{{$hd->calibration_checksheet_hds_remark}}" readonly>
+                            <label for="calibration_checksheet_hds_remark" class="col-form-label form-label-sm fw-semibold" style="font-size: 11px;">หมายเหตุ</label>
+                            <input class="form-control form-control-sm" name="calibration_checksheet_hds_remark" value="{{$hd->calibration_checksheet_hds_remark}}" readonly>
                         </div>
                     </div>
                 </div>
-                
-                <br>
 
                 <div class="row">
                     <div class="table-responsive">
-                        <table class="table custom-table text-center">
+                        <table class="table custom-table text-center mb-1">
                             <thead>
                                 <tr>
-                                    <th style="width:50px;">#</th>
-                                    <th style="min-width:220px;">รายละเอียด</th>
+                                    <th style="width:25px;">#</th>
+                                    <th style="min-width:130px;">รายละเอียด</th>
                                     @for ($i = 1; $i <= 31; $i++)
                                         <th>{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</th>
                                     @endfor
@@ -177,14 +263,15 @@
                                             <input type="hidden" name="calibration_checksheet_dts_id[]" value="{{ $item->calibration_checksheet_dts_id }}">
                                         </td>
                                         <td>
-                                            <input class="form-control" name="calibration_checksheet_dts_remark[]" value="{{$item->calibration_checksheet_dts_remark}}">
+                                            <textarea class="form-control form-control-sm" name="calibration_checksheet_dts_remark[]" rows="5">
+                                                {{$item->calibration_checksheet_dts_remark}}
+                                            </textarea>
                                         </td>
 
                                         @for ($i = 1; $i <= 31; $i++)
                                             @php
                                                 $field = 'action_' . str_pad($i, 2, '0', STR_PAD_LEFT);
-                                                // สมมติว่ามีค่า standard เก็บไว้ด้วย หรือกำหนดค่าเริ่มต้นเป็น 0
-                                                $standardField = 'standard_' . str_pad($i, '0', STR_PAD_LEFT); // ปรับชื่อตัวแปรตาม Database จริงของคุณ
+                                                $standardField = 'standard_' . str_pad($i, 2, '0', STR_PAD_LEFT); 
                                             @endphp
                                             <td>
                                                 <div class="cell-box">
@@ -194,7 +281,7 @@
                                                         class="day-check"
                                                         name="action[{{ $index }}][{{ $field }}]"
                                                         value="1"
-                                                        {{ $item->$field ? 'checked' : '' }}
+                                                        {{ isset($item->$field) && $item->$field ? 'checked' : '' }}
                                                         title="ติ๊กเพื่อเลือก"
                                                     >
                                                     <!-- Input สำหรับกรอกค่าตัวเลข/ข้อความ -->
@@ -202,7 +289,7 @@
                                                         type="text"
                                                         class="form-control cell-input"
                                                         name="standard[{{ $index }}][{{ $field }}]"
-                                                        value="0"
+                                                        value="{{ $item->$standardField ?? '0' }}"
                                                         title="กรอกค่า"
                                                     >
                                                 </div>
@@ -214,11 +301,38 @@
                         </table>
                     </div>
                 </div>
-   
-                <br>
-                <div class="row">
+
+                <!-- ส่วนลายเซ็นท้ายเอกสาร -->
+                <div class="signature-section mt-2 pt-1 border-top">
+                    <div class="sig-container">
+                        <div class="sig-box">
+                            <div style="height: 8px;"></div>
+                            <p class="mb-0 text-muted" style="font-size: 9px;">___________________________</p>
+                            <p class="mb-0 fw-semibold text-dark" style="font-size: 9px;">( ........................................ )</p>
+                            <p class="text-muted mb-0 fw-bold" style="font-size: 8px;">ผู้ตรวจสอบ / Operator</p>
+                            <p class="text-muted mb-0" style="font-size: 7.5px;">วันที่: ____/____/________</p>
+                        </div>
+                        <div class="sig-box">
+                            <div style="height: 8px;"></div>
+                            <p class="mb-0 text-muted" style="font-size: 9px;">___________________________</p>
+                            <p class="mb-0 fw-semibold text-dark" style="font-size: 9px;">( ........................................ )</p>
+                            <p class="text-muted mb-0 fw-bold" style="font-size: 8px;">ผู้ทวนสอบ / Supervisor</p>
+                            <p class="text-muted mb-0" style="font-size: 7.5px;">วันที่: ____/____/________</p>
+                        </div>
+                        <div class="sig-box">
+                            <div style="height: 8px;"></div>
+                            <p class="mb-0 text-muted" style="font-size: 9px;">___________________________</p>
+                            <p class="mb-0 fw-semibold text-dark" style="font-size: 9px;">( ........................................ )</p>
+                            <p class="text-muted mb-0 fw-bold" style="font-size: 8px;">ผู้อนุมัติ / QMR / Manager</p>
+                            <p class="text-muted mb-0" style="font-size: 7.5px;">วันที่: ____/____/________</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ปุ่มบันทึกข้อมูล (ซ่อนตอนพิมพ์) -->
+                <div class="row mt-2 d-print-none">
                     <div class="col-12 col-md-2">
-                        <button type="submit" class="btn btn-block btn-primary">
+                        <button type="submit" class="btn btn-block btn-primary btn-sm shadow-sm">
                             <i class="mdi mdi-content-save me-1"></i> บันทึกข้อมูล
                         </button>
                     </div>
@@ -231,7 +345,6 @@
 
 @push('scriptjs')
 <script>
-    // เพิ่มเติมความสะดวก เช่น เมื่อคลิกที่ Input ให้เลือกข้อความทั้งหมดทันที (พิมพ์ทับได้ง่าย)
     document.addEventListener('focus', function(e) {
         if (e.target && e.target.classList.contains('cell-input')) {
             e.target.select();
