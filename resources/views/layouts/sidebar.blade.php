@@ -134,7 +134,7 @@
                     <ul class="sub-menu" aria-expanded="true">
                         <li><a href="{{route('master-list.index')}}" key="t-default">Master List</a></li>  
                         <li><a href="{{route('ncr.index')}}" key="t-default">NCR</a></li>  
-                        <li><a href="" key="t-default">CAR</a></li>  
+                        <li><a href="{{route('car.index')}}" key="t-default">CAR</a></li>  
                     </ul>
                 </li>
                 <li>

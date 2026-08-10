@@ -183,4 +183,7 @@ Route::post('/CancelPurchaseReceiveDoc' , [App\Http\Controllers\ApPurchaseReceiv
 Route::resource('/master-list' , App\Http\Controllers\MasterListController::class);
 Route::post('/CancelMasterList' , [App\Http\Controllers\MasterListController::class , 'CancelMasterList']);
 Route::resource('/ncr' , App\Http\Controllers\NcrController::class);
+Route::post('/CancelNcr' , [App\Http\Controllers\NcrController::class , 'CancelNcr']);
+Route::resource('/car' , App\Http\Controllers\CarController::class);
+Route::post('/CancelCar' , [App\Http\Controllers\CarController::class , 'CancelCar']);
 //DCC

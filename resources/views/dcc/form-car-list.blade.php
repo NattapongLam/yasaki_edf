@@ -18,18 +18,20 @@
 <div class="card">
     <div class="card-body">
         <div class="row mb-3">
-            <div class="col-12 col-md-6"><h3 class="card-title">ทะเบียน NCR</h3></div>
-            <div class="col-12 col-md-6"><a style="float: right" href="{{route('ncr.create')}}" class="btn btn-primary"><i class="fas fa-plus"></i> เพิ่มรายการ</a></div>
+            <div class="col-12 col-md-6"><h3 class="card-title">ทะเบียน CAR</h3></div>
+            <div class="col-12 col-md-6"><a style="float: right" href="{{route('car.create')}}" class="btn btn-primary"><i class="fas fa-plus"></i> เพิ่มรายการ</a></div>
         </div>             
         <table id="tb_job" class="table table-bordered dt-responsive nowrap w-100 text-center">
             <thead>
                 <tr>
-                    <th>วันที่พบปัญหา</th>
-                    <th>NCR No</th>
-                    <th>ชื่อโครงการ</th>
-                    <th>ชื่อผลิตภัณฑ์/จำนวน</th>
-                    <th>ถึง</th>
-                    <th>ผู้ตรวจพบ</th>
+                    <th>CAR NO</th>
+                    <th>วันที่รายงาน</th>
+                    <th>เกี่ยวข้อง</th>
+                    <th>แผนก/หน่วยงานที่ออก</th>
+                    <th>แผนก/หน่วยงานที่เกี่ยวข้อง</th>
+                    <th>รายละเอียดข้อบกพร่องที่พบ</th>
+                    <th>รายการปัญหา</th>
+                    <th>เรื่องที่เกี่ยวข้อง</th>
                     <th>สถานะ</th>
                     <th>จัดการ</th>
                     <th>ลบ</th>
@@ -38,18 +40,20 @@
             <tbody>
                 @foreach ($hd as $item)
                     <tr>
-                        <td>{{$item->doc_ncrs_date}}</td>
-                        <td>{{$item->doc_ncrs_docuno}}</td>
-                        <td>{{$item->doc_ncrs_project}}</td>
-                        <td>{{$item->doc_ncrs_product}}</td>
-                        <td>{{$item->doc_ncrs_to}}</td>
-                        <td>{{$item->doc_ncrs_person}}</td>
-                        <td>{{$item->doc_ncr_statuses_name}}</td>
+                        <td>{{$item->doc_cars_docuno}}</td>
+                        <td>{{$item->doc_cars_date}}</td>
+                        <td>{{$item->doc_cars_relevant}}</td>
+                        <td>{{$item->doc_cars_issuingdep}}</td>
+                        <td>{{$item->doc_cars_relevantdep}}</td>
+                        <td>{{$item->doc_cars_defects}}</td>
+                        <td>{{$item->doc_cars_problem}}</td>
+                        <td>{{$item->doc_cars_topics}}</td>
+                        <td>{{$item->doc_statuses_name}}</td>
                         <td>
-                            <a href="{{route('ncr.edit',$item->doc_ncrs_id)}}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
+                            <a href="{{route('car.edit',$item->doc_cars_id)}}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
                         </td>
                         <td>
-                            <a href="javascript:void(0)" class="btn btn-danger btn-sm" onclick="confirmDel('{{ $item->doc_ncrs_id }}')"><i class="fas fa-trash"></i></a>
+                            <a href="javascript:void(0)" class="btn btn-danger btn-sm" onclick="confirmDel('{{ $item->doc_cars_id }}')"><i class="fas fa-trash"></i></a>
                         </td>
                     </tr>
                 @endforeach
@@ -89,7 +93,7 @@ Swal.fire({
 }).then(function(result) {
     if (result.value) {
         $.ajax({
-            url: `{{ url('/CancelNcr') }}`,
+            url: `{{ url('/CancelCar') }}`,
             type: "POST",
             data: {
                 "_token": "{{ csrf_token() }}",
