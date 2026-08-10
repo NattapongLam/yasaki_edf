@@ -81,7 +81,8 @@ class MachineryPlanController extends Controller
                     'person_at' => Auth::user()->name,
                     'created_at'=> Carbon::now(),
                     'updated_at'=> Carbon::now(),
-                    'machinery_plan_subs_action' => false
+                    'machinery_plan_subs_action' => false,
+                    'machinery_plan_subs_result' => "0"
                 ]);                
             }
             MachineryPlan::where('machinery_plans_id',$request->machinery_plans_id)->update([
@@ -181,6 +182,7 @@ class MachineryPlanController extends Controller
                         'person_at' => Auth::user()->name,
                         'created_at'=> Carbon::now(),
                         'updated_at'=> Carbon::now(),
+                        'machinery_plan_subs_result' => $request->machinery_plan_subs_result[$index] ?? "0",
                     ]
                 );
             }

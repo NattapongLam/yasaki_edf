@@ -104,7 +104,8 @@ class CarController extends Controller
      */
     public function edit($id)
     {
-        //
+        $hd = DocCar::find($id);
+        return view('dcc.form-car-edit', compact('hd'));
     }
 
     /**
@@ -116,7 +117,75 @@ class CarController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $hd =  DocCar::find($id);
+        if($hd->doc_statuses_id == 1){
+            try{
+                DB::beginTransaction();
+                DocCar::where('doc_cars_id',$id)->update([
+                    'doc_statuses_id' => 2,
+                    'doc_cars_cause' => $request->doc_cars_cause,
+                    'doc_cars_solving' => $request->doc_cars_solving,
+                    'doc_cars_preventing' => $request->doc_cars_preventing,
+                    'responsible_at' => Auth::user()->name,
+                    'responsible_date' => $request->responsible_date,
+                ]);               
+                DB::commit();
+                return redirect()->route('car.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+            }catch(\Exception $e){
+                Log::error($e->getMessage());
+                dd($e->getMessage());
+                return redirect()->back()->with('error', 'เกิดข้อผิดพลาด');
+            }  
+        }elseif ($hd->doc_statuses_id == 2) {
+             try{
+                DB::beginTransaction();
+                DocCar::where('doc_cars_id',$id)->update([
+                    'doc_statuses_id' => 3,
+                    'review_at' => Auth::user()->name,
+                    'review_date' => $request->responsible_date,
+                ]);               
+                DB::commit();
+                return redirect()->route('car.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+            }catch(\Exception $e){
+                Log::error($e->getMessage());
+                dd($e->getMessage());
+                return redirect()->back()->with('error', 'เกิดข้อผิดพลาด');
+            }  
+        }elseif($hd->doc_statuses_id == 3){
+            try{
+                DB::beginTransaction();
+                DocCar::where('doc_cars_id',$id)->update([
+                    'doc_statuses_id' => 4,
+                    'doc_cars_details' => $request->doc_cars_details,
+                    'doc_cars_remark' => $request->doc_cars_remark,
+                    'doc_cars_summarize' => $request->doc_cars_summarize,
+                    'doc_cars_newdocuno' => $request->doc_cars_newdocuno,
+                    'follow_at' => Auth::user()->name,
+                    'follow_date' => $request->follow_date
+                ]);               
+                DB::commit();
+                return redirect()->route('car.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+            }catch(\Exception $e){
+                Log::error($e->getMessage());
+                dd($e->getMessage());
+                return redirect()->back()->with('error', 'เกิดข้อผิดพลาด');
+            }  
+        }elseif ($hd->doc_statuses_id == 4) {
+            try{
+                DB::beginTransaction();
+                DocCar::where('doc_cars_id',$id)->update([
+                    'doc_statuses_id' => 5,
+                    'approved_at' => Auth::user()->name,
+                    'approved_date' => $request->approved_date
+                ]);               
+                DB::commit();
+                return redirect()->route('car.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+            }catch(\Exception $e){
+                Log::error($e->getMessage());
+                dd($e->getMessage());
+                return redirect()->back()->with('error', 'เกิดข้อผิดพลาด');
+            }  
+        }
     }
 
     /**

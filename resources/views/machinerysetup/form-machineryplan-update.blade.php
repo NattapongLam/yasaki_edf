@@ -82,9 +82,9 @@
                     <table class="table table-bordered dt-responsive nowrap w-100 text-center">
                         <thead>
                             <tr>
-                                <th style="width: 5%">#</th>
-                                <th style="width: 90%">รายละเอียด</th>
-                                <th style="width: 5%"></th>
+                                <th style="width: 3%">#</th>
+                                <th style="width: 85%">รายละเอียด</th>
+                                <th style="width: 12%"></th>
                             </tr>
                         </thead>
                         <tbody id="tableBody">
@@ -110,6 +110,7 @@
                                             name="machinery_plan_subs_action[{{ $loop->index }}]"
                                             value="1"
                                             {{ $item->machinery_plan_subs_action == 1 ? 'checked' : '' }}>
+                                        <input type="text" class="form-control" value="{{$item->machinery_plan_subs_result}}"  name="machinery_plan_subs_result[{{ $loop->index }}]">
                                     </td>
                                 </tr>
                             @endforeach
