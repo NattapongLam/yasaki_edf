@@ -336,7 +336,22 @@
                             @endif
                         </div>
                     </div>
-                </div>   
+                </div> 
+                <div class="row">
+                    <div class="col-3">
+                        <label class="form-label">เครื่องมือใช้ทดสอบ</label>
+                        <select class="form-select" name="calibration_lists_lapstatus">
+                            @if ($hd->calibration_lists_lapstatus)
+                                <option value="1">ใช้งาน</option>
+                                <option value="0">ไม่ใช้งาน</option>
+                            @else
+                               <option value="0">ไม่ใช้งาน</option>
+                                <option value="1">ใช้งาน</option>
+                            @endif
+                           
+                        </select>
+                    </div>
+                </div>    
                 <br>
                 <div class="col-12 col-md-1">
                     <div class="form-group">

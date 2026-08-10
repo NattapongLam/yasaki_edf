@@ -104,6 +104,7 @@ class CalibrationListController extends Controller
             'person_at' => Auth::user()->name,
             'created_at' => Carbon::now(), 
             'updated_at' => Carbon::now(), 
+            'calibration_lists_lapstatus' => $request->calibration_lists_lapstatus
         ];
         if ($request->hasFile('calibration_lists_file1')) {
             $data['calibration_lists_file1'] = $request->file('calibration_lists_file1')->storeAs('images/Calibration_File', "IMG_" . Carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('calibration_lists_file1')->extension());
@@ -214,6 +215,7 @@ class CalibrationListController extends Controller
             'calibration_lists_markingorshape' => $request->calibration_lists_markingorshape,
             'person_at' => Auth::user()->name,
             'updated_at' => Carbon::now(), 
+            'calibration_lists_lapstatus' => $request->calibration_lists_lapstatus
         ];
         if ($request->hasFile('calibration_lists_file1')) {
             $data['calibration_lists_file1'] = $request->file('calibration_lists_file1')->storeAs('images/Calibration_File', "IMG_" . Carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('calibration_lists_file1')->extension());

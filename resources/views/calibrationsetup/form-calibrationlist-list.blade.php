@@ -30,6 +30,7 @@
                     <th>กลุ่ม</th>
                     <th>ประเภท</th>
                     <th>วันที่ทวนสอบครั้งต่อไป</th>
+                    <th>เครื่องมือใช้ทดสอบ</th>
                     <th></th>
                     <th>ตรวจประจำวัน</th>
                 </tr>
@@ -46,6 +47,13 @@
                         <td>{{$item->Groups->calibration_groups_name}}</td>
                         <td>{{$item->Types->calibration_types_name}}</td>
                         <td>{{$item->calibration_lists_nextdate}}</td>
+                        <td>
+                            @if ($item->calibration_lists_lapstatus)
+                                <span class="badge-soft-success">ใช้งาน</span>
+                            @else
+                                <span class="badge-soft-danger">ไม่ใช้งาน</span>
+                            @endif
+                        </td>
                         <td>
                             <a href="{{route('calibrationlists.edit',$item->calibration_lists_id)}}" class="btn btn-sm btn-warning" >
                                 <i class="fas fa-edit"></i>
