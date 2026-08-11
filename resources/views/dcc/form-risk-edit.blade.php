@@ -19,9 +19,9 @@
 
             <div class="card shadow-sm border-0 mb-4">
                 <div class="card-body p-4">
-                    <form method="POST" class="form-horizontal" action="{{ route('risk.store') }}" enctype="multipart/form-data">
+                    <form method="POST" class="form-horizontal" action="{{ route('risk.update',$hd->doc_risk_hds_id) }}" enctype="multipart/form-data">
                         @csrf 
-                        
+                        @method('PUT')
                         <div class="row mb-4 align-items-center">
                             <div class="col-12">
                                 <h3 class="card-title text-primary fw-bold mb-0">

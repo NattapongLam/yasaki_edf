@@ -126,7 +126,8 @@ class RiskController extends Controller
      */
     public function edit($id)
     {
-        //
+        $hd = DocRiskHd::find($id);
+        return view('dcc.form-risk-edit', compact('hd'));
     }
 
     /**
