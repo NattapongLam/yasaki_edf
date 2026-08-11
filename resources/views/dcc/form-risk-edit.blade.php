@@ -38,28 +38,37 @@
                                     <label class="form-label fw-semibold">ประเภท <span class="text-danger">*</span></label>
                                     <select class="form-select" name="doc_risk_hds_type" required>
                                         <option value="" disabled selected>กรุณาเลือก</option>
-                                        <option value="ปัจจัยภายใน/ภายนอก">ปัจจัยภายใน/ภายนอก</option>
-                                        <option value="ผู้มีส่วนได้/ส่วนเสีย">ผู้มีส่วนได้/ส่วนเสีย</option>
-                                        <option value="ในกระบวนการ">ในกระบวนการ</option>
+                                        <option value="ปัจจัยภายใน/ภายนอก" 
+                                        {{ (old('doc_risk_hds_type', $hd->doc_risk_hds_type) == 'ปัจจัยภายใน/ภายนอก') ? 'selected' : '' }}>
+                                            ปัจจัยภายใน/ภายนอก
+                                        </option>
+                                        <option value="ผู้มีส่วนได้/ส่วนเสีย"
+                                        {{ (old('doc_risk_hds_type', $hd->doc_risk_hds_type) == 'ผู้มีส่วนได้/ส่วนเสีย') ? 'selected' : '' }}>
+                                        ผู้มีส่วนได้/ส่วนเสีย
+                                        </option>
+                                        <option value="ในกระบวนการ"
+                                        {{ (old('doc_risk_hds_type', $hd->doc_risk_hds_type) == 'ในกระบวนการ') ? 'selected' : '' }}>
+                                            ในกระบวนการ
+                                        </option>
                                     </select>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label class="form-label fw-semibold">หน่วยงาน/กระบวนการ</label>
-                                    <input class="form-control" type="text" name="doc_risk_hds_agency" placeholder="ระบุหน่วยงาน" required>
+                                    <input class="form-control" type="text" name="doc_risk_hds_agency" placeholder="ระบุหน่วยงาน" value="{{$hd->doc_risk_hds_agency}}" required>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label class="form-label fw-semibold">ผู้รับผิดชอบ</label>
-                                    <input class="form-control" type="text" name="doc_risk_hds_person" placeholder="ชื่อผู้รับผิดชอบ" required>
+                                    <input class="form-control" type="text" name="doc_risk_hds_person" placeholder="ชื่อผู้รับผิดชอบ" value="{{$hd->doc_risk_hds_person}}" required>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label class="form-label fw-semibold">วัน/เดือน/ปี</label>
-                                    <input class="form-control" type="date" name="doc_risk_hds_date" value="{{ date('Y-m-d') }}" required>
+                                    <input class="form-control" type="date" name="doc_risk_hds_date" value="{{ $hd->doc_risk_hds_date}}" required>
                                 </div>
                             </div>
                         </div>
@@ -169,13 +178,13 @@
                                             <table class="table table-sm table-borderless align-middle mb-0">
                                                 <tr>
                                                     <td class="fw-semibold text-now5rap" style="width: 30%;">ผู้จัดทำ</td>
-                                                    <td><input class="form-control form-control-sm" type="text" name="prepared_by" value="{{Auth::user()->name}}" placeholder="ชื่อผู้จัดทำ" readonly></td>
-                                                    <td><input class="form-control form-control-sm" type="date" name="prepared_date" value="{{ date('Y-m-d') }}"></td>
+                                                    <td><input class="form-control form-control-sm" type="text" name="prepared_by" value="{{$hd->prepared_by}}" placeholder="ชื่อผู้จัดทำ" readonly></td>
+                                                    <td><input class="form-control form-control-sm" type="date" name="prepared_date" value="{{ $hd->prepared_date }}"></td>
                                                 </tr>
                                                 <tr>
                                                     <td class="fw-semibold text-nowrap">ผู้ทบทวน</td>
-                                                    <td><input class="form-control form-control-sm" type="text" name="approved_by" placeholder="ชื่อผู้ทบทวน" readonly></td>
-                                                    <td><input class="form-control form-control-sm" type="date" name="approved_date" readonly></td>
+                                                    <td><input class="form-control form-control-sm" type="text" name="approved_by" placeholder="ชื่อผู้ทบทวน" value="{{$hd->approved_by}}" readonly></td>
+                                                    <td><input class="form-control form-control-sm" type="date" name="approved_date" value="{{$hd->approved_date}}" readonly></td>
                                                 </tr>
                                             </table>
                                         </div>

@@ -174,6 +174,15 @@
                         <li><a href="{{route('adjuststocks.index')}}" key="t-default">ใบปรับปรุงสต็อค</a></li>
                     </ul>   
                 </li>
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="bx bx-layout"></i>
+                        <span key="t-layouts">ฝ่ายบุคคล</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="true">
+                        <li><a href="{{route('hr.index')}}" key="t-default">ประวัติพนักงาน</a></li> 
+                    </ul>   
+                </li>
                 <li class="menu-title" key="t-apps">Report</li>   
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">

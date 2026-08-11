@@ -77,7 +77,7 @@ class RiskController extends Controller
                 foreach ($request->doc_risk_hds_issue as $key => $value) {
                     // สมมติว่า Model รายละเอียดคือ DocRiskDt (ปรับชื่อ Model ตามโปรเจกต์ของคุณ)
                     DocRiskDt::create([
-                        'doc_risk_hds_id' => $insertHD->id, // Foreign Key เชื่อมกับตาราง Header
+                        'doc_risk_hds_id' => $insertHD->doc_risk_hds_id, // Foreign Key เชื่อมกับตาราง Header
                         'doc_risk_hds_issue' => $request->doc_risk_hds_issue[$key] ?? '-',
                         'doc_risk_hds_effect' => $request->doc_risk_hds_effect[$key] ?? '-',
                         'doc_risk_hds_control' => $request->doc_risk_hds_control[$key] ?? '-',
@@ -127,7 +127,8 @@ class RiskController extends Controller
     public function edit($id)
     {
         $hd = DocRiskHd::find($id);
-        return view('dcc.form-risk-edit', compact('hd'));
+        $dt = DocRiskDt::where('doc_risk_dts_flag',true)->get();
+        return view('dcc.form-risk-edit', compact('hd','dt'));
     }
 
     /**
