@@ -198,4 +198,28 @@ class CarController extends Controller
     {
         //
     }
+     public function CancelCar(Request $request)
+    {
+        $id = $request->refid;
+        try 
+        {
+            DB::beginTransaction();
+            DocCar::where('doc_cars_id',$id)->update([
+                'doc_statuses_id' => 6,
+                'person_at' => Auth::user()->name,
+                'updated_at'=> Carbon::now(),
+            ]);
+            DB::commit();
+            return response()->json([
+                'status' => true,
+                'message' => 'ยกเลิกรายการเรียบร้อยแล้ว'
+            ]);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
 }
