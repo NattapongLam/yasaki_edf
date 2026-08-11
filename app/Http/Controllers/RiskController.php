@@ -78,15 +78,15 @@ class RiskController extends Controller
                     // สมมติว่า Model รายละเอียดคือ DocRiskDt (ปรับชื่อ Model ตามโปรเจกต์ของคุณ)
                     DocRiskDt::create([
                         'doc_risk_hds_id' => $insertHD->doc_risk_hds_id, // Foreign Key เชื่อมกับตาราง Header
-                        'doc_risk_hds_issue' => $request->doc_risk_hds_issue[$key] ?? '-',
-                        'doc_risk_hds_effect' => $request->doc_risk_hds_effect[$key] ?? '-',
-                        'doc_risk_hds_control' => $request->doc_risk_hds_control[$key] ?? '-',
-                        'doc_risk_dts_likelihood' => $request->doc_risk_dts_likelihood[$key] ?? '-',
-                        'doc_risk_dts_impact' => $request->doc_risk_dts_impact[$key] ?? '-',
-                        'doc_risk_dts_score' => $request->doc_risk_dts_score[$key] ?? '-',
+                        'doc_risk_dts_issue' => $request->doc_risk_dts_issue[$key] ?? '-',
+                        'doc_risk_dts_effect' => $request->doc_risk_dts_effect[$key] ?? '-',
+                        'doc_risk_dts_control' => $request->doc_risk_dts_control[$key] ?? '-',
+                        'doc_risk_dts_likelihood' => $request->doc_risk_dts_likelihood[$key] ?? 0,
+                        'doc_risk_dts_impact' => $request->doc_risk_dts_impact[$key] ?? 0,
+                        'doc_risk_dts_score' => $request->doc_risk_dts_score[$key] ?? 0,
                         'doc_risk_dts_violence' => $request->doc_risk_dts_violence[$key] ?? '-',
                         'doc_risk_dts_chance' => $request->doc_risk_dts_chance[$key] ?? '-',
-                        'doc_risk_dts_period' => $request->doc_risk_dts_period[$key] ?? '-',
+                        'doc_risk_dts_period' => $request->doc_risk_dts_period[$key],
                         'doc_risk_dts_responsible' => $request->doc_risk_dts_responsible[$key] ?? '-',
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now(),

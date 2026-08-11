@@ -251,9 +251,9 @@ document.getElementById('addRowBtn').addEventListener('click', function () {
 
     newRow.innerHTML = `
         <td class="row-number fw-semibold"></td>
-        <td><textarea name="doc_risk_hds_issue[]" class="form-control form-control-sm" rows="2" placeholder="ระบุประเด็น..." required></textarea></td>
-        <td><textarea name="doc_risk_hds_effect[]" class="form-control form-control-sm" rows="2" placeholder="ระบุผลกระทบ..."></textarea></td>
-        <td><textarea name="doc_risk_hds_control[]" class="form-control form-control-sm" rows="2" placeholder="การควบคุม..."></textarea></td>
+        <td><textarea name="doc_risk_dts_issue[]" class="form-control form-control-sm" rows="2" placeholder="ระบุประเด็น..." required></textarea></td>
+        <td><textarea name="doc_risk_dts_effect[]" class="form-control form-control-sm" rows="2" placeholder="ระบุผลกระทบ..."></textarea></td>
+        <td><textarea name="doc_risk_dts_control[]" class="form-control form-control-sm" rows="2" placeholder="การควบคุม..."></textarea></td>
         <td>
             <select name="doc_risk_dts_likelihood[]" class="form-select form-select-sm likelihood-select text-center" required>
                 <option value="" selected>-</option>
