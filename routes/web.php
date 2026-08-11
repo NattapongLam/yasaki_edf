@@ -186,4 +186,5 @@ Route::resource('/ncr' , App\Http\Controllers\NcrController::class);
 Route::post('/CancelNcr' , [App\Http\Controllers\NcrController::class , 'CancelNcr']);
 Route::resource('/car' , App\Http\Controllers\CarController::class);
 Route::post('/CancelCar' , [App\Http\Controllers\CarController::class , 'CancelCar']);
+Route::resource('/risk' , App\Http\Controllers\RiskController::class);
 //DCC

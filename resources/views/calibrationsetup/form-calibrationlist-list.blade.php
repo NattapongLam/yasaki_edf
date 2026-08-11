@@ -17,9 +17,29 @@
 <div class="card">
     <div class="card-body">
         <div class="row">
-            <div class="col-12 col-md-6"><h3 class="card-title">ทะเบียนครื่องมือวัด</h3></div>
+            <div class="col-12 col-md-6">
+                <h3 class="card-title">
+                    ทะเบียนเครื่องมือวัด 
+                    {{-- ส่วนคำนวณและแสดงผลค่า Uncertainty ตามมาตรฐาน ISO 17025 (RSS จากเครื่องมือที่ใช้งาน) --}}
+                    @php
+                        // กรองเฉพาะรายการที่สถานะ "ใช้งาน"
+                        $activeItems = collect($hd)->where('calibration_lists_lapstatus', true);
+                        
+                        // นำค่า U หาร 2 ก่อน เพื่อเปลี่ยนจาก Expanded Uncertainty เป็น Standard Uncertainty (u) แล้วเข้าสูตร RSS
+                        $sumSquare = $activeItems->sum(function($item) {
+                            $standardUncertainty = (float)$item->calibration_lists_uncertainty / 2; // หาร 2 ตรงนี้ครับ
+                            return pow($standardUncertainty, 2);
+                        });
+                        $combinedUncertainty = sqrt($sumSquare);
+                    @endphp
+                    <span class="fs-6 text-danger ms-2">
+                        (ค่าความไม่แน่นอนรวม (RSS): <strong>{{ number_format($combinedUncertainty, 6) }}</strong> จากเครื่องมือที่ใช้งาน {{ $activeItems->count() }} รายการ)
+                    </span>
+                </h3>
+            </div>
             <div class="col-12 col-md-6"><a style="float: right" href="{{route('calibrationlists.create')}}" class="btn btn-primary"><i class="fas fa-plus"></i> เพิ่มรายการ</a></div>
-        </div>       
+        </div>      
+        
         <table id="tb_job" class="table table-bordered dt-responsive nowrap w-100 text-center">
             <thead>
                 <tr>
@@ -31,6 +51,7 @@
                     <th>ประเภท</th>
                     <th>วันที่ทวนสอบครั้งต่อไป</th>
                     <th>เครื่องมือใช้ทดสอบ</th>
+                    <th>ค่าความไม่แน่นอน</th>
                     <th></th>
                     <th>ตรวจประจำวัน</th>
                 </tr>
@@ -54,6 +75,7 @@
                                 <span class="badge-soft-danger">ไม่ใช้งาน</span>
                             @endif
                         </td>
+                        <td>{{number_format($item->calibration_lists_uncertainty,6)}}</td>
                         <td>
                             <a href="{{route('calibrationlists.edit',$item->calibration_lists_id)}}" class="btn btn-sm btn-warning" >
                                 <i class="fas fa-edit"></i>
