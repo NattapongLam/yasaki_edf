@@ -23,7 +23,7 @@ class RiskController extends Controller
      */
     public function index()
     {
-        $hd = null;
+        $hd = DocRiskHd::where('doc_risk_hds_flag',true)->get();
         return view('dcc.form-risk-list', compact('hd'));
     }
 
@@ -152,5 +152,30 @@ class RiskController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function CancelRisk(Request $request)
+    {
+        $id = $request->refid;
+        try 
+        {
+            DB::beginTransaction();
+            DocRiskHd::where('doc_ncrs_id',$id)->update([
+                'doc_risk_hds_flag' => false,
+                'person_at' => Auth::user()->name,
+                'updated_at'=> Carbon::now(),
+            ]);
+            DB::commit();
+            return response()->json([
+                'status' => true,
+                'message' => 'ยกเลิกรายการเรียบร้อยแล้ว'
+            ]);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
     }
 }

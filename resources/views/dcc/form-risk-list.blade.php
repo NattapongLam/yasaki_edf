@@ -24,18 +24,29 @@
         <table id="tb_job" class="table table-bordered dt-responsive nowrap w-100 text-center">
             <thead>
                 <tr>
-                    <th>วันที่พบปัญหา</th>
-                    <th>NCR No</th>
-                    <th>ชื่อโครงการ</th>
-                    <th>ชื่อผลิตภัณฑ์/จำนวน</th>
-                    <th>ถึง</th>
-                    <th>ผู้ตรวจพบ</th>
-                    <th>สถานะ</th>
+                    <th>ประเภท</th>
+                    <th>หน่วยงาน/กระบวนการ</th>
+                    <th>ผู้รับผิดชอบ</th>
+                    <th>วัน/เดือน/ปี</th>
                     <th>จัดการ</th>
                     <th>ลบ</th>
                 </tr>
             </thead>
             <tbody>
+                @foreach ($hd as $item)
+                    <tr>
+                        <td>{{$item->doc_risk_hds_type}}</td>
+                        <td>{{$item->doc_risk_hds_agency}}</td>
+                        <td>{{$item->doc_risk_hds_person}}</td>
+                        <td>{{$item->doc_risk_hds_date}}</td>
+                        <td>
+                            <a href="{{route('risk.edit',$item->doc_risk_hds_id)}}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
+                        </td>
+                        <td>
+                            <a href="javascript:void(0)" class="btn btn-danger btn-sm" onclick="confirmDel('{{ $item->doc_risk_hds_id }}')"><i class="fas fa-trash"></i></a>
+                        </td>
+                    </tr>
+                @endforeach
             </tbody>
         </table>
     </div>
@@ -72,7 +83,7 @@ Swal.fire({
 }).then(function(result) {
     if (result.value) {
         $.ajax({
-            url: `{{ url('/CancelNcr') }}`,
+            url: `{{ url('/CancelRisk') }}`,
             type: "POST",
             data: {
                 "_token": "{{ csrf_token() }}",
