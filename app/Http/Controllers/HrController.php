@@ -17,7 +17,8 @@ class HrController extends Controller
      */
     public function index()
     {
-        //
+        $hd = null;
+        return view('people.form-person-list', compact('hd'));
     }
 
     /**
@@ -27,7 +28,8 @@ class HrController extends Controller
      */
     public function create()
     {
-        //
+        $hd = null;
+        return view('people.form-person-create', compact('hd'));
     }
 
     /**

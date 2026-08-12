@@ -28,7 +28,8 @@
                     <th>หน่วยงาน/กระบวนการ</th>
                     <th>ผู้รับผิดชอบ</th>
                     <th>วัน/เดือน/ปี</th>
-                    <th>จัดการ</th>
+                    <th>แก้ไข</th>
+                    <th>ทบทวน</th>
                     <th>ลบ</th>
                 </tr>
             </thead>
@@ -41,6 +42,13 @@
                         <td>{{$item->doc_risk_hds_date}}</td>
                         <td>
                             <a href="{{route('risk.edit',$item->doc_risk_hds_id)}}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
+                            <br>
+                            ผู้จัดทำ : {{$item->prepared_by}}
+                        </td>
+                        <td>
+                            <a href="{{route('risk.show',$item->doc_risk_hds_id)}}" class="btn btn-info btn-sm"><i class="fas fa-edit"></i></a>
+                            <br>
+                            ผู้ทบทวน : {{$item->approved_by}}
                         </td>
                         <td>
                             <a href="javascript:void(0)" class="btn btn-danger btn-sm" onclick="confirmDel('{{ $item->doc_risk_hds_id }}')"><i class="fas fa-trash"></i></a>

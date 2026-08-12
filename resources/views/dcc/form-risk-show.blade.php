@@ -26,7 +26,7 @@
                             <div class="col-12">
                                 <h3 class="card-title text-primary fw-bold mb-0">
                                     <i class="mdi mdi-shield-search me-2"></i>การประเมินความเสี่ยงและโอกาส
-                                    <input type="hidden" value="Edit" name="checkref">
+                                    <input type="hidden" value="Review" name="checkref">
                                 </h3>
                                 <hr class="text-muted">
                             </div>
@@ -37,7 +37,7 @@
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label class="form-label fw-semibold">ประเภท <span class="text-danger">*</span></label>
-                                    <select class="form-select" name="doc_risk_hds_type" required>
+                                    <select class="form-select" name="doc_risk_hds_type" disabled>
                                         <option value="" disabled selected>กรุณาเลือก</option>
                                         <option value="ปัจจัยภายใน/ภายนอก" 
                                         {{ (old('doc_risk_hds_type', $hd->doc_risk_hds_type) == 'ปัจจัยภายใน/ภายนอก') ? 'selected' : '' }}>
@@ -57,31 +57,31 @@
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label class="form-label fw-semibold">หน่วยงาน/กระบวนการ</label>
-                                    <input class="form-control" type="text" name="doc_risk_hds_agency" placeholder="ระบุหน่วยงาน" value="{{$hd->doc_risk_hds_agency}}" required>
+                                    <input class="form-control" type="text" name="doc_risk_hds_agency" placeholder="ระบุหน่วยงาน" value="{{$hd->doc_risk_hds_agency}}" readonly>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label class="form-label fw-semibold">ผู้รับผิดชอบ</label>
-                                    <input class="form-control" type="text" name="doc_risk_hds_person" placeholder="ชื่อผู้รับผิดชอบ" value="{{$hd->doc_risk_hds_person}}" required>
+                                    <input class="form-control" type="text" name="doc_risk_hds_person" placeholder="ชื่อผู้รับผิดชอบ" value="{{$hd->doc_risk_hds_person}}" readonly>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label class="form-label fw-semibold">วัน/เดือน/ปี</label>
-                                    <input class="form-control" type="date" name="doc_risk_hds_date" value="{{ $hd->doc_risk_hds_date}}" required>
+                                    <input class="form-control" type="date" name="doc_risk_hds_date" value="{{ $hd->doc_risk_hds_date}}" readonly>
                                 </div>
                             </div>
                         </div>
 
                         {{-- ตารางรายการประเมินความเสี่ยง --}}
                         <div class="row mt-2">
-                            <div class="col-12 d-flex justify-content-between align-items-center mb-3">
+                            {{-- <div class="col-12 d-flex justify-content-between align-items-center mb-3">
                                 <h5 class="fw-bold text-secondary mb-0">รายการประเมิน</h5>
                                 <button type="button" class="btn btn-success btn-sm px-3" id="addRowBtn">
                                     <i class="mdi mdi-plus me-1"></i> เพิ่มรายการ
                                 </button>
-                            </div>
+                            </div> --}}
                             
                             <div class="table-responsive">
                                 <table class="table table-bordered table-striped align-middle text-center w-100">
@@ -95,7 +95,6 @@
                                             <th rowspan="2" class="align-middle" style="width: 5%;">รวมคะแนน<br>(L x I)</th>
                                             <th rowspan="2" class="align-middle" style="width: 5%;">ระดับความรุนแรง</th>
                                             <th colspan="3" class="align-middle">การบริหารความเสี่ยง</th>
-                                            <th rowspan="2" class="align-middle" style="width: 70px;">จัดการ</th>
                                         </tr>
                                         <tr>
                                             <th class="align-middle" style="width: 5%;">โอกาส (L)</th>
@@ -109,11 +108,11 @@
                                         @foreach ($dt as $index => $item)
                                             <tr>
                                                 <td class="row-number fw-semibold">{{ $index + 1 }}</td>
-                                                <td><textarea name="doc_risk_dts_issue[]" class="form-control form-control-sm" rows="2" required>{{$item->doc_risk_dts_issue}}</textarea></td>
-                                                <td><textarea name="doc_risk_dts_effect[]" class="form-control form-control-sm" rows="2">{{$item->doc_risk_dts_effect}}</textarea></td>
-                                                <td><textarea name="doc_risk_dts_control[]" class="form-control form-control-sm" rows="2">{{$item->doc_risk_dts_control}}</textarea></td>
+                                                <td><textarea name="doc_risk_dts_issue[]" class="form-control form-control-sm" rows="2" disabled>{{$item->doc_risk_dts_issue}}</textarea></td>
+                                                <td><textarea name="doc_risk_dts_effect[]" class="form-control form-control-sm" rows="2" disabled>{{$item->doc_risk_dts_effect}}</textarea></td>
+                                                <td><textarea name="doc_risk_dts_control[]" class="form-control form-control-sm" rows="2" disabled>{{$item->doc_risk_dts_control}}</textarea></td>
                                                 <td>
-                                                    <select name="doc_risk_dts_likelihood[]" class="form-select form-select-sm likelihood-select text-center" required>
+                                                    <select name="doc_risk_dts_likelihood[]" class="form-select form-select-sm likelihood-select text-center" disabled>
                                                         <option value="" {{ is_null($item->doc_risk_dts_likelihood) ? 'selected' : '' }}>-</option>
                                                         @for($l = 5; $l >= 1; $l--)
                                                             <option value="{{ $l }}" {{ $item->doc_risk_dts_likelihood == $l ? 'selected' : '' }}>{{ $l }}</option>
@@ -121,7 +120,7 @@
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    <select name="doc_risk_dts_impact[]" class="form-select form-select-sm impact-select text-center" required>
+                                                    <select name="doc_risk_dts_impact[]" class="form-select form-select-sm impact-select text-center" disabled>
                                                         <option value="" {{ is_null($item->doc_risk_dts_impact) ? 'selected' : '' }}>-</option>
                                                         @for($i = 5; $i >= 1; $i--)
                                                             <option value="{{ $i }}" {{ $item->doc_risk_dts_impact == $i ? 'selected' : '' }}>{{ $i }}</option>
@@ -147,12 +146,9 @@
                                                     <input type="text" value="{{ $vVal }}" class="form-control form-control-sm text-center violence-display fw-bold {{ $vClass }}" readonly placeholder="-">
                                                     <input type="hidden" name="doc_risk_dts_violence[]" value="{{ $vVal }}" class="violence-input">
                                                 </td>
-                                                <td><textarea name="doc_risk_dts_chance[]" class="form-control form-control-sm" placeholder="แนวทางปรับปรุง">{{ $item->doc_risk_dts_chance ?? '' }}</textarea></td>
-                                                <td><input type="date" name="doc_risk_dts_period[]" value="{{ $item->doc_risk_dts_period ?? '' }}" class="form-control form-control-sm"></td>
-                                                <td><input type="text" name="doc_risk_dts_responsible[]" value="{{ $item->doc_risk_dts_responsible ?? '' }}" class="form-control form-control-sm" placeholder="ผู้รับผิดชอบ"></td>
-                                                <td>
-                                                    <a href="javascript:void(0)" class="btn btn-danger btn-sm" onclick="confirmDel('{{ $item->doc_risk_dts_id }}')"><i class="fas fa-trash"></i></a>
-                                                </td>
+                                                <td><textarea name="doc_risk_dts_chance[]" class="form-control form-control-sm"disabled>{{ $item->doc_risk_dts_chance ?? '' }}</textarea></td>
+                                                <td><input type="date" name="doc_risk_dts_period[]" value="{{ $item->doc_risk_dts_period ?? '' }}" class="form-control form-control-sm" readonly></td>
+                                                <td><input type="text" name="doc_risk_dts_responsible[]" value="{{ $item->doc_risk_dts_responsible ?? '' }}" class="form-control form-control-sm" readonly></td>
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -228,7 +224,7 @@
                                                 <tr>
                                                     <td class="fw-semibold text-nowrap" style="width: 30%;">ผู้จัดทำ</td>
                                                     <td><input class="form-control form-control-sm" type="text" name="prepared_by" value="{{$hd->prepared_by}}" placeholder="ชื่อผู้จัดทำ" readonly></td>
-                                                    <td><input class="form-control form-control-sm" type="date" name="prepared_date" value="{{ $hd->prepared_date }}"></td>
+                                                    <td><input class="form-control form-control-sm" type="date" name="prepared_date" value="{{ $hd->prepared_date }}" readonly></td>
                                                 </tr>
                                                 <tr>
                                                     <td class="fw-semibold text-nowrap">ผู้ทบทวน</td>
@@ -385,63 +381,5 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('addRowBtn').click();
     }
 });
-confirmDel = (refid) =>{
-Swal.fire({
-    title: 'คุณแน่ใจหรือไม่ !',
-    text: `คุณต้องการลบรายการนี้หรือไม่ ?`,
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonText: 'ยืนยัน',
-    cancelButtonText: 'ยกเลิก',
-    confirmButtonClass: 'btn btn-success',
-    cancelButtonClass: 'btn btn-danger',
-    buttonsStyling: false         
-}).then(function(result) {
-    if (result.value) {
-        $.ajax({
-            url: `{{ url('/CancelRiskrow') }}`,
-            type: "POST",
-            data: {
-                "_token": "{{ csrf_token() }}",
-                "refid": refid,               
-            },           
-            dataType: "json",
-            success: function(data) {
-                // console.log(data);
-                if (data.status == true) {
-                    Swal.fire({
-                        title: 'สำเร็จ',
-                        text: 'ยกเลิกเอกสารเรียบร้อยแล้ว',
-                        icon: 'success'
-                    }).then(function() {
-                        location.reload();
-                    });
-                } else {
-                    Swal.fire({
-                        title: 'ไม่สำเร็จ',
-                        text: 'ยกเลิกเอกสารไม่สำเร็จ',
-                        icon: 'error'
-                    });
-                }
-               
-            },
-            error: function(data) {
-                Swal.fire({
-                        title: 'ไม่สำเร็จ',
-                        text: 'ยกเลิกเอกสารไม่สำเร็จ',
-                        icon: 'error'
-                    });            }
-        });
-
-    } else if ( // Read more about handling dismissals
-        result.dismiss === Swal.DismissReason.cancel) {
-        Swal.fire({
-            title: 'ยกเลิก',
-            text: 'โปรดตรวจสอบข้อมูลอีกครั้งเพื่อความถูกต้อง :)',
-            icon: 'error'
-        });
-    }
-});
-}
 </script>
 @endpush

@@ -180,7 +180,7 @@
                         <span key="t-layouts">ฝ่ายบุคคล</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="true">
-                        <li><a href="{{route('hr.index')}}" key="t-default">ประวัติพนักงาน</a></li> 
+                        <li><a href="{{route('hr.index')}}" key="t-default">รายชื่อพนักงาน</a></li> 
                     </ul>   
                 </li>
                 <li class="menu-title" key="t-apps">Report</li>   
