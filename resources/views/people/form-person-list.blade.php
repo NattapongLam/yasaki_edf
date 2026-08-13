@@ -33,6 +33,20 @@
                 </tr>
             </thead>
             <tbody>
+                @foreach ($hd as $item)
+                    <tr>
+                        <td>{{$item->hr_employees_code}}</td>
+                        <td>{{$item->hr_employees_fullname}}</td>
+                        <td>{{$item->hr_employees_department}}</td>
+                        <td>{{$item->hr_employees_position}}</td>
+                        <td>
+                            <a href="{{route('hr.edit',$item->hr_employees_id)}}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
+                        </td>
+                        <td>
+                            <a href="javascript:void(0)" class="btn btn-danger btn-sm" onclick="confirmDel('{{ $item->hr_employees_id }}')"><i class="fas fa-trash"></i></a>
+                        </td>
+                    </tr>
+                @endforeach
             </tbody>
         </table>
     </div>
