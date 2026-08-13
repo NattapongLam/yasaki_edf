@@ -252,4 +252,29 @@ class HrController extends Controller
     {
         //
     }
+
+    public function CancelHr(Request $request)
+    {
+        $id = $request->refid;
+        try 
+        {
+            DB::beginTransaction();
+            HrEmployee::where('hr_employees_id',$id)->update([
+                'hr_employees_flag' => 0,
+                'person_at' => Auth::user()->name,
+                'updated_at'=> Carbon::now(),
+            ]);
+            DB::commit();
+            return response()->json([
+                'status' => true,
+                'message' => 'ยกเลิกรายการเรียบร้อยแล้ว'
+            ]);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
 }
