@@ -313,21 +313,21 @@
                         <div class="sig-box">
                             <div style="height: 8px;"></div>
                             <p class="mb-0 text-muted" style="font-size: 9px;">___________________________</p>
-                            <p class="mb-0 fw-semibold text-dark" style="font-size: 9px;">( ........................................ )</p>
+                            <p class="mb-0 fw-semibold text-dark" style="font-size: 9px;">( นายสมควร วรชินา )</p>
                             <p class="text-muted mb-0 fw-bold" style="font-size: 8px;">ผู้ตรวจสอบ / Operator</p>
                             <p class="text-muted mb-0" style="font-size: 7.5px;">วันที่: ____/____/________</p>
                         </div>
                         <div class="sig-box">
                             <div style="height: 8px;"></div>
                             <p class="mb-0 text-muted" style="font-size: 9px;">___________________________</p>
-                            <p class="mb-0 fw-semibold text-dark" style="font-size: 9px;">( ........................................ )</p>
+                            <p class="mb-0 fw-semibold text-dark" style="font-size: 9px;">( นางสาวอรวรรณ ขันติวงค์ )</p>
                             <p class="text-muted mb-0 fw-bold" style="font-size: 8px;">ผู้ทวนสอบ / Supervisor</p>
                             <p class="text-muted mb-0" style="font-size: 7.5px;">วันที่: ____/____/________</p>
                         </div>
                         <div class="sig-box">
                             <div style="height: 8px;"></div>
                             <p class="mb-0 text-muted" style="font-size: 9px;">___________________________</p>
-                            <p class="mb-0 fw-semibold text-dark" style="font-size: 9px;">( ........................................ )</p>
+                            <p class="mb-0 fw-semibold text-dark" style="font-size: 9px;">( นายโกสินทร์  เตียเอี่ยมดี )</p>
                             <p class="text-muted mb-0 fw-bold" style="font-size: 8px;">ผู้อนุมัติ / Manager</p>
                             <p class="text-muted mb-0" style="font-size: 7.5px;">วันที่: ____/____/________</p>
                         </div>

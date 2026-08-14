@@ -116,7 +116,7 @@ class RiskController extends Controller
     public function show($id)
     {
         $hd = DocRiskHd::find($id);
-        $dt = DocRiskDt::where('doc_risk_dts_flag',true)->get();
+        $dt = DocRiskDt::where('doc_risk_dts_flag',true)->where('doc_risk_hds_id',$id)->get();
         return view('dcc.form-risk-show', compact('hd','dt'));
     }
 
@@ -129,7 +129,7 @@ class RiskController extends Controller
     public function edit($id)
     {
         $hd = DocRiskHd::find($id);
-        $dt = DocRiskDt::where('doc_risk_dts_flag',true)->get();
+        $dt = DocRiskDt::where('doc_risk_dts_flag',true)->where('doc_risk_hds_id',$id)->get();
         return view('dcc.form-risk-edit', compact('hd','dt'));
     }
 
