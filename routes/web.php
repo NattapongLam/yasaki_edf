@@ -30,7 +30,12 @@ Route::get('/dashboard', function () {
 // });
 
 require __DIR__.'/auth.php';
+Route::group([
+    'middleware' =>  ['auth','permission:setup-users']
+],function(){
 Route::resource('/profiles' , App\Http\Controllers\ProfilesController::class);
+Route::put('/profiles/{id}/role-permission', [ App\Http\Controllers\ProfilesController::class, 'updateRolePermission'])->name('profiles.updateRolePermission');
+});
 // เคมี
 Route::post('/confirmDelProfile' , [App\Http\Controllers\ProfilesController::class , 'confirmDelProfile']);
 Route::resource('/chemicalgroups' , App\Http\Controllers\ChemicalGroupController::class);

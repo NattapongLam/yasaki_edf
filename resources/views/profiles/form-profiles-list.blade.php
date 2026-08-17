@@ -26,6 +26,7 @@
                     <th>สถานะ</th>
                     <th>รหัสพนักงาน</th>
                     <th>ชื่อ - นามสกุล</th>
+                    <th>กำหนดสิทธิ</th>
                     <th></th>
                 </tr>
             </thead>
@@ -41,6 +42,11 @@
                         </td>
                         <td>{{$item->username}}</td>
                         <td>{{$item->name}}</td>
+                        <td>
+                             <a href="{{route('profiles.edit',$item->id)}}" class="btn btn-sm btn-warning" >
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        </td>
                         <td>
                              <a href="javascript:void(0)" class="btn btn-danger btn-sm" onclick="confirmDel('{{ $item->id }}')"><i class="fas fa-trash"></i></a> 
                         </td>

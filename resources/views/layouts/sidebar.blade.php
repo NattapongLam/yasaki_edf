@@ -239,14 +239,16 @@
                             </a>
                             </li> 
                     </ul>                    
-                </li>                                               
+                </li>    
+                @can('setup-users')                                           
                 <li class="menu-title" key="t-pages">Setting</li>   
                 <li>
                     <a href="{{route('profiles.index')}}">
                         <i class="bx bx-user"></i>
                         <span key="t-users">ผู้ใช้งาน</span>
                     </a>
-                </li>                    
+                </li>     
+                @endcan                 
             </ul>
         </div>
         <!-- Sidebar -->

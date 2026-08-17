@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Carbon\Carbon;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class ProfilesController extends Controller
 {
@@ -95,7 +97,10 @@ class ProfilesController extends Controller
      */
     public function edit($id)
     {
-        //
+        $users = User::where('id',$id)->first();
+        $roles = Role::all();
+        $permissions = Permission::all();
+        return view('profiles.form-profiles-edit', compact('users','permissions','roles'));
     }
 
     /**
@@ -160,6 +165,39 @@ class ProfilesController extends Controller
                 'status' => false,
                 'message' => $e->getMessage()
             ]);
+        }
+    }
+    
+    public function updateRolePermission(Request $request, $id)
+    {
+        $request->validate([
+            'role' => ['required'],
+        ]);
+
+        $users = User::findOrFail($id);
+        $role = Role::where('name', $request->role)->firstOrFail();
+
+        try {
+            DB::beginTransaction();
+            
+            // อัปเดต Role
+            $users->syncRoles($role->name);
+
+            // อัปเดต Permission
+            if (is_array($request->permission) && count($request->permission)) {
+                $permissions = Permission::whereIn('id', $request->permission)->pluck('name')->toArray();
+                $users->syncPermissions($permissions);
+            } else {
+                $users->syncPermissions([]);
+            }
+
+            DB::commit();
+            return redirect()->back()->with('success', 'บันทึกข้อมูลสิทธิ์สำเร็จ');
+            
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            return redirect()->back()->with('error', 'บันทึกข้อมูลสิทธิ์ไม่สำเร็จ: ' . $e->getMessage());          
         }
     }
 }

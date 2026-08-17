@@ -62,6 +62,8 @@
             <!-- ส่วนหัวเอกสารตามมาตรฐาน ISO/IEC 17025 -->
             <div class="iso-header d-flex justify-content-between align-items-center">
                 <div>
+                    <img src="{{ URL::asset('assets/images/KK-C.png') }}" height="50">
+                    <b>KK&C PARTS CO., LTD.</b>
                     <h5 class="fw-bold mb-0">LABORATORY TEST & DELIVERY REPORT</h5>
                     <p class="text-muted small mb-0">อ้างอิงมาตรฐาน: ISO/IEC 17025 และ JIS D 4411</p>
                 </div>
@@ -145,19 +147,19 @@
                 <div class="row text-center small">
                     <div class="col-4">
                         <div class="p-1 border rounded">
-                            <p class="mb-4">ลงชื่อ..................................................<br><strong>(ผู้ทำการทดสอบ / Tester)</strong><br>
+                            <p class="mb-4">ลงชื่อ.........................................<br><strong>(ผู้ทำการทดสอบ / Tester)</strong><br>
                             วันที่ ......./......./.......</p>
                         </div>
                     </div>
                     <div class="col-4">
                         <div class="p-1 border rounded">
-                            <p class="mb-4">ลงชื่อ..................................................<br><strong>(ผู้ตรวจสอบรับรอง / Approver)</strong><br>
+                            <p class="mb-4">ลงชื่อ.........................................<br><strong>(ผู้ตรวจสอบรับรอง / Approver)</strong><br>
                             วันที่ ......./......./.......</p>
                         </div>
                     </div>
                     <div class="col-4">
                         <div class="p-1 border rounded">
-                            <p class="mb-4">ลงชื่อ..................................................<br><strong>(ผู้รับมอบตัวอย่าง / Receiver)</strong><br>
+                            <p class="mb-4">ลงชื่อ..........................................<br><strong>(ผู้รับมอบตัวอย่าง / Receiver)</strong><br>
                             วันที่ ......./......./.......</p>
                         </div>
                     </div>
