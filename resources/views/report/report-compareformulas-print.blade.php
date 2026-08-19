@@ -575,13 +575,13 @@ Coefficient of Friction Test Report
 </tr>
 
 <tr>
-<th>Test Disc Material</th>
-<td>{{$rechd->result_test_lists_plate}}</td>
+<th>Sliding Speed (6 m/s to 8 m/s.)</th>
+<td></td>
 </tr>
 
 <tr>
-<th>Test Type</th>
-<td>{{ $hd->TestType }}</td>
+<th>Pressing Pressure (1 ±0.02 MPa)</th>
+<td>0.98 MPa</td>
 </tr>
 
 </table>
@@ -652,12 +652,22 @@ Note: The reported uncertainty is based on a standard uncertainty multiplied by 
 
     @foreach ($cal as $item)
     <div class="equip-card">
-        <span class="equip-role">Testing Machine</span>
-        <div class="equip-name">{{ $item->calibration_lists_name2 }}</div>
-        <div class="equip-code">Code: {{ $item->calibration_lists_code }}</div>
-        <div class="equip-detail">      
-            <b>{{ $item->calibration_lists_reamrk}}  Expire Date {{ \Carbon\Carbon::parse($item->calibration_lists_nextdate)->format('d/m/Y') }}</b>
-        </div>
+        @if ($item->calibration_categories_id == 5)
+            <span class="equip-role">{{$rechd->result_test_lists_plate}}</span>
+            <div class="equip-name">{{ $item->calibration_lists_name2 }} Lot : {{$item->calibration_lists_date}}</div>
+            <div class="equip-code">Code: {{ $item->calibration_lists_code }}</div>
+            <div class="equip-detail">      
+                <b>{{ $item->calibration_lists_reamrk}}  Expire Date {{ \Carbon\Carbon::parse($item->calibration_lists_nextdate)->format('d/m/Y') }}</b>
+            </div>
+        @else
+            <span class="equip-role">Testing Machine</span>
+            <div class="equip-name">{{ $item->calibration_lists_name2 }}</div>
+            <div class="equip-code">Code: {{ $item->calibration_lists_code }}</div>
+            <div class="equip-detail">      
+                <b>{{ $item->calibration_lists_reamrk}}  Expire Date {{ \Carbon\Carbon::parse($item->calibration_lists_nextdate)->format('d/m/Y') }}</b>
+            </div>
+        @endif
+       
     </div>
     @endforeach
 
