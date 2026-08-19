@@ -662,6 +662,29 @@ Note: The reported uncertainty is based on a standard uncertainty multiplied by 
     @endforeach
 
 </div>
+<div>
+    <div class="section-title">Designated Value</div>
+    <table class="result-table" style="table-layout: fixed; font-size: 9px;">
+        <thead>
+            <tr>
+                <th style="width: 25%;">Test Temperature (°C)</th>
+                <th style="width: 25%;">Coefficient of Friction (μ)</th>
+                <th style="width: 25%;">Acceptable Deviation (Tolerance)</th>
+                <th style="width: 25%;">Wear Rate (10⁻⁷ cm³/N·m)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($mjis as $item)
+                <tr>
+                    <td style="text-align: center;">{{ $item->ms_jisdclass_temperature }}</td>
+                    <td style="text-align: center;">{{ $item->ms_jisdclass_frictions }}</td>
+                    <td style="text-align: center;">{{ $item->ms_jisdclass_deviation }}</td>
+                    <td style="text-align: center;">{{ $item->ms_jisdclass_wear }}</td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
 <div style="page-break-before: always;"></div>
 <!-- sample detail -->
 
@@ -728,12 +751,20 @@ Note: The reported uncertainty is based on a standard uncertainty multiplied by 
         <td class="text-center"><img src="{{asset($rechd->receive_test_lists_file1)}}" class="img-thumbnail" width="40%"></td>
         <td class="text-center"><img src="{{asset($rechd->receive_test_lists_file2)}}" class="img-thumbnail" width="40%"></td>      
     </tr>
+    <tr>
+        <th colspan="2">Remark</th>
+        <td colspan="2">{{$rechd->receive_test_lists_note}}</td>
+    </tr>
 </table>
 <table class="spec-photo">
     <tr>
         <th colspan="2">Sample Photo After Test</th>
         <td class="text-center"><img src="{{asset($rechd->result_test_lists_file1)}}" class="img-thumbnail" width="40%"></td>
         <td class="text-center"><img src="{{asset($rechd->result_test_lists_file2)}}" class="img-thumbnail" width="40%"></td>
+    </tr>
+    <tr>
+        <th colspan="2">Remark</th>
+        <td colspan="2">{{$rechd->result_test_lists_remark}}</td>
     </tr>
 </table>
 </div>

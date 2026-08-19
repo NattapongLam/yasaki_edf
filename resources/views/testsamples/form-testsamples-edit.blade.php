@@ -454,7 +454,7 @@
             </div>
             <div class="col-9">
                 <div class="form-group">
-                    <label for="result_test_lists_remark" class="col-form-label">สภาพพื้นผิวสัมผัส</label>
+                    <label for="result_test_lists_remark" class="col-form-label">สถาพทั่วไป/ความสมบูรณ์ของชิ้นงาน</label>
                     <input type="text" class="form-control" 
                             name="result_test_lists_remark" 
                             id="result_test_lists_remark"

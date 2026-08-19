@@ -66,7 +66,7 @@
                             <option value="">กรุณาเลือก</option>
                             @foreach($hd as $item)
                                 <option value="{{ $item->TestID }}">
-                                    {{ $item->FormulaNumber }} ({{$item->Remarks}})
+                                  วันที่ : {{ \Carbon\Carbon::parse($item->TestDate)->format('d/m/Y') }}  {{ $item->FormulaNumber }} ({{$item->Remarks}})
                                 </option>
                             @endforeach
                         </select>
@@ -89,7 +89,7 @@
                             <option value="">กรุณาเลือก</option>
                             @foreach($hd as $item)
                                 <option value="{{ $item->TestID }}">
-                                    {{ $item->FormulaNumber }} ({{$item->Remarks}})
+                                    วันที่ : {{ \Carbon\Carbon::parse($item->TestDate)->format('d/m/Y') }} {{ $item->FormulaNumber }} ({{$item->Remarks}})
                                 </option>
                             @endforeach
                         </select>
@@ -112,7 +112,7 @@
                          <option value="">กรุณาเลือก</option>
                             @foreach($hd as $item)
                                 <option value="{{ $item->TestID }}">
-                                    {{ $item->FormulaNumber }} ({{$item->Remarks}})
+                                     วันที่ : {{ \Carbon\Carbon::parse($item->TestDate)->format('d/m/Y') }} {{ $item->FormulaNumber }} ({{$item->Remarks}})
                                 </option>
                             @endforeach
                         </select>

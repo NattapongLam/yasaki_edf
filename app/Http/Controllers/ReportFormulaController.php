@@ -226,11 +226,12 @@ class ReportFormulaController extends Controller
             ->leftjoin('chemical_funtions', 'chemical_funtions.chemical_funtions_id', '=', 'chemical_lists.chemical_funtions_id')
             ->where('chemistry_hd_id', $bomhd->chemistry_hd_id)
             ->where('flag', 1)->get();
-        }       
+        }     
+        $mjis = DB::table('ms_jisdclass')->where('ms_jisdclass_type',$reqdt->ar_requestorder_dts_jis_class)->get();
         return view(
             'report.report-compareformulas-print',compact(
                 'hd','friction','dt','frictionPoints','wearRatePoints','temps','safeUpper','safeLower','jisMin','jisMax','targetUpper','targetLower'
-                ,'reqhd','reqdt','rechd','caldimensions','calweight','cal','bomdt','caldimensions1'
+                ,'reqhd','reqdt','rechd','caldimensions','calweight','cal','bomdt','caldimensions1','mjis'
             )
         );
     }
