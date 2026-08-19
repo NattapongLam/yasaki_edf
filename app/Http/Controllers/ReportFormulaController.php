@@ -237,138 +237,120 @@ class ReportFormulaController extends Controller
 
     public function AnalyzeFormulas(Request $request)
     {
-        $hd = DB::table('chemistry_hd')->where('chemistry_hd_flag',true)->whereNotNull('chemistry_hd_name')->get();      
+        $hd = DB::table('TestHeaders')->get();      
         return view('report.report-analyzaformulas', compact('hd'));
     }
 
     public function getFormulaDetail(Request $request)
-    {
-        $formulaName = $request->formula_name;
+{
+    // เปลี่ยนจาก get() เป็น first() เพื่อให้ได้ Object ของแถวแรกโดยตรง
+    $doc = DB::table('TestHeaders')->where('TestID', $request->formula_name)->first();
 
-        /*
-        |--------------------------------------------------------------------------
-        | chemistry_hd
-        |--------------------------------------------------------------------------
-        */
-        $header = DB::table('chemistry_hd')
-            ->where('chemistry_hd_name', $formulaName)
-            ->where('chemistry_hd_flag', true)
-            ->first();
+    // ป้องกันกรณีไม่พบข้อมูล TestID นี้
+    if (!$doc) {
+        return response()->json([
+            'header' => null,
+            'details' => [],
+            'test' => [],
+            'test_detail' => [],
+            'roadlist' => [],
+            'frictions' => ['n1' => [], 'n2' => [], 'n3' => []]
+        ]);
+    }
 
-        if (!$header) {
-            return response()->json([
-                'header' => null,
-                'details' => [],
-                'test' => [],
-                'frictions' => []
-            ]);
-        }
+    $formulaName = $doc->FormulaNumber;
 
-        /*
-        |--------------------------------------------------------------------------
-        | chemistry_dt
-        |--------------------------------------------------------------------------
-        */
-        $details = DB::table('chemistry_dt')
-            ->leftJoin(
-                'chemical_lists',
-                'chemistry_dt.code',
-                '=',
-                'chemical_lists.chemical_lists_refcode'
-            )
-            ->leftJoin(
-                'chemical_groups',
-                'chemical_groups.chemical_groups_id',
-                '=',
-                'chemical_lists.chemical_groups_id'
-            )
-            ->where('chemistry_hd_id', $header->chemistry_hd_id)
-            ->where('flag', true)
-            ->orderBy('no', 'asc')
-            ->get();
+    /*
+    |--------------------------------------------------------------------------
+    | chemistry_hd
+    |--------------------------------------------------------------------------
+    */
+    $header = DB::table('chemistry_hd')
+        ->where('chemistry_hd_name', $formulaName)
+        ->where('chemistry_hd_flag', true)
+        ->first();
 
-        /*
-        |--------------------------------------------------------------------------
-        | Test Header
-        |--------------------------------------------------------------------------
-        */
-        $test = DB::table('TestHeaders')
-            ->where('FormulaNumber', $header->chemistry_hd_name)
-            ->get();
+    if (!$header) {
+        return response()->json([
+            'header' => null,
+            'details' => [],
+            'test' => [],
+            'test_detail' => [],
+            'roadlist' => [],
+            'frictions' => ['n1' => [], 'n2' => [], 'n3' => []]
+        ]);
+    }
 
-        /*
-        |--------------------------------------------------------------------------
-        | Test IDs
-        |--------------------------------------------------------------------------
-        */
-        $testIds = DB::table('TestHeaders')
-            ->where('FormulaNumber', $header->chemistry_hd_name)
-            ->pluck('TestID');
+    /*
+    |--------------------------------------------------------------------------
+    | chemistry_dt
+    |--------------------------------------------------------------------------
+    */
+    $details = DB::table('chemistry_dt')
+        ->leftJoin(
+            'chemical_lists',
+            'chemistry_dt.code',
+            '=',
+            'chemical_lists.chemical_lists_refcode'
+        )
+        ->leftJoin(
+            'chemical_groups',
+            'chemical_groups.chemical_groups_id',
+            '=',
+            'chemical_lists.chemical_groups_id'
+        )
+        ->where('chemistry_hd_id', $header->chemistry_hd_id)
+        ->where('flag', true)
+        ->orderBy('no', 'asc')
+        ->get();
 
-        /*
-        |--------------------------------------------------------------------------
-        | Test Frictions
-        |--------------------------------------------------------------------------
-        */
-        if ($testIds->isEmpty()) {
-            $frictions = collect();
-        } else {
-            $frictions = DB::table('TestFrictions')
-            ->whereIn('TestID', $testIds)
-            ->orderBy('Listno')
-            ->get([
-                'Listno',
-                'SampleSet',
+    /*
+    |--------------------------------------------------------------------------
+    | Test Header & Test IDs (ใช้ตัวแปรชุดเดียวกันเพื่อความเร็วและลด Query ซ้ำ)
+    |--------------------------------------------------------------------------
+    */
+    $test = DB::table('TestHeaders')
+    ->where('TestID', $request->formula_name) // ดึงตาม TestID ที่เลือกโดยตรง ไม่ใช่หาตาม FormulaNumber ทั้งหมด
+    ->get();
 
-                'Friction100_u',
-                'Friction100_c',
+    $testIds = $test->pluck('TestID');
 
-                'Friction150_u',
-                'Friction150_c',
-
-                'Friction200_u',
-                'Friction200_c',
-
-                'Friction250_u',
-                'Friction250_c',
-
-                'Friction300_u',
-                'Friction300_c',
-
-                'Friction350_u',
-                'Friction350_c',
-
-                'FrictionFall_u',
-                'FrictionFall_c',
-            ]);
-        }
-    
-
-        /*
-        |--------------------------------------------------------------------------
-        | แยก N1 / N2 / N3 จาก SampleSet
-        |--------------------------------------------------------------------------
-        */
-        $frictionN1 = $frictions->filter(function ($row) {
-            return str_contains(strtoupper($row->SampleSet ?? ''), 'N1');
-        })->values();
-
-        $frictionN2 = $frictions->filter(function ($row) {
-            return str_contains(strtoupper($row->SampleSet ?? ''), 'N2');
-        })->values();
-
-        $frictionN3 = $frictions->filter(function ($row) {
-            return str_contains(strtoupper($row->SampleSet ?? ''), 'N3');
-        })->values();
-
-        /*
-        |--------------------------------------------------------------------------
-        | Return JSON
-        |--------------------------------------------------------------------------
-        */
-        $testDetail = DB::table('TestDetails')
+    /*
+    |--------------------------------------------------------------------------
+    | Test Frictions
+    |--------------------------------------------------------------------------
+    */
+    if ($testIds->isEmpty()) {
+        $frictions = collect();
+    } else {
+        $frictions = DB::table('TestFrictions')
         ->whereIn('TestID', $testIds)
-        ->where('Temperature','<>',0)
+        ->orderBy('Listno')
+        ->get([
+            'Listno',
+            'SampleSet',
+            'Friction100_u', 'Friction100_c',
+            'Friction150_u', 'Friction150_c',
+            'Friction200_u', 'Friction200_c',
+            'Friction250_u', 'Friction250_c',
+            'Friction300_u', 'Friction300_c',
+            'Friction350_u', 'Friction350_c',
+            'FrictionFall_u', 'FrictionFall_c',
+        ]);
+    }
+
+    $frictionN1 = $frictions->filter(fn ($row) => str_contains(strtoupper($row->SampleSet ?? ''), 'N1'))->values();
+    $frictionN2 = $frictions->filter(fn ($row) => str_contains(strtoupper($row->SampleSet ?? ''), 'N2'))->values();
+    $frictionN3 = $frictions->filter(fn ($row) => str_contains(strtoupper($row->SampleSet ?? ''), 'N3'))->values();
+
+    /*
+    |--------------------------------------------------------------------------
+    | Test Details & Road Lists
+    |--------------------------------------------------------------------------
+    */
+    $testDetail = DB::table('TestDetails')
+        ->whereIn('TestID', $testIds)
+        ->where('Temperature', '<>', 0)
         ->get([
             'Temperature',
             'SampleSet',
@@ -376,34 +358,29 @@ class ReportFormulaController extends Controller
             'T_Inc',
             'T_Dec'
         ]);
-        $roadlist = DB::table('TestRoads')
+
+    $roadlist = DB::table('TestRoads')
         ->whereIn('TestID', $testIds)
         ->get([
-            'LowSpeed1',
-            'LowSpeed4',
-            'LowSpeed5',
-            'HighSpeed1',
-            'HighSpeed2',
-            'HighSpeed3',
-            'HighSpeed4',
-            'HighSpeed5',
-            'Pillion1',
-            'Pillion2',
+            'LowSpeed1', 'LowSpeed4', 'LowSpeed5',
+            'HighSpeed1', 'HighSpeed2', 'HighSpeed3', 'HighSpeed4', 'HighSpeed5',
+            'Pillion1', 'Pillion2',
             'Avg5',
             'RoadTestRemark',
             'TestRoadName'
         ]);
-        return response()->json([
-            'header' => $header,
-            'details' => $details,
-            'test' => $test,
-            'test_detail' => $testDetail,
-            'roadlist' => $roadlist,
-            'frictions' => [
-                'n1' => $frictionN1,
-                'n2' => $frictionN2,
-                'n3' => $frictionN3,
-            ]
-        ]);
-    }
+
+    return response()->json([
+        'header' => $header,
+        'details' => $details,
+        'test' => $test,
+        'test_detail' => $testDetail,
+        'roadlist' => $roadlist,
+        'frictions' => [
+            'n1' => $frictionN1,
+            'n2' => $frictionN2,
+            'n3' => $frictionN3,
+        ]
+    ]);
+}
 }

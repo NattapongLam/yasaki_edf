@@ -65,8 +65,8 @@
                         <select class="form-control select2" id="formula_1">
                             <option value="">กรุณาเลือก</option>
                             @foreach($hd as $item)
-                                <option value="{{ $item->chemistry_hd_name }}">
-                                    {{ $item->chemistry_hd_name }}
+                                <option value="{{ $item->TestID }}">
+                                    {{ $item->FormulaNumber }} ({{$item->Remarks}})
                                 </option>
                             @endforeach
                         </select>
@@ -88,8 +88,8 @@
                         <select class="form-control select2" id="formula_2">
                             <option value="">กรุณาเลือก</option>
                             @foreach($hd as $item)
-                                <option value="{{ $item->chemistry_hd_name }}">
-                                    {{ $item->chemistry_hd_name }}
+                                <option value="{{ $item->TestID }}">
+                                    {{ $item->FormulaNumber }} ({{$item->Remarks}})
                                 </option>
                             @endforeach
                         </select>
@@ -109,10 +109,10 @@
                         </label>
 
                         <select class="form-control select2" id="formula_3">
-                            <option value="">กรุณาเลือก</option>
+                         <option value="">กรุณาเลือก</option>
                             @foreach($hd as $item)
-                                <option value="{{ $item->chemistry_hd_name }}">
-                                    {{ $item->chemistry_hd_name }}
+                                <option value="{{ $item->TestID }}">
+                                    {{ $item->FormulaNumber }} ({{$item->Remarks}})
                                 </option>
                             @endforeach
                         </select>
@@ -492,28 +492,28 @@ $(document).ready(function () {
                 $('#' + tableAreaId).show();
                 let html = '';
                 if (response.test && response.test.length > 0) {
-                    let t = response.test[0];
-                    html += `
-                        <div class="mt-4">
-                            <div class="card border-0 shadow rounded-4">
-                                <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-                                    <h6 class="mb-0">Test Average Summary ${response.header?.ms_formule_name ?? '-'}: ${response.header?.chemistry_hd_name ?? '-'}</h6>
-                                    <button type="button" class="btn-close btn-close-white hide-summary-direct-btn" aria-label="Close"></button>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row text-center">
-                                        <div class="col-md-6 mb-2"><div class="p-3 border rounded-3"><div class="text-muted small">Hardness (HRB)</div><div class="fs-5 fw-bold text-primary">${parseFloat(t.Hardness ?? 0).toFixed(2)}</div></div></div>
-                                        <div class="col-md-6 mb-2"><div class="p-3 border rounded-3"><div class="text-muted small">Shearing (mm²)</div><div class="fs-5 fw-bold text-primary">${parseFloat(t.Shearing ?? 0).toFixed(2)}</div></div></div>
-                                        <div class="col-md-6 mb-2"><div class="p-3 border rounded-3"><div class="text-muted small">Noise (dB)</div><div class="fs-5 fw-bold text-primary">${parseFloat(t.Noise ?? 0).toFixed(2)}</div></div></div>
-                                        <div class="col-md-6 mb-2"><div class="p-3 border rounded-3"><div class="text-muted small">Normal (µ)</div><div class="fs-5 fw-bold text-primary">${parseFloat(t.Normal_Avg ?? 0).toFixed(2)}</div></div></div>
-                                        <div class="col-md-6 mb-2"><div class="p-3 border rounded-3"><div class="text-muted small">Hot (µ)</div><div class="fs-5 fw-bold text-primary">${parseFloat(t.Hot_Avg ?? 0).toFixed(2)}</div></div></div>
-                                        <div class="col-md-6 mb-2"><div class="p-3 border rounded-3"><div class="text-muted small">Wear (10⁻⁷cm³/(N·m))</div><div class="fs-5 fw-bold text-primary">${parseFloat(t.Wear_Avg ?? 0).toFixed(2)}</div></div></div>
-                                    </div>
+                let t = response.test[0];
+                html += `
+                    <div class="mt-4">
+                        <div class="card border-0 shadow rounded-4">
+                            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                                <h6 class="mb-0">Test Average Summary ${response.header?.ms_formule_name ?? '-'}: ${response.header?.chemistry_hd_name ?? '-'}</h6>
+                                <button type="button" class="btn-close btn-close-white hide-summary-direct-btn" aria-label="Close"></button>
+                            </div>
+                            <div class="card-body">
+                                <div class="row text-center">
+                                    <div class="col-md-6 mb-2"><div class="p-3 border rounded-3"><div class="text-muted small">Hardness (HRB)</div><div class="fs-5 fw-bold text-primary">${parseFloat(t.Hardness ?? 0).toFixed(2)}</div></div></div>
+                                    <div class="col-md-6 mb-2"><div class="p-3 border rounded-3"><div class="text-muted small">Shearing (mm²)</div><div class="fs-5 fw-bold text-primary">${parseFloat(t.Shearing ?? 0).toFixed(2)}</div></div></div>
+                                    <div class="col-md-6 mb-2"><div class="p-3 border rounded-3"><div class="text-muted small">Noise (dB)</div><div class="fs-5 fw-bold text-primary">${parseFloat(t.Noise ?? 0).toFixed(2)}</div></div></div>
+                                    <div class="col-md-6 mb-2"><div class="p-3 border rounded-3"><div class="text-muted small">Normal (µ)</div><div class="fs-5 fw-bold text-primary">${parseFloat(t.Normal_Avg ?? 0).toFixed(2)}</div></div></div>
+                                    <div class="col-md-6 mb-2"><div class="p-3 border rounded-3"><div class="text-muted small">Hot (µ)</div><div class="fs-5 fw-bold text-primary">${parseFloat(t.Hot_Avg ?? 0).toFixed(2)}</div></div></div>
+                                    <div class="col-md-6 mb-2"><div class="p-3 border rounded-3"><div class="text-muted small">Wear (10⁻⁷cm³/(N·m))</div><div class="fs-5 fw-bold text-primary">${parseFloat(t.Wear_Avg ?? 0).toFixed(2)}</div></div></div>
                                 </div>
                             </div>
                         </div>
-                    `;
-                }
+                    </div>
+                `;
+            }
 
                 html += `
                     <div class="mt-4">
