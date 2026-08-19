@@ -252,7 +252,10 @@ class ReceiveTestController extends Controller
             'result350_n2temp' => $request->result350_n2temp,
             'result350_n2moisture' => $request->result350_n2moisture,
             'result350_n3temp' => $request->result350_n3temp,
-            'result350_n3moisture' => $request->result350_n3moisture
+            'result350_n3moisture' => $request->result350_n3moisture,
+            'result_n1_rpm' => $request->result_n1_rpm,
+            'result_n2_rpm' => $request->result_n2_rpm,
+            'result_n3_rpm' => $request->result_n3_rpm,
         ];
         if ($request->hasFile('result_test_lists_file1')) {
             $data['result_test_lists_file1'] = $request->file('result_test_lists_file1')->storeAs('images/Receivetest_File', "IMG_" . Carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('result_test_lists_file1')->extension());
