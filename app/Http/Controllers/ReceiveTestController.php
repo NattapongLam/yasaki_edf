@@ -429,6 +429,10 @@ class ReceiveTestController extends Controller
         'result350_n1temp' => $request->result350_n1temp, 'result350_n1moisture' => $request->result350_n1moisture,
         'result350_n2temp' => $request->result350_n2temp, 'result350_n2moisture' => $request->result350_n2moisture,
         'result350_n3temp' => $request->result350_n3temp, 'result350_n3moisture' => $request->result350_n3moisture,
+
+        'result_n1_rpm' => $request->result_n1_rpm,
+        'result_n2_rpm' => $request->result_n2_rpm,
+        'result_n3_rpm' => $request->result_n3_rpm,
     ]);
 
     // 3. วนลูปอัปเดตข้อมูลตารางย่อย (receive_test_subs)

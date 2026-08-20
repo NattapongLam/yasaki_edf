@@ -441,8 +441,35 @@
                         <option value="Fail">Fail</option>
                     </select>
                 </div>
-            </div>   
-            <div class="col-6">
+            </div> 
+            <div class="col-3">
+                <div class="form-group">
+                    <label for="result_n1_rpm" class="col-form-label">รอบเครื่อง N1 (rpm)</label>
+                    <input type="number" class="form-control" 
+                            name="result_n1_rpm" 
+                            id="result_n1_rpm"
+                            value="{{$pd->result_n1_rpm}}">
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-group">
+                    <label for="result_n2_rpm" class="col-form-label">รอบเครื่อง N2 (rpm)</label>
+                    <input type="number" class="form-control" 
+                            name="result_n2_rpm" 
+                            id="result_n2_rpm"
+                            value="{{$pd->result_n2_rpm}}">
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-group">
+                    <label for="result_n3_rpm" class="col-form-label">รอบเครื่อง N3 (rpm)</label>
+                    <input type="number" class="form-control" 
+                            name="result_n3_rpm" 
+                            id="result_n3_rpm"
+                            value="{{$pd->result_n3_rpm}}">
+                </div>
+            </div>  
+            <div class="col-9">
                 <div class="form-group">
                     <label for="result_test_lists_remark" class="col-form-label">สภาพพื้นผิวสัมผัส</label>
                     <input type="text" class="form-control" 

@@ -88,9 +88,11 @@
                             </a>
                         </td>
                         <td>
-                            <a href="{{ route('report.compareformulas.print',$item->TestID) }}" target="_blank" class="btn btn-sm btn-warning">
+                            @if ($item->TestID)
+                             <a href="{{ route('report.compareformulas.print',$item->TestID) }}" target="_blank" class="btn btn-sm btn-warning">
                                 <i class="fas fa-print"></i>
-                            </a>
+                            </a>    
+                            @endif                           
                         </td>
                         <td>
                             <a href="{{ route('delivered.edit',$item->ar_requestorder_hds_id) }}" class="btn btn-sm btn-primary"><i class="fas fa-plus"></i> สร้าง</a>

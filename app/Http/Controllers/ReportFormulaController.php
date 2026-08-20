@@ -228,10 +228,14 @@ class ReportFormulaController extends Controller
             ->where('flag', 1)->get();
         }     
         $mjis = DB::table('ms_jisdclass')->where('ms_jisdclass_type',$reqdt->ar_requestorder_dts_jis_class)->get();
+        $rmp1 = (($rechd->result_n1_rpm ?? 0) * (22 / 7) * 300) / (60 * 1000);
+        $rmp2 = (($rechd->result_n2_rpm ?? 0) * (22 / 7) * 300) / (60 * 1000);
+        $rmp3 = (($rechd->result_n3_rpm ?? 0) * (22 / 7) * 300) / (60 * 1000);
+        $average_rmp = ($rmp1 + $rmp2 + $rmp3) / 3;
         return view(
             'report.report-compareformulas-print',compact(
                 'hd','friction','dt','frictionPoints','wearRatePoints','temps','safeUpper','safeLower','jisMin','jisMax','targetUpper','targetLower'
-                ,'reqhd','reqdt','rechd','caldimensions','calweight','cal','bomdt','caldimensions1','mjis'
+                ,'reqhd','reqdt','rechd','caldimensions','calweight','cal','bomdt','caldimensions1','mjis','average_rmp'
             )
         );
     }

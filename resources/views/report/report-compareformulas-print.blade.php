@@ -566,17 +566,17 @@ Coefficient of Friction Test Report
 
 <tr>
 <th>Room Temp. (25-31 °C)</th>
-<td>{{$rechd->result_test_lists_temp}}</td>
+<td>{{$rechd->result_test_lists_temp}} °C</td>
 </tr>
 
 <tr>
 <th>Humidity (40-60% RH)</th>
-<td>{{$rechd->result_test_lists_moisture}}</td>
+<td>{{$rechd->result_test_lists_moisture}} RH</td>
 </tr>
 
 <tr>
-<th>Sliding Speed (6 m/s to 8 m/s.)</th>
-<td></td>
+<th>Sliding Speed (6 - 8 m/s.)</th>
+<td>{{number_format($average_rmp,2)}} m/s</td>
 </tr>
 
 <tr>

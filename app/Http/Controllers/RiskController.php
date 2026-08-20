@@ -214,7 +214,7 @@ class RiskController extends Controller
                 $hd = DocRiskHd::findOrFail($id);
                 $hd->update([
                     'approved_by'    => Auth::user()->name,
-                    'approved_dat'  => $request->approved_dat,
+                    'approved_date'  => $request->approved_date,
                 ]);
                 DB::commit();
                 return redirect()->route('risk.index')->with('success', 'บันทึกข้อมูลการประเมินความเสี่ยงสำเร็จเรียบร้อยแล้ว');
