@@ -219,7 +219,7 @@ tr:nth-child(even) td{
 .result-table td{
     padding:3px 3px;
     text-align:center;
-    font-size:12px;
+    font-size:10px;
 }
 
 .result-table thead tr:first-child th{
