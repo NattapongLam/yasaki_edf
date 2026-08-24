@@ -194,6 +194,15 @@ Route::post('/CancelCar' , [App\Http\Controllers\CarController::class , 'CancelC
 Route::resource('/risk' , App\Http\Controllers\RiskController::class);
 Route::post('/CancelRisk' , [App\Http\Controllers\RiskController::class , 'CancelRisk']);
 Route::post('/CancelRiskrow' , [App\Http\Controllers\RiskController::class , 'CancelRiskrow']);
+//DCC
+
+//HR
 Route::resource('/hr' , App\Http\Controllers\HrController::class);
 Route::post('/CancelHr' , [App\Http\Controllers\HrController::class , 'CancelHr']);
-//DCC
+//HR
+
+//ตรวจรับ
+Route::resource('/inspection-calibration' , App\Http\Controllers\InspectionCalibrationController::class);
+Route::post('/CancelInspectionCalHd' , [App\Http\Controllers\InspectionCalibrationController::class , 'CancelInspectionCalHd']);
+Route::post('/CancelInspectionCalDt' , [App\Http\Controllers\InspectionCalibrationController::class , 'CancelInspectionCalDt']);
+//ตรวจรับ
