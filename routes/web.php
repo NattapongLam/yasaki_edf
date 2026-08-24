@@ -205,4 +205,7 @@ Route::post('/CancelHr' , [App\Http\Controllers\HrController::class , 'CancelHr'
 Route::resource('/inspection-calibration' , App\Http\Controllers\InspectionCalibrationController::class);
 Route::post('/CancelInspectionCalHd' , [App\Http\Controllers\InspectionCalibrationController::class , 'CancelInspectionCalHd']);
 Route::post('/CancelInspectionCalDt' , [App\Http\Controllers\InspectionCalibrationController::class , 'CancelInspectionCalDt']);
+Route::resource('/inspection-machinery' , App\Http\Controllers\InspectionMachineryController::class);
+Route::post('/CancelInspectionMchHd' , [App\Http\Controllers\InspectionMachineryController::class , 'CancelInspectionMchHd']);
+Route::post('/CancelInspectionMchDt' , [App\Http\Controllers\InspectionMachineryController::class , 'CancelInspectionMchDt']);
 //ตรวจรับ

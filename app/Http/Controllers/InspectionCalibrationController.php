@@ -41,12 +41,12 @@ class InspectionCalibrationController extends Controller
         $cal = CalibrationList::where('calibration_lists_status','ใช้งาน')->get();
         // Gen เลขที่เอกสารรอไว้
         $yearMonth = Carbon::now()->format('Ym');
-        $latestDoc = InspectionCalibrationHd::where('inspection_calibration_hds_docuno', 'like', "INS-{$yearMonth}%")
+        $latestDoc = InspectionCalibrationHd::where('inspection_calibration_hds_docuno', 'like', "INS-C{$yearMonth}%")
                         ->orderBy('inspection_calibration_hds_docuno', 'desc')
                         ->first();
 
         $runningNumber = $latestDoc ? intval(substr($latestDoc->inspection_calibration_hds_docuno, -3)) + 1 : 1;
-        $autoDocNo = 'INS-' . $yearMonth . '-' . str_pad($runningNumber, 3, '0', STR_PAD_LEFT);
+        $autoDocNo = 'INS-C' . $yearMonth . '-' . str_pad($runningNumber, 3, '0', STR_PAD_LEFT);
         return view('inspection.form-inspectioncalibration-create', compact('cal','autoDocNo'));
     }
 
