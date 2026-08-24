@@ -129,7 +129,7 @@
                             <ul class="sub-menu" aria-expanded="true">
                                 <li><a href="{{route('inspection-calibration.index')}}" key="t-default">เครื่องมือวัด</a></li> 
                                 <li><a href="{{route('inspection-machinery.index')}}" key="t-default">เครื่องจักร</a></li> 
-                                <li><a href="#" key="t-default">สินค้า</a></li> 
+                                <li><a href="{{route('inspection-product.index')}}" key="t-default">สินค้า</a></li> 
                             </ul>
                         </li>
                     </ul>                                         

@@ -27,7 +27,7 @@
 
 body{
     font-family:'Sarabun', Arial, Helvetica, sans-serif;
-    font-size:9.5px;
+    font-size:12px;
     margin:0;
     line-height:1.35;
     color:var(--ink);
@@ -73,14 +73,14 @@ body{
 
 .company{
     padding-left:8px;
-    font-size:9px;
+    font-size:10px;
     color:var(--muted);
     max-width:330px;
 }
 
 .company b{
     display:block;
-    font-size:12px;
+    font-size:14px;
     color:var(--navy-dark);
     letter-spacing:.2px;
     margin-bottom:1px;
@@ -88,7 +88,7 @@ body{
 
 .accred-badge{
     text-align:right;
-    font-size:8px;
+    font-size:9px;
     color:var(--steel);
     line-height:1.5;
 }
@@ -116,7 +116,7 @@ body{
 
 .report-subtitle{
     text-align:center;
-    font-size:8.5px;
+    font-size:11px;
     color:var(--muted);
     margin-bottom:2px;
 }
@@ -180,7 +180,7 @@ tr:nth-child(even) td{
     display:flex;
     align-items:center;
     gap:8px;
-    font-size:11px;
+    font-size:13px;
     font-weight:700;
     color:var(--navy-dark);
     margin:10px 0 5px 0;
@@ -198,7 +198,7 @@ tr:nth-child(even) td{
 
 .note{
     margin-top:6px;
-    font-size:9px;
+    font-size:11px;
     color:var(--alert);
     text-align:center;
     font-style:italic;
@@ -212,13 +212,14 @@ tr:nth-child(even) td{
 
 .result-table{
     table-layout:fixed;
-    font-size:9px;
+    font-size:10px;
 }
 
 .result-table th,
 .result-table td{
     padding:3px 3px;
     text-align:center;
+    font-size:12px;
 }
 
 .result-table thead tr:first-child th{
@@ -297,20 +298,20 @@ tr:nth-child(even) td{
 }
 
 .equip-name{
-    font-size:10px;
+    font-size:12px;
     font-weight:700;
     color:var(--navy-dark);
     margin-bottom:1px;
 }
 
 .equip-code{
-    font-size:8px;
+    font-size:10px;
     color:var(--muted);
     margin-bottom:4px;
 }
 
 .equip-detail{
-    font-size:8px;
+    font-size:10px;
     color:var(--ink);
     line-height:1.55;
     border-top:1px dashed var(--hairline);
@@ -326,8 +327,8 @@ tr:nth-child(even) td{
 /* charts */
 
 .chart-box{
-    height:155px;
-    width:660px;
+    height:160px;
+    width:100%;
     margin:6px auto;
     border:1px solid var(--hairline);
     border-radius:3px;
@@ -336,13 +337,13 @@ tr:nth-child(even) td{
 }
 
 .chart-box canvas{
-    height:85px !important;
+    height:100px !important;
     width:100% !important;
 }
 
 .chart-title{
     text-align:center;
-    font-size:8.5px;
+    font-size:10px;
     font-weight:500;
     color:var(--muted);
     margin-top:2px;
@@ -351,7 +352,8 @@ tr:nth-child(even) td{
 /* ============ PIE / COMPOSITION BOX ============ */
 
 .pie-box{
-    width:460px;
+    width:100%;
+    max-width:560px;
     margin:6px auto;
     border:1px solid var(--hairline);
     border-radius:3px;
@@ -362,20 +364,20 @@ tr:nth-child(even) td{
 
 .pie-box-title{
     text-align:center;
-    font-size:9px;
+    font-size:11px;
     font-weight:600;
     color:var(--navy-dark);
     margin-bottom:4px;
 }
 
 .pie-canvas-wrap{
-    height:120px;
+    height:180px;
     width:100%;
 }
 
 .pie-empty{
     text-align:center;
-    font-size:8px;
+    font-size:10px;
     color:var(--muted);
     padding:20px 0;
 }
@@ -408,7 +410,7 @@ tr:nth-child(even) td{
     margin-top:30px;
     border-top:1px solid var(--navy);
     padding-top:3px;
-    font-size:9px;
+    font-size:11px;
     color:var(--muted);
     font-weight:400;
 }
@@ -417,7 +419,7 @@ tr:nth-child(even) td{
     margin-top:8px;
     border-top:1px dashed var(--hairline);
     padding-top:5px;
-    font-size:9px;
+    font-size:11px;
     color:var(--muted);
     text-align:center;
 }
@@ -555,7 +557,7 @@ Coefficient of Friction Test Report
 
 </div>
 
-
+<br>
 <!-- condition -->
 
 <div class="section-title">Test Environment & Conditions</div>
@@ -612,11 +614,11 @@ Coefficient of Friction Test Report
 </table>
 
 </div>
-
+<br>
 <div class="note">
 Note: The reported uncertainty is based on a standard uncertainty multiplied by a coverage factor k=2, providing a level of confidence of approximately 95%.
 </div>
-
+<br>
 
 
 <!-- calibration / equipment -->
@@ -629,7 +631,7 @@ Note: The reported uncertainty is based on a standard uncertainty multiplied by 
         <span class="equip-role">Dimension Measuring Tool</span>
         <div class="equip-name">{{ $caldimensions->calibration_lists_name2 }}</div>
         <div class="equip-code">Code: {{ $caldimensions->calibration_lists_code }}</div>
-        <div class="equip-detail">           
+        <div class="equip-detail">         
             <b>{{ $caldimensions->calibration_lists_reamrk}}  Expire Date {{ \Carbon\Carbon::parse($caldimensions->calibration_lists_nextdate)->format('d/m/Y') }}</b>
         </div>
     </div>
@@ -637,7 +639,7 @@ Note: The reported uncertainty is based on a standard uncertainty multiplied by 
         <span class="equip-role">Dimension Measuring Tool</span>
         <div class="equip-name">{{ $caldimensions1->calibration_lists_name2 }}</div>
         <div class="equip-code">Code: {{ $caldimensions1->calibration_lists_code }}</div>
-        <div class="equip-detail">           
+        <div class="equip-detail">         
             <b>{{ $caldimensions1->calibration_lists_reamrk}}  Expire Date {{ \Carbon\Carbon::parse($caldimensions1->calibration_lists_nextdate)->format('d/m/Y') }}</b>
         </div>
     </div>
@@ -645,7 +647,7 @@ Note: The reported uncertainty is based on a standard uncertainty multiplied by 
         <span class="equip-role">Weighing Scale</span>
         <div class="equip-name">{{ $calweight->calibration_lists_name2 }}</div>
         <div class="equip-code">Code: {{ $calweight->calibration_lists_code }}</div>
-        <div class="equip-detail">     
+        <div class="equip-detail">    
             <b>{{ $calweight->calibration_lists_reamrk}}  Expire Date {{ \Carbon\Carbon::parse($calweight->calibration_lists_nextdate)->format('d/m/Y') }}</b>
         </div>
     </div>
@@ -672,32 +674,10 @@ Note: The reported uncertainty is based on a standard uncertainty multiplied by 
     @endforeach
 
 </div>
-<div>
-    <div class="section-title">Designated Value</div>
-    <table class="result-table" style="table-layout: fixed; font-size: 9px;">
-        <thead>
-            <tr>
-                <th style="width: 25%;">Test Temperature (°C)</th>
-                <th style="width: 25%;">Coefficient of Friction (μ)</th>
-                <th style="width: 25%;">Acceptable Deviation (Tolerance)</th>
-                <th style="width: 25%;">Wear Rate (10⁻⁷ cm³/N·m)</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($mjis as $item)
-                <tr>
-                    <td style="text-align: center;">{{ $item->ms_jisdclass_temperature }}</td>
-                    <td style="text-align: center;">{{ $item->ms_jisdclass_frictions }}</td>
-                    <td style="text-align: center;">{{ $item->ms_jisdclass_deviation }}</td>
-                    <td style="text-align: center;">{{ $item->ms_jisdclass_wear }}</td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
-</div>
-<div style="page-break-before: always;"></div>
+<br>
+<br>
 <!-- sample detail -->
-
+<br>
 <div class="section-title">Sample Details</div>
 
 <div class="grid no-break">
@@ -755,7 +735,10 @@ Note: The reported uncertainty is based on a standard uncertainty multiplied by 
 </tr>
 
 </table>
-<table class="spec-photo">
+
+</div>
+
+<table class="spec-photo" style="margin-top:6px;">
     <tr>
         <th colspan="2">Sample Photo Before Test</th>
         <td class="text-center"><img src="{{asset($rechd->receive_test_lists_file1)}}" class="img-thumbnail" width="40%"></td>
@@ -766,7 +749,7 @@ Note: The reported uncertainty is based on a standard uncertainty multiplied by 
         <td colspan="2">{{$rechd->receive_test_lists_note}}</td>
     </tr>
 </table>
-<table class="spec-photo">
+<table class="spec-photo" style="margin-top:6px;">
     <tr>
         <th colspan="2">Sample Photo After Test</th>
         <td class="text-center"><img src="{{asset($rechd->result_test_lists_file1)}}" class="img-thumbnail" width="40%"></td>
@@ -777,6 +760,32 @@ Note: The reported uncertainty is based on a standard uncertainty multiplied by 
         <td colspan="2">{{$rechd->result_test_lists_remark}}</td>
     </tr>
 </table>
+
+
+<!-- ===================== DESIGNATED VALUE (MOVED TO PAGE 2) ===================== -->
+
+<div>
+    <div class="section-title">Designated Value</div>
+    <table class="result-table" style="table-layout: fixed; font-size: 9px;">
+        <thead>
+            <tr>
+                <th style="width: 25%;">Test Temperature (°C)</th>
+                <th style="width: 25%;">Coefficient of Friction (μ)</th>
+                <th style="width: 25%;">Acceptable Deviation (Tolerance)</th>
+                <th style="width: 25%;">Wear Rate (10⁻⁷ cm³/N·m)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($mjis as $item)
+                <tr>
+                    <td style="text-align: center;">{{ $item->ms_jisdclass_temperature }}</td>
+                    <td style="text-align: center;">{{ $item->ms_jisdclass_frictions }}</td>
+                    <td style="text-align: center;">{{ $item->ms_jisdclass_deviation }}</td>
+                    <td style="text-align: center;">{{ $item->ms_jisdclass_wear }}</td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
 </div>
 
 
@@ -911,9 +920,6 @@ Tested by {{ $hd->TesterName }} | Date {{ \Carbon\Carbon::parse($hd->TestDate)->
 </div>
 
 </div>
-
-
-<div style="page-break-after:always;"></div>
 
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -1193,5 +1199,5 @@ window.onload = function(){
 };
 </script>
 
-</body>
+</body> 
 </html>

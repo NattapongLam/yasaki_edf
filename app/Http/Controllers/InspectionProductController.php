@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\InspectionMachineryDt;
-use App\Models\InspectionMachineryHd;
-use App\Models\MachineryList;
+use App\Models\InspectionProductDt;
+use App\Models\InspectionProductHd;
+use App\Models\WhProductList;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
-class InspectionMachineryController extends Controller
+class InspectionProductController extends Controller
 {
     public function __construct()
     {
@@ -25,10 +25,10 @@ class InspectionMachineryController extends Controller
      */
     public function index()
     {
-        $hd = InspectionMachineryHd::leftjoin('machinery_lists','inspection_machinery_hds.machinery_lists_id','=','machinery_lists.machinery_lists_id')
-        ->where('inspection_machinery_hds_flag',true)
+        $hd = InspectionProductHd::leftjoin('wh_product_lists','inspection_product_hds.wh_product_lists_id','=','wh_product_lists.wh_product_lists_id')
+        ->where('inspection_product_hds_flag',true)
         ->get();
-        return view('inspection.form-inspectionmachinery-list', compact('hd'));
+        return view('inspection.form-inspectionproduct-list', compact('hd'));
     }
 
     /**
@@ -38,16 +38,16 @@ class InspectionMachineryController extends Controller
      */
     public function create()
     {
-        $mtn = MachineryList::where('machinery_lists_flag',true)->get();
+        $pd = WhProductList::where('wh_product_lists_flag',true)->get();
         // Gen เลขที่เอกสารรอไว้
         $yearMonth = Carbon::now()->format('Ym');
-        $latestDoc = InspectionMachineryHd::where('inspection_machinery_hds_docuno', 'like', "INS-M{$yearMonth}%")
-                        ->orderBy('inspection_machinery_hds_docuno', 'desc')
+        $latestDoc = InspectionProductHd::where('inspection_product_hds_docuno', 'like', "INS-P{$yearMonth}%")
+                        ->orderBy('inspection_product_hds_docuno', 'desc')
                         ->first();
 
-        $runningNumber = $latestDoc ? intval(substr($latestDoc->inspection_machinery_hds_docuno, -3)) + 1 : 1;
-        $autoDocNo = 'INS-M' . $yearMonth . '-' . str_pad($runningNumber, 3, '0', STR_PAD_LEFT);
-        return view('inspection.form-inspectionmachinery-create', compact('mtn','autoDocNo'));
+        $runningNumber = $latestDoc ? intval(substr($latestDoc->inspection_product_hds_docuno, -3)) + 1 : 1;
+        $autoDocNo = 'INS-P' . $yearMonth . '-' . str_pad($runningNumber, 3, '0', STR_PAD_LEFT);
+        return view('inspection.form-inspectionproduct-create', compact('pd','autoDocNo'));
     }
 
     /**
@@ -58,15 +58,15 @@ class InspectionMachineryController extends Controller
      */
     public function store(Request $request)
     {
-          // 1. ตรวจสอบความถูกต้องของข้อมูล (Validation)
+           // 1. ตรวจสอบความถูกต้องของข้อมูล (Validation)
         $request->validate([
-            'inspection_machinery_hds_date' => 'required|date',
-            'inspection_machinery_hds_docuno' => 'required|string|max:255',
-            'machinery_lists_id' => 'required|exists:machinery_lists,machinery_lists_id', // ปรับชื่อตารางตามจริง
-            'inspection_machinery_hds_qty' => 'nullable|numeric',
-            'inspection_machinery_hds_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048', // กำหนดประเภทไฟล์และขนาด
-            'inspection_machinery_dts_name' => 'required|array',
-            'inspection_machinery_dts_name.*' => 'required|string|max:255',
+            'inspection_product_hds_date' => 'required|date',
+            'inspection_product_hds_docuno' => 'required|string|max:255',
+            'wh_product_lists_id' => 'required|exists:wh_product_lists,wh_product_lists_id', // ปรับชื่อตารางตามจริง
+            'inspection_product_hds_qty' => 'nullable|numeric',
+            'inspection_product_hds_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048', // กำหนดประเภทไฟล์และขนาด
+            'inspection_product_dts_name' => 'required|array',
+            'inspection_product_dts_name.*' => 'required|string|max:255',
         ]);
 
         // ใช้ Database Transaction เพื่อความปลอดภัย หากเกิดข้อผิดพลาดจะ Rollback ทั้งหมด
@@ -75,47 +75,47 @@ class InspectionMachineryController extends Controller
         try {
             // 2. จัดการอัปโหลดไฟล์ (ถ้ามี)
             $filePath = null;
-            if ($request->hasFile('inspection_machinery_hds_file')) {
-                $file = $request->file('inspection_machinery_hds_file');
+            if ($request->hasFile('inspection_product_hds_file')) {
+                $file = $request->file('inspection_product_hds_file');
                 $filename = time() . '_' . $file->getClientOriginalName();
                 // บันทึกไฟล์ไว้ที่ storage/app/public/uploads/inspection
                 $filePath = $file->storeAs('uploads/inspection', $filename, 'public');
             }
 
             // 3. บันทึกข้อมูลส่วนหัว (Header)
-            $header = InspectionMachineryHd::create([
-                'inspection_machinery_hds_date'   => $request->inspection_machinery_hds_date,
-                'inspection_machinery_hds_docuno' => $request->inspection_machinery_hds_docuno,
-                'machinery_lists_id'              => $request->machinery_lists_id,
-                'inspection_machinery_hds_vendor' => $request->inspection_machinery_hds_vendor,
-                'inspection_machinery_hds_refdocu'=> $request->inspection_machinery_hds_refdocu,
-                'inspection_machinery_hds_qty'    => $request->inspection_machinery_hds_qty,
-                'inspection_machinery_hds_file'   => $filePath, // บันทึก Path ไฟล์ลงฐานข้อมูล
-                'inspection_machinery_hds_remark' => $request->inspection_machinery_hds_remark,
-                'inspection_machinery_hds_flag' => true,
+            $header = InspectionProductHd::create([
+                'inspection_product_hds_date'   => $request->inspection_product_hds_date,
+                'inspection_product_hds_docuno' => $request->inspection_product_hds_docuno,
+                'wh_product_lists_id'              => $request->wh_product_lists_id,
+                'inspection_product_hds_vendor' => $request->inspection_product_hds_vendor,
+                'inspection_product_hds_refdocu'=> $request->inspection_product_hds_refdocu,
+                'inspection_product_hds_qty'    => $request->inspection_product_hds_qty,
+                'inspection_product_hds_file'   => $filePath, // บันทึก Path ไฟล์ลงฐานข้อมูล
+                'inspection_product_hds_remark' => $request->inspection_product_hds_remark,
+                'inspection_product_hds_flag' => true,
                 'person_at' => Auth::user()->name,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ]);
 
             // 4. บันทึกข้อมูลส่วนรายละเอียด (Detail) แบบ Loop หลายแถว
-            if ($request->has('inspection_machinery_dts_name')) {
-                $names     = $request->inspection_machinery_dts_name;
-                $listnos   = $request->inspection_machinery_dts_listno;
-                $standards = $request->inspection_machinery_dts_standard;
-                $results   = $request->inspection_machinery_dts_result;
-                $statuses  = $request->inspection_machinery_dts_status;
+            if ($request->has('inspection_product_dts_name')) {
+                $names     = $request->inspection_product_dts_name;
+                $listnos   = $request->inspection_product_dts_listno;
+                $standards = $request->inspection_product_dts_standard;
+                $results   = $request->inspection_product_dts_result;
+                $statuses  = $request->inspection_product_dts_status;
 
                 foreach ($names as $index => $name) {
-                    InspectionMachineryDt::create([
-                        // สมมติว่า Foreign Key ที่เชื่อมกับ Header คือ inspection_machinery_hds_id
-                        'inspection_machinery_hds_id'     => $header->inspection_machinery_hds_id, 
-                        'inspection_machinery_dts_listno' => $listnos[$index] ?? ($index + 1),
-                        'inspection_machinery_dts_name'   => $name,
-                        'inspection_machinery_dts_standard' => $standards[$index] ?? null,
-                        'inspection_machinery_dts_result' => $results[$index] ?? null,
-                        'inspection_machinery_dts_status' => $statuses[$index] ?? null,
-                        'inspection_machinery_dts_flag' => true,
+                    InspectionProductDt::create([
+                        // สมมติว่า Foreign Key ที่เชื่อมกับ Header คือ inspection_product_hds_id
+                        'inspection_product_hds_id'     => $header->inspection_product_hds_id, 
+                        'inspection_product_dts_listno' => $listnos[$index] ?? ($index + 1),
+                        'inspection_product_dts_name'   => $name,
+                        'inspection_product_dts_standard' => $standards[$index] ?? null,
+                        'inspection_product_dts_result' => $results[$index] ?? null,
+                        'inspection_product_dts_status' => $statuses[$index] ?? null,
+                        'inspection_product_dts_flag' => true,
                         'person_at' => Auth::user()->name,
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
@@ -160,10 +160,10 @@ class InspectionMachineryController extends Controller
      */
     public function edit($id)
     {
-        $hd = InspectionMachineryHd::find($id);
-        $dt = InspectionMachineryDt::where('inspection_machinery_hds_id',$id)->where('inspection_machinery_dts_flag',true)->get();
-        $mtn = MachineryList::where('machinery_lists_flag',true)->get();
-        return view('inspection.form-inspectionmachinery-edit', compact('mtn','hd','dt'));
+        $hd = InspectionProductHd::find($id);
+        $dt = InspectionProductDt::where('inspection_machinery_hds_id',$id)->where('inspection_machinery_dts_flag',true)->get();
+        $pd = WhProductList::where('wh_product_lists_flag',true)->get();
+        return view('inspection.form-inspectionproduct-edit', compact('pd','hd','dt'));
     }
 
     /**
@@ -175,19 +175,19 @@ class InspectionMachineryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // ใช้ Database Transaction เพื่อความปลอดภัย (ถ้าเกิด Error จะได้ Rollback กลับได้)
+         // ใช้ Database Transaction เพื่อความปลอดภัย (ถ้าเกิด Error จะได้ Rollback กลับได้)
         DB::beginTransaction();
 
         try {
             // 1. ค้นหาข้อมูล Header เดิม
-            $header = InspectionMachineryHd::findOrFail($id);
+            $header = InspectionProductHd::findOrFail($id);
 
             // จัดการอัปโหลดไฟล์ใหม่ (ถ้ามีการแนบไฟล์มา)
-            $filePath = $header->inspection_machinery_hds_file; // ใช้ path เดิมก่อน
-            if ($request->hasFile('inspection_machinery_hds_file')) {
+            $filePath = $header->inspection_product_hds_file; // ใช้ path เดิมก่อน
+            if ($request->hasFile('inspection_product_hds_file')) {
                 // (ถ้าต้องการลบไฟล์เก่าทิ้ง สามารถเขียนโค้ดลบตรงนี้ได้)
                 
-                $file = $request->file('inspection_machinery_hds_file');
+                $file = $request->file('inspection_product_hds_file');
                 $filename = time() . '_' . $file->getClientOriginalName();
                 $file->move(public_path('uploads/inspection'), $filename);
                 $filePath = 'uploads/inspection/' . $filename;
@@ -195,38 +195,38 @@ class InspectionMachineryController extends Controller
 
             // 2. อัปเดตข้อมูล Header
             $header->update([
-                'inspection_machinery_hds_date' => $request->inspection_machinery_hds_date,
-                'machinery_lists_id'            => $request->machinery_lists_id,
-                'inspection_machinery_hds_vendor' => $request->inspection_machinery_hds_vendor,
-                'inspection_machinery_hds_refdocu' => $request->inspection_machinery_hds_refdocu,
-                'inspection_machinery_hds_qty'  => $request->inspection_machinery_hds_qty,
-                'inspection_machinery_hds_file' => $filePath,
-                'inspection_machinery_hds_remark' => $request->inspection_machinery_hds_remark,
+                'inspection_product_hds_date' => $request->inspection_product_hds_date,
+                'wh_product_lists_id'            => $request->wh_product_lists_id,
+                'inspection_product_hds_vendor' => $request->inspection_product_hds_vendor,
+                'inspection_product_hds_refdocu' => $request->inspection_product_hds_refdocu,
+                'inspection_product_hds_qty'  => $request->inspection_product_hds_qty,
+                'inspection_product_hds_file' => $filePath,
+                'inspection_product_hds_remark' => $request->inspection_product_hds_remark,
                 'person_at' => Auth::user()->name,
                 'updated_at' => Carbon::now()
             ]);
 
             // 3. จัดการข้อมูล Detail (ตารางรายการย่อย)
             // แนวทางที่ง่ายและนิยม คือ ลบรายการเก่าทั้งหมดของ Header นี้ทิ้ง แล้วบันทึกรายการใหม่ที่ส่งมาจากฟอร์มเข้าไปแทน
-            InspectionMachineryDt::where('inspection_machinery_hds_id', $id)->delete();
+            InspectionProductDt::where('inspection_product_hds_id', $id)->delete();
 
             // ตรวจสอบว่ามีข้อมูลส่งมาจากตารางหรือไม่
-            if ($request->has('inspection_machinery_dts_name')) {
-                $names     = $request->inspection_machinery_dts_name;
-                $standards = $request->inspection_machinery_dts_standard;
-                $results   = $request->inspection_machinery_dts_result;
-                $statuses  = $request->inspection_machinery_dts_status;
-                $listnos   = $request->inspection_machinery_dts_listno;
+            if ($request->has('inspection_product_dts_name')) {
+                $names     = $request->inspection_product_dts_name;
+                $standards = $request->inspection_product_dts_standard;
+                $results   = $request->inspection_product_dts_result;
+                $statuses  = $request->inspection_product_dts_status;
+                $listnos   = $request->inspection_product_dts_listno;
 
                 foreach ($names as $index => $name) {
-                    InspectionMachineryDt::create([
-                        'inspection_machinery_hds_id'     => $header->inspection_machinery_hds_id, // หรือใช้ตัวแปร $id
-                        'inspection_machinery_dts_listno' => $listnos[$index] ?? ($index + 1),
-                        'inspection_machinery_dts_name'   => $name,
-                        'inspection_machinery_dts_standard' => $standards[$index] ?? null,
-                        'inspection_machinery_dts_result' => $results[$index] ?? null,
-                        'inspection_machinery_dts_status' => $statuses[$index] ?? null,
-                        'inspection_machinery_dts_flag' => true,
+                    InspectionProductDt::create([
+                        'inspection_product_hds_id'     => $header->inspection_product_hds_id, // หรือใช้ตัวแปร $id
+                        'inspection_product_dts_listno' => $listnos[$index] ?? ($index + 1),
+                        'inspection_product_dts_name'   => $name,
+                        'inspection_product_dts_standard' => $standards[$index] ?? null,
+                        'inspection_product_dts_result' => $results[$index] ?? null,
+                        'inspection_product_dts_status' => $statuses[$index] ?? null,
+                        'inspection_product_dts_flag' => true,
                         'person_at' => Auth::user()->name,
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
@@ -237,7 +237,7 @@ class InspectionMachineryController extends Controller
             // ยืนยันการทำงานทั้งหมด
             DB::commit();
 
-            return redirect()->route('inspection-machinery.index')
+            return redirect()->route('inspection-product.index')
                             ->with('success', 'อัปเดตข้อมูลใบตรวจรับเครื่องมือวัดเรียบร้อยแล้ว');
 
         } catch (\Exception $e) {
@@ -261,15 +261,15 @@ class InspectionMachineryController extends Controller
         //
     }
 
-    public function CancelInspectionMchHd(Request $request)
+     public function CancelInspectionMchHd(Request $request)
     {
         $id = $request->refid;
         try {
             DB::beginTransaction();
-            InspectionMachineryHd::where('inspection_machinery_hds_id', $id)
+            InspectionProductHd::where('inspection_product_hds_id', $id)
             ->update([
                 'updated_at' => Carbon::now(),
-                'inspection_machinery_hds_flag' => 0,
+                'inspection_product_hds_flag' => 0,
                 'person_at' => Auth::user()->name,
             ]);
             DB::commit();                      
@@ -291,10 +291,10 @@ class InspectionMachineryController extends Controller
         $id = $request->refid;
         try {
             DB::beginTransaction();
-            InspectionMachineryDt::where('inspection_machinery_dts_id', $id)
+            InspectionProductDt::where('inspection_product_dts_id', $id)
             ->update([
                 'updated_at' => Carbon::now(),
-                'inspection_machinery_dts_flag' => 0,
+                'inspection_product_dts_flag' => 0,
                 'person_at' => Auth::user()->name,
             ]);
             DB::commit();                      
