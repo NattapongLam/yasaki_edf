@@ -721,17 +721,17 @@ Note: The reported uncertainty is based on a standard uncertainty multiplied by 
 
 <tr>
 <th>Sample Size</th>
-<td>Size (mm): {{$reqdt->ar_requestorder_dts_dimensions}}  (Weight (g): {{$reqdt->ar_requestorder_dts_weight}})</td>
+<td>Size (mm): {{$reqdt->ar_requestorder_dts_dimensions}}  Weight (g): {{$reqdt->ar_requestorder_dts_weight}}</td>
 </tr>
 
 <tr>
 <th>Before Test</th>
-<td>Size (mm): {{$rechd->receive_test_lists_dimensions}} (Weight (g): {{$rechd->receive_test_lists_weight}})</td>
+<td>Size (mm): {{$rechd->receive_test_lists_dimensions}} Weight (g): {{$rechd->receive_test_lists_weight}} (Status: {{$rechd->result_test_lists_test}})</td>
 </tr>
 
 <tr>
 <th>After Test</th>
-<td>Size (mm): {{$rechd->result_test_lists_dimensions}} (Weight (g): {{$rechd->result_test_lists_weight}})</td>
+<td>Size (mm): {{$rechd->result_test_lists_dimensions}} Weight (g): {{$rechd->result_test_lists_weight}} (Status: {{$rechd->result_test_lists_test}})</td>
 </tr>
 
 </table>
@@ -801,6 +801,7 @@ Note: The reported uncertainty is based on a standard uncertainty multiplied by 
 <th colspan="4">FRICTION (μ)</th>
 <th colspan="3">WEAR RATE (10⁻⁷ cm³/N·m)</th>
 <th colspan="2">AVERAGE RESULT</th>
+<th rowspan="2">TEST RESULT</th>
 </tr>
 
 <tr>
@@ -840,7 +841,7 @@ Note: The reported uncertainty is based on a standard uncertainty multiplied by 
 
 <td>{{ number_format($item->FAvg,3) }}</td>
 <td>{{ number_format($item->WAvg,3) }}</td>
-
+<td>{{ $rechd->result_test_lists_test }}</td>
 </tr>
 
 @endforeach
