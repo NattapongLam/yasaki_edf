@@ -212,14 +212,14 @@ tr:nth-child(even) td{
 
 .result-table{
     table-layout:fixed;
-    font-size:10px;
+    font-size:11px;
 }
 
 .result-table th,
 .result-table td{
     padding:3px 3px;
     text-align:center;
-    font-size:10px;
+    font-size:11px;
 }
 
 .result-table thead tr:first-child th{
@@ -343,7 +343,7 @@ tr:nth-child(even) td{
 
 .chart-title{
     text-align:center;
-    font-size:10px;
+    font-size:11px;
     font-weight:500;
     color:var(--muted);
     margin-top:2px;
@@ -377,7 +377,7 @@ tr:nth-child(even) td{
 
 .pie-empty{
     text-align:center;
-    font-size:10px;
+    font-size:11px;
     color:var(--muted);
     padding:20px 0;
 }
@@ -603,12 +603,12 @@ Coefficient of Friction Test Report
 
 <tr>
 <th>Friction Range</th>
-<td>0.00-0.080 (μ) </td>
+<td>0.00 - 0.80 (μ) </td>
 </tr>
 
 <tr>
 <th>Uncertainty (95%)</th>
-<td>± 0.032 (μ)</td>
+<td>± {{number_format($expandedUncertainty,3)}} (μ)</td>
 </tr>
 
 </table>
@@ -745,7 +745,7 @@ Note: The reported uncertainty is based on a standard uncertainty multiplied by 
         <td class="text-center"><img src="{{asset($rechd->receive_test_lists_file2)}}" class="img-thumbnail" width="40%"></td>      
     </tr>
     <tr>
-        <th colspan="2">Remark</th>
+        <th colspan="2">Harmful crack,Swelling,<br>Scratch,Unevenness,Warp,Twist</th>
         <td colspan="2">{{$rechd->receive_test_lists_note}}</td>
     </tr>
 </table>
@@ -756,7 +756,7 @@ Note: The reported uncertainty is based on a standard uncertainty multiplied by 
         <td class="text-center"><img src="{{asset($rechd->result_test_lists_file2)}}" class="img-thumbnail" width="40%"></td>
     </tr>
     <tr>
-        <th colspan="2">Remark</th>
+        <th colspan="2">Harmful crack,Swelling,<br>Scratch,Unevenness,Warp,Twist</th>
         <td colspan="2">{{$rechd->result_test_lists_remark}}</td>
     </tr>
 </table>
@@ -1026,14 +1026,14 @@ scales:{
 x:{
 title:{
 display:true,
-text:'Temperature (°C)'
+text:'Temperature (°C)',
 }
 },
 
 y:{
 title:{
 display:true,
-text:'Friction (μ)'
+text:'Friction (μ)',
 },
 
 min:0,

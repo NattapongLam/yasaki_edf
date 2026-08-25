@@ -217,6 +217,67 @@ class ReportFormulaController extends Controller
         ->where('receive_test_subs.receive_test_lists_id',$rechd->receive_test_lists_id)
         ->where('receive_test_subs.receive_test_lists_flag',true)
         ->get();
+    // 1. กำหนดค่าตัวหารตามหลักมาตรวิทยา (คงเดิม)
+    $divNormal = 2.0;          // สำหรับค่าจากใบเซอร์สอบเทียบ (Normal Distribution, k=2)
+    $divRectangular = sqrt(3); // สำหรับค่าความละเอียดหน้าจอ (Resolution / Rectangular Distribution)
+
+    // 2. คัดแยกอุปกรณ์ที่เกี่ยวข้องกับระบบแรงเสียดทาน (μ) โดยตรงจากตัวแปร $cal
+    // (ดึงเฉพาะ โหลดเซลล์ 4319-001/002 และเครื่องทดสอบ 4411-001)
+    $loadCell = null;
+    $testMachine = null;
+
+    foreach ($cal as $item) {
+        if (in_array($item->calibration_lists_code, ['4319-001', '4319-002'])) {
+            $loadCell = $item;
+        }
+        if ($item->calibration_lists_code === '4411-001') {
+            $testMachine = $item;
+        }
+    }
+
+    // 3. กำหนดค่าความไม่แน่นอนมาตรฐาน (u = U / divisor)
+    // u1: โหลดเซลล์ (f) ดึงจากใบเซอร์จริง (0.01 N)
+    $u_f_cal = (float)($loadCell->calibration_lists_uncertainty ?? 0.01) / $divNormal;
+
+    // u2: ความละเอียดของหน้าจอเครื่องอ่าน (f_res = 0.01 N) เป็น Rectangular
+    $u_f_res = 0.01 / $divRectangular; 
+
+    // u3: ระบบควบคุมแรงกดแนวตั้ง (F) ดึงจากเครื่องทดสอบ 4411-001 (0.10 N)
+    $u_F_cal = (float)($testMachine->calibration_lists_uncertainty ?? 0.10) / $divNormal;
+
+    // u4: ความซ้ำของการทดสอบสัมประสิทธิ์แรงเสียดทาน (Repeatability) 
+    // คำนวณจากค่าเบี่ยงเบนมาตรฐาน (SD) จริงของการทดสอบในรอบนั้น ๆ (เช่น 0.015)
+    $u_repeatability = isset($repeatability) ? (float)$repeatability : 0.015; // k=1 อยู่แล้ว ไม่ต้องหาร
+
+    // 4. คำนวณค่าสัมประสิทธิ์ความไว (Sensitivity Coefficient: ci) 
+    // ดึงค่าเฉลี่ยจริงจากฐานข้อมูลของการทดสอบในระดับอุณหภูมินั้น ๆ (เช่น F_mean = 500 N, f_mean = 250 N)
+    $F_mean = (float)($test_data['F_mean'] ?? 500.0); 
+    $f_mean = (float)($test_data['f_mean'] ?? 250.0); 
+
+    if ($F_mean > 0) {
+        $c_f_cal = 1.0 / $F_mean;                    // ci สำหรับ Load cell (1/F)
+        $c_f_res = 1.0 / $F_mean;                    // ci สำหรับ ความละเอียดหน้าจอ (1/F)
+        $c_F_cal = -($f_mean) / ($F_mean ** 2);      // ci สำหรับ ระบบแรงกด (-f/F^2)
+        $c_repeatability = 1.0;                      // ci สำหรับ Repeatability (1)
+    } else {
+        $c_f_cal = $c_f_res = $c_F_cal = 0.0;
+        $c_repeatability = 1.0;
+    }
+
+    // 5. คำนวณผลคูณความไม่แน่นอนมาตรฐานส่วนร่วม ui(y) = ui * ci
+    $u1_y = $u_f_cal * $c_f_cal;
+    $u2_y = $u_f_res * $c_f_res;
+    $u3_y = $u_F_cal * $c_F_cal;
+    $u4_y = $u_repeatability * $c_repeatability;
+
+    // 6. คำนวณผลรวมกำลังสอง (Sum of Squares) แบบ RSS
+    $sumOfSquares = ($u1_y ** 2) + ($u2_y ** 2) + ($u3_y ** 2) + ($u4_y ** 2);
+
+    // 7. ความไม่แน่นอนมาตรฐานรวม (Combined Standard Uncertainty)
+    $combinedUncertainty = sqrt($sumOfSquares);
+
+    // 8. ความไม่แน่นอนขยาย (Expanded Uncertainty, k=2) ที่ระดับความเชื่อมั่น 95%
+    $expandedUncertainty = $combinedUncertainty * 2.0;
         $bomhd = DB::table('chemistry_hd')->where('chemistry_hd_id',$rechd->chemistry_hd_id)->first();
         $bomdt = null;
         if($bomhd){
@@ -235,7 +296,7 @@ class ReportFormulaController extends Controller
         return view(
             'report.report-compareformulas-print',compact(
                 'hd','friction','dt','frictionPoints','wearRatePoints','temps','safeUpper','safeLower','jisMin','jisMax','targetUpper','targetLower'
-                ,'reqhd','reqdt','rechd','caldimensions','calweight','cal','bomdt','caldimensions1','mjis','average_rmp'
+                ,'reqhd','reqdt','rechd','caldimensions','calweight','cal','bomdt','caldimensions1','mjis','average_rmp','expandedUncertainty'
             )
         );
     }
