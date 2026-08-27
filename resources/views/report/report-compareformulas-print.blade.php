@@ -675,7 +675,6 @@ Note: The reported uncertainty is based on a standard uncertainty multiplied by 
 
 </div>
 <br>
-<br>
 <!-- sample detail -->
 <br>
 <div class="section-title">Sample Details</div>
