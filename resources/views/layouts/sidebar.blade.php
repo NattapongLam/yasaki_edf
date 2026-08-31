@@ -5,6 +5,7 @@
             <!-- Left Menu Start -->
             <ul class="metismenu list-unstyled" id="side-menu">
                 <li class="menu-title" key="t-menu">Set up</li>
+                @can('setup-customers')             
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="bx bx-duplicate"></i>
@@ -15,6 +16,8 @@
                         <li><a href="{{route('customerlists.index')}}" key="t-default">ลูกค้า</a></li>                      
                     </ul>                 
                 </li>
+                @endcan  
+                @can('setup-vendors')       
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="bx bx-duplicate"></i>
@@ -25,6 +28,8 @@
                         <li><a href="{{route('vendorlists.index')}}" key="t-default">ผู้จำหน่าย</a></li>                      
                     </ul>                 
                 </li>
+                @endcan
+                @can('setup-products') 
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="bx bx-duplicate"></i>
@@ -37,6 +42,8 @@
                         <li><a href="{{route('productlists.index')}}" key="t-default">สินค้า</a></li>              
                     </ul>                 
                 </li>
+                @endcan
+                @can('setup-warehouses') 
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="bx bx-duplicate"></i>
@@ -47,6 +54,8 @@
                         <li><a href="#" key="t-default">สถานที่เก็บ</a></li>                
                     </ul>                 
                 </li>
+                @endcan
+                @can('setup-accounts') 
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="bx bx-duplicate"></i>
@@ -62,6 +71,8 @@
                         <li><a href="{{route('currencys.create')}}" key="t-default">สกุลเงิน</a></li>             
                     </ul>                 
                 </li>
+                @endcan
+                @can('setup-others')
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="bx bx-duplicate"></i>
@@ -74,7 +85,9 @@
                         <li><a href="{{route('sub-districts.create')}}" key="t-default">แขวง</a></li>      
                     </ul>                 
                 </li>
+                @endcan
                 <li class="menu-title" key="t-menu">Menu</li>
+                @can('menu-testing')
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="bx bx-layout"></i>
@@ -134,6 +147,8 @@
                         </li>
                     </ul>                                         
                 </li>
+                @endcan
+                @can('menu-document')
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="bx bx-layout"></i>
@@ -146,10 +161,12 @@
                         <li><a href="{{route('risk.index')}}" key="t-default">RISK</a></li>   
                     </ul>
                 </li>
+                @endcan
+                @can('menu-sale')
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="bx bx-layout"></i>
-                        <span key="t-layouts">ฝ่ายขาย</span>
+                        <span key="t-layouts">งานขาย</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="true">      
                         <li><a href="{{route('complaints.index')}}" key="t-default">รับข้อร้องเรียนจากลูกค้า</a></li>                  
@@ -159,10 +176,12 @@
                         <li><a href="#" key="t-default">รับมัดจำ/ล่วงหน้า</a></li>
                     </ul>   
                 </li>
+                @endcan
+                @can('menu-purchasing')
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="bx bx-layout"></i>
-                        <span key="t-layouts">ฝ่ายจัดซื้อ</span>
+                        <span key="t-layouts">งานจัดซื้อ</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="true">
                         <li><a href="{{route('purchaserequests.index')}}" key="t-default">ใบขอสั่งซื้อ</a></li> 
@@ -171,10 +190,12 @@
                         <li><a href="#" key="t-default">จ่ายมัดจำ/ล่วงหน้า</a></li>
                     </ul>   
                 </li>
+                @endcan
+                @can('menu-warehouse')
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="bx bx-layout"></i>
-                        <span key="t-layouts">ฝ่ายคลัง</span>
+                        <span key="t-layouts">งานคลัง</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="true">
                         <li><a href="{{route('issuestocks.index')}}" key="t-default">ใบเบิก</a></li> 
@@ -182,16 +203,20 @@
                         <li><a href="{{route('adjuststocks.index')}}" key="t-default">ใบปรับปรุงสต็อค</a></li>
                     </ul>   
                 </li>
+                @endcan
+                @can('menu-human')
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="bx bx-layout"></i>
-                        <span key="t-layouts">ฝ่ายบุคคล</span>
+                        <span key="t-layouts">งานบุคคล</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="true">
                         <li><a href="{{route('hr.index')}}" key="t-default">รายชื่อพนักงาน</a></li> 
                     </ul>   
                 </li>
+                @endcan
                 <li class="menu-title" key="t-apps">Report</li>   
+                @can('report-sale')
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="bx bx-calendar"></i>
@@ -206,6 +231,8 @@
                             </li> 
                     </ul>                    
                 </li>      
+                @endcan
+                @can('report-purchasing')
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="bx bx-calendar"></i>
@@ -219,7 +246,9 @@
                             </a>
                             </li> 
                     </ul>                    
-                </li>      
+                </li>
+                @endcan
+                @can('report-warehouse')      
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="bx bx-calendar"></i>
@@ -234,6 +263,8 @@
                             </li> 
                     </ul>                    
                 </li>   
+                @endcan
+                @can('report-testing')      
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="bx bx-chart"></i>
@@ -247,7 +278,8 @@
                             </a>
                             </li> 
                     </ul>                    
-                </li>    
+                </li>  
+                @endcan  
                 @can('setup-users')                                           
                 <li class="menu-title" key="t-pages">Setting</li>   
                 <li>

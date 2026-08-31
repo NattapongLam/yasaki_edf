@@ -36,6 +36,55 @@ Route::group([
 Route::resource('/profiles' , App\Http\Controllers\ProfilesController::class);
 Route::put('/profiles/{id}/role-permission', [ App\Http\Controllers\ProfilesController::class, 'updateRolePermission'])->name('profiles.updateRolePermission');
 });
+Route::group([
+    'middleware' =>  ['auth','permission:setup-customers']
+],function(){
+Route::resource('/customergroups' , App\Http\Controllers\ArCustomerGroupController::class);
+Route::resource('/customerlists' , App\Http\Controllers\ArCustomerListController::class);
+Route::get('/get-districts/{province_id}', [App\Http\Controllers\ArCustomerListController::class, 'getDistricts']);
+Route::get('/get-subdistricts/{district_id}', [App\Http\Controllers\ArCustomerListController::class, 'getSubDistricts']);
+Route::resource('/complaints' , App\Http\Controllers\ComplaintsController::class);
+Route::post('/CancelComplaints' , [App\Http\Controllers\ComplaintsController::class , 'CancelComplaints']);
+});
+Route::group([
+    'middleware' =>  ['auth','permission:setup-vendors']
+],function(){
+Route::resource('/vendorgroups' , App\Http\Controllers\ApVendorGroupController::class);
+Route::resource('/vendorlists' , App\Http\Controllers\ApVendorListController::class);
+});
+Route::group([
+    'middleware' =>  ['auth','permission:setup-products']
+],function(){
+Route::resource('/productgroups' , App\Http\Controllers\WhProductGroupController::class);
+Route::resource('/productlists' , App\Http\Controllers\WhProductListController::class);
+Route::resource('/producttypes' , App\Http\Controllers\WhProductTypeController::class);
+Route::resource('/productunits' , App\Http\Controllers\WhProductUnitController::class);
+Route::get('/product/get-last-running', [App\Http\Controllers\WhProductListController::class, 'getLastRunning'])->name('product.getLastRunning');
+});
+Route::group([
+    'middleware' =>  ['auth','permission:setup-warehouses']
+],function(){
+Route::resource('/warehouses' , App\Http\Controllers\WhWarehouseListController::class);
+});
+Route::group([
+    'middleware' =>  ['auth','permission:setup-accounts']
+],function(){
+Route::resource('/companys' , App\Http\Controllers\AccCompanyController::class);
+Route::resource('/currencys' , App\Http\Controllers\AccCurrencyController::class);
+Route::resource('/periods' , App\Http\Controllers\AccPeriodController::class);
+Route::resource('/typevats' , App\Http\Controllers\AccTypevatController::class);
+});
+Route::group([
+    'middleware' =>  ['auth','permission:setup-others']
+],function(){
+Route::resource('/countrys' , App\Http\Controllers\OtherCountryController::class);
+Route::resource('/provinces' , App\Http\Controllers\OtherProvinceController::class);
+Route::resource('/districts' , App\Http\Controllers\OtherDistrictController::class);
+Route::resource('/sub-districts' , App\Http\Controllers\OtherSubDistrictController::class);
+});
+Route::group([
+    'middleware' =>  ['auth','permission:menu-testing']
+],function(){
 // เคมี
 Route::post('/confirmDelProfile' , [App\Http\Controllers\ProfilesController::class , 'confirmDelProfile']);
 Route::resource('/chemicalgroups' , App\Http\Controllers\ChemicalGroupController::class);
@@ -49,9 +98,7 @@ Route::resource('/chemistrys' , App\Http\Controllers\ChemistryController::class)
 Route::get('/chemistrys/{id}/print',[App\Http\Controllers\ChemistryController::class, 'print'])->name('chemistrys.print');
 Route::post('/confirmDelChemistryDt' , [App\Http\Controllers\ChemistryController::class , 'confirmDelChemistryDt']);
 Route::post('/confirmDelChemistryHd' , [App\Http\Controllers\ChemistryController::class , 'confirmDelChemistryHd']);
-Route::get('/compare-formulas' , [App\Http\Controllers\ReportFormulaController::class , 'CompareFormulas']);
-Route::post('/get-friction-chart',[App\Http\Controllers\ReportFormulaController::class,'getFrictionChart']);
-Route::get('/report/compareformulas',[App\Http\Controllers\ReportFormulaController::class, 'GetCompareFormulas'])->name('report.compareformulas');
+
 Route::get('/report/compareformulas/print/{id}',[App\Http\Controllers\ReportFormulaController::class,'PrintCompareFormula'])->name('report.compareformulas.print');
 Route::get('/analyze-formulas' , [App\Http\Controllers\ReportFormulaController::class , 'AnalyzeFormulas']);
 Route::post('/get-formula-detail', [App\Http\Controllers\ReportFormulaController::class, 'getFormulaDetail'])->name('report.get.formula.detail');
@@ -63,35 +110,6 @@ Route::put('/receive-test/update-result/{id}', [App\Http\Controllers\ReceiveTest
 Route::resource('/delivered' , App\Http\Controllers\DeliveredController::class);
 Route::get('/delivered-test/print/{id}', [App\Http\Controllers\DeliveredController::class, 'printDocument'])->name('delivered-test.print');
 // เคมี
-
-// ทั่วไป
-Route::resource('/countrys' , App\Http\Controllers\OtherCountryController::class);
-Route::resource('/provinces' , App\Http\Controllers\OtherProvinceController::class);
-Route::resource('/districts' , App\Http\Controllers\OtherDistrictController::class);
-Route::resource('/sub-districts' , App\Http\Controllers\OtherSubDistrictController::class);
-// ทั่วไป
-
-// บัญชี
-Route::resource('/companys' , App\Http\Controllers\AccCompanyController::class);
-Route::resource('/currencys' , App\Http\Controllers\AccCurrencyController::class);
-Route::resource('/periods' , App\Http\Controllers\AccPeriodController::class);
-Route::resource('/typevats' , App\Http\Controllers\AccTypevatController::class);
-// บัญชี
-
-// ลูกค้า
-Route::resource('/customergroups' , App\Http\Controllers\ArCustomerGroupController::class);
-Route::resource('/customerlists' , App\Http\Controllers\ArCustomerListController::class);
-Route::get('/get-districts/{province_id}', [App\Http\Controllers\ArCustomerListController::class, 'getDistricts']);
-Route::get('/get-subdistricts/{district_id}', [App\Http\Controllers\ArCustomerListController::class, 'getSubDistricts']);
-Route::resource('/complaints' , App\Http\Controllers\ComplaintsController::class);
-Route::post('/CancelComplaints' , [App\Http\Controllers\ComplaintsController::class , 'CancelComplaints']);
-// ลูกค้า
-
-//ผู้จำหน่าย
-Route::resource('/vendorgroups' , App\Http\Controllers\ApVendorGroupController::class);
-Route::resource('/vendorlists' , App\Http\Controllers\ApVendorListController::class);
-//ผู้จำหน่าย
-
 //เครื่องวัดมือ
 Route::resource('/calibrationcategorys' , App\Http\Controllers\CalibrationCategoryController::class);
 Route::resource('/calibrationgroups' , App\Http\Controllers\CalibrationGroupController::class);
@@ -103,7 +121,6 @@ Route::get('/calibration/calendar', [App\Http\Controllers\CalibrationPlanControl
 Route::resource('/calibrationchecksheets' , App\Http\Controllers\CalibrationChecksheetController::class);
 Route::post('/confirmDelCalibrationChecksheets' , [App\Http\Controllers\CalibrationChecksheetController::class , 'confirmDelCalibrationChecksheets']);
 //เครื่องวัดมือ
-
 //เครื่องจักร
 Route::resource('/machinerygroups' , App\Http\Controllers\MachineryGroupController::class);
 Route::resource('/machinerylists' , App\Http\Controllers\MachineryListController::class);
@@ -117,35 +134,34 @@ Route::get('/repair/get-items', [App\Http\Controllers\MaintenanceController::cla
 Route::get('/repair/get-doc-no', [App\Http\Controllers\MaintenanceController::class, 'getDocNo'])->name('repair.getDocNo');
 Route::post('/confirmDelMaintenances' , [App\Http\Controllers\MaintenanceController::class , 'confirmDelMaintenances']);
 //เครื่องจักร
-
-// สินค้า
-Route::resource('/productgroups' , App\Http\Controllers\WhProductGroupController::class);
-Route::resource('/productlists' , App\Http\Controllers\WhProductListController::class);
-Route::resource('/producttypes' , App\Http\Controllers\WhProductTypeController::class);
-Route::resource('/productunits' , App\Http\Controllers\WhProductUnitController::class);
-Route::get('/product/get-last-running', [App\Http\Controllers\WhProductListController::class, 'getLastRunning'])->name('product.getLastRunning');
-// สินค้า
-
-// คลังสินค้า
-Route::resource('/warehouses' , App\Http\Controllers\WhWarehouseListController::class);
-Route::resource('/issuestocks' , App\Http\Controllers\WhIssueStockListController::class);
-Route::get('/issuestock/runno', [App\Http\Controllers\WhIssueStockListController::class, 'runNo'])->name('issuestock.runno');
-Route::get('issuestock/products-by-warehouse', [App\Http\Controllers\WhIssueStockListController::class, 'getProductsByWarehouse'])->name('issuestock.productsByWarehouse');
-Route::post('/CancelIssueStockDoc' , [App\Http\Controllers\WhIssueStockListController::class , 'CancelIssueStockDoc']);
-Route::post('/CancelIssueStockList' , [App\Http\Controllers\WhIssueStockListController::class , 'CancelIssueStockList']);
-Route::resource('/returnstocks' , App\Http\Controllers\WhReturnStockListController::class);
-Route::get('/returnstock/runno', [App\Http\Controllers\WhReturnStockListController::class, 'runNo'])->name('returnstock.runno');
-Route::get('returnstock/items', [App\Http\Controllers\WhReturnStockListController::class, 'getItems'])->name('returnstock.items');
-Route::post('/CancelReturnStockDoc' , [App\Http\Controllers\WhReturnStockListController::class , 'CancelReturnStockDoc']);
-Route::resource('/adjuststocks' , App\Http\Controllers\WhAdjustStockListController::class);
-Route::get('/adjuststock/runno', [App\Http\Controllers\WhAdjustStockListController::class, 'runNo'])->name('adjuststock.runno');
-Route::get('adjuststock/get-stock', [App\Http\Controllers\WhAdjustStockListController::class, 'getStock'])->name('adjuststock.getstock');
-Route::post('/CancelAdjustStockDoc' , [App\Http\Controllers\WhAdjustStockListController::class , 'CancelAdjustStockDoc']);
-Route::post('/CancelAdjustStockList' , [App\Http\Controllers\WhAdjustStockListController::class , 'CancelAdjustStockList']);
-Route::get('/report-stock' , [App\Http\Controllers\ReportStockController::class , 'ReportStock']);
-// คลังสินค้า
-
-// ขาย
+//ตรวจรับ
+Route::resource('/inspection-calibration' , App\Http\Controllers\InspectionCalibrationController::class);
+Route::post('/CancelInspectionCalHd' , [App\Http\Controllers\InspectionCalibrationController::class , 'CancelInspectionCalHd']);
+Route::post('/CancelInspectionCalDt' , [App\Http\Controllers\InspectionCalibrationController::class , 'CancelInspectionCalDt']);
+Route::resource('/inspection-machinery' , App\Http\Controllers\InspectionMachineryController::class);
+Route::post('/CancelInspectionMchHd' , [App\Http\Controllers\InspectionMachineryController::class , 'CancelInspectionMchHd']);
+Route::post('/CancelInspectionMchDt' , [App\Http\Controllers\InspectionMachineryController::class , 'CancelInspectionMchDt']);
+Route::resource('/inspection-product' , App\Http\Controllers\InspectionProductController::class);
+Route::post('/CancelInspectionPdHd' , [App\Http\Controllers\InspectionProductController::class , 'CancelInspectionPdHd']);
+Route::post('/CancelInspectionPdDt' , [App\Http\Controllers\InspectionProductController::class , 'CancelInspectionPdDt']);
+//ตรวจรับ
+});
+Route::group([
+    'middleware' =>  ['auth','permission:menu-document']
+],function(){
+Route::resource('/master-list' , App\Http\Controllers\MasterListController::class);
+Route::post('/CancelMasterList' , [App\Http\Controllers\MasterListController::class , 'CancelMasterList']);
+Route::resource('/ncr' , App\Http\Controllers\NcrController::class);
+Route::post('/CancelNcr' , [App\Http\Controllers\NcrController::class , 'CancelNcr']);
+Route::resource('/car' , App\Http\Controllers\CarController::class);
+Route::post('/CancelCar' , [App\Http\Controllers\CarController::class , 'CancelCar']);
+Route::resource('/risk' , App\Http\Controllers\RiskController::class);
+Route::post('/CancelRisk' , [App\Http\Controllers\RiskController::class , 'CancelRisk']);
+Route::post('/CancelRiskrow' , [App\Http\Controllers\RiskController::class , 'CancelRiskrow']);
+});
+Route::group([
+    'middleware' =>  ['auth','permission:menu-sale']
+],function(){
 Route::resource('/requestorders' , App\Http\Controllers\ArRequestOrderListController::class);
 Route::get('/requestorder/runno', [App\Http\Controllers\ArRequestOrderListController::class, 'runNo'])->name('requestorder.runno');
 Route::post('/CancelRequestOrderDoc' , [App\Http\Controllers\ArRequestOrderListController::class , 'CancelRequestOrderDoc']);
@@ -165,9 +181,10 @@ Route::resource('/saleorders' , App\Http\Controllers\ArSaleOrderListController::
 Route::get('/saleorder/runno', [App\Http\Controllers\ArSaleOrderListController::class, 'runNo'])->name('saleorder.runno');
 Route::post('/CancelSaleorderDoc' , [App\Http\Controllers\ArSaleOrderListController::class , 'CancelSaleorderDoc']);
 Route::get('saleorders/{id}/print', [App\Http\Controllers\ArSaleOrderListController::class,'print'])->name('saleorders.print');
-// ขาย
-
-//จัดซื้อ
+});
+Route::group([
+    'middleware' =>  ['auth','permission:menu-purchasing']
+],function(){
 Route::resource('/purchaserequests' , App\Http\Controllers\ApPurchaseRequestListController::class);
 Route::get('/purchaserequest/runno', [App\Http\Controllers\ApPurchaseRequestListController::class, 'runNo'])->name('purchaserequest.runno');
 Route::post('/CancelPurchaseRequestDoc' , [App\Http\Controllers\ApPurchaseRequestListController::class , 'CancelPurchaseRequestDoc']);
@@ -182,33 +199,50 @@ Route::resource('/purchasereceives' , App\Http\Controllers\ApPurchaseReceiveList
 Route::get('/purchasereceive/runno', [App\Http\Controllers\ApPurchaseReceiveListController::class, 'runNo'])->name('purchasereceive.runno');
 Route::get('purchase/items', [App\Http\Controllers\ApPurchaseReceiveListController::class, 'getItems'])->name('purchase.items');
 Route::post('/CancelPurchaseReceiveDoc' , [App\Http\Controllers\ApPurchaseReceiveListController::class , 'CancelPurchaseReceiveDoc']);
-//จัดซื้อ
+});
+Route::group([
+    'middleware' =>  ['auth','permission:menu-warehouse']
+],function(){
+Route::resource('/issuestocks' , App\Http\Controllers\WhIssueStockListController::class);
+Route::get('/issuestock/runno', [App\Http\Controllers\WhIssueStockListController::class, 'runNo'])->name('issuestock.runno');
+Route::get('issuestock/products-by-warehouse', [App\Http\Controllers\WhIssueStockListController::class, 'getProductsByWarehouse'])->name('issuestock.productsByWarehouse');
+Route::post('/CancelIssueStockDoc' , [App\Http\Controllers\WhIssueStockListController::class , 'CancelIssueStockDoc']);
+Route::post('/CancelIssueStockList' , [App\Http\Controllers\WhIssueStockListController::class , 'CancelIssueStockList']);
+Route::resource('/returnstocks' , App\Http\Controllers\WhReturnStockListController::class);
+Route::get('/returnstock/runno', [App\Http\Controllers\WhReturnStockListController::class, 'runNo'])->name('returnstock.runno');
+Route::get('returnstock/items', [App\Http\Controllers\WhReturnStockListController::class, 'getItems'])->name('returnstock.items');
+Route::post('/CancelReturnStockDoc' , [App\Http\Controllers\WhReturnStockListController::class , 'CancelReturnStockDoc']);
+Route::resource('/adjuststocks' , App\Http\Controllers\WhAdjustStockListController::class);
+Route::get('/adjuststock/runno', [App\Http\Controllers\WhAdjustStockListController::class, 'runNo'])->name('adjuststock.runno');
+Route::get('adjuststock/get-stock', [App\Http\Controllers\WhAdjustStockListController::class, 'getStock'])->name('adjuststock.getstock');
+Route::post('/CancelAdjustStockDoc' , [App\Http\Controllers\WhAdjustStockListController::class , 'CancelAdjustStockDoc']);
+Route::post('/CancelAdjustStockList' , [App\Http\Controllers\WhAdjustStockListController::class , 'CancelAdjustStockList']);
 
-//DCC
-Route::resource('/master-list' , App\Http\Controllers\MasterListController::class);
-Route::post('/CancelMasterList' , [App\Http\Controllers\MasterListController::class , 'CancelMasterList']);
-Route::resource('/ncr' , App\Http\Controllers\NcrController::class);
-Route::post('/CancelNcr' , [App\Http\Controllers\NcrController::class , 'CancelNcr']);
-Route::resource('/car' , App\Http\Controllers\CarController::class);
-Route::post('/CancelCar' , [App\Http\Controllers\CarController::class , 'CancelCar']);
-Route::resource('/risk' , App\Http\Controllers\RiskController::class);
-Route::post('/CancelRisk' , [App\Http\Controllers\RiskController::class , 'CancelRisk']);
-Route::post('/CancelRiskrow' , [App\Http\Controllers\RiskController::class , 'CancelRiskrow']);
-//DCC
-
-//HR
+});
+Route::group([
+    'middleware' =>  ['auth','permission:menu-human']
+],function(){
 Route::resource('/hr' , App\Http\Controllers\HrController::class);
 Route::post('/CancelHr' , [App\Http\Controllers\HrController::class , 'CancelHr']);
-//HR
+});
+Route::group([
+    'middleware' =>  ['auth','permission:report-sale']
+],function(){
+});
+Route::group([
+    'middleware' =>  ['auth','permission:report-purchasing']
+],function(){
+});
+Route::group([
+    'middleware' =>  ['auth','permission:report-warehouse']
+],function(){
+Route::get('/report-stock' , [App\Http\Controllers\ReportStockController::class , 'ReportStock']);
+});
+Route::group([
+    'middleware' =>  ['auth','permission:report-testing']
+],function(){
+Route::get('/compare-formulas' , [App\Http\Controllers\ReportFormulaController::class , 'CompareFormulas']);
+Route::post('/get-friction-chart',[App\Http\Controllers\ReportFormulaController::class,'getFrictionChart']);
+Route::get('/report/compareformulas',[App\Http\Controllers\ReportFormulaController::class, 'GetCompareFormulas'])->name('report.compareformulas');
+});
 
-//ตรวจรับ
-Route::resource('/inspection-calibration' , App\Http\Controllers\InspectionCalibrationController::class);
-Route::post('/CancelInspectionCalHd' , [App\Http\Controllers\InspectionCalibrationController::class , 'CancelInspectionCalHd']);
-Route::post('/CancelInspectionCalDt' , [App\Http\Controllers\InspectionCalibrationController::class , 'CancelInspectionCalDt']);
-Route::resource('/inspection-machinery' , App\Http\Controllers\InspectionMachineryController::class);
-Route::post('/CancelInspectionMchHd' , [App\Http\Controllers\InspectionMachineryController::class , 'CancelInspectionMchHd']);
-Route::post('/CancelInspectionMchDt' , [App\Http\Controllers\InspectionMachineryController::class , 'CancelInspectionMchDt']);
-Route::resource('/inspection-product' , App\Http\Controllers\InspectionProductController::class);
-Route::post('/CancelInspectionPdHd' , [App\Http\Controllers\InspectionProductController::class , 'CancelInspectionPdHd']);
-Route::post('/CancelInspectionPdDt' , [App\Http\Controllers\InspectionProductController::class , 'CancelInspectionPdDt']);
-//ตรวจรับ

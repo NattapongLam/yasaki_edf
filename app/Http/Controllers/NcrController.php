@@ -52,8 +52,8 @@ class NcrController extends Controller
             'doc_ncrs_docuno' => ['required'],
             'doc_ncrs_person' => ['required'],
             'doc_ncrs_project' => ['required'],
-            'doc_ncrs_to' => ['required'],
-            'doc_ncrs_copy' => ['required'],
+            'doc_ncrs_duedate' => ['required'],
+            'doc_ncrs_type' => ['required'],
             'doc_ncrs_process' => ['required'],
             'doc_ncrs_product' => ['required'],
             'doc_ncrs_nonconformity' => ['required'],
@@ -63,8 +63,8 @@ class NcrController extends Controller
             'doc_ncrs_docuno' => $request->doc_ncrs_docuno,
             'doc_ncrs_person' => $request->doc_ncrs_person,
             'doc_ncrs_project' => $request->doc_ncrs_project,
-            'doc_ncrs_to' => $request->doc_ncrs_to,
-            'doc_ncrs_copy' => $request->doc_ncrs_copy,
+            'doc_ncrs_duedate' => $request->doc_ncrs_duedate,
+            'doc_ncrs_type' => $request->doc_ncrs_type,
             'doc_ncrs_process' => $request->doc_ncrs_process,
             'doc_ncrs_product' => $request->doc_ncrs_product,
             'doc_ncrs_nonconformity' => $request->doc_ncrs_nonconformity,
@@ -145,10 +145,12 @@ class NcrController extends Controller
                 ->update([
                     'doc_ncr_statuses_id' => 4,
                     'doc_ncrs_causes' => $request->doc_ncrs_causes,
-                    'doc_ncrs_troubleshooting' => $request->doc_ncrs_troubleshooting,
-                    'doc_ncrs_preventive' => $request->doc_ncrs_preventive,
+                    // 'doc_ncrs_troubleshooting' => $request->doc_ncrs_troubleshooting,
+                    // 'doc_ncrs_preventive' => $request->doc_ncrs_preventive,
                     'responsible_at' => Auth::user()->name,
-                    'responsible_date' => $request->responsible_date
+                    'responsible_date' => $request->responsible_date,
+                    'doc_ncrs_actionresult' => $request->doc_ncrs_actionresult,
+                    'doc_ncrs_actionremark' => $request->doc_ncrs_actionremark,
                 ]);             
                 DB::commit();
                 return redirect()->route('ncr.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
@@ -162,9 +164,7 @@ class NcrController extends Controller
                 DB::beginTransaction();
                 DocNcr::where('doc_ncrs_id',$id)
                 ->update([
-                    'doc_ncr_statuses_id' => 5,
-                    'doc_ncrs_actionresult' => $request->doc_ncrs_actionresult,
-                    'doc_ncrs_actionremark' => $request->doc_ncrs_actionremark,
+                    'doc_ncr_statuses_id' => 5,                   
                     'recheck_at' => Auth::user()->name,
                     'recheck_date' => $request->recheck_date
                 ]);             

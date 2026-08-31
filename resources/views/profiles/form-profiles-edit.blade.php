@@ -74,7 +74,7 @@
                                 {{ in_array($item->name, $userPermissions) ? 'checked' : '' }}
                             >
                             <label class="form-check-label" for="formCheckcolor1{{$item->id}}">
-                                {{ $item->name }}
+                                {{ $item->ms_permissions_name }}
                             </label>
                         </div>
                     </div>

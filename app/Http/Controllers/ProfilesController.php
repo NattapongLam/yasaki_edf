@@ -99,7 +99,7 @@ class ProfilesController extends Controller
     {
         $users = User::where('id',$id)->first();
         $roles = Role::all();
-        $permissions = Permission::all();
+        $permissions = Permission::leftjoin('ms_permissions','permissions.name','=','ms_permissions.ms_permissions_code')->get();
         return view('profiles.form-profiles-edit', compact('users','permissions','roles'));
     }
 

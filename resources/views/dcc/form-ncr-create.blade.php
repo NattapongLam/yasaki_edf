@@ -23,62 +23,69 @@
             <div class="col-12 col-md-6"><h3 class="card-title">เอกสาร NCR</h3></div>
         </div> 
         <div class="row mt-2">
-            <div class="col-3">
+            <div class="col-4">
                 <div class="form-group">
                     <label class="form-label">วันที่พบปัญหา</label>
                     <input class="form-control" type="date" name="doc_ncrs_date" required>
                 </div>
             </div>
-            <div class="col-3">
+            <div class="col-4">
                 <div class="form-group">
                     <label class="form-label">NCR No</label>
                     <input class="form-control" type="text" name="doc_ncrs_docuno" required>
                 </div>
             </div>
-            <div class="col-3">
+            <div class="col-4">
                 <div class="form-group">
                     <label class="form-label">ผู้ตรวจพบ</label>
                     <input class="form-control" type="text" name="doc_ncrs_person" required>
                 </div>
-            </div>
-            <div class="col-3">
-                <div class="form-group">
-                    <label class="form-label">ชื่อโครงการ</label>
-                    <input class="form-control" type="text" name="doc_ncrs_project" required>
-                </div>
-            </div>
+            </div>           
         </div>
         <div class="row mt-2">
-            <div class="col-3">
+            <h5>A.รายละเอียดความไม่สอดคล้องกับข้อกำหนด (รายละเอียดปัญหาที่พบ)</h5>
+            <div class="col-12">
                 <div class="form-group">
-                    <label class="form-label">ถึง</label>
-                    <input class="form-control" type="text" name="doc_ncrs_to" required>
+                    <label class="form-label">1.พบอะไร</label>
+                    <textarea class="form-control" type="text" name="doc_ncrs_nonconformity" required></textarea>
                 </div>
             </div>
-            <div class="col-3">
+            <div class="col-4">
                 <div class="form-group">
-                    <label class="form-label">สำเนา</label>
-                    <input class="form-control" type="text" name="doc_ncrs_copy" required>
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="form-group">
-                    <label class="form-label">NC กระบวนการ</label>
+                    <label class="form-label">2.พบที่ไหน/กระบวนการใด</label>
                     <input class="form-control" type="text" name="doc_ncrs_process" required>
                 </div>
             </div>
-            <div class="col-3">
+            <div class="col-4">
                 <div class="form-group">
-                    <label class="form-label">ชื่อผลิตภัณฑ์/จำนวน</label>
+                    <label class="form-label">3.พบเมื่อไร</label>
+                    <input class="form-control" type="date" name="doc_ncrs_duedate" required>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group">
+                    <label class="form-label">4.จำนวนเท่าไหร่</label>
                     <input class="form-control" type="text" name="doc_ncrs_product" required>
                 </div>
             </div>
-        </div>
-        <div class="row mt-2">
-            <div class="col-12">
+            <div class="col-4">
                 <div class="form-group">
-                    <label class="form-label">A ลักษณะความไม่เป็นไปตามข้อกำหนดหรือสเปด</label>
-                    <textarea class="form-control" rows="5" type="text" name="doc_ncrs_nonconformity" required></textarea>
+                    <label class="form-label">5.ไม่ตรงกับข้อกำหนดอะไร</label>
+                    <select class="form-control" name="doc_ncrs_type">
+                        <option value="-">กรุณาเลือก</option>
+                        <option value="Drawing No.">Drawing No.</option>
+                        <option value="Specification">Specification</option>
+                        <option value="WI">WI</option>
+                        <option value="Control Plan">Control Plan</option>
+                        <option value="Customer Requirement">Customer Requirement</option>
+                        <option value="Procedure">Procedure</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-8">
+                <div class="form-group">
+                    <label class="form-label">6.ข้อกำหนด/เอกสารอ้างอิง</label>
+                    <input class="form-control" type="text" name="doc_ncrs_project" required>
                 </div>
             </div>
         </div>   

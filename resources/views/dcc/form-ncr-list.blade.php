@@ -26,9 +26,8 @@
                 <tr>
                     <th>วันที่พบปัญหา</th>
                     <th>NCR No</th>
-                    <th>ชื่อโครงการ</th>
-                    <th>ชื่อผลิตภัณฑ์/จำนวน</th>
-                    <th>ถึง</th>
+                    <th>ไม่ตรงกับข้อกำหนดอะไร</th>
+                    <th>ข้อกำหนด/เอกสารอ้างอิง</th>
                     <th>ผู้ตรวจพบ</th>
                     <th>สถานะ</th>
                     <th>จัดการ</th>
@@ -40,9 +39,8 @@
                     <tr>
                         <td>{{$item->doc_ncrs_date}}</td>
                         <td>{{$item->doc_ncrs_docuno}}</td>
+                        <td>{{$item->doc_ncrs_type}}</td>
                         <td>{{$item->doc_ncrs_project}}</td>
-                        <td>{{$item->doc_ncrs_product}}</td>
-                        <td>{{$item->doc_ncrs_to}}</td>
                         <td>{{$item->doc_ncrs_person}}</td>
                         <td>{{$item->doc_ncr_statuses_name}}</td>
                         <td>
