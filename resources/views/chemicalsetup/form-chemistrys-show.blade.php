@@ -192,6 +192,7 @@
                     >
                         <td>
                             {{ $item->no }}
+                            <input type="hidden" name="no[]" value="{{$item->no}}">
                             <input type="hidden" name="chemistry_dt_id[]" value="{{$item->chemistry_dt_id}}">
                         </td>
                         <td>
@@ -277,6 +278,37 @@
             </div>
         </form>
         <br>
+       <div class="row">
+    <table class="table table-bordered table-sm text-center ">
+        <thead>
+            <tr>
+                <th>เวอร์ชั่น</th>
+                <th>หมายเหตุ</th>
+                <th>ผู้บันทึก</th>
+                <th>วันที่</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($loghd as $item)
+                <tr>
+                    <td>{{$item->log_version}}</td>
+                    <td>{{$item->log_chemistry_hd_note}}</td>
+                    <td>{{$item->log_chemistry_hd_save}}</td>
+                    {{-- ปรับ format วันที่ตรงนี้ --}}
+                    <td>{{ \Carbon\Carbon::parse($item->log_update_at)->format('d/m/Y H:i') }}</td>
+                    <td>
+                        <a href="{{ route('chemistrys.printlog',$item->id) }}"
+                        target="_blank"
+                        class="btn btn-sm btn-warning">
+                        <i class="fas fa-print"></i>
+                        </a>
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
         <div class="row">
             <div class="col-6 d-flex justify-content-center">
                 <h5>Adjust (%)</h5>

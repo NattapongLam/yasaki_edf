@@ -25,7 +25,7 @@ class ChemistryController extends Controller
      */
     public function index()
     {
-        $hd = DB::table('chemistry_hd')->where('chemistry_hd_flag',1)->get();
+        $hd = DB::table('chemistry_hd')->where('chemistry_hd_flag',1)->get();      
         return view('chemicalsetup.form-chemistrys-list', compact('hd'));
     }
 
@@ -91,6 +91,28 @@ class ChemistryController extends Controller
             'total_wper' => $request->total_wper,
             'total_weght' => $request->total_weght
         ];     
+        $logdata = [
+            'log_chemistry_hd_id' => $newId,
+            'log_ms_formule_name' => $request->ms_formule_name,
+            'log_chemistry_hd_mix' => $request->chemistry_hd_mix,
+            'log_chemistry_hd_qty'=> $request->chemistry_hd_qty,
+            'log_chemistry_hd_note' => $request->chemistry_hd_note,
+            'log_chemistry_hd_save'=> Auth::user()->name,
+            'log_chemistry_hd_flag'=> true,
+            'log_update_at' => Carbon::now(),
+            'log_chemistry_hd_type'=> $request->chemistry_hd_type,
+            'log_chemistry_hd_docuno' => $docuno,
+            'log_chemistry_hd_name'=> $request->chemistry_hd_name,
+            'log_chemistry_hd_calculate'=> $request->chemistry_hd_calculate,
+            'log_total_density' => $request->total_density,
+            'log_total_adjust'=> $request->total_adjust,
+            'log_total_volume' => $request->total_volume,
+            'log_total_wper'=> $request->total_wper,
+            'log_total_weght' => $request->total_weght,
+            'log_total_cost' => 0,
+            'log_avg_cost' => 0,
+            'log_version' => 1
+        ];
         if ($request->hasFile('chemistry_hd_file1')) { 
             $data['chemistry_hd_file1'] = $request->file('chemistry_hd_file1')->storeAs('images/Chemical_File', "IMG_" . carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('chemistry_hd_file1')->extension()); 
         } 
@@ -106,6 +128,7 @@ class ChemistryController extends Controller
         try{
             DB::beginTransaction();
             DB::table('chemistry_hd')->insert($data);
+            DB::table('log_chemistry_hd')->insert($logdata);
             if($request->no){
                 foreach ($request->no as $key => $value) {
                     $pd = DB::table('chemical_lists')->where('chemical_lists_id',$request->code[$key])->first();
@@ -126,6 +149,23 @@ class ChemistryController extends Controller
                         'flag' => true,
                         'update_at' => Carbon::now(),
                     ]);
+                    DB::table('log_chemistry_dt')->insert([
+                        'log_chemistry_dt_id'=> $newDtId,
+                        'log_chemistry_hd_id'=> $newId,
+                        'log_no' =>  $value,
+                        'log_code'=> $pd->chemical_lists_refcode,
+                        'log_material'=> $pd->chemical_lists_name,
+                        'log_grade' => $pd->chemical_lists_grade,
+                        'log_density'=> $request->density[$key],
+                        'log_adjust' => $request->adjust[$key],
+                        'log_weght' => $request->weght[$key],
+                        'log_weghtper'=> $request->weghtper[$key],
+                        'log_weghttotal'=> $request->weghttotal[$key],
+                        'log_flag'=> true,
+                        'log_save'=> Auth::user()->name,
+                        'log_update_at'=> Carbon::now(),
+                        'log_version' => 1
+                    ]);
                 }  
             }
             
@@ -145,221 +185,222 @@ class ChemistryController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-{
-    $hd = DB::table('chemistry_hd')->where('chemistry_hd_id', $id)->first();
+    {
+        $hd = DB::table('chemistry_hd')->where('chemistry_hd_id', $id)->first();
 
-    if (!$hd) {
-        abort(404, 'Chemistry record not found.');
+        if (!$hd) {
+            abort(404, 'Chemistry record not found.');
+        }
+
+        $dt = DB::table('chemistry_dt')
+            ->leftjoin('chemical_lists', 'chemistry_dt.code', '=', 'chemical_lists.chemical_lists_refcode')
+            ->leftjoin('chemical_groups', 'chemical_groups.chemical_groups_id', '=', 'chemical_lists.chemical_groups_id')
+            ->leftjoin('chemical_funtions', 'chemical_funtions.chemical_funtions_id', '=', 'chemical_lists.chemical_funtions_id')
+            ->where('chemistry_hd_id', $id)
+            ->where('flag', 1)->get();
+
+        $laplist = DB::table('TestHeaders')
+            ->where('FormulaNumber', $hd->chemistry_hd_name)
+            ->get();
+
+        $lap = DB::table('TestHeaders')
+            ->where('FormulaNumber', $hd->chemistry_hd_name)
+            ->latest('TestID')
+            ->first();
+
+        $types = DB::table('chemistry_type')->get();
+
+        $products = DB::table('chemical_lists')
+            ->leftjoin('chemical_groups', 'chemical_groups.chemical_groups_id', '=', 'chemical_lists.chemical_groups_id')
+            ->get();
+
+        $feeavg = DB::table('vw_formula_feeavg')
+            ->where('FormulaNumber', $hd->chemistry_hd_name)->get();
+
+        $datefeeavg = DB::table('vw_formula_datefeeavg')
+            ->where('FormulaNumber', $hd->chemistry_hd_name)->get();
+
+        // --- Move these queries up so they are globally available in the method ---
+        $recHd = ReceiveTestList::where('chemistry_hd_id', $id)->first();    
+        $caldimensions = null;
+        $calweight = null;
+        $cal = null;
+        if ($recHd) {
+            $caldimensions = CalibrationList::where('calibration_lists_id', $recHd->dimensions_id)->first();
+            $calweight = CalibrationList::where('calibration_lists_id', $recHd->weight_id)->first();
+            $cal = ReceiveTestSub::leftjoin('calibration_lists','receive_test_subs.calibration_lists_id','=','calibration_lists.calibration_lists_id')
+            ->where('receive_test_subs.receive_test_lists_id',$recHd->receive_test_lists_id)
+            ->where('receive_test_subs.receive_test_lists_flag',true)
+            ->get();
+        }
+
+        $emptyCollections = [
+            'test'     => collect(),
+            'roadlist' => collect(),
+            'n1labels' => collect(), 'n1u100' => collect(), 'n1c100' => collect(),
+            'n1u150'   => collect(), 'n1c150' => collect(), 'n1u200' => collect(),
+            'n1c200'   => collect(), 'n1u250' => collect(), 'n1c250' => collect(),
+            'n1u300'   => collect(), 'n1c300' => collect(), 'n1u350' => collect(),
+            'n1c350'   => collect(), 'n1ufall' => collect(), 'n1cfall' => collect(),
+            'n2labels' => collect(), 'n2u100' => collect(), 'n2c100' => collect(),
+            'n2u150'   => collect(), 'n2c150' => collect(), 'n2u200' => collect(),
+            'n2c200'   => collect(), 'n2u250' => collect(), 'n2c250' => collect(),
+            'n2u300'   => collect(), 'n2c300' => collect(), 'n2u350' => collect(),
+            'n2c350'   => collect(), 'n2ufall' => collect(), 'n2cfall' => collect(),
+            'n3labels' => collect(), 'n3u100' => collect(), 'n3c100' => collect(),
+            'n3u150'   => collect(), 'n3c150' => collect(), 'n3u200' => collect(),
+            'n3c200'   => collect(), 'n3u250' => collect(), 'n3c250' => collect(),
+            'n3u300'   => collect(), 'n3c300' => collect(), 'n3u350' => collect(),
+            'n3c350'   => collect(), 'n3ufall' => collect(), 'n3cfall' => collect(),
+            'labels'   => collect(),
+        ];
+        $loghd = DB::table('log_chemistry_hd')->where('log_chemistry_hd_id', $id)->get();
+        if (!$lap) {
+            return view('chemicalsetup.form-chemistrys-show', array_merge($emptyCollections, [
+                'hd'            => $hd,
+                'dt'            => $dt,
+                'lap'           => null,
+                'laplist'       => $laplist,
+                'feeavg'        => $feeavg,
+                'datefeeavg'    => $datefeeavg,
+                'types'         => $types,
+                'products'      => $products,
+                'labels1'       => collect(range(1, 500)),
+                'recHd'         => $recHd,         // Added here
+                'caldimensions' => $caldimensions, // Added here
+                'calweight'     => $calweight,     // Added here
+                'cal'           => $cal,
+                'loghd'         => $loghd
+            ]));
+        }
+
+        $test = DB::table('TestHeaders')
+            ->leftjoin('TestDetails', 'TestHeaders.TestID', '=', 'TestDetails.TestID')
+            ->where('TestHeaders.TestID', $lap->TestID)
+            ->get();
+
+        $testIds = DB::table('TestHeaders')
+            ->where('TestID', $lap->TestID)
+            ->pluck('TestID');
+
+        $roadlist = DB::table('TestRoads')
+            ->whereIn('TestID', $testIds)
+            ->get();
+
+        // ---- N1 ----
+        $frictions1 = DB::table('TestFrictions')
+            ->whereIn('TestID', $testIds)
+            ->where('SampleSet', 'N1')
+            ->orderBy('Listno')
+            ->get([
+                'Listno',
+                'Friction100_u', 'Friction100_c',
+                'Friction150_u', 'Friction150_c',
+                'Friction200_u', 'Friction200_c',
+                'Friction250_u', 'Friction250_c',
+                'Friction300_u', 'Friction300_c',
+                'Friction350_u', 'Friction350_c',
+                'FrictionFall_u', 'FrictionFall_c',
+            ]);
+
+        $n1labels  = $frictions1->pluck('Listno');
+        $n1u100    = $frictions1->where('Friction100_u',  '>', 0)->pluck('Friction100_u');
+        $n1c100    = $frictions1->where('Friction100_c',  '>', 0)->pluck('Friction100_c');
+        $n1u150    = $frictions1->where('Friction150_u',  '>', 0)->pluck('Friction150_u');
+        $n1c150    = $frictions1->where('Friction150_c',  '>', 0)->pluck('Friction150_c');
+        $n1u200    = $frictions1->where('Friction200_u',  '>', 0)->pluck('Friction200_u');
+        $n1c200    = $frictions1->where('Friction200_c',  '>', 0)->pluck('Friction200_c');
+        $n1u250    = $frictions1->where('Friction250_u',  '>', 0)->pluck('Friction250_u');
+        $n1c250    = $frictions1->where('Friction250_c',  '>', 0)->pluck('Friction250_c');
+        $n1u300    = $frictions1->where('Friction300_u',  '>', 0)->pluck('Friction300_u');
+        $n1c300    = $frictions1->where('Friction300_c',  '>', 0)->pluck('Friction300_c');
+        $n1u350    = $frictions1->where('Friction350_u',  '>', 0)->pluck('Friction350_u');
+        $n1c350    = $frictions1->where('Friction350_c',  '>', 0)->pluck('Friction350_c');
+        $n1ufall   = $frictions1->where('FrictionFall_u', '>', 0)->pluck('FrictionFall_u');
+        $n1cfall   = $frictions1->where('FrictionFall_c', '>', 0)->pluck('FrictionFall_c');
+
+        // ---- N2 ----
+        $frictions2 = DB::table('TestFrictions')
+            ->whereIn('TestID', $testIds)
+            ->where('SampleSet', 'N2')
+            ->orderBy('Listno')
+            ->get([
+                'Listno',
+                'Friction100_u', 'Friction100_c',
+                'Friction150_u', 'Friction150_c',
+                'Friction200_u', 'Friction200_c',
+                'Friction250_u', 'Friction250_c',
+                'Friction300_u', 'Friction300_c',
+                'Friction350_u', 'Friction350_c',
+                'FrictionFall_u', 'FrictionFall_c',
+            ]);
+
+        $n2labels  = $frictions2->pluck('Listno');
+        $n2u100    = $frictions2->where('Friction100_u',  '>', 0)->pluck('Friction100_u');
+        $n2c100    = $frictions2->where('Friction100_c',  '>', 0)->pluck('Friction100_c');
+        $n2u150    = $frictions2->where('Friction150_u',  '>', 0)->pluck('Friction150_u');
+        $n2c150    = $frictions2->where('Friction150_c',  '>', 0)->pluck('Friction150_c');
+        $n2u200    = $frictions2->where('Friction200_u',  '>', 0)->pluck('Friction200_u');
+        $n2c200    = $frictions2->where('Friction200_c',  '>', 0)->pluck('Friction200_c');
+        $n2u250    = $frictions2->where('Friction250_u',  '>', 0)->pluck('Friction250_u');
+        $n2c250    = $frictions2->where('Friction250_c',  '>', 0)->pluck('Friction250_c');
+        $n2u300    = $frictions2->where('Friction300_u',  '>', 0)->pluck('Friction300_u');
+        $n2c300    = $frictions2->where('Friction300_c',  '>', 0)->pluck('Friction300_c');
+        $n2u350    = $frictions2->where('Friction350_u',  '>', 0)->pluck('Friction350_u');
+        $n2c350    = $frictions2->where('Friction350_c',  '>', 0)->pluck('Friction350_c');
+        $n2ufall   = $frictions2->where('FrictionFall_u', '>', 0)->pluck('FrictionFall_u');
+        $n2cfall   = $frictions2->where('FrictionFall_c', '>', 0)->pluck('FrictionFall_c');
+
+        // ---- N3 ----
+        $frictions3 = DB::table('TestFrictions')
+            ->whereIn('TestID', $testIds)
+            ->where('SampleSet', 'N3')
+            ->orderBy('Listno')
+            ->get([
+                'Listno',
+                'Friction100_u', 'Friction100_c',
+                'Friction150_u', 'Friction150_c',
+                'Friction200_u', 'Friction200_c',
+                'Friction250_u', 'Friction250_c',
+                'Friction300_u', 'Friction300_c',
+                'Friction350_u', 'Friction350_c',
+                'FrictionFall_u', 'FrictionFall_c',
+            ]);
+
+        $n3labels  = $frictions3->pluck('Listno');
+        $n3u100    = $frictions3->where('Friction100_u',  '>', 0)->pluck('Friction100_u');
+        $n3c100    = $frictions3->where('Friction100_c',  '>', 0)->pluck('Friction100_c');
+        $n3u150    = $frictions3->where('Friction150_u',  '>', 0)->pluck('Friction150_u');
+        $n3c150    = $frictions3->where('Friction150_c',  '>', 0)->pluck('Friction150_c');
+        $n3u200    = $frictions3->where('Friction200_u',  '>', 0)->pluck('Friction200_u');
+        $n3c200    = $frictions3->where('Friction200_c',  '>', 0)->pluck('Friction200_c');
+        $n3u250    = $frictions3->where('Friction250_u',  '>', 0)->pluck('Friction250_u');
+        $n3c250    = $frictions3->where('Friction250_c',  '>', 0)->pluck('Friction250_c');
+        $n3u300    = $frictions3->where('Friction300_u',  '>', 0)->pluck('Friction300_u');
+        $n3c300    = $frictions3->where('Friction300_c',  '>', 0)->pluck('Friction300_c');
+        $n3u350    = $frictions3->where('Friction350_u',  '>', 0)->pluck('Friction350_u');
+        $n3c350    = $frictions3->where('Friction350_c',  '>', 0)->pluck('Friction350_c');
+        $n3ufall   = $frictions3->where('FrictionFall_u', '>', 0)->pluck('FrictionFall_u');
+        $n3cfall   = $frictions3->where('FrictionFall_c', '>', 0)->pluck('FrictionFall_c');
+
+        $labels = collect([$n1labels, $n2labels, $n3labels])
+            ->sortByDesc(fn($x) => $x->count())
+            ->first()
+            ->values();
+
+        $labels1 = collect(range(1, 500));
+       
+        return view('chemicalsetup.form-chemistrys-show', compact(
+            'hd', 'dt', 'lap', 'test', 'types', 'products', 'feeavg', 'datefeeavg',
+            'n1labels', 'n1u100', 'n1c100', 'n1u150', 'n1c150', 'n1u200', 'n1c200',
+            'n1u250', 'n1c250', 'n1u300', 'n1c300', 'n1u350', 'n1c350', 'n1ufall', 'n1cfall',
+            'n2labels', 'n2u100', 'n2c100', 'n2u150', 'n2c150', 'n2u200', 'n2c200',
+            'n2u250', 'n2c250', 'n2u300', 'n2c300', 'n2u350', 'n2c350', 'n2ufall', 'n2cfall',
+            'n3labels', 'n3u100', 'n3c100', 'n3u150', 'n3c150', 'n3u200', 'n3c200',
+            'n3u250', 'n3c250', 'n3u300', 'n3c300', 'n3u350', 'n3c350', 'n3ufall', 'n3cfall',
+            'labels', 'labels1', 'roadlist', 'laplist','recHd','caldimensions','calweight','cal','loghd'
+        ));
     }
-
-    $dt = DB::table('chemistry_dt')
-        ->leftjoin('chemical_lists', 'chemistry_dt.code', '=', 'chemical_lists.chemical_lists_refcode')
-        ->leftjoin('chemical_groups', 'chemical_groups.chemical_groups_id', '=', 'chemical_lists.chemical_groups_id')
-        ->leftjoin('chemical_funtions', 'chemical_funtions.chemical_funtions_id', '=', 'chemical_lists.chemical_funtions_id')
-        ->where('chemistry_hd_id', $id)
-        ->where('flag', 1)->get();
-
-    $laplist = DB::table('TestHeaders')
-        ->where('FormulaNumber', $hd->chemistry_hd_name)
-        ->get();
-
-    $lap = DB::table('TestHeaders')
-        ->where('FormulaNumber', $hd->chemistry_hd_name)
-        ->latest('TestID')
-        ->first();
-
-    $types = DB::table('chemistry_type')->get();
-
-    $products = DB::table('chemical_lists')
-        ->leftjoin('chemical_groups', 'chemical_groups.chemical_groups_id', '=', 'chemical_lists.chemical_groups_id')
-        ->get();
-
-    $feeavg = DB::table('vw_formula_feeavg')
-        ->where('FormulaNumber', $hd->chemistry_hd_name)->get();
-
-    $datefeeavg = DB::table('vw_formula_datefeeavg')
-        ->where('FormulaNumber', $hd->chemistry_hd_name)->get();
-
-    // --- Move these queries up so they are globally available in the method ---
-    $recHd = ReceiveTestList::where('chemistry_hd_id', $id)->first();    
-    $caldimensions = null;
-    $calweight = null;
-    $cal = null;
-    if ($recHd) {
-        $caldimensions = CalibrationList::where('calibration_lists_id', $recHd->dimensions_id)->first();
-        $calweight = CalibrationList::where('calibration_lists_id', $recHd->weight_id)->first();
-        $cal = ReceiveTestSub::leftjoin('calibration_lists','receive_test_subs.calibration_lists_id','=','calibration_lists.calibration_lists_id')
-        ->where('receive_test_subs.receive_test_lists_id',$recHd->receive_test_lists_id)
-        ->where('receive_test_subs.receive_test_lists_flag',true)
-        ->get();
-    }
-
-    $emptyCollections = [
-        'test'     => collect(),
-        'roadlist' => collect(),
-        'n1labels' => collect(), 'n1u100' => collect(), 'n1c100' => collect(),
-        'n1u150'   => collect(), 'n1c150' => collect(), 'n1u200' => collect(),
-        'n1c200'   => collect(), 'n1u250' => collect(), 'n1c250' => collect(),
-        'n1u300'   => collect(), 'n1c300' => collect(), 'n1u350' => collect(),
-        'n1c350'   => collect(), 'n1ufall' => collect(), 'n1cfall' => collect(),
-        'n2labels' => collect(), 'n2u100' => collect(), 'n2c100' => collect(),
-        'n2u150'   => collect(), 'n2c150' => collect(), 'n2u200' => collect(),
-        'n2c200'   => collect(), 'n2u250' => collect(), 'n2c250' => collect(),
-        'n2u300'   => collect(), 'n2c300' => collect(), 'n2u350' => collect(),
-        'n2c350'   => collect(), 'n2ufall' => collect(), 'n2cfall' => collect(),
-        'n3labels' => collect(), 'n3u100' => collect(), 'n3c100' => collect(),
-        'n3u150'   => collect(), 'n3c150' => collect(), 'n3u200' => collect(),
-        'n3c200'   => collect(), 'n3u250' => collect(), 'n3c250' => collect(),
-        'n3u300'   => collect(), 'n3c300' => collect(), 'n3u350' => collect(),
-        'n3c350'   => collect(), 'n3ufall' => collect(), 'n3cfall' => collect(),
-        'labels'   => collect(),
-    ];
-
-    if (!$lap) {
-        return view('chemicalsetup.form-chemistrys-show', array_merge($emptyCollections, [
-            'hd'            => $hd,
-            'dt'            => $dt,
-            'lap'           => null,
-            'laplist'       => $laplist,
-            'feeavg'        => $feeavg,
-            'datefeeavg'    => $datefeeavg,
-            'types'         => $types,
-            'products'      => $products,
-            'labels1'       => collect(range(1, 500)),
-            'recHd'         => $recHd,         // Added here
-            'caldimensions' => $caldimensions, // Added here
-            'calweight'     => $calweight,     // Added here
-            'cal'           => $cal,
-        ]));
-    }
-
-    $test = DB::table('TestHeaders')
-        ->leftjoin('TestDetails', 'TestHeaders.TestID', '=', 'TestDetails.TestID')
-        ->where('TestHeaders.TestID', $lap->TestID)
-        ->get();
-
-    $testIds = DB::table('TestHeaders')
-        ->where('TestID', $lap->TestID)
-        ->pluck('TestID');
-
-    $roadlist = DB::table('TestRoads')
-        ->whereIn('TestID', $testIds)
-        ->get();
-
-    // ---- N1 ----
-    $frictions1 = DB::table('TestFrictions')
-        ->whereIn('TestID', $testIds)
-        ->where('SampleSet', 'N1')
-        ->orderBy('Listno')
-        ->get([
-            'Listno',
-            'Friction100_u', 'Friction100_c',
-            'Friction150_u', 'Friction150_c',
-            'Friction200_u', 'Friction200_c',
-            'Friction250_u', 'Friction250_c',
-            'Friction300_u', 'Friction300_c',
-            'Friction350_u', 'Friction350_c',
-            'FrictionFall_u', 'FrictionFall_c',
-        ]);
-
-    $n1labels  = $frictions1->pluck('Listno');
-    $n1u100    = $frictions1->where('Friction100_u',  '>', 0)->pluck('Friction100_u');
-    $n1c100    = $frictions1->where('Friction100_c',  '>', 0)->pluck('Friction100_c');
-    $n1u150    = $frictions1->where('Friction150_u',  '>', 0)->pluck('Friction150_u');
-    $n1c150    = $frictions1->where('Friction150_c',  '>', 0)->pluck('Friction150_c');
-    $n1u200    = $frictions1->where('Friction200_u',  '>', 0)->pluck('Friction200_u');
-    $n1c200    = $frictions1->where('Friction200_c',  '>', 0)->pluck('Friction200_c');
-    $n1u250    = $frictions1->where('Friction250_u',  '>', 0)->pluck('Friction250_u');
-    $n1c250    = $frictions1->where('Friction250_c',  '>', 0)->pluck('Friction250_c');
-    $n1u300    = $frictions1->where('Friction300_u',  '>', 0)->pluck('Friction300_u');
-    $n1c300    = $frictions1->where('Friction300_c',  '>', 0)->pluck('Friction300_c');
-    $n1u350    = $frictions1->where('Friction350_u',  '>', 0)->pluck('Friction350_u');
-    $n1c350    = $frictions1->where('Friction350_c',  '>', 0)->pluck('Friction350_c');
-    $n1ufall   = $frictions1->where('FrictionFall_u', '>', 0)->pluck('FrictionFall_u');
-    $n1cfall   = $frictions1->where('FrictionFall_c', '>', 0)->pluck('FrictionFall_c');
-
-    // ---- N2 ----
-    $frictions2 = DB::table('TestFrictions')
-        ->whereIn('TestID', $testIds)
-        ->where('SampleSet', 'N2')
-        ->orderBy('Listno')
-        ->get([
-            'Listno',
-            'Friction100_u', 'Friction100_c',
-            'Friction150_u', 'Friction150_c',
-            'Friction200_u', 'Friction200_c',
-            'Friction250_u', 'Friction250_c',
-            'Friction300_u', 'Friction300_c',
-            'Friction350_u', 'Friction350_c',
-            'FrictionFall_u', 'FrictionFall_c',
-        ]);
-
-    $n2labels  = $frictions2->pluck('Listno');
-    $n2u100    = $frictions2->where('Friction100_u',  '>', 0)->pluck('Friction100_u');
-    $n2c100    = $frictions2->where('Friction100_c',  '>', 0)->pluck('Friction100_c');
-    $n2u150    = $frictions2->where('Friction150_u',  '>', 0)->pluck('Friction150_u');
-    $n2c150    = $frictions2->where('Friction150_c',  '>', 0)->pluck('Friction150_c');
-    $n2u200    = $frictions2->where('Friction200_u',  '>', 0)->pluck('Friction200_u');
-    $n2c200    = $frictions2->where('Friction200_c',  '>', 0)->pluck('Friction200_c');
-    $n2u250    = $frictions2->where('Friction250_u',  '>', 0)->pluck('Friction250_u');
-    $n2c250    = $frictions2->where('Friction250_c',  '>', 0)->pluck('Friction250_c');
-    $n2u300    = $frictions2->where('Friction300_u',  '>', 0)->pluck('Friction300_u');
-    $n2c300    = $frictions2->where('Friction300_c',  '>', 0)->pluck('Friction300_c');
-    $n2u350    = $frictions2->where('Friction350_u',  '>', 0)->pluck('Friction350_u');
-    $n2c350    = $frictions2->where('Friction350_c',  '>', 0)->pluck('Friction350_c');
-    $n2ufall   = $frictions2->where('FrictionFall_u', '>', 0)->pluck('FrictionFall_u');
-    $n2cfall   = $frictions2->where('FrictionFall_c', '>', 0)->pluck('FrictionFall_c');
-
-    // ---- N3 ----
-    $frictions3 = DB::table('TestFrictions')
-        ->whereIn('TestID', $testIds)
-        ->where('SampleSet', 'N3')
-        ->orderBy('Listno')
-        ->get([
-            'Listno',
-            'Friction100_u', 'Friction100_c',
-            'Friction150_u', 'Friction150_c',
-            'Friction200_u', 'Friction200_c',
-            'Friction250_u', 'Friction250_c',
-            'Friction300_u', 'Friction300_c',
-            'Friction350_u', 'Friction350_c',
-            'FrictionFall_u', 'FrictionFall_c',
-        ]);
-
-    $n3labels  = $frictions3->pluck('Listno');
-    $n3u100    = $frictions3->where('Friction100_u',  '>', 0)->pluck('Friction100_u');
-    $n3c100    = $frictions3->where('Friction100_c',  '>', 0)->pluck('Friction100_c');
-    $n3u150    = $frictions3->where('Friction150_u',  '>', 0)->pluck('Friction150_u');
-    $n3c150    = $frictions3->where('Friction150_c',  '>', 0)->pluck('Friction150_c');
-    $n3u200    = $frictions3->where('Friction200_u',  '>', 0)->pluck('Friction200_u');
-    $n3c200    = $frictions3->where('Friction200_c',  '>', 0)->pluck('Friction200_c');
-    $n3u250    = $frictions3->where('Friction250_u',  '>', 0)->pluck('Friction250_u');
-    $n3c250    = $frictions3->where('Friction250_c',  '>', 0)->pluck('Friction250_c');
-    $n3u300    = $frictions3->where('Friction300_u',  '>', 0)->pluck('Friction300_u');
-    $n3c300    = $frictions3->where('Friction300_c',  '>', 0)->pluck('Friction300_c');
-    $n3u350    = $frictions3->where('Friction350_u',  '>', 0)->pluck('Friction350_u');
-    $n3c350    = $frictions3->where('Friction350_c',  '>', 0)->pluck('Friction350_c');
-    $n3ufall   = $frictions3->where('FrictionFall_u', '>', 0)->pluck('FrictionFall_u');
-    $n3cfall   = $frictions3->where('FrictionFall_c', '>', 0)->pluck('FrictionFall_c');
-
-    $labels = collect([$n1labels, $n2labels, $n3labels])
-        ->sortByDesc(fn($x) => $x->count())
-        ->first()
-        ->values();
-
-    $labels1 = collect(range(1, 500));
-    
-    return view('chemicalsetup.form-chemistrys-show', compact(
-        'hd', 'dt', 'lap', 'test', 'types', 'products', 'feeavg', 'datefeeavg',
-        'n1labels', 'n1u100', 'n1c100', 'n1u150', 'n1c150', 'n1u200', 'n1c200',
-        'n1u250', 'n1c250', 'n1u300', 'n1c300', 'n1u350', 'n1c350', 'n1ufall', 'n1cfall',
-        'n2labels', 'n2u100', 'n2c100', 'n2u150', 'n2c150', 'n2u200', 'n2c200',
-        'n2u250', 'n2c250', 'n2u300', 'n2c300', 'n2u350', 'n2c350', 'n2ufall', 'n2cfall',
-        'n3labels', 'n3u100', 'n3c100', 'n3u150', 'n3c150', 'n3u200', 'n3c200',
-        'n3u250', 'n3c250', 'n3u300', 'n3c300', 'n3u350', 'n3c350', 'n3ufall', 'n3cfall',
-        'labels', 'labels1', 'roadlist', 'laplist','recHd','caldimensions','calweight','cal'
-    ));
-}
     /**
      * Show the form for editing the specified resource.
      *
@@ -394,6 +435,11 @@ class ChemistryController extends Controller
     {
         try{
             DB::beginTransaction();
+            $cklog = DB::table('log_chemistry_hd')->where('log_chemistry_hd_id',$id)->first();
+            $logv = 1;
+            if($cklog){
+                $logv = $cklog->log_version +1;
+            }
             if(Auth::user()->username == "A653615" || Auth::user()->username == "A551528" || Auth::user()->username == "adviser"){
                 $data = [
                     'chemistry_hd_calculate' => $request->chemistry_hd_calculate,
@@ -410,6 +456,29 @@ class ChemistryController extends Controller
                     'total_cost' => $request->total_cost,
                     'avg_cost' => $request->avg_cost
                 ];
+                $logdata = [
+                    'log_chemistry_hd_id' => $id,
+                    'log_ms_formule_name' => $cklog->log_ms_formule_name,
+                    'log_chemistry_hd_mix' => $cklog->log_chemistry_hd_mix,
+                    'log_chemistry_hd_qty'=> $cklog->log_chemistry_hd_qty,
+                    'log_chemistry_hd_note' => $request->chemistry_hd_note,
+                    'log_chemistry_hd_save'=> Auth::user()->name,
+                    'log_chemistry_hd_flag'=> true,
+                    'log_update_at' => Carbon::now(),
+                    'log_chemistry_hd_type'=> $request->chemistry_hd_type,
+                    'log_chemistry_hd_docuno' => $cklog->log_chemistry_hd_docuno,
+                    'log_chemistry_hd_name'=> $cklog->log_chemistry_hd_name,
+                    'log_chemistry_hd_calculate'=> $request->chemistry_hd_calculate,
+                    'log_total_density' => $request->total_density,
+                    'log_total_adjust'=> $request->total_adjust,
+                    'log_total_volume' => $request->total_volume,
+                    'log_total_wper'=> $request->total_wper,
+                    'log_total_weght' => $request->total_weght,
+                    'log_total_cost' => $request->total_cost,
+                    'log_avg_cost'  => $request->avg_cost,
+                    'log_version' => $logv,
+                ];
+                DB::table('log_chemistry_hd')->insert($logdata);
                 if ($request->hasFile('chemistry_hd_file1')) { 
                     $data['chemistry_hd_file1'] = $request->file('chemistry_hd_file1')->storeAs('images/Chemical_File', "IMG_" . carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('chemistry_hd_file1')->extension()); 
                 } 
@@ -425,6 +494,7 @@ class ChemistryController extends Controller
                 DB::table('chemistry_hd')
                     ->where('chemistry_hd_id',$id)
                     ->update($data);
+                
             }else{
                 $data = [
                     'chemistry_hd_calculate' => $request->chemistry_hd_calculate,
@@ -439,6 +509,29 @@ class ChemistryController extends Controller
                         'total_wper' => $request->total_wper,
                         'total_weght' => $request->total_weght,
                 ];
+                 $logdata = [
+                    'log_chemistry_hd_id' => $id,
+                    'log_ms_formule_name' => $cklog->log_ms_formule_name,
+                    'log_chemistry_hd_mix' => $cklog->log_chemistry_hd_mix,
+                    'log_chemistry_hd_qty'=> $cklog->log_chemistry_hd_qty,
+                    'log_chemistry_hd_note' => $request->chemistry_hd_note,
+                    'log_chemistry_hd_save'=> Auth::user()->name,
+                    'log_chemistry_hd_flag'=> true,
+                    'log_update_at' => Carbon::now(),
+                    'log_chemistry_hd_type'=> $request->chemistry_hd_type,
+                    'log_chemistry_hd_docuno' => $cklog->log_chemistry_hd_docuno,
+                    'log_chemistry_hd_name'=> $cklog->log_chemistry_hd_name,
+                    'log_chemistry_hd_calculate'=> $request->chemistry_hd_calculate,
+                    'log_total_density' => $request->total_density,
+                    'log_total_adjust'=> $request->total_adjust,
+                    'log_total_volume' => $request->total_volume,
+                    'log_total_wper'=> $request->total_wper,
+                    'log_total_weght' => $request->total_weght,
+                    'log_total_cost' => 0,
+                    'log_avg_cost'  => 0,
+                    'log_version' => $logv,
+                ];
+                DB::table('log_chemistry_hd')->insert($logdata);
                 if ($request->hasFile('chemistry_hd_file1')) { 
                     $data['chemistry_hd_file1'] = $request->file('chemistry_hd_file1')->storeAs('images/Chemical_File', "IMG_" . carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('chemistry_hd_file1')->extension()); 
                 } 
@@ -471,6 +564,23 @@ class ChemistryController extends Controller
                     'weghttotal' => $request->weghttotal[$key],
                     'flag' => true,
                     'update_at' => Carbon::now(),
+                ]);
+                DB::table('log_chemistry_dt')->insert([
+                        'log_chemistry_dt_id'=> $value,
+                        'log_chemistry_hd_id'=> $id,
+                        'log_no' =>  $request->no[$key],
+                        'log_code'=> $pd->chemical_lists_refcode,
+                        'log_material'=> $pd->chemical_lists_name,
+                        'log_grade' => $pd->chemical_lists_grade,
+                        'log_density'=> $request->density[$key],
+                        'log_adjust' => $request->adjust[$key],
+                        'log_weght' => $request->weght[$key],
+                        'log_weghtper'=> $request->weghtper[$key],
+                        'log_weghttotal'=> $request->weghttotal[$key],
+                        'log_flag'=> true,
+                        'log_save'=> Auth::user()->name,
+                        'log_update_at'=> Carbon::now(),
+                        'log_version' => $logv,
                 ]);
             }
             DB::commit();
@@ -562,5 +672,26 @@ class ChemistryController extends Controller
                 'message' => $e->getMessage()
             ]);
         }
+    }
+    public function printlog($id)
+    {
+        $hd = DB::table('log_chemistry_hd')
+            ->where('id',$id)
+            ->first();
+
+        $dt = DB::table('log_chemistry_dt')
+        ->leftJoin('chemical_lists','log_chemistry_dt.log_code','=','chemical_lists.chemical_lists_refcode')
+        ->leftJoin('chemical_groups','chemical_groups.chemical_groups_id','=','chemical_lists.chemical_groups_id')
+        ->where('log_chemistry_dt.log_chemistry_hd_id',$hd->log_chemistry_hd_id)
+        ->where('log_chemistry_dt.log_version',$hd->log_version)
+        ->where('log_chemistry_dt.log_flag',1)
+        ->orderBy('log_chemistry_dt.log_no')
+        ->select(
+            'log_chemistry_dt.*',
+            'chemical_groups.chemical_groups_name as group_name',
+            'chemical_groups.chemical_groups_color as group_color'
+        )
+        ->get();       
+        return view('chemicalsetup.form-chemistrys-print-log', compact('hd','dt'));
     }
 }
