@@ -440,6 +440,18 @@ class ChemistryController extends Controller
             if($cklog){
                 $logv = $cklog->log_version +1;
             }
+            else{
+                $cklog = DB::table('chemistry_hd')
+                ->where('chemistry_hd_id',$id)
+                ->select(
+                    'ms_formule_name as log_ms_formule_name',
+                    'chemistry_hd_mix as log_chemistry_hd_mix',
+                    'chemistry_hd_qty as log_chemistry_hd_qty',
+                    'chemistry_hd_docuno as log_chemistry_hd_docuno',
+                    'chemistry_hd_name as log_chemistry_hd_name'
+                )
+                ->first();
+            }
             if(Auth::user()->username == "A653615" || Auth::user()->username == "A551528" || Auth::user()->username == "adviser"){
                 $data = [
                     'chemistry_hd_calculate' => $request->chemistry_hd_calculate,
