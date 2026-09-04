@@ -26,7 +26,7 @@ class WhProductListController extends Controller
      */
     public function index()
     {
-        $hd = WhProductList::get();
+        $hd = WhProductList::where('wh_product_lists_flag',true)->get();
         return view('productsetup.form-productlist-list', compact('hd'));
     }
 

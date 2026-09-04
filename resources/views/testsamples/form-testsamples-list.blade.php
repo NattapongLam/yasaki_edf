@@ -17,7 +17,8 @@
 <div class="card">
     <div class="card-body">
         <div class="row">
-            <div class="col-12 col-md-6"><h3 class="card-title">ชิ้นงานหลังทดสอบ</h3></div>           
+            <div class="col-12 col-md-6"><h3 class="card-title">แผนการทดสอบ (Plan Coefficient of Friction Test)</h3></div>   
+            <div class="col-12 col-md-6"><h3 class="card-title" style="float: right">YSK5-FM-LAB-09 : Rev.00 : 01/08/2569</h3></div>        
         </div>       
         <table id="tb_job" class="table table-bordered dt-responsive nowrap w-100 text-center">
             <thead>
