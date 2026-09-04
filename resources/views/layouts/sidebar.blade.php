@@ -126,9 +126,9 @@
                             <a href="javascript: void(0);" class="has-arrow" key="t-vertical">ทดสอบ</a>
                             <ul class="sub-menu" aria-expanded="true">
                                 <li><a href="{{route('requestorders.index')}}" key="t-default">รับคำร้องขอใช้บริการ</a></li> 
-                                <li><a href="{{route('receive-test.index')}}" key="t-default">เปิดงาน</a></li> 
+                                <li><a href="{{route('receive-test.index')}}" key="t-default">เปิดงานทดสอบ</a></li> 
                                 <li><a href="{{route('receive-test.create')}}" key="t-default">แผนการทดสอบ</a></li> 
-                                <li><a href="{{ url('/receive-result') }}" key="t-default">รายการ</a></li>
+                                <li><a href="{{ url('/receive-result') }}" key="t-default">รายการการทดสอบ</a></li>
                             </ul>
                         </li>
                         <li>
