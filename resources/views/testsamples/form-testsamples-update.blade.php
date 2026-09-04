@@ -17,7 +17,8 @@
 <div class="card">
     <div class="card-body">
         <div class="row">
-            <div class="col-12 col-md-6"><h3 class="card-title">คำร้องขอใช้บริการ (ISO/IEC 17025)</h3></div>
+           <div class="col-12 col-md-6"><h3 class="card-title">รายละเอียดการทดสอบ ( Coefficient of Friction Test Form )</h3></div>
+            <div class="col-12 col-md-6"><h3 style="float: right"class="card-title">YSK5-FM-LAB-08 : Rev.00 : 01/08/2569</h3></div>
         </div>
         <div class="row mt-3">
             <div class="col-3">
