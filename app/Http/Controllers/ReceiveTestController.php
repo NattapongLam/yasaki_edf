@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ArCustomerList;
 use App\Models\ArRequestorderDt;
 use App\Models\ArRequestorderHd;
 use App\Models\CalibrationList;
+use App\Models\OtherDistrict;
+use App\Models\OtherProvince;
+use App\Models\OtherSubDistrict;
 use App\Models\ReceiveTestList;
 use App\Models\ReceiveTestSub;
 use Carbon\Carbon;
@@ -142,7 +146,11 @@ class ReceiveTestController extends Controller
         $cal = CalibrationList::get();
         $pd = ReceiveTestList::where('ar_requestorder_hds_id',$id)->first();
         $test = DB::table('TestHeaders')->where('Lot',$hd->ar_requestorder_hds_docuno)->first();
-        return view('testsamples.form-testsamples-edit', compact('hd','dt','bom','cal','pd','test'));
+        $cust = ArCustomerList::where('ar_customer_lists_name1',$hd->ar_requestorder_hds_customer)->first();
+        $prov = OtherProvince::find($cust->other_provinces_id);
+        $dist = OtherDistrict::find($cust->other_districts_id);
+        $subd = OtherSubDistrict::find($cust->other_sub_districts_id);    
+        return view('testsamples.form-testsamples-edit', compact('hd','dt','bom','cal','pd','test','cust','prov','dist','subd'));
     }
 
     /**
@@ -156,8 +164,12 @@ class ReceiveTestController extends Controller
         $hd = ArRequestorderHd::find($id);
         $dt = ArRequestorderDt::where('ar_requestorder_hds_id',$id)->where('ar_requestorder_dts_flag',true)->get();
         $bom = DB::table('chemistry_hd')->where('chemistry_hd_flag',true)->get();
-        $cal = CalibrationList::get();      
-        return view('testsamples.form-receivetest-edit', compact('hd','dt','bom','cal'));
+        $cal = CalibrationList::get();  
+        $cust = ArCustomerList::where('ar_customer_lists_name1',$hd->ar_requestorder_hds_customer)->first();
+        $prov = OtherProvince::find($cust->other_provinces_id);
+        $dist = OtherDistrict::find($cust->other_districts_id);
+        $subd = OtherSubDistrict::find($cust->other_sub_districts_id);    
+        return view('testsamples.form-receivetest-edit', compact('hd','dt','bom','cal','cust','prov','dist','subd'));
     }
 
     /**
@@ -355,7 +367,11 @@ class ReceiveTestController extends Controller
         $test = DB::table('TestHeaders')->where('Lot',$hd->ar_requestorder_hds_docuno)->first();
         $sub = ReceiveTestSub::leftjoin('calibration_lists','receive_test_subs.calibration_lists_id','=','calibration_lists.calibration_lists_id')
         ->where('receive_test_subs.receive_test_lists_id',$pd->receive_test_lists_id)->get();
-        return view('testsamples.form-testsamples-update', compact('hd','dt','bom','cal','pd','test','sub'));
+        $cust = ArCustomerList::where('ar_customer_lists_name1',$hd->ar_requestorder_hds_customer)->first();
+        $prov = OtherProvince::find($cust->other_provinces_id);
+        $dist = OtherDistrict::find($cust->other_districts_id);
+        $subd = OtherSubDistrict::find($cust->other_sub_districts_id);    
+        return view('testsamples.form-testsamples-update', compact('hd','dt','bom','cal','pd','test','sub','cust','prov','dist','subd'));
     }
     public function updateReceiveTest(Request $request, $id)
 {

@@ -53,6 +53,16 @@
             </div>
         </div>
         <div class="row mt-3">
+            <div class="form-group">
+                    <label for="ar_requestorder_hds_address" class="col-form-label">ที่อยู่</label>
+                     <input type="text" class="form-control" 
+                            name="ar_requestorder_hds_address" 
+                            id="ar_requestorder_hds_address"
+                            value="{{$cust->ar_customer_lists_address1}} {{$subd->other_sub_districts_name1}} {{$dist->other_districts_name1}} {{$prov->other_provinces_name1}} {{$subd->other_sub_districts_zipcode}}"
+                            readonly>
+                </div>
+        </div>
+        <div class="row mt-3">
             <div class="col-3">
                 <div class="form-group">
                     <label for="ar_requestorder_hds_trademark" class="col-form-label">เครื่องหมายการค้า</label>
