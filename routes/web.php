@@ -105,6 +105,7 @@ Route::get('/analyze-formulas' , [App\Http\Controllers\ReportFormulaController::
 Route::post('/get-formula-detail', [App\Http\Controllers\ReportFormulaController::class, 'getFormulaDetail'])->name('report.get.formula.detail');
 Route::resource('/receive-test' , App\Http\Controllers\ReceiveTestController::class);
 Route::get('/receive-result' , [App\Http\Controllers\ReceiveTestController::class , 'ReceiveResult']);
+Route::get('/receive-chart/{testId}', [App\Http\Controllers\ReceiveTestController::class, 'showChart'])->name('report.xbar');
 Route::post('/confirmDelReceiveTest' , [App\Http\Controllers\ReceiveTestController::class , 'confirmDelReceiveTest']);
 Route::get('/receive-result/detail/{id}/edit', [App\Http\Controllers\ReceiveTestController::class, 'editDetail'])->name('receive-result.detail.edit');
 Route::put('/receive-test/update-result/{id}', [App\Http\Controllers\ReceiveTestController::class, 'updateReceiveTest'])->name('receive-test.update-result');

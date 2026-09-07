@@ -23,14 +23,10 @@
             <thead>
                 <tr>
                     <th>สถานะ</th>
-                    <th>วันที่</th>
-                    <th>เลขที่</th>
+                    <th>เลขที่อ้างอิง</th>
                     <th>ลูกค้า</th>
-                    <th>ติดต่อ</th>
-                    <th>หมายเหตุ</th>
                     <th>ผู้อนุมัติ</th>
                     <th>ผู้รับชิ้นงาน</th>
-                    <th>รูปชิ้นงาน</th>
                     <th>อัพเดท</th>
                     <th>พิมพ์รายงาน</th>
                     <th>เอกสารส่งมอบ</th>
@@ -51,19 +47,14 @@
                             @endif
                         </td>
                         <td>
-                            {{$item->ar_requestorder_hds_date}}
+                            {{$item->ar_requestorder_hds_docuno}}<br>
+                            วันที่ : {{$item->ar_requestorder_hds_date}}
                         </td>
                         <td>
-                            {{$item->ar_requestorder_hds_docuno}}
-                        </td>
-                        <td>
-                            {{$item->ar_requestorder_hds_customer}}
-                        </td>
-                        <td>
-                            {{$item->ar_requestorder_hds_contact}}
-                        </td>
-                        <td>
-                            {{$item->ar_requestorder_hd_remark}}
+                            {{$item->ar_requestorder_hds_customer}}<br>
+                            ผู้ติดตต่อ : {{$item->ar_requestorder_hds_contact}}<br>
+                            หมายเหตุ : {{$item->ar_requestorder_hd_remark}}
+
                         </td>
                         <td>
                            {{$item->approved_at}}<br>
@@ -75,12 +66,6 @@
                            มิติชิ้นงานวัดจริง: {{$item->receive_test_lists_dimensions}}<br>
                            น้ำหนักชิ้นงานชั่งจริง: {{$item->receive_test_lists_weight}}<br>
                            สูตรเคมี: {{$item->ms_formule_name}} ({{$item->chemistry_hd_name}})
-                        </td>
-                        <td>
-                            <img src="{{asset($item->receive_test_lists_file1)}}" class="img-thumbnail" width="25%">
-                            <img src="{{asset($item->receive_test_lists_file2)}}" class="img-thumbnail" width="25%">
-                            <img src="{{asset($item->result_test_lists_file1)}}" class="img-thumbnail" width="25%">
-                            <img src="{{asset($item->result_test_lists_file2)}}" class="img-thumbnail" width="25%">
                         </td>
                         <td>
                             <a href="{{ route('receive-result.detail.edit', $item->ar_requestorder_hds_id) }}" class="btn btn-sm btn-info">
