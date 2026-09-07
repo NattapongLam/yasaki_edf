@@ -26,7 +26,50 @@ class WhProductListController extends Controller
      */
     public function index()
     {
-        $hd = WhProductList::where('wh_product_lists_flag',true)->get();
+       $hd = WhProductList::where('wh_product_lists_flag', true)
+        // ใช้ Subquery ดึงข้อมูลล่าสุดโดยไม่ทำให้ตารางหลักแตก (ไม่เกิดข้อมูลเบิ้ล)
+        ->addSelect([
+            'ap_vendor_lists_name' => DB::table('ap_purchase_receive_hds')
+                ->join('ap_purchase_receive_dts', 'ap_purchase_receive_hds.ap_purchase_receive_hds_id', '=', 'ap_purchase_receive_dts.ap_purchase_receive_hds_id')
+                ->whereColumn('ap_purchase_receive_dts.wh_product_lists_id', 'wh_product_lists.wh_product_lists_id')
+                ->latest('ap_purchase_receive_hds.ap_purchase_receive_hds_id')
+                ->select('ap_vendor_lists_name')
+                ->limit(1),
+
+            'ap_purchase_receive_hds_date' => DB::table('ap_purchase_receive_hds')
+                ->join('ap_purchase_receive_dts', 'ap_purchase_receive_hds.ap_purchase_receive_hds_id', '=', 'ap_purchase_receive_dts.ap_purchase_receive_hds_id')
+                ->whereColumn('ap_purchase_receive_dts.wh_product_lists_id', 'wh_product_lists.wh_product_lists_id')
+                ->latest('ap_purchase_receive_hds.ap_purchase_receive_hds_id')
+                ->select('ap_purchase_receive_hds_date')
+                ->limit(1),
+
+            'ap_purchase_receive_hds_docuno' => DB::table('ap_purchase_receive_hds')
+                ->join('ap_purchase_receive_dts', 'ap_purchase_receive_hds.ap_purchase_receive_hds_id', '=', 'ap_purchase_receive_dts.ap_purchase_receive_hds_id')
+                ->whereColumn('ap_purchase_receive_dts.wh_product_lists_id', 'wh_product_lists.wh_product_lists_id')
+                ->latest('ap_purchase_receive_hds.ap_purchase_receive_hds_id')
+                ->select('ap_purchase_receive_hds_docuno')
+                ->limit(1),
+            'ap_purchase_receive_dts_qty' => DB::table('ap_purchase_receive_hds')
+                ->join('ap_purchase_receive_dts', 'ap_purchase_receive_hds.ap_purchase_receive_hds_id', '=', 'ap_purchase_receive_dts.ap_purchase_receive_hds_id')
+                ->whereColumn('ap_purchase_receive_dts.wh_product_lists_id', 'wh_product_lists.wh_product_lists_id')
+                ->latest('ap_purchase_receive_hds.ap_purchase_receive_hds_id')
+                ->select('ap_purchase_receive_dts_qty')
+                ->limit(1),
+            'person_at' => DB::table('ap_purchase_receive_hds')
+                ->join('ap_purchase_receive_dts', 'ap_purchase_receive_hds.ap_purchase_receive_hds_id', '=', 'ap_purchase_receive_dts.ap_purchase_receive_hds_id')
+                ->whereColumn('ap_purchase_receive_dts.wh_product_lists_id', 'wh_product_lists.wh_product_lists_id')
+                ->latest('ap_purchase_receive_hds.ap_purchase_receive_hds_id')
+                ->select('ap_purchase_receive_hds.person_at')
+                ->limit(1),
+            'ap_purchase_receive_dts_expiradate' => DB::table('ap_purchase_receive_hds')
+                ->join('ap_purchase_receive_dts', 'ap_purchase_receive_hds.ap_purchase_receive_hds_id', '=', 'ap_purchase_receive_dts.ap_purchase_receive_hds_id')
+                ->whereColumn('ap_purchase_receive_dts.wh_product_lists_id', 'wh_product_lists.wh_product_lists_id')
+                ->latest('ap_purchase_receive_hds.ap_purchase_receive_hds_id')
+                ->select('ap_purchase_receive_dts_expiradate')
+                ->limit(1),
+        ])
+        ->get();
+
         return view('productsetup.form-productlist-list', compact('hd'));
     }
 

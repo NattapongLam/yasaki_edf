@@ -117,6 +117,7 @@ class ApPurchaseReceiveListController extends Controller
                     'person_at' => Auth::user()->name,
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now(),
+                    'ap_purchase_receive_dts_expiradate' => $request->ap_purchase_receive_dts_expiradate[$key],
                 ]);
                 DB::table('stc_stockcard')->insert([
                     'stc_stockcard_date' => $request->ap_purchase_receive_hds_date,

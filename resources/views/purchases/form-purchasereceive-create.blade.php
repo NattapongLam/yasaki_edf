@@ -89,6 +89,7 @@
                         <th style="width: 10%">ราคาต่อหน่วย</th>
                         <th style="width: 8%">ส่วนลดต่อหน่วย</th>
                         <th style="width: 8%">จำนวนรับ</th>
+                        <th style="width: 8%">วันหมดอายุ</th>
                         <th style="width: 10%">ยอดรวม</th>
                         <th style="width: 20%">หมายเหตุ</th>
                         <th style="width: 5%"></th>
@@ -242,6 +243,9 @@ $('#ap_purchaseorder_hds_id').change(function () {
                         </td>
                         <td>
                             <input class="form-control qty-input" name="ap_purchase_receive_dts_qty[]" id="ap_purchase_receive_dts_qty">
+                        </td>
+                         <td>
+                            <input class="form-control qty-input" type="date" name="ap_purchase_receive_dts_expiradate[]" id="ap_purchase_receive_dts_expiradate">
                         </td>
                         <td>
                             <input class="form-control amount-input" name="ap_purchase_receive_dts_amount[]" id="ap_purchase_receive_dts_amount" readonly>

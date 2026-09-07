@@ -24,11 +24,11 @@
             <thead>
                 <tr>
                     <th>สถานะ</th>
-                    <th>รหัส</th>
-                    <th>ชื่อ</th>
-                    <th>ประเภท</th>
-                    <th>กลุ่ม</th>
-                    <th>หน่วยนับ</th>
+                    <th>สินค้า</th>
+                    <th>วันที่รับล่าสุด</th>
+                    <th>ผู้ขาย/ผู้ผลิต</th>
+                    <th>Lot No.</th>
+                    <th>จำนวน</th>
                     <th></th>
                 </tr>
             </thead>
@@ -42,11 +42,22 @@
                                 <span class="bg-danger">ยกเลิก</span>
                             @endif
                         </td>
-                        <td>{{$item->wh_product_lists_code}}</td>
-                        <td>{{$item->wh_product_lists_name1}}</td>
-                        <td>{{$item->Types->wh_product_types_name}}</td>
-                        <td>{{$item->Groups->wh_product_groups_name}}</td>
-                        <td>{{$item->Units->wh_product_units_name}}</td>
+                        <td>{{$item->wh_product_lists_name1}} ({{$item->wh_product_lists_code}})</td>
+                        <td>
+                            @if ($item->ap_purchase_receive_hds_date)
+                                {{$item->ap_purchase_receive_hds_date}}<br>
+                                ผู้รับ/ผู้อนุมัติ : {{$item->person_at}}
+                            @endif
+                            
+                        </td>
+                        <td>{{$item->ap_vendor_lists_name}}</td>
+                        <td>{{$item->ap_purchase_receive_hds_docuno}}</td>
+                        <td>
+                            @if ($item->ap_purchase_receive_dts_qty)
+                            {{$item->ap_purchase_receive_dts_qty}} {{$item->Units->wh_product_units_name}}<br>
+                            วันหมดอายุ : {{$item->ap_purchase_receive_dts_expiradate}}
+                            @endif
+                        </td>
                         <td>
                             <a href="{{route('productlists.edit',$item->wh_product_lists_id)}}" class="btn btn-sm btn-warning" >
                                 <i class="fas fa-edit"></i>
