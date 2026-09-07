@@ -84,6 +84,33 @@
                     </select>
                 </div>
             </div>
+            <div class="col-3">
+                <div class="form-group">
+                    <label for="delivered_test_hds_channel" class="col-form-label">ช่องทางการส่งมอบ</label>
+                    <input type="text" class="form-control" 
+                            name="delivered_test_hds_channel" 
+                            id="delivered_test_hds_channel"
+                            value="">
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-group">
+                    <label for="contact_channels" class="col-form-label">ช่องทางการติดต่อ</label>
+                    <input type="text" class="form-control" 
+                            name="contact_channels" 
+                            id="contact_channels"
+                            value="">
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label for="shipping_address" class="col-form-label">ที่อยู่จัดส่ง</label>
+                    <input type="text" class="form-control" 
+                            name="shipping_address" 
+                            id="shipping_address"
+                            value="">
+                </div>
+            </div>
             <div class="col-6">
                 <div class="form-group">
                     <label for="delivered_test_hds_remark" class="col-form-label">หมายเหตุ</label>

@@ -16,7 +16,7 @@
     --steel-light:#eaf1f7;
     --hairline:#c7d2dc;
     --ink:#1c1c1c;
-    --muted:#5b6b78;
+    --muted:#070707;
     --alert:#b3261e;
     --band:#f4f7fa;
 }
@@ -235,10 +235,10 @@ tr:nth-child(even) td{
 
 .result-table thead tr:first-child th{
     background:var(--navy);
-    color:#fff;
+    color:#122844;
     font-weight:700;
     letter-spacing:.3px;
-    border-color:var(--navy-dark);
+    border-color:var(--steel-light);
 }
 
 .result-table thead tr:last-child th{
@@ -293,7 +293,7 @@ tr:nth-child(even) td{
     font-weight:700;
     letter-spacing:.5px;
     text-transform:uppercase;
-    color:#fff;
+    color:#1c3a5e;
     background:var(--steel);
     display:inline-block;
     padding:1.5px 6px;

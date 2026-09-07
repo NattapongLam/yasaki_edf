@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ArCustomerList;
 use App\Models\ArRequestorderDt;
 use App\Models\ArRequestorderHd;
 use App\Models\ArRequestorderStatus;
+use App\Models\OtherDistrict;
+use App\Models\OtherProvince;
+use App\Models\OtherSubDistrict;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -307,6 +311,10 @@ class ArRequestOrderListController extends Controller
         $hd = ArRequestorderHd::findOrFail($id);
         $dt = ArRequestorderDt::where('ar_requestorder_hds_id', $id)->where('ar_requestorder_dts_flag',true)->get();
         $sta = ArRequestorderStatus::where('ar_requestorder_statuses_id',$hd->ar_requestorder_statuses_id)->first();
-        return view('sales.view-requestorder-print', compact('hd', 'dt','sta'));
+        $cust = ArCustomerList::where('ar_customer_lists_name1',$hd->ar_requestorder_hds_customer)->first();
+        $prov = OtherProvince::find($cust->other_provinces_id);
+        $dist = OtherDistrict::find($cust->other_districts_id);
+        $subd = OtherSubDistrict::find($cust->other_sub_districts_id);
+        return view('sales.view-requestorder-print', compact('hd', 'dt','sta','cust','prov','dist','subd'));
     }
 }

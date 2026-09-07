@@ -66,7 +66,10 @@ class DeliveredController extends Controller
             'created_at' => Carbon::now(), 
             'updated_at' => Carbon::now(), 
             'ar_requestorder_hds_docuno' => $request->ar_requestorder_hds_docuno,
-            'delivered_test_hds_type' => $sta->ar_requestorder_statuses_name
+            'delivered_test_hds_type' => $sta->ar_requestorder_statuses_name,
+            'delivered_test_hds_channel' => $request->delivered_test_hds_channel,
+            'contact_channels' => $request->contact_channels,
+            'shipping_address' => $request->shipping_address
         ]; 
         try {
             DB::beginTransaction();
