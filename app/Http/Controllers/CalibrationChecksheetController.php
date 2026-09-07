@@ -123,7 +123,8 @@ class CalibrationChecksheetController extends Controller
             $detailIds = $request->calibration_checksheet_dts_id ?? [];
             $actions   = $request->action ?? [];
             $standards = $request->standard ?? []; // รับค่า standard จากฟอร์ม
-            
+            $errors = $request->error ?? [];
+            $edits = $request->edit ?? [];
             foreach ($detailIds as $index => $detailId) {
                 // อัปเดตหมายเหตุของรายการ
                 CalibrationChecksheetDt::where('calibration_checksheet_dts_id', $detailId)->update([
@@ -140,8 +141,12 @@ class CalibrationChecksheetController extends Controller
                     
                     // 2. จัดการฟิลด์ standard (เช่น standard_01, standard_02) 
                     // *หมายเหตุ: เปลี่ยนชื่อ 'standard_' ให้ตรงกับชื่อคอลัมน์จริงใน Database ของคุณ
-                    $standardField = 'standard_' . $field; 
-                    $updateData[$standardField] = $standards[$index][$actionField] ?? null; 
+                    $standardField = 'standard_' . $field;                    
+                    $updateData[$standardField] = $standards[$index][$standardField] ?? null; 
+                    $errorField = 'error_' . $field; 
+                    $updateData[$errorField] = $errors[$index][$errorField] ?? null; 
+                    $editField = 'edit_' . $field; 
+                    $updateData[$editField] = $edits[$index][$editField] ?? null; 
                 }
                 
                 // บันทึกข้อมูลทั้งหมดลงในตาราง

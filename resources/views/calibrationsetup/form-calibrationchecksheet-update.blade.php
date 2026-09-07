@@ -199,7 +199,7 @@
                 <!-- ส่วนหัวและปุ่มพิมพ์ -->
                 <div class="row align-items-center mb-1">
                     <div class="col-6">
-                        <h3 class="card-title mb-0 fs-6 fw-bold">บันทึกผลการตรวจสอบเครื่องมือวัดประจำวัน (Checksheet)</h3>
+                        <h3 class="card-title mb-0 fs-6 fw-bold">บันทึกผลการตรวจสอบเครื่องมือวัดประจำวัน/การใช้ค่าแก้ไข YSK5-FM-LAB-06 : REV.00 : 01/08/2569</h3>
                     </div>
                     <div class="col-6 text-end d-print-none">
                         <button type="button" class="btn btn-dark btn-sm shadow-sm" onclick="window.print()">
@@ -263,7 +263,7 @@
                                             <input type="hidden" name="calibration_checksheet_dts_id[]" value="{{ $item->calibration_checksheet_dts_id }}">
                                         </td>
                                         <td>
-                                            <textarea class="form-control form-control-sm" name="calibration_checksheet_dts_remark[]" rows="5">
+                                            <textarea class="form-control form-control-sm" name="calibration_checksheet_dts_remark[]" rows="7">
                                                 {{$item->calibration_checksheet_dts_remark}}
                                             </textarea>
                                         </td>
@@ -272,6 +272,8 @@
                                             @php
                                                 $field = 'action_' . str_pad($i, 2, '0', STR_PAD_LEFT);
                                                 $standardField = 'standard_' . str_pad($i, 2, '0', STR_PAD_LEFT); 
+                                                $errorField = 'error_' . str_pad($i, 2, '0', STR_PAD_LEFT); 
+                                                $editField = 'edit_' . str_pad($i, 2, '0', STR_PAD_LEFT); 
                                             @endphp
                                             <td>
                                                 <div class="cell-box">
@@ -285,11 +287,28 @@
                                                         title="ติ๊กเพื่อเลือก"
                                                     >
                                                     <!-- Input สำหรับกรอกค่าตัวเลข/ข้อความ -->
+                                                    UUC Reading
                                                     <input 
                                                         type="text"
                                                         class="form-control cell-input"
                                                         name="standard[{{ $index }}][{{ $field }}]"
                                                         value="{{ $item->$standardField ?? '0' }}"
+                                                        title="กรอกค่า"
+                                                    >
+                                                    Error
+                                                    <input 
+                                                        type="text"
+                                                        class="form-control cell-input"
+                                                        name="error[{{ $index }}][{{ $field }}]"
+                                                        value="{{ $item->$errorField ?? '0' }}"
+                                                        title="กรอกค่า"
+                                                    >
+                                                    Edit
+                                                    <input 
+                                                        type="text"
+                                                        class="form-control cell-input"
+                                                        name="edit[{{ $index }}][{{ $field }}]"
+                                                        value="{{ $item->$editField ?? '0' }}"
                                                         title="กรอกค่า"
                                                     >
                                                 </div>
