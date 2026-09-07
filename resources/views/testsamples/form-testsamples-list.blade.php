@@ -24,15 +24,13 @@
             <thead>
                 <tr>
                     <th>สถานะ</th>
-                    <th>วันที่</th>
-                    <th>เลขที่</th>
-                    <th>กำหนดส่ง</th>
+                    <th>วันที่รับเข้า</th>
+                    <th>เลขที่ Lap</th>
+                    <th>เลขที่อ้างอิง</th>
                     <th>ลูกค้า</th>
-                    <th>ติดต่อ</th>
+                    <th>คลาส</th>
                     <th>หมายเหตุ</th>
                     <th>ผู้อนุมัติ</th>
-                    <th>ผู้รับชิ้นงาน</th>
-                    <th>ชิ้นงานก่อนทดสอบ</th>
                     <th></th>
                 </tr>
             </thead>
@@ -51,19 +49,28 @@
                             @endif
                         </td>
                         <td>
-                            {{$item->ar_requestorder_hds_date}}
+                            {{\Carbon\Carbon::parse($item->receive_test_lists_date)->format('d/m/Y') ?? ''}}<br>
+                            มิติชิ้นงานวัดจริง: {{$item->receive_test_lists_dimensions}}<br>
+                            น้ำหนักชิ้นงานชั่งจริง: {{$item->receive_test_lists_weight}}<br>
+                            ผู้รับชิ้นงาน: {{$item->person_at}}
                         </td>
                         <td>
-                            {{$item->ar_requestorder_hds_docuno}}
+                           
                         </td>
                         <td>
-                            {{$item->ar_requestorder_hds_duedate}}
+                            {{$item->ar_requestorder_hds_docuno}}<br>
+                            กำหนดส่ง: {{$item->ar_requestorder_hds_duedate}}
+                        </td>                       
+                        <td>
+                            {{$item->ar_requestorder_hds_customer}}<br>
+                            ติดต่อ: {{$item->ar_requestorder_hds_contact}}
                         </td>
                         <td>
-                            {{$item->ar_requestorder_hds_customer}}
-                        </td>
-                        <td>
-                            {{$item->ar_requestorder_hds_contact}}
+                            @if ($item->ar_requestorder_dts_jis_class == "CLASS_3")
+                                JIS D 4411 Class 3<br> (Heavy Loads)
+                            @elseif($item->ar_requestorder_dts_jis_class == "CLASS_4")
+                                JIS D 4411 Class 4<br> (Disc Brakes)
+                            @endif
                         </td>
                         <td>
                             {{$item->ar_requestorder_hd_remark}}
@@ -71,16 +78,6 @@
                         <td>
                            {{$item->approved_at}}<br>
                            {{\Carbon\Carbon::parse($item->approved_date)->format('d/m/Y') ?? ''}}
-                        </td>
-                        <td>
-                           {{$item->person_at}}<br>
-                           {{\Carbon\Carbon::parse($item->receive_test_lists_date)->format('d/m/Y') ?? ''}}<br>
-                           มิติชิ้นงานวัดจริง: {{$item->receive_test_lists_dimensions}}<br>
-                           น้ำหนักชิ้นงานชั่งจริง: {{$item->receive_test_lists_weight}}
-                        </td>
-                        <td>
-                            <img src="{{asset($item->receive_test_lists_file1)}}" class="img-thumbnail" width="10%">
-                            <img src="{{asset($item->receive_test_lists_file2)}}" class="img-thumbnail" width="10%">
                         </td>
                         <td>
                             @if ($item->ar_requestorder_statuses_id == 6)

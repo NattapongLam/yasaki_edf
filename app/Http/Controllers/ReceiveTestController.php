@@ -46,6 +46,7 @@ class ReceiveTestController extends Controller
     {
         $hd = ArRequestorderHd::leftjoin('ar_requestorder_statuses','ar_requestorder_hds.ar_requestorder_statuses_id','=','ar_requestorder_statuses.ar_requestorder_statuses_id')
         ->leftjoin('receive_test_lists','ar_requestorder_hds.ar_requestorder_hds_id','=','receive_test_lists.ar_requestorder_hds_id')
+        ->leftjoin('ar_requestorder_dts','ar_requestorder_hds.ar_requestorder_hds_id','=','ar_requestorder_dts.ar_requestorder_hds_id')
         ->where('ar_requestorder_hds.ar_requestorder_statuses_id',6)
         ->get();
         return view('testsamples.form-testsamples-list', compact('hd'));
