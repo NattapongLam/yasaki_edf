@@ -48,7 +48,10 @@
                         </td>
                         <td>
                             {{$item->ar_requestorder_hds_docuno}}<br>
-                            วันที่ : {{$item->ar_requestorder_hds_date}}
+                            วันที่ : {{$item->ar_requestorder_hds_date}}<br>
+                            <a href="{{ route('report.xbar', $item->ar_requestorder_hds_docuno) }}" class="btn btn-sm btn-info" target="_blank" title="เปิดกราฟ X-bar & R">
+                                <i class="fas fa-print"></i>
+                            </a>
                         </td>
                         <td>
                             {{$item->ar_requestorder_hds_customer}}<br>
