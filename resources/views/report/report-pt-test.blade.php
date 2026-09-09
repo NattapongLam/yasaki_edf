@@ -9,7 +9,7 @@
         @media print {
             @page {
                 size: A4 landscape;
-                margin: 4mm;
+                margin: 10mm; /* เพิ่มจาก 6mm เป็น 10mm เพื่อเว้นขอบกระดาษรอบด้านไม่ให้ติดเกินไป */
             }
             .no-print { display: none !important; }
             body, html { 
@@ -22,24 +22,27 @@
             .print-container { 
                 border: none !important; 
                 box-shadow: none !important; 
-                padding: 0 !important; 
+                padding: 5mm !important; /* เพิ่มพื้นที่ด้านในไม่ให้เนื้อหาชิดขอบกระดาษเกินไป */
                 width: 100% !important;
-                max-height: 198mm !important;
-                font-size: 9px !important;
+                font-size: 8.5px !important;
             }
             .table-custom th, .table-custom td { 
-                padding: 1px 3px !important; 
-                font-size: 8.5px !important; 
+                padding: 1px 2px !important; 
+                font-size: 8px !important; 
             }
             input.form-control {
                 border: none !important;
                 background: transparent !important;
                 text-align: center;
                 padding: 0 !important;
-                font-size: 8.5px !important;
-                height: 14px !important;
+                font-size: 8px !important;
+                height: 12px !important;
             }
             .compact-section { margin-bottom: 2px !important; }
+            .signature-box {
+                border: 1px solid #94a3b8 !important;
+                background-color: #fff !important;
+            }
         }
         .table-custom th, .table-custom td {
             border: 1px solid #cbd5e1;
@@ -107,22 +110,22 @@
         </div>
 
         <!-- ส่วนฟอร์มรายงาน A4 แนวนอน -->
-        <div class="max-w-[1280px] mx-auto bg-white p-2 rounded-md shadow-md border border-slate-300 print-container space-y-1.5"> 
+        <div class="max-w-[1280px] mx-auto bg-white p-2.5 rounded-md shadow-md border border-slate-300 print-container space-y-1.5"> 
             
             <!-- Header -->
             <div class="flex justify-between items-center border-b border-slate-300 pb-1 compact-section">
-                <img src="{{ URL::asset('assets/images/KK-C.png') }}" class="h-9 object-contain" alt="Logo">
+                <img src="{{ URL::asset('assets/images/KK-C.png') }}" class="h-8 object-contain" alt="Logo">
                 <div>
                     <h2 class="text-xs font-bold tracking-wide text-slate-800 text-center">บันทึกผลการทดสอบความชำนาญของเจ้าหน้าที่ห้องปฏิบัติการ (PT TEST)</h2>
-                    <p class="text-[9.5px] text-slate-600 text-center">การเปรียบเทียบผลระหว่างพนักงานห้องปฏิบัติการ โดยใช้ค่า $E_n$ และเปรียบเทียบด้วยสมการ $E_n$ Ratio</p>
+                    <p class="text-[9px] text-slate-600 text-center">การเปรียบเทียบผลระหว่างพนักงานห้องปฏิบัติการ โดยใช้ค่า $E_n$ และเปรียบเทียบด้วยสมการ $E_n$ Ratio</p>
                 </div> 
                 <div class="text-right">
-                    <span class="text-[9.5px] font-semibold text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">YSK5-FM-LAB-14: Rev.00: 01/08/2569</span>
+                    <span class="text-[9px] font-semibold text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">YSK5-FM-LAB-14: Rev.00: 01/08/2569</span>
                 </div>
             </div>
 
             <!-- คำชี้แจงและเกณฑ์การประเมินผล & สูตร -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-1.5 bg-slate-50 p-1.5 rounded border border-slate-200 text-slate-700 text-[9.5px] compact-section">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-1.5 bg-slate-50 p-1.5 rounded border border-slate-200 text-slate-700 text-[9.5px] compact-section items-center">
                 <div>
                     <p class="font-semibold text-slate-800"><i class="fas fa-info-circle text-blue-500 mr-1"></i> เกณฑ์การประเมินผล:</p>
                     <ul class="list-disc list-inside text-slate-600 leading-tight">
@@ -132,13 +135,17 @@
                 </div>
                 <div class="flex flex-col justify-center items-center bg-white p-1 rounded border border-slate-200">
                     <span class="font-semibold text-slate-800 text-[9.5px]">En Ratio Formula:</span>
-                    <span class="text-blue-700 font-bold text-[10.5px]">$$En = \frac{|LAB - REF|}{\sqrt{(U_{LAB})^2 + (U_{REF})^2}}$$</span>
+                    <span class="text-blue-700 font-bold text-[10px]">$$En = \frac{|LAB - REF|}{\sqrt{(U_{LAB})^2 + (U_{REF})^2}}$$</span>
+                </div>
+                <div class="bg-white p-1 rounded border border-slate-200 flex flex-col justify-center">
+                    <span class="font-semibold text-slate-800 text-[9.5px] mb-0.5"><i class="fas fa-tools text-slate-500 mr-1"></i> เครื่องมือวัด:</span>
+                    <input type="text" name="measuring_instrument" class="form-control" placeholder="ระบุชื่อหรือรหัสเครื่องมือวัด" value="{{ $firstRow->measuring_instrument ?? '' }}">
                 </div>
             </div>
 
             <!-- Table 1: Reference Standard Data & Uncertainty -->
             <div class="compact-section">
-                <h5 class="text-[9.5px] font-bold text-slate-700 mb-0.5"><i class="fas fa-table text-slate-500 mr-1"></i> Table 1: Reference Standard Data & Uncertainty</h5>
+                <h5 class="text-[9px] font-bold text-slate-700 mb-0.5"><i class="fas fa-table text-slate-500 mr-1"></i> Table 1: Reference Standard Data & Uncertainty</h5>
                 <div class="overflow-x-auto">
                     <table class="w-full table-custom border-collapse">
                         <thead>
@@ -165,7 +172,7 @@
 
             <!-- Table 2: Lab Size Measurement (Cal Curves) -->
             <div class="compact-section">
-                <h5 class="text-[9.5px] font-bold text-slate-700 mb-0.5"><i class="fas fa-table text-slate-500 mr-1"></i> Table 2: Lab Size Measurement (Cal Curves)</h5>
+                <h5 class="text-[9px] font-bold text-slate-700 mb-0.5"><i class="fas fa-table text-slate-500 mr-1"></i> Table 2: Lab Size Measurement (Cal Curves)</h5>
                 <div class="overflow-x-auto">
                     <table class="w-full table-custom border-collapse">
                         <thead>
@@ -212,7 +219,7 @@
 
             <!-- SUMMARY: En Ratio Calculation & Result Evaluation -->
             <div class="compact-section">
-                <h5 class="text-[9.5px] font-bold text-slate-700 mb-0.5"><i class="fas fa-table text-slate-500 mr-1"></i> SUMMARY: En Ratio Calculation & Result Evaluation</h5>
+                <h5 class="text-[9px] font-bold text-slate-700 mb-0.5"><i class="fas fa-table text-slate-500 mr-1"></i> SUMMARY: En Ratio Calculation & Result Evaluation</h5>
                 <div class="overflow-x-auto">
                     <table class="w-full table-custom border-collapse">
                         <thead>
@@ -251,22 +258,43 @@
                 </div>
             </div>
 
-            <!-- Signatures Section -->
+            <!-- Signatures Section: รองรับการเซ็นชื่อจริง -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-2 pt-1 border-t border-slate-200 text-[9.5px]">
-                <div class="border border-slate-200 p-1.5 rounded bg-slate-50 flex justify-between items-center">
-                    <div><strong class="text-slate-700">จัดทำโดย:</strong> 
-                        <input type="text" name="person_at" class="border-b border-slate-400 bg-transparent outline-none px-1 w-32 text-center inline-block" placeholder="ระบุชื่อ" value="{{Auth::user()->name}}">
+                <!-- ผู้จัดทำ -->
+                <div class="signature-box border border-slate-300 p-2 rounded bg-slate-50 flex flex-col justify-between space-y-1">
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold text-slate-700">ผู้จัดทำ (Prepared by):</span>
+                        <div class="text-right">
+                            <span class="text-[9px] text-slate-500">วันที่:</span>
+                            <input type="date" name="results_date" class="border-b border-slate-400 bg-transparent outline-none px-1 text-center inline-block w-28 text-[9.5px]" value="{{ date('Y-m-d') }}">
+                        </div>
                     </div>
-                    <div><strong class="text-slate-700">วันที่:</strong> 
-                        <input type="date" name="results_date" class="border-b border-slate-400 bg-transparent outline-none px-1 text-center inline-block w-28" value="{{ date('Y-m-d') }}">
+                    <div class="flex items-center pt-2">
+                        <span class="text-slate-600 w-16">ลงชื่อ:</span>
+                        <div class="border-b border-dotted border-slate-500 flex-grow h-5 mx-1"></div>
+                    </div>
+                    <div class="flex items-center pt-1">
+                        <span class="text-slate-600 w-16">ชื่อ-นามสกุล:</span>
+                        <input type="text" name="person_at" class="border-b border-slate-400 bg-transparent outline-none px-1 flex-grow text-center font-medium" value="{{ Auth::user()->name }}">
                     </div>
                 </div>
-                <div class="border border-slate-200 p-1.5 rounded bg-slate-50 flex justify-between items-center">
-                    <div><strong class="text-slate-700">ตรวจสอบ:</strong> 
-                        <input type="text" name="approved_at" class="border-b border-slate-400 bg-transparent outline-none px-1 w-32 text-center inline-block" placeholder="ระบุชื่อ">
+
+                <!-- ผู้ตรวจสอบ / อนุมัติ -->
+                <div class="signature-box border border-slate-300 p-2 rounded bg-slate-50 flex flex-col justify-between space-y-1">
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold text-slate-700">ผู้ตรวจสอบ/อนุมัติ (Checked / Approved):</span>
+                        <div class="text-right">
+                            <span class="text-[9px] text-slate-500">วันที่:</span>
+                            <input type="date" name="approved_date" class="border-b border-slate-400 bg-transparent outline-none px-1 text-center inline-block w-28 text-[9.5px]">
+                        </div>
                     </div>
-                    <div><strong class="text-slate-700">วันที่:</strong> 
-                        <input type="date" name="approved_date" class="border-b border-slate-400 bg-transparent outline-none px-1 text-center inline-block w-28">
+                    <div class="flex items-center pt-2">
+                        <span class="text-slate-600 w-16">ลงชื่อ:</span>
+                        <div class="border-b border-dotted border-slate-500 flex-grow h-5 mx-1"></div>
+                    </div>
+                    <div class="flex items-center pt-1">
+                        <span class="text-slate-600 w-16">ชื่อ-นามสกุล:</span>
+                        <input type="text" name="approved_at" class="border-b border-slate-400 bg-transparent outline-none px-1 flex-grow text-center font-medium" placeholder="(ระบุชื่อผู้ตรวจสอบ)">
                     </div>
                 </div>
             </div>

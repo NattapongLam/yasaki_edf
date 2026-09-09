@@ -34,5 +34,6 @@ class ProficiencyTestResult extends Model
         'approved_date',
         'approved_at',
         'proficiency_test_results_flag',
+        'measuring_instrument'
     ];
 }

@@ -709,6 +709,7 @@ class ReceiveTestController extends Controller
                             'proficiency_test_results_no' => $i,
                         ],
                         [
+                            'measuring_instrument' => $request->input("measuring_instrument"),
                             'reportsize' => $request->input("ref_rep.$i"),
                             'sizeuncertainty' => $request->input("ref_unc.$i"),
                             'refvalue' => $request->input("ref_val.$i"),
@@ -728,6 +729,7 @@ class ReceiveTestController extends Controller
                             'approved_date' => $request->input("approved_date"),
                             'approved_at' => $request->input("approved_at"),
                             'proficiency_test_results_flag' => true,
+                            
                         ]
                     );
                 }
