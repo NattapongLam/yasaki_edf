@@ -683,4 +683,12 @@ class ReceiveTestController extends Controller
             return ['usl' => 0.70, 'lsl' => 0.20, 'tolerance' => 0.14];
         }
     }
+    public function showPtTest($testId, Request $request)
+    {
+        $header = ReceiveTestList::find($testId);
+        if (!$header) {
+            return redirect()->back()->with('error', 'ไม่พบข้อมูลรายงานการทดสอบนี้');
+        }
+       return view('report.report-pt-test', compact('header', 'testId'));              
+    }
 }

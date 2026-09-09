@@ -180,6 +180,9 @@
              <div class="col-2">
                 <div class="form-group">
                     <label for="dimensions_id" class="col-form-label">เครื่องวัดชิ้นงาน</label>
+                    <a href="{{ route('report.pttest', $pd->receive_test_lists_id) }}" class="btn btn-sm btn-primary" target="_blank" >
+                        <i class="fas fa-print"></i>
+                    </a>
                     <select class="form-control" name="dimensions_id" disabled>
                         <option value="">กรุณาเลือกเครื่องวัด</option>
                         @foreach ($cal as $item)
@@ -188,7 +191,7 @@
                                 {{$item->calibration_lists_name1}} ({{$item->calibration_lists_code}})
                             </option>
                         @endforeach
-                    </select>
+                    </select>                    
                 </div>
             </div>
             <div class="col-2">

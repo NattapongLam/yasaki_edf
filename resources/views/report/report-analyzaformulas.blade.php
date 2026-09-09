@@ -191,64 +191,45 @@
 <script>
 $(document).ready(function () {
 
-    // ตัวแปรเก็บสถานะการเปิด/ปิดของแต่ละสูตร (true = แสดง, false = ซ่อน)
     let formulaStates = {
         1: true,
         2: true,
         3: true
     };
 
-    /*
-    |--------------------------------------------------------------------------
-    | ฟังก์ชันคำนวณและปรับคลาส Grid (col-12 / col-6 / col-4) ตามจำนวนสูตรที่เหลือ
-    |--------------------------------------------------------------------------
-    */
     function updateFormulaGrid() {
-        // นับจำนวนสูตรที่ถูกเลือกให้ "แสดง" ณ ปัจจุบัน
         let activeCount = Object.values(formulaStates).filter(v => v === true).length;
-        
-        let gridClass = 'col-4'; // ค่าเริ่มต้นถ้าแสดงครบ 3 สูตร (ใช้ col-4 หรือ col-md-4)
+        let gridClass = 'col-4'; 
         
         if (activeCount === 2) {
-            gridClass = 'col-6';  // กรณี hide 1 สูตร -> สูตรที่เหลือ = class = col-6
+            gridClass = 'col-6';  
         } else if (activeCount === 1) {
-            gridClass = 'col-12'; // กรณี hide 2 สูตร -> สูตรที่เหลือ = class = col-12
+            gridClass = 'col-12'; 
         }
 
-        // ล้างคลาสเก่าและใส่คลาสใหม่ให้เหมาะสมตามเงื่อนไข
         for (let id in formulaStates) {
             let isVisible = formulaStates[id];
             let selectWrapper = $(`#wrapper-select-${id}`);
             let resultWrapper = $(`#wrapper-result-${id}`);
 
             if (isVisible) {
-                // ล้างคลาส col ทั้งหมดที่เกี่ยวข้องออกก่อน แล้วแทนที่ด้วย gridClass ใหม่
                 selectWrapper.removeClass('col-4 col-6 col-12 col-md-4 col-md-6 col-md-12').addClass(gridClass).show();
                 resultWrapper.removeClass('col-4 col-6 col-12 col-md-4 col-md-6 col-md-12').addClass(gridClass).show();
             } else {
-                // ถ้าโดน Hide ก็สั่งซ่อน Element ไปเลย
                 selectWrapper.hide();
                 resultWrapper.hide();
             }
         }
     }
 
-    // เรียกทำงานครั้งแรกตอนโหลดหน้าเพจ
     updateFormulaGrid();
 
-    /*
-    |--------------------------------------------------------------------------
-    | Event คุมปุ่มซ่อน/แสดง
-    |--------------------------------------------------------------------------
-    */
     $('.toggle-formula-btn').on('click', function () {
         let btn = $(this);
         let targetFormula = btn.data('target');
         
-        // สลับสถานะ บันทึกค่าลง Object
         formulaStates[targetFormula] = !formulaStates[targetFormula];
 
-        // เปลี่ยนดีไซน์ของปุ่มกด
         if (formulaStates[targetFormula]) {
             btn.addClass('active');
             btn.find('i').removeClass('mdi-eye-off').addClass('mdi-eye');
@@ -257,18 +238,8 @@ $(document).ready(function () {
             btn.find('i').removeClass('mdi-eye').addClass('mdi-eye-off');
         }
 
-        // สั่งประมวลผลคำนวณแบ่งคลาส col ใหม่ทันที
         updateFormulaGrid();
     });
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Global Chart Variable & Functions (คงเดิมตามระบบของคุณ)
-    |--------------------------------------------------------------------------
-    */
-    let donutChart = null;
-    let pieChart = null;
 
     $('.select2').select2({
         placeholder: "กรุณาเลือกสูตร",
@@ -276,14 +247,7 @@ $(document).ready(function () {
         width: '100%'
     });
 
-    function clearCharts() {
-        if (donutChart) { donutChart.destroy(); donutChart = null; }
-        if (pieChart) { pieChart.destroy(); pieChart = null; }
-        $('#donutChart').parent().html('<canvas id="donutChart"></canvas>');
-        $('#pieChart').parent().html('<canvas id="pieChart"></canvas>');
-    }
-
-    function renderCharts(details, formulaId) {
+    function renderCharts(details, cleanId) {
         if (!details || details.length === 0) return;
 
         let grouped = {};
@@ -308,15 +272,15 @@ $(document).ready(function () {
         const total = arr => arr.reduce((a,b)=>a+b,0);
         const percent = (arr, v) => total(arr) ? ((v/total(arr))*100).toFixed(2) : 0;
 
-        let donutId = `donutChart-${formulaId}`, pieId = `pieChart-${formulaId}`;
+        let donutId = `donutChart-${cleanId}`, pieId = `pieChart-${cleanId}`;
         let donutCtx = document.getElementById(donutId), pieCtx = document.getElementById(pieId);
 
         if (!donutCtx || !pieCtx) return;
 
-        if (window[`donut_${formulaId}`]) window[`donut_${formulaId}`].destroy();
-        if (window[`pie_${formulaId}`]) window[`pie_${formulaId}`].destroy();
+        if (window[`donut_${cleanId}`]) window[`donut_${cleanId}`].destroy();
+        if (window[`pie_${cleanId}`]) window[`pie_${cleanId}`].destroy();
 
-        window[`donut_${formulaId}`] = new Chart(donutCtx, {
+        window[`donut_${cleanId}`] = new Chart(donutCtx, {
             type: 'doughnut',
             data: { labels, datasets: [{ data: donutValues, backgroundColor: colors }] },
             options: {
@@ -330,7 +294,7 @@ $(document).ready(function () {
             plugins: [ChartDataLabels]
         });
 
-        window[`pie_${formulaId}`] = new Chart(pieCtx, {
+        window[`pie_${cleanId}`] = new Chart(pieCtx, {
             type: 'pie',
             data: { labels, datasets: [{ data: pieValues, backgroundColor: colors }] },
             options: {
@@ -386,7 +350,7 @@ $(document).ready(function () {
         });
     }
 
-    function renderFrictionCharts(frictions, formulaId) {
+    function renderFrictionCharts(frictions, cleanId) {
         if (!frictions) return;
         let n1 = frictions.n1 ?? [], n2 = frictions.n2 ?? [], n3 = frictions.n3 ?? [];
         let labels = [...new Set([...n1.map(x => x.Listno), ...n2.map(x => x.Listno), ...n3.map(x => x.Listno)])].sort((a, b) => a - b);
@@ -399,7 +363,7 @@ $(document).ready(function () {
             });
         }
 
-        createLineChart(`chartU100-${formulaId}`, labels, [
+        createLineChart(`chartU100-${cleanId}`, labels, [
             { label: 'N1 100°C (u)', data: mapData(n1, 'Friction100_u'), borderColor: '#1f77b4' },
             { label: 'N2 100°C (u)', data: mapData(n2, 'Friction100_u'), borderColor: '#2ca02c' },
             { label: 'N3 100°C (u)', data: mapData(n3, 'Friction100_u'), borderColor: '#9467bd' },
@@ -407,7 +371,7 @@ $(document).ready(function () {
             { label: 'N2 100°c_(°c)', data: mapData(n2, 'Friction100_c').map(x => x / 4000), borderColor: '#ff7f0e' },
             { label: 'N3 100°c_(°c)', data: mapData(n3, 'Friction100_c').map(x => x / 4000), borderColor: '#8c564b' }
         ]);
-        createLineChart(`chartU150-${formulaId}`, labels, [
+        createLineChart(`chartU150-${cleanId}`, labels, [
             { label: 'N1 150°C (u)', data: mapData(n1, 'Friction150_u'), borderColor: '#1f77b4' },
             { label: 'N2 150°C (u)', data: mapData(n2, 'Friction150_u'), borderColor: '#2ca02c' },
             { label: 'N3 150°C (u)', data: mapData(n3, 'Friction150_u'), borderColor: '#9467bd' },
@@ -415,7 +379,7 @@ $(document).ready(function () {
             { label: 'N2 150°C (°C)', data: mapData(n2, 'Friction150_c').map(x => x / 4000), borderColor: '#ff7f0e' },
             { label: 'N3 150°C (°C)', data: mapData(n3, 'Friction150_c').map(x => x / 4000), borderColor: '#8c564b' }
         ]);
-        createLineChart(`chartU200-${formulaId}`, labels, [
+        createLineChart(`chartU200-${cleanId}`, labels, [
             { label: 'N1 200°C (u)', data: mapData(n1, 'Friction200_u'), borderColor: '#1f77b4' },
             { label: 'N2 200°C (u)', data: mapData(n2, 'Friction200_u'), borderColor: '#2ca02c' },
             { label: 'N3 200°C (u)', data: mapData(n3, 'Friction200_u'), borderColor: '#9467bd' },
@@ -423,7 +387,7 @@ $(document).ready(function () {
             { label: 'N2 200°C (°C)', data: mapData(n2, 'Friction200_c').map(x => x / 4000), borderColor: '#ff7f0e' },
             { label: 'N3 200°C (°C)', data: mapData(n3, 'Friction200_c').map(x => x / 4000), borderColor: '#8c564b' }
         ]);
-        createLineChart(`chartU250-${formulaId}`, labels, [
+        createLineChart(`chartU250-${cleanId}`, labels, [
             { label: 'N1 250°C (u)', data: mapData(n1, 'Friction250_u'), borderColor: '#1f77b4' },
             { label: 'N2 250°C (u)', data: mapData(n2, 'Friction250_u'), borderColor: '#2ca02c' },
             { label: 'N3 250°C (u)', data: mapData(n3, 'Friction250_u'), borderColor: '#9467bd' },
@@ -431,7 +395,7 @@ $(document).ready(function () {
             { label: 'N2 250°C (°C)', data: mapData(n2, 'Friction250_c').map(x => x / 4000), borderColor: '#ff7f0e' },
             { label: 'N3 250°C (°C)', data: mapData(n3, 'Friction250_c').map(x => x / 4000), borderColor: '#8c564b' }
         ]);
-        createLineChart(`chartU300-${formulaId}`, labels, [
+        createLineChart(`chartU300-${cleanId}`, labels, [
             { label: 'N1 300°C (u)', data: mapData(n1, 'Friction300_u'), borderColor: '#1f77b4' },
             { label: 'N2 300°C (u)', data: mapData(n2, 'Friction300_u'), borderColor: '#2ca02c' },
             { label: 'N3 300°C (u)', data: mapData(n3, 'Friction300_u'), borderColor: '#9467bd' },
@@ -439,7 +403,7 @@ $(document).ready(function () {
             { label: 'N2 300°C (°C)', data: mapData(n2, 'Friction300_c').map(x => x / 4000), borderColor: '#ff7f0e' },
             { label: 'N3 300°C (°C)', data: mapData(n3, 'Friction300_c').map(x => x / 4000), borderColor: '#8c564b' }
         ]);
-        createLineChart(`chartU350-${formulaId}`, labels, [
+        createLineChart(`chartU350-${cleanId}`, labels, [
             { label: 'N1 350°C (u)', data: mapData(n1, 'Friction350_u'), borderColor: '#1f77b4' },
             { label: 'N2 350°C (u)', data: mapData(n2, 'Friction350_u'), borderColor: '#2ca02c' },
             { label: 'N3 350°C (u)', data: mapData(n3, 'Friction350_u'), borderColor: '#9467bd' },
@@ -447,7 +411,7 @@ $(document).ready(function () {
             { label: 'N2 350°C (°C)', data: mapData(n2, 'Friction350_c').map(x => x / 4000), borderColor: '#ff7f0e' },
             { label: 'N3 350°C (°C)', data: mapData(n3, 'Friction350_c').map(x => x / 4000), borderColor: '#8c564b' }
         ]);
-        createLineChartFall(`chartUfall-${formulaId}`, labels, [
+        createLineChartFall(`chartUfall-${cleanId}`, labels, [
             { label: 'N1 Fall°C (u)', data: mapData(n1, 'FrictionFall_u'), borderColor: '#1f77b4' },
             { label: 'N2 Fall°C (u)', data: mapData(n2, 'FrictionFall_u'), borderColor: '#2ca02c' },
             { label: 'N3 Fall°C (u)', data: mapData(n3, 'FrictionFall_u'), borderColor: '#9467bd' },
@@ -457,17 +421,17 @@ $(document).ready(function () {
         ]);
     }
 
-    function renderRadarChart(roadlist, formulaId) {
+    function renderRadarChart(roadlist, cleanId) {
         if (!roadlist || roadlist.length === 0) return;
         const avg = field => {
             let vals = roadlist.map(x => parseFloat(x[field] || 0));
             return vals.length ? (vals.reduce((a,b)=>a+b,0) / vals.length) : 0;
         };
         let avgData = [avg('LowSpeed1'), avg('LowSpeed4'), avg('LowSpeed5'), avg('HighSpeed1'), avg('HighSpeed2'), avg('HighSpeed3'), avg('HighSpeed4'), avg('HighSpeed5'), avg('Pillion1'), avg('Pillion2')];
-        let ctx = document.getElementById(`radarChart-${formulaId}`); if (!ctx) return;
-        if (window[`radar_${formulaId}`]) window[`radar_${formulaId}`].destroy();
+        let ctx = document.getElementById(`radarChart-${cleanId}`); if (!ctx) return;
+        if (window[`radar_${cleanId}`]) window[`radar_${cleanId}`].destroy();
 
-        window[`radar_${formulaId}`] = new Chart(ctx, {
+        window[`radar_${cleanId}`] = new Chart(ctx, {
             type: 'radar',
             data: {
                 labels: ['การรันอินสัมผัสแรก', 'เบรคความเร็วสูง', 'เสียงครืดขณะเบรค', 'การทนความร้อนสะสม', 'การฟื้นตัวหลังเฟด', 'การเบรคขณะเปียก', 'เสียงแหลมจี๊ดรบกวน', 'ฝุ่นจากการเบรค', 'สภาพจาน', 'สภาพผ้าเบรค'],
@@ -479,6 +443,8 @@ $(document).ready(function () {
 
     function loadFormulaTable(formulaId, tableAreaId) {
         let formulaName = $('#' + formulaId).val();
+        let cleanId = formulaId.replace('formula_', ''); // แปลงเป็นเลข 1, 2 หรือ 3 เพื่อใช้จับคู่ ID ของกราฟ
+
         if (formulaName === '') {
             $('#' + tableAreaId).html(`<div class="text-center text-muted py-4">กรุณาเลือกสูตรเพื่อแสดงข้อมูล</div>`);
             return;
@@ -491,46 +457,47 @@ $(document).ready(function () {
             success: function (response) {
                 $('#' + tableAreaId).show();
                 let html = '';
+                
                 if (response.test && response.test.length > 0) {
-                let t = response.test[0];
-                html += `
-                    <div class="mt-4">
-                        <div class="card border-0 shadow rounded-4">
-                            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-                                <h6 class="mb-0">Test Average Summary ${response.header?.ms_formule_name ?? '-'}: ${response.header?.chemistry_hd_name ?? '-'}</h6>
-                                <button type="button" class="btn-close btn-close-white hide-summary-direct-btn" aria-label="Close"></button>
-                            </div>
-                            <div class="card-body">
-                                <div class="row text-center">
-                                    <div class="col-md-6 mb-2"><div class="p-3 border rounded-3"><div class="text-muted small">Hardness (HRB)</div><div class="fs-5 fw-bold text-primary">${parseFloat(t.Hardness ?? 0).toFixed(2)}</div></div></div>
-                                    <div class="col-md-6 mb-2"><div class="p-3 border rounded-3"><div class="text-muted small">Shearing (mm²)</div><div class="fs-5 fw-bold text-primary">${parseFloat(t.Shearing ?? 0).toFixed(2)}</div></div></div>
-                                    <div class="col-md-6 mb-2"><div class="p-3 border rounded-3"><div class="text-muted small">Noise (dB)</div><div class="fs-5 fw-bold text-primary">${parseFloat(t.Noise ?? 0).toFixed(2)}</div></div></div>
-                                    <div class="col-md-6 mb-2"><div class="p-3 border rounded-3"><div class="text-muted small">Normal (µ)</div><div class="fs-5 fw-bold text-primary">${parseFloat(t.Normal_Avg ?? 0).toFixed(2)}</div></div></div>
-                                    <div class="col-md-6 mb-2"><div class="p-3 border rounded-3"><div class="text-muted small">Hot (µ)</div><div class="fs-5 fw-bold text-primary">${parseFloat(t.Hot_Avg ?? 0).toFixed(2)}</div></div></div>
-                                    <div class="col-md-6 mb-2"><div class="p-3 border rounded-3"><div class="text-muted small">Wear (10⁻⁷cm³/(N·m))</div><div class="fs-5 fw-bold text-primary">${parseFloat(t.Wear_Avg ?? 0).toFixed(2)}</div></div></div>
+                    let t = response.test[0];
+                    html += `
+                        <div class="mt-4">
+                            <div class="card border-0 shadow rounded-4">
+                                <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0">Test Average Summary ${response.header?.ms_formule_name ?? '-'}: ${response.header?.chemistry_hd_name ?? '-'}</h6>
+                                    <button type="button" class="btn-close btn-close-white hide-summary-direct-btn" aria-label="Close"></button>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row text-center">
+                                        <div class="col-md-6 mb-2"><div class="p-3 border rounded-3"><div class="text-muted small">Hardness (HRB)</div><div class="fs-5 fw-bold text-primary">${parseFloat(t.Hardness ?? 0).toFixed(2)}</div></div></div>
+                                        <div class="col-md-6 mb-2"><div class="p-3 border rounded-3"><div class="text-muted small">Shearing (mm²)</div><div class="fs-5 fw-bold text-primary">${parseFloat(t.Shearing ?? 0).toFixed(2)}</div></div></div>
+                                        <div class="col-md-6 mb-2"><div class="p-3 border rounded-3"><div class="text-muted small">Noise (dB)</div><div class="fs-5 fw-bold text-primary">${parseFloat(t.Noise ?? 0).toFixed(2)}</div></div></div>
+                                        <div class="col-md-6 mb-2"><div class="p-3 border rounded-3"><div class="text-muted small">Normal (µ)</div><div class="fs-5 fw-bold text-primary">${parseFloat(t.Normal_Avg ?? 0).toFixed(2)}</div></div></div>
+                                        <div class="col-md-6 mb-2"><div class="p-3 border rounded-3"><div class="text-muted small">Hot (µ)</div><div class="fs-5 fw-bold text-primary">${parseFloat(t.Hot_Avg ?? 0).toFixed(2)}</div></div></div>
+                                        <div class="col-md-6 mb-2"><div class="p-3 border rounded-3"><div class="text-muted small">Wear (10⁻⁷cm³/(N·m))</div><div class="fs-5 fw-bold text-primary">${parseFloat(t.Wear_Avg ?? 0).toFixed(2)}</div></div></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                `;
-            }
+                    `;
+                }
 
                 html += `
                     <div class="mt-4">
                         <div class="card border-0 shadow rounded-4">
                             <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
                                 <h6 class="mb-0">Friction Analysis ${response.header?.ms_formule_name ?? '-'}: ${response.header?.chemistry_hd_name ?? '-'}</h6>
-                                <button type="button" class="btn-close btn-close-white hide-formula-direct-btn" data-target="${formulaId.replace('formula_', '')}" aria-label="Close"></button>
+                                <button type="button" class="btn-close btn-close-white hide-formula-direct-btn" data-target="${cleanId}" aria-label="Close"></button>
                             </div>
                             <div class="card-body">
                                 <div class="row g-3">
-                                    <div class="col-md-12"><canvas id="chartU100-${formulaId}" height="240"></canvas></div>
-                                    <div class="col-md-12"><canvas id="chartU150-${formulaId}" height="240"></canvas></div>
-                                    <div class="col-md-12"><canvas id="chartU200-${formulaId}" height="240"></canvas></div>
-                                    <div class="col-md-12"><canvas id="chartU250-${formulaId}" height="240"></canvas></div>
-                                    <div class="col-md-12"><canvas id="chartU300-${formulaId}" height="240"></canvas></div>
-                                    <div class="col-md-12"><canvas id="chartU350-${formulaId}" height="240"></canvas></div>
-                                    <div class="col-md-12"><canvas id="chartUfall-${formulaId}" height="240"></canvas></div>
+                                    <div class="col-md-12"><canvas id="chartU100-${cleanId}" height="240"></canvas></div>
+                                    <div class="col-md-12"><canvas id="chartU150-${cleanId}" height="240"></canvas></div>
+                                    <div class="col-md-12"><canvas id="chartU200-${cleanId}" height="240"></canvas></div>
+                                    <div class="col-md-12"><canvas id="chartU250-${cleanId}" height="240"></canvas></div>
+                                    <div class="col-md-12"><canvas id="chartU300-${cleanId}" height="240"></canvas></div>
+                                    <div class="col-md-12"><canvas id="chartU350-${cleanId}" height="240"></canvas></div>
+                                    <div class="col-md-12"><canvas id="chartUfall-${cleanId}" height="240"></canvas></div>
                                 </div>
                             </div>
                         </div>
@@ -596,8 +563,8 @@ $(document).ready(function () {
                 html += `<div class="mt-3"><h6 class="fw-bold">${response.header?.chemistry_hd_note ?? '-'}</h6></div>`;
                 html += `
                     <div class="row mt-4 g-4">
-                        <div class="col-md-12"><div class="card border-0 shadow rounded-4"><div class="card-header bg-white"><h5 class="mb-0 fw-bold">Density Analysis</h5></div><div class="card-body"><div style="height:300px;"><canvas id="donutChart-${formulaId}"></canvas></div></div></div></div>
-                        <div class="col-md-12"><div class="card border-0 shadow rounded-4"><div class="card-header bg-white"><h5 class="mb-0 fw-bold">Weight Total Analysis</h5></div><div class="card-body"><div style="height:300px;"><canvas id="pieChart-${formulaId}"></canvas></div></div></div></div>
+                        <div class="col-md-12"><div class="card border-0 shadow rounded-4"><div class="card-header bg-white"><h5 class="mb-0 fw-bold">Density Analysis</h5></div><div class="card-body"><div style="height:300px;"><canvas id="donutChart-${cleanId}"></canvas></div></div></div></div>
+                        <div class="col-md-12"><div class="card border-0 shadow rounded-4"><div class="card-header bg-white"><h5 class="mb-0 fw-bold">Weight Total Analysis</h5></div><div class="card-body"><div style="height:300px;"><canvas id="pieChart-${cleanId}"></canvas></div></div></div></div>
                     </div>
                     <div class="mt-4">
                         <div class="card border-0 shadow rounded-4">
@@ -607,7 +574,7 @@ $(document).ready(function () {
                             </div>
                                 <div class="card-body">
                                     <div style="height:400px; max-width:600px; margin:auto;">
-                                        <canvas id="radarChart-${formulaId}"></canvas>
+                                        <canvas id="radarChart-${cleanId}"></canvas>
                                     </div>
                                 </div>
                             </div>
@@ -624,9 +591,9 @@ $(document).ready(function () {
                 $('#' + tableAreaId).html(html);
 
                 setTimeout(() => {
-                    renderCharts(response.details, formulaId);
-                    renderFrictionCharts(response.frictions, formulaId);
-                    renderRadarChart(response.roadlist, formulaId);
+                    renderCharts(response.details, cleanId);
+                    renderFrictionCharts(response.frictions, cleanId);
+                    renderRadarChart(response.roadlist, cleanId);
                 }, 100);
             },
             error: function (xhr) {
@@ -640,21 +607,19 @@ $(document).ready(function () {
     $('#formula_3').on('change', function () { loadFormulaTable('formula_3', 'formula-table-area-3'); });
 
 });
-    $(document).on('click', '.hide-formula-direct-btn', function () {
-        // ใช้ .closest() เพื่อวิ่งหา Card ชั้นนอกสุดของ Friction Analysis ตัวนี้แล้วสั่งเฟดซ่อนตัวไป
-        $(this).closest('.card').parent().fadeOut(300);
-    });
-    $(document).on('click', '.hide-summary-direct-btn', function () {
-        // วิ่งหา Card ชั้นนอกสุดของ Test Average Summary ตัวนี้แล้วสั่งเฟดซ่อนไป
-        $(this).closest('.card').parent().fadeOut(300);
-    });
-    $(document).on('click', '.hide-wear-direct-btn', function () {
-        // ค้นหาตัว Card แล้วสั่งปิดจางหายไปโดยไม่ยุ่งกับส่วนอื่น
-        $(this).closest('.card').parent().fadeOut(300);
-    });
-    $(document).on('click', '.hide-radar-direct-btn', function () {
-        $(this).closest('.card').parent().fadeOut(300);
-    });
+
+$(document).on('click', '.hide-formula-direct-btn', function () {
+    $(this).closest('.card').parent().fadeOut(300);
+});
+$(document).on('click', '.hide-summary-direct-btn', function () {
+    $(this).closest('.card').parent().fadeOut(300);
+});
+$(document).on('click', '.hide-wear-direct-btn', function () {
+    $(this).closest('.card').parent().fadeOut(300);
+});
+$(document).on('click', '.hide-radar-direct-btn', function () {
+    $(this).closest('.card').parent().fadeOut(300);
+});
 </script>
 
 <style>
@@ -683,11 +648,9 @@ $(document).ready(function () {
     white-space: nowrap;
     vertical-align: middle;
 }
-/* เพิ่มอนิเมชันให้เวลาเปลี่ยนจาก col-4 เป็น col-6 หรือ col-12 มีความสมูท */
 .transition-grid .formula-card-wrapper {
     transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
-/* สไตล์ปุ่มตอนกดซ่อนสูตร */
 .toggle-formula-btn:not(.active) {
     background-color: #f8f9fa !important;
     color: #6c757d !important;
