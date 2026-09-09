@@ -9,6 +9,7 @@ use App\Models\CalibrationList;
 use App\Models\OtherDistrict;
 use App\Models\OtherProvince;
 use App\Models\OtherSubDistrict;
+use App\Models\ProficiencyTestResult;
 use App\Models\ReceiveTestList;
 use App\Models\ReceiveTestSub;
 use Carbon\Carbon;
@@ -686,9 +687,58 @@ class ReceiveTestController extends Controller
     public function showPtTest($testId, Request $request)
     {
         $header = ReceiveTestList::find($testId);
+        $bom = DB::table('chemistry_hd')->where('chemistry_hd_id',$header->chemistry_hd_id)->first();
         if (!$header) {
             return redirect()->back()->with('error', 'ไม่พบข้อมูลรายงานการทดสอบนี้');
         }
-       return view('report.report-pt-test', compact('header', 'testId'));              
+       return view('report.report-pt-test', compact('header', 'testId','bom'));              
+    }
+
+    public function storePtTest(Request $request, $testId)
+    {
+        // ตัวอย่างการใช้ Database Transaction เพื่อความปลอดภัยของข้อมูล
+        DB::beginTransaction();
+        try {
+            // วนลูปบันทึกข้อมูลทั้ง 6 แถว
+            for ($i = 1; $i <= 6; $i++) {
+                // ตรวจสอบว่ามีข้อมูลแถวนี้ส่งมาหรือไม่ (ป้องกันกรณีแถวว่าง)
+                if ($request->has("ref_rep.$i")) {
+                    ProficiencyTestResult::updateOrCreate(
+                        [
+                            'receive_test_lists_id' => $testId,
+                            'proficiency_test_results_no' => $i,
+                        ],
+                        [
+                            'reportsize' => $request->input("ref_rep.$i"),
+                            'sizeuncertainty' => $request->input("ref_unc.$i"),
+                            'refvalue' => $request->input("ref_val.$i"),
+                            'sizecurve1' => $request->input("lab_c1.$i"),
+                            'sizecurve2' => $request->input("lab_c2.$i"),
+                            'sizecurve3' => $request->input("lab_c3.$i"),
+                            'sizecurve4' => $request->input("lab_c4.$i"),
+                            'labuncertainty' => $request->input("lab_u.$i"),
+                            'sizename' => $request->input("sum_name.$i"), // หรือชื่อสูตรที่ต้องการ
+                            'ratiocurve1' => $request->input("sum_en1.$i"),
+                            'ratiocurve2' => $request->input("sum_en2.$i"),
+                            'ratiocurve3' => $request->input("sum_en3.$i"),
+                            'ratiocurve4' => $request->input("sum_en4.$i"),
+                            'evaluation' => $request->input("sum_eval.$i"), // Pass / Fail
+                            'proficiency_test_results_date' => $request->input("results_date"),
+                            'person_at' => $request->input("person_at"),
+                            'approved_date' => $request->input("approved_date"),
+                            'approved_at' => $request->input("approved_at"),
+                            'proficiency_test_results_flag' => true,
+                        ]
+                    );
+                }
+            }
+
+            DB::commit();
+            return redirect()->back()->with('success', 'บันทึกผลการทดสอบสำเร็จ');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'เกิดข้อผิดพลาด: ' . $e->getMessage());
+        }
     }
 }
