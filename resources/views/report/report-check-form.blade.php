@@ -161,17 +161,17 @@
                             <tr>
                                 <th rowspan="2" class="w-32">Date</th>
                                 <th rowspan="2" class="w-12">No</th>
-                                <th colspan="3">Input with mV value</th>
+                                <th colspan="3">Input with V value</th>
                                 <th rowspan="2" class="w-24">X-Bar</th>
-                                <th rowspan="2" class="w-24">Min Spec (mV)</th>
-                                <th rowspan="2" class="w-24">Max Spec (mV)</th>
+                                <th rowspan="2" class="w-24">Min Spec (V)</th>
+                                <th rowspan="2" class="w-24">Max Spec (V)</th>
                                 <th rowspan="2" class="w-28">Pass/Fail</th>
                                 <th rowspan="2" class="w-40">Check by / Approve by</th>
                             </tr>
                             <tr>
-                                <th class="w-24">X1</th>
-                                <th class="w-24">X2</th>
-                                <th class="w-24">X3</th>
+                                <th class="w-24">N1</th>
+                                <th class="w-24">N2</th>
+                                <th class="w-24">N3</th>
                             </tr>
                         </thead>
                        <tbody id="table-body">
