@@ -110,6 +110,8 @@ Route::get('/receive-pt-test/{testId}', [App\Http\Controllers\ReceiveTestControl
 Route::post('/pt-test/{testId}/store', [App\Http\Controllers\ReceiveTestController::class, 'storePtTest'])->name('report.pt-test.store');
 Route::get('/receive-check-form/{testId}', [App\Http\Controllers\ReceiveTestController::class, 'showCheckForm'])->name('report.checkform');
 Route::post('/report/daily-check/{id?}', [App\Http\Controllers\ReceiveTestController::class, 'CheckFormstore'])->name('report.daily-check.store');
+Route::get('/receive-intermediate-check/{testId}', [App\Http\Controllers\ReceiveTestController::class, 'showIntermediateCheck'])->name('report.intermediatecheck');
+Route::post('/report/intermediate-check/{id?}', [App\Http\Controllers\ReceiveTestController::class, 'IntermediateCheckstore'])->name('report.intermediate-check.store');
 Route::post('/confirmDelReceiveTest' , [App\Http\Controllers\ReceiveTestController::class , 'confirmDelReceiveTest']);
 Route::get('/receive-result/detail/{id}/edit', [App\Http\Controllers\ReceiveTestController::class, 'editDetail'])->name('receive-result.detail.edit');
 Route::put('/receive-test/update-result/{id}', [App\Http\Controllers\ReceiveTestController::class, 'updateReceiveTest'])->name('receive-test.update-result');

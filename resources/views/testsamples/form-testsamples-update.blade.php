@@ -559,7 +559,7 @@
 </div>
 <div class="row mt-2">
     <div class="col-3">
-        <a href="{{ route('report.pttest', $pd->receive_test_lists_id) }}" class="btn btn-sm btn-primary" target="_blank" >
+        <a href="{{ route('report.intermediatecheck', $pd->receive_test_lists_id) }}" class="btn btn-sm btn-primary" target="_blank" >
             <i class="fas fa-edit"> ตรวจสอบระหว่างใช้งาน</i>
         </a>
     </div>

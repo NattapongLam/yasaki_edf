@@ -8,6 +8,8 @@ use App\Models\ArRequestorderHd;
 use App\Models\CalibrationList;
 use App\Models\CheckFormDt;
 use App\Models\CheckFormHd;
+use App\Models\IntermediateCheckDt;
+use App\Models\IntermediateCheckHd;
 use App\Models\OtherDistrict;
 use App\Models\OtherProvince;
 use App\Models\OtherSubDistrict;
@@ -756,7 +758,11 @@ class ReceiveTestController extends Controller
             return redirect()->back()->with('error', 'ไม่พบข้อมูลรายงานการทดสอบนี้');
         }
         $hd = CheckFormHd::where('receive_test_lists_id',$testId)->first();
-        $dt = CheckFormDt::where('check_form_hds_id', $hd->check_form_hds_id)->get();
+        if($hd){
+            $dt = CheckFormDt::where('check_form_hds_id', $hd->check_form_hds_id)->get();             
+        }else{
+            $dt = null;
+        }
         return view('report.report-check-form', compact('header', 'testId','cal','bom','reqdoc','hd','dt'));              
     }
 
@@ -831,4 +837,106 @@ class ReceiveTestController extends Controller
             return redirect()->back()->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล: ' . $e->getMessage());
         }
     }
+
+    public function showIntermediateCheck($testId, Request $request)
+    {
+        $header = ReceiveTestList::find($testId);
+        $previousHeader = ReceiveTestList::where('receive_test_lists_id', '<', $testId)
+                                    ->orderBy('receive_test_lists_id', 'desc')
+                                    ->first();
+        $cal = DB::table('calibration_lists')->where('calibration_lists_code','4318-001')->first();
+        $bom = DB::table('chemistry_hd')->where('chemistry_hd_id',$header->chemistry_hd_id)->first();
+        $reqdoc = ArRequestorderHd::where('ar_requestorder_hds_id',$header->ar_requestorder_hds_id)->first();
+        $hd = IntermediateCheckHd::where('receive_test_lists_id',$testId)->first();
+        if($hd){
+            $dt = IntermediateCheckDt::where('intermediate_check_hds_id', $hd->intermediate_check_hds_id)->get();
+        }else{
+            $dt = null;
+        }      
+        return view('report.report-intermediate-check', compact('header','cal','bom','reqdoc','previousHeader','hd','dt'));     
+    }
+
+    public function IntermediateCheckstore(Request $request, $testId)
+    {
+        // ใช้ Transaction เพื่อให้มั่นใจว่าข้อมูล Header และ Detail จะบันทึกหรืออัปเดตสำเร็จพร้อมกัน
+        DB::beginTransaction();
+        try {
+            // 1. บันทึกหรืออัปเดตข้อมูลส่วนหัว (Header) 
+            // โดยใช้ receive_test_lists_id เป็นเงื่อนไขในการเช็คซ้ำ
+            $header = IntermediateCheckHd::updateOrCreate(
+                [
+                    'receive_test_lists_id' => $request->receive_test_lists_id
+                ],
+                [
+                    'instrument_name'    => $request->instrument_name,
+                    'specification'      => $request->specification,
+                    'model'              => $request->model,
+                    'serial_number'      => $request->serial_number,
+                    'cal_date'           => $request->cal_date,
+                    'certificate_no'     => $request->certificate_no,
+                    'refer_doc'          => $request->refer_doc,
+                    'test_range_voltage' => $request->test_range_voltage,
+                    'creator'            => $request->creator,
+                    'created_date'       => $request->created_date,
+                    
+                    // ข้อมูลสถิติ Temperature (°C)
+                    'stat_c_test1_mean'  => $request->stat_c_test1_mean ?? '0.0000',
+                    'stat_c_test2_mean'  => $request->stat_c_test2_mean ?? '0.0000',
+                    'stat_c_test1_var'   => $request->stat_c_test1_var ?? '0.0000',
+                    'stat_c_test2_var'   => $request->stat_c_test2_var ?? '0.0000',
+                    'stat_c_test1_obs'   => $request->stat_c_test1_obs ?? '0',
+                    'stat_c_test2_obs'   => $request->stat_c_test2_obs ?? '0',
+
+                    // ข้อมูลสถิติ Relative Humidity (%RH)
+                    'stat_rh_test1_mean' => $request->stat_rh_test1_mean ?? '0.0000',
+                    'stat_rh_test2_mean' => $request->stat_rh_test2_mean ?? '0.0000',
+                    'stat_rh_test1_var'  => $request->stat_rh_test1_var ?? '0.0000',
+                    'stat_rh_test2_var'  => $request->stat_rh_test2_var ?? '0.0000',
+                    'stat_rh_test1_obs'  => $request->stat_rh_test1_obs ?? '0',
+                    'stat_rh_test2_obs'  => $request->stat_rh_test2_obs ?? '0',
+
+                    'summary_result'     => $request->summary_result,
+                    'approver'           => $request->approver,
+                    'approved_date'      => $request->approved_date,
+                ]
+            );
+
+            // 2. บันทึกหรืออัปเดตข้อมูลตารางย่อย (Detail) วนลูปตาม Point (100, 150, 200, 250, 300, 350)
+            if ($request->has('point')) {
+                foreach ($request->point as $index => $pointValue) {
+                    IntermediateCheckDt::updateOrCreate(
+                        [
+                            'intermediate_check_hds_id' => $header->intermediate_check_hds_id,
+                            'point'                     => $pointValue
+                        ],
+                        [
+                            // Before Cal Test Date (Test 1)
+                            'bc_n1_c'  => $request->bc_n1_c[$index] ?? null,
+                            'bc_n1_rh' => $request->bc_n1_rh[$index] ?? null,
+                            'bc_n2_c'  => $request->bc_n2_c[$index] ?? null,
+                            'bc_n2_rh' => $request->bc_n2_rh[$index] ?? null,
+                            'bc_n3_c'  => $request->bc_n3_c[$index] ?? null,
+                            'bc_n3_rh' => $request->bc_n3_rh[$index] ?? null,
+
+                            // 1st Test Date (Test 2)
+                            't1_n1_c'  => $request->t1_n1_c[$index] ?? null,
+                            't1_n1_rh' => $request->t1_n1_rh[$index] ?? null,
+                            't1_n2_c'  => $request->t1_n2_c[$index] ?? null,
+                            't1_n2_rh' => $request->t1_n2_rh[$index] ?? null,
+                            't1_n3_c'  => $request->t1_n3_c[$index] ?? null,
+                            't1_n3_rh' => $request->t1_n3_rh[$index] ?? null,
+                        ]
+                    );
+                }
+            }
+
+            DB::commit();
+            return redirect()->back()->with('success', 'บันทึกหรืออัปเดตข้อมูลสำเร็จเรียบร้อยแล้ว');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล: ' . $e->getMessage());
+        }
+    }
+
 }
