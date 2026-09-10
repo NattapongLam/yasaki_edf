@@ -9,35 +9,37 @@
         @media print {
             @page {
                 size: A4 landscape;
-                margin: 6mm;
+                margin: 4mm; /* ลด Margin หน้ากระดาษเหลือ 4mm เพื่อให้พื้นที่พิมพ์เพิ่มขึ้น */
             }
             .no-print { display: none !important; }
             body { 
                 background-color: white !important; 
                 padding: 0 !important; 
                 margin: 0 !important; 
+                -webkit-print-color-adjust: exact; /* บังคับพิมพ์สีพื้นหลัง/ตาราง */
             }
-            .print-container { 
+            .container { 
                 border: none !important; 
                 box-shadow: none !important; 
                 padding: 0 !important; 
                 width: 100% !important;
+                max-width: 100% !important;
             }
         }
 
         body {
             font-family: 'Sarabun', sans-serif;
-            font-size: 10px;
+            font-size: 9.5px; /* ลดขนาดฟอนต์พื้นฐานลงเล็กน้อย */
             color: #333;
             margin: 0;
-            padding: 10px;
+            padding: 5px;
             background-color: #f1f5f9;
         }
         .container {
             max-width: 1500px;
             margin: 0 auto;
             background: #fff;
-            padding: 15px;
+            padding: 10px;
             border-radius: 8px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
@@ -47,25 +49,25 @@
         }
         .header-table td {
             vertical-align: middle;
-            padding: 4px;
+            padding: 2px;
         }
         .info-table {
-            margin-top: 6px;
-            margin-bottom: 8px;
+            margin-top: 4px;
+            margin-bottom: 6px;
             border: 1px solid #cbd5e1;
             background-color: #f8fafc;
         }
         .info-table td {
-            padding: 5px 8px;
-            font-size: 10px;
+            padding: 3px 6px; /* ลด Padding ในตารางข้อมูล */
+            font-size: 9.5px;
             border: 1px solid #e2e8f0;
         }
         .data-table th, .data-table td, 
         .stat-table th, .stat-table td,
         .sig-table td {
             border: 1px solid #cbd5e1;
-            padding: 3px 4px;
-            font-size: 9.5px;
+            padding: 2px 3px; /* กระชับตารางข้อมูลผลทดสอบ */
+            font-size: 9px;
             text-align: center;
             vertical-align: middle;
         }
@@ -80,11 +82,11 @@
             background-color: #ffffff;
             border: 1px solid #cbd5e1;
             border-radius: 3px;
-            padding: 3px;
-            font-size: 9.5px;
+            padding: 2px;
+            font-size: 9px;
             outline: none;
             box-sizing: border-box;
-            height: 24px;
+            height: 20px; /* ลดความสูงช่องกรอกข้อมูลเล็กน้อย */
         }
         input.form-control:focus {
             border-color: #3b82f6;
@@ -92,16 +94,16 @@
         }
         .section-title {
             font-weight: bold;
-            font-size: 11px;
+            font-size: 10px;
             color: #1e293b;
-            margin-top: 10px;
-            margin-bottom: 4px;
+            margin-top: 6px;
+            margin-bottom: 3px;
         }
         .toolbar {
             max-width: 1500px;
-            margin: 0 auto 10px auto;
+            margin: 0 auto 8px auto;
             background: #fff;
-            padding: 10px 15px;
+            padding: 8px 12px;
             border-radius: 8px;
             display: flex;
             justify-content: space-between;
@@ -109,9 +111,9 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         .btn {
-            padding: 6px 14px;
+            padding: 5px 12px;
             border-radius: 4px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 500;
             cursor: pointer;
             border: none;
@@ -130,12 +132,12 @@
 <body>
 
     @if(session('success'))
-        <div style="max-width: 1500px; margin: 0 auto 10px auto; padding: 10px; background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; border-radius: 6px; font-size: 12px;" class="no-print">
+        <div style="max-width: 1500px; margin: 0 auto 8px auto; padding: 8px; background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; border-radius: 6px; font-size: 11px;" class="no-print">
             <i class="fas fa-check-circle"></i> {{ session('success') }}
         </div>
     @endif
     @if(session('error'))
-        <div style="max-width: 1500px; margin: 0 auto 10px auto; padding: 10px; background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; border-radius: 6px; font-size: 12px;" class="no-print">
+        <div style="max-width: 1500px; margin: 0 auto 8px auto; padding: 8px; background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; border-radius: 6px; font-size: 11px;" class="no-print">
             <i class="fas fa-exclamation-circle"></i> {{ session('error') }}
         </div>
     @endif
@@ -146,8 +148,8 @@
         <!-- Toolbar (No Print) -->
         <div class="toolbar no-print">
             <div>
-                <strong style="color: #334155; font-size: 13px;">YSK5-FM-LAB-12</strong>
-                <span style="color: #64748b; font-size: 11px; margin-left: 8px;">บันทึกค่าการตรวจสอบเครื่องมือระหว่างการใช้งาน (Intermediate Check)</span>
+                <strong style="color: #334155; font-size: 12px;">YSK5-FM-LAB-12</strong>
+                <span style="color: #64748b; font-size: 10px; margin-left: 8px;">บันทึกค่าการตรวจสอบเครื่องมือระหว่างการใช้งาน (Intermediate Check)</span>
             </div>
             <div style="display: flex; gap: 8px;">
                 <button type="submit" class="btn btn-success">
@@ -162,16 +164,16 @@
         <div class="container print-container">
             
             <!-- Header -->
-            <table class="header-table" style="border-bottom: 2px solid #cbd5e1; padding-bottom: 6px; margin-bottom: 6px;">
+            <table class="header-table" style="border-bottom: 2px solid #cbd5e1; padding-bottom: 4px; margin-bottom: 4px;">
                 <tr>
                     <td style="width: 20%;">
-                        <img src="{{ URL::asset('assets/images/KK-C.png') }}" style="height: 32px; object-fit: contain;" alt="Logo">
+                        <img src="{{ URL::asset('assets/images/KK-C.png') }}" style="height: 28px; object-fit: contain;" alt="Logo">
                     </td>
                     <td style="width: 60%; text-align: center;">
-                        <h2 style="font-size: 13px; font-weight: bold; margin: 0; color: #1e293b;">บันทึกค่าการตรวจสอบเครื่องมือระหว่างการใช้งาน (Intermediate Check)</h2>
+                        <h2 style="font-size: 12px; font-weight: bold; margin: 0; color: #1e293b;">บันทึกค่าการตรวจสอบเครื่องมือระหว่างการใช้งาน (Intermediate Check)</h2>
                     </td>
                     <td style="width: 20%; text-align: right;">
-                        <span style="font-size: 9px; font-weight: 600; color: #475569; background-color: #f1f5f9; padding: 3px 6px; border-radius: 4px; border: 1px solid #cbd5e1;">YSK5-FM-LAB-12: Rev.00: 01/08/2569</span>
+                        <span style="font-size: 8.5px; font-weight: 600; color: #475569; background-color: #f1f5f9; padding: 2px 5px; border-radius: 4px; border: 1px solid #cbd5e1;">YSK5-FM-LAB-12: Rev.00: 01/08/2569</span>
                     </td>
                 </tr>
             </table>
@@ -240,7 +242,6 @@
                                 <input type="hidden" name="point[{{ $index }}]" value="{{ $point }}">
                             </td>
 
-                            <!-- Before Cal Test Date (Test 1) - ดึงจากข้อมูลเรคอร์ดก่อนหน้า ($previousHeader) -->
                             <td><input type="number" step="any" name="bc_n1_c[{{ $index }}]" class="form-control" value="{{ isset($previousHeader->{'result'.$point.'_n1temp'}) ? $previousHeader->{'result'.$point.'_n1temp'} : '' }}"></td>
                             <td><input type="number" step="any" name="bc_n1_rh[{{ $index }}]" class="form-control" value="{{ isset($previousHeader->{'result'.$point.'_n1moisture'}) ? $previousHeader->{'result'.$point.'_n1moisture'} : '' }}"></td>
                             <td><input type="number" step="any" name="bc_n2_c[{{ $index }}]" class="form-control" value="{{ isset($previousHeader->{'result'.$point.'_n2temp'}) ? $previousHeader->{'result'.$point.'_n2temp'} : '' }}"></td>
@@ -248,7 +249,6 @@
                             <td><input type="number" step="any" name="bc_n3_c[{{ $index }}]" class="form-control" value="{{ isset($previousHeader->{'result'.$point.'_n3temp'}) ? $previousHeader->{'result'.$point.'_n3temp'} : '' }}"></td>
                             <td><input type="number" step="any" name="bc_n3_rh[{{ $index }}]" class="form-control" value="{{ isset($previousHeader->{'result'.$point.'_n3moisture'}) ? $previousHeader->{'result'.$point.'_n3moisture'} : '' }}"></td>
 
-                            <!-- 1st Test Date (Test 2) - ดึงจากข้อมูลปัจจุบัน ($header) -->
                             <td><input type="number" step="any" name="t1_n1_c[{{ $index }}]" class="form-control" value="{{ isset($header->{'result'.$point.'_n1temp'}) ? $header->{'result'.$point.'_n1temp'} : '' }}"></td>
                             <td><input type="number" step="any" name="t1_n1_rh[{{ $index }}]" class="form-control" value="{{ isset($header->{'result'.$point.'_n1moisture'}) ? $header->{'result'.$point.'_n1moisture'} : '' }}"></td>
                             <td><input type="number" step="any" name="t1_n2_c[{{ $index }}]" class="form-control" value="{{ isset($header->{'result'.$point.'_n2temp'}) ? $header->{'result'.$point.'_n2temp'} : '' }}"></td>
@@ -262,14 +262,14 @@
 
             <!-- Statistical Analysis Section: Temperature (°C) -->
             <div class="section-title">Statistical Analysis & Tests - Temperature (°C)</div>
-            <table class="stat-table" style="margin-bottom: 6px;">
+            <table class="stat-table" style="margin-bottom: 4px;">
                 <tr>
                     <th style="width: 25%;">Parameter (°C)</th>
                     <th style="width: 37.5%;">Test 1 (Before Cal)</th>
                     <th style="width: 37.5%;">Test 2 (1st Test Date)</th>
                 </tr>
                 <tr>
-                    <td style="text-align: left; font-weight: 500;">Mean (Ȳ)</td>
+                    <td style="text-align: left; font-weight: 500;">Mean (Ȳ)</td>
                     <td><input type="text" name="stat_c_test1_mean" id="stat_c_test1_mean" class="form-control" value="{{isset($hd->stat_c_test1_mean) ? $hd->stat_c_test1_mean : 0.0000}}" readonly></td>
                     <td><input type="text" name="stat_c_test2_mean" id="stat_c_test2_mean" class="form-control" value="{{isset($hd->stat_c_test2_mean) ? $hd->stat_c_test2_mean : 0.0000}}" readonly></td>
                 </tr>
@@ -287,14 +287,14 @@
 
             <!-- Statistical Analysis Section: Relative Humidity (%RH) -->
             <div class="section-title">Statistical Analysis & Tests - Relative Humidity (%RH)</div>
-            <table class="stat-table" style="margin-bottom: 6px;">
+            <table class="stat-table" style="margin-bottom: 4px;">
                 <tr>
                     <th style="width: 25%;">Parameter (%RH)</th>
                     <th style="width: 37.5%;">Test 1 (Before Cal)</th>
                     <th style="width: 37.5%;">Test 2 (1st Test Date)</th>
                 </tr>
                 <tr>
-                    <td style="text-align: left; font-weight: 500;">Mean (Ȳ)</td>
+                    <td style="text-align: left; font-weight: 500;">Mean (Ȳ)</td>
                     <td><input type="text" name="stat_rh_test1_mean" id="stat_rh_test1_mean" class="form-control" value="{{isset($hd->stat_rh_test1_mean) ? $hd->stat_rh_test1_mean : 0.0000}}" readonly></td>
                     <td><input type="text" name="stat_rh_test2_mean" id="stat_rh_test2_mean" class="form-control" value="{{isset($hd->stat_rh_test2_mean) ? $hd->stat_rh_test2_mean : 0.0000}}" readonly></td>
                 </tr>
@@ -313,22 +313,22 @@
             <!-- Result & Signatures -->
             <table class="sig-table">
                 <tr>
-                    <td colspan="4" style="text-align: left; font-weight: bold; background-color: #f8fafc; padding: 6px;">
+                    <td colspan="4" style="text-align: left; font-weight: bold; background-color: #f8fafc; padding: 4px 6px;">
                         สรุปผลการประเมินสถิติ (F-Test / t-Test): 
                         <input type="text" name="summary_result" id="summary_result" class="form-control" style="display: inline-block; width: 65%; margin-left: 10px;" value="{{ isset($hd->summary_result) ? $hd->summary_result : '' }}">
                     </td>
                 </tr>
                 <tr>
-                    <td style="width: 15%; font-weight: bold;">จัดทำโดย:</td>
-                    <td style="width: 35%;"><input type="text" name="creator" class="form-control" value="{{ isset($hd->creator) ? $hd->creator : (Auth::check() ? Auth::user()->name : '') }}"></td>
-                    <td style="width: 15%; font-weight: bold;">วันที่:</td>
-                    <td style="width: 35%;"><input type="date" name="created_date" class="form-control" value="{{ isset($hd->created_date) ? $hd->created_date : date('Y-m-d') }}"></td>
+                    <td style="width: 15%; font-weight: bold; padding: 3px;">จัดทำโดย:</td>
+                    <td style="width: 35%; padding: 3px;"><input type="text" name="creator" class="form-control" value="{{ isset($hd->creator) ? $hd->creator : (Auth::check() ? Auth::user()->name : '') }}"></td>
+                    <td style="width: 15%; font-weight: bold; padding: 3px;">วันที่:</td>
+                    <td style="width: 35%; padding: 3px;"><input type="date" name="created_date" class="form-control" value="{{ isset($hd->created_date) ? $hd->created_date : date('Y-m-d') }}"></td>
                 </tr>
                 <tr>
-                    <td style="font-weight: bold;">ตรวจสอบและรับรองโดย:</td>
-                    <td><input type="text" name="approver" class="form-control" value="{{ isset($hd->approver) ? $hd->approver : '' }}"></td>
-                    <td style="font-weight: bold;">วันที่:</td>
-                    <td><input type="date" name="approved_date" class="form-control" value="{{ isset($hd->approved_date) ? $hd->approved_date : '' }}"></td>
+                    <td style="font-weight: bold; padding: 3px;">ตรวจสอบและรับรองโดย:</td>
+                    <td style="padding: 3px;"><input type="text" name="approver" class="form-control" value="{{ isset($hd->approver) ? $hd->approver : '' }}"></td>
+                    <td style="font-weight: bold; padding: 3px;">วันที่:</td>
+                    <td style="padding: 3px;"><input type="date" name="approved_date" class="form-control" value="{{ isset($hd->approved_date) ? $hd->approved_date : '' }}"></td>
                 </tr>
             </table>
 
