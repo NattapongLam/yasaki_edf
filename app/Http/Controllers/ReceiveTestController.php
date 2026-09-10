@@ -6,6 +6,8 @@ use App\Models\ArCustomerList;
 use App\Models\ArRequestorderDt;
 use App\Models\ArRequestorderHd;
 use App\Models\CalibrationList;
+use App\Models\CheckFormDt;
+use App\Models\CheckFormHd;
 use App\Models\OtherDistrict;
 use App\Models\OtherProvince;
 use App\Models\OtherSubDistrict;
@@ -741,6 +743,92 @@ class ReceiveTestController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'เกิดข้อผิดพลาด: ' . $e->getMessage());
+        }
+    }
+
+    public function showCheckForm($testId, Request $request)
+    {
+        $header = ReceiveTestList::find($testId);
+        $cal = DB::table('calibration_lists')->where('calibration_lists_code','4411-001')->first();
+        $bom = DB::table('chemistry_hd')->where('chemistry_hd_id',$header->chemistry_hd_id)->first();
+        $reqdoc = ArRequestorderHd::where('ar_requestorder_hds_id',$header->ar_requestorder_hds_id)->first();
+        if (!$header) {
+            return redirect()->back()->with('error', 'ไม่พบข้อมูลรายงานการทดสอบนี้');
+        }
+        $hd = CheckFormHd::where('receive_test_lists_id',$testId)->first();
+        $dt = CheckFormDt::where('check_form_hds_id', $hd->check_form_hds_id)->get();
+        return view('report.report-check-form', compact('header', 'testId','cal','bom','reqdoc','hd','dt'));              
+    }
+
+    public function CheckFormstore(Request $request, $id = null)
+    {
+        // ตรวจสอบความถูกต้องของข้อมูลเบื้องต้น
+        $request->validate([
+            'instrument_name' => 'required|string|max:255',
+            'model' => 'required|string|max:255',
+            'serial_number' => 'required|string|max:255',
+            'cal_date' => 'required|date',
+            'certificate_no' => 'required|string|max:255',
+            'refer_doc' => 'required|string|max:255',
+            'test_range_voltage' => 'required|string|max:255',
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+            // บันทึกหรืออัปเดตข้อมูลส่วนหัว (Header: check_form_hds)
+            // หากส่ง $id มา (Update) จะทำการค้นหาแล้วอัปเดต ถ้าไม่มีจะสร้างใหม่ (Insert)
+            $header = CheckFormHd::updateOrCreate(
+                ['receive_test_lists_id' => $id], // เงื่อนไขสำหรับเช็คว่ามีอยู่แล้วหรือไม่
+                [
+                    'instrument_name'    => $request->instrument_name,
+                    'specification'      => $request->specification,
+                    'model'              => $request->model,
+                    'serial_number'      => $request->serial_number,
+                    'cal_date'           => $request->cal_date,
+                    'certificate_no'     => $request->certificate_no,
+                    'refer_doc'          => $request->refer_doc,
+                    'test_range_voltage' => $request->test_range_voltage,
+                    'check_form_hds_flag' => true,
+                    'person_at'          => Auth::user()->name ?? 'System',
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]
+            );
+
+            // หากเป็นการอัปเดต (Update) สามารถเคลียร์รายการย่อยเก่าทิ้งแล้วบันทึกใหม่ หรือใช้วิธี updateOrCreate ทีละแถว
+            // ในที่นี้เลือกใช้แบบลบของเก่าแล้ว Insert ใหม่สำหรับรายการย่อย เพื่อความสะดวกและแม่นยำตามจำนวนแถวที่ส่งมา
+            CheckFormDt::where('check_form_hds_id', $header->check_form_hds_id)->delete();
+
+            // บันทึกข้อมูลตารางรายการย่อย (Details: check_form_dts)
+            if ($request->has('x1') && is_array($request->x1)) {
+                foreach ($request->x1 as $i => $val) {
+                    // ตรวจสอบว่ามีข้อมูลส่งมา หรือบันทึกตามจำนวนรอบลูป
+                    CheckFormDt::create([
+                        'check_form_hds_id'   => $header->check_form_hds_id,
+                        'check_date'          => $request->check_date[$i] ?? date('Y-m-d'),
+                        'check_form_dts_no'   => $i,
+                        'x1'                  => $request->x1[$i] ?? null,
+                        'x2'                  => $request->x2[$i] ?? null,
+                        'x3'                  => $request->x3[$i] ?? null,
+                        'x_bar'               => $request->x_bar[$i] ?? null,
+                        'min_spec'            => $request->min_spec[$i] ?? null,
+                        'max_spec'            => $request->max_spec[$i] ?? null,
+                        'pass_fail'           => $request->pass_fail[$i] ?? null,
+                        'checker'             => $request->checker[$i] ?? null,
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now(),
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            return redirect()->back()->with('success', 'บันทึกข้อมูลสำเร็จเรียบร้อยแล้ว');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล: ' . $e->getMessage());
         }
     }
 }

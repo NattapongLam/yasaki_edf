@@ -108,6 +108,8 @@ Route::get('/receive-result' , [App\Http\Controllers\ReceiveTestController::clas
 Route::get('/receive-chart/{testId}', [App\Http\Controllers\ReceiveTestController::class, 'showChart'])->name('report.xbar');
 Route::get('/receive-pt-test/{testId}', [App\Http\Controllers\ReceiveTestController::class, 'showPtTest'])->name('report.pttest');
 Route::post('/pt-test/{testId}/store', [App\Http\Controllers\ReceiveTestController::class, 'storePtTest'])->name('report.pt-test.store');
+Route::get('/receive-check-form/{testId}', [App\Http\Controllers\ReceiveTestController::class, 'showCheckForm'])->name('report.checkform');
+Route::post('/report/daily-check/{id?}', [App\Http\Controllers\ReceiveTestController::class, 'CheckFormstore'])->name('report.daily-check.store');
 Route::post('/confirmDelReceiveTest' , [App\Http\Controllers\ReceiveTestController::class , 'confirmDelReceiveTest']);
 Route::get('/receive-result/detail/{id}/edit', [App\Http\Controllers\ReceiveTestController::class, 'editDetail'])->name('receive-result.detail.edit');
 Route::put('/receive-test/update-result/{id}', [App\Http\Controllers\ReceiveTestController::class, 'updateReceiveTest'])->name('receive-test.update-result');

@@ -159,6 +159,9 @@
                 <a href="{{ route('report.pttest', $pd->receive_test_lists_id) }}" class="btn btn-sm btn-primary" target="_blank" >
                     <i class="fas fa-edit"> ทดสอบความชำนาญของเจ้าหน้าที่</i>
                 </a>
+                <a href="{{ route('report.checkform', $pd->receive_test_lists_id) }}" class="btn btn-sm btn-info" target="_blank" >
+                    <i class="fas fa-edit"> ตรวจสอบเครื่องมือก่อนใช้งาน</i>
+                </a>
             </div>
         </div>       
         <div class="row mt-2">
