@@ -692,10 +692,12 @@ class ReceiveTestController extends Controller
     {
         $header = ReceiveTestList::find($testId);
         $bom = DB::table('chemistry_hd')->where('chemistry_hd_id',$header->chemistry_hd_id)->first();
+        $hd = ProficiencyTestResult::where('receive_test_lists_id',$testId)->first();
+        $dt = ProficiencyTestResult::where('receive_test_lists_id',$testId)->get();
         if (!$header) {
             return redirect()->back()->with('error', 'ไม่พบข้อมูลรายงานการทดสอบนี้');
         }
-       return view('report.report-pt-test', compact('header', 'testId','bom'));              
+       return view('report.report-pt-test', compact('header', 'testId','bom','hd','dt'));              
     }
 
     public function storePtTest(Request $request, $testId)

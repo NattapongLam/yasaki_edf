@@ -139,7 +139,7 @@
                 </div>
                 <div class="bg-white p-1 rounded border border-slate-200 flex flex-col justify-center">
                     <span class="font-semibold text-slate-800 text-[9.5px] mb-0.5"><i class="fas fa-tools text-slate-500 mr-1"></i> เครื่องมือวัด:</span>
-                    <input type="text" name="measuring_instrument" class="form-control" placeholder="ระบุชื่อหรือรหัสเครื่องมือวัด" value="{{ $firstRow->measuring_instrument ?? '' }}">
+                    <input type="text" name="measuring_instrument" class="form-control" placeholder="ระบุชื่อหรือรหัสเครื่องมือวัด" value="{{ $hd->measuring_instrument ?? '' }}">
                 </div>
             </div>
 
@@ -157,14 +157,26 @@
                             </tr>
                         </thead>
                         <tbody id="table-ref-body">
-                            @for($i = 1; $i <= 6; $i++)
-                                <tr id="row-ref-{{ $i }}">
-                                    <td class="font-medium bg-slate-50">{{ $i }}</td>
-                                    <td><input name="ref_rep[{{ $i }}]" class="form-control ref-rep" type="number" step="any" value="7000"></td>
-                                    <td><input name="ref_unc[{{ $i }}]" class="form-control ref-unc" type="number" step="any" value="0.30"></td>
-                                    <td><input name="ref_val[{{ $i }}]" class="form-control ref-val" type="number" step="any" value="7000"></td>
-                                </tr>
-                            @endfor
+                            @if ($dt && count($dt) > 0)
+                                @foreach ($dt as $index => $item)
+                                    @php $i = $index + 1; @endphp
+                                    <tr id="row-ref-{{ $i }}">
+                                        <td class="font-medium bg-slate-50">{{ $i }}</td>
+                                        <td><input name="ref_rep[{{ $i }}]" class="form-control ref-rep" type="number" step="any" value="{{ $item->reportsize ?? 7000 }}"></td>
+                                        <td><input name="ref_unc[{{ $i }}]" class="form-control ref-unc" type="number" step="any" value="{{ $item->sizeuncertainty ?? 0.30 }}"></td>
+                                        <td><input name="ref_val[{{ $i }}]" class="form-control ref-val" type="number" step="any" value="{{ $item->refvalue ?? 7000 }}"></td>
+                                    </tr>
+                                @endforeach
+                            @else
+                                @for($i = 1; $i <= 6; $i++)
+                                    <tr id="row-ref-{{ $i }}">
+                                        <td class="font-medium bg-slate-50">{{ $i }}</td>
+                                        <td><input name="ref_rep[{{ $i }}]" class="form-control ref-rep" type="number" step="any" value="7000"></td>
+                                        <td><input name="ref_unc[{{ $i }}]" class="form-control ref-unc" type="number" step="any" value="0.30"></td>
+                                        <td><input name="ref_val[{{ $i }}]" class="form-control ref-val" type="number" step="any" value="7000"></td>
+                                    </tr>
+                                @endfor
+                            @endif
                         </tbody>
                     </table>
                 </div>
@@ -199,19 +211,33 @@
                                     ['c1' => 7000.00, 'c2' => 7000.00, 'c3' => 7000.00, 'c4' => 7000.00],
                                     ['c1' => 7000.00, 'c2' => 7000.00, 'c3' => 7000.00, 'c4' => 7000.00]
                                 ];
-                            @endphp
-
-                            @for($i = 1; $i <= 6; $i++)
-                                <tr data-index="{{ $i }}">
-                                    <td class="font-medium bg-slate-50">{{ $i }}</td>
-                                    <td><input name="lab_rep[{{ $i }}]" class="form-control lab-rep" type="number" step="any" value="7000"></td>
-                                    <td><input name="lab_c1[{{ $i }}]" class="form-control lab-c1" type="number" step="any" value="{{ $defaultVals[$i-1]['c1'] }}"></td>
-                                    <td><input name="lab_c2[{{ $i }}]" class="form-control lab-c2" type="number" step="any" value="{{ $defaultVals[$i-1]['c2'] }}"></td>
-                                    <td><input name="lab_c3[{{ $i }}]" class="form-control lab-c3" type="number" step="any" value="{{ $defaultVals[$i-1]['c3'] }}"></td>
-                                    <td><input name="lab_c4[{{ $i }}]" class="form-control lab-c4" type="number" step="any" value="{{ $defaultVals[$i-1]['c4'] }}"></td>
-                                    <td><input name="lab_u[{{ $i }}]" class="form-control lab-u" type="number" step="any" value="0.75"></td>
-                                </tr>
-                            @endfor
+                            @endphp                            
+                            @if ($dt && count($dt) > 0)
+                                @foreach ($dt as $index => $item)
+                                    @php $i = $index + 1; @endphp
+                                    <tr data-index="{{ $i }}">
+                                        <td class="font-medium bg-slate-50">{{ $i }}</td>
+                                        <td><input name="lab_rep[{{ $i }}]" class="form-control lab-rep" type="number" step="any" value="{{ $item->reportsize ?? 7000 }}"></td>
+                                        <td><input name="lab_c1[{{ $i }}]" class="form-control lab-c1" type="number" step="any" value="{{ $item->sizecurve1 ?? 7000 }}"></td>
+                                        <td><input name="lab_c2[{{ $i }}]" class="form-control lab-c2" type="number" step="any" value="{{ $item->sizecurve2 ?? 7000 }}"></td>
+                                        <td><input name="lab_c3[{{ $i }}]" class="form-control lab-c3" type="number" step="any" value="{{ $item->sizecurve3 ?? 7000 }}"></td>
+                                        <td><input name="lab_c4[{{ $i }}]" class="form-control lab-c4" type="number" step="any" value="{{ $item->sizecurve4 ?? 7000 }}"></td>
+                                        <td><input name="lab_u[{{ $i }}]" class="form-control lab-u" type="number" step="any" value="{{ $item->labuncertainty ?? 0.75 }}"></td>
+                                    </tr>
+                                @endforeach
+                            @else
+                                @for($i = 1; $i <= 6; $i++)
+                                    <tr data-index="{{ $i }}">
+                                        <td class="font-medium bg-slate-50">{{ $i }}</td>
+                                        <td><input name="lab_rep[{{ $i }}]" class="form-control lab-rep" type="number" step="any" value="7000"></td>
+                                        <td><input name="lab_c1[{{ $i }}]" class="form-control lab-c1" type="number" step="any" value="{{ $defaultVals[$i-1]['c1'] }}"></td>
+                                        <td><input name="lab_c2[{{ $i }}]" class="form-control lab-c2" type="number" step="any" value="{{ $defaultVals[$i-1]['c2'] }}"></td>
+                                        <td><input name="lab_c3[{{ $i }}]" class="form-control lab-c3" type="number" step="any" value="{{ $defaultVals[$i-1]['c3'] }}"></td>
+                                        <td><input name="lab_c4[{{ $i }}]" class="form-control lab-c4" type="number" step="any" value="{{ $defaultVals[$i-1]['c4'] }}"></td>
+                                        <td><input name="lab_u[{{ $i }}]" class="form-control lab-u" type="number" step="any" value="0.75"></td>
+                                    </tr>
+                                @endfor
+                            @endif            
                         </tbody>
                     </table>
                 </div>
@@ -237,22 +263,50 @@
                             </tr>
                         </thead>
                         <tbody id="table-summary-body">
-                            @for($i = 1; $i <= 6; $i++)
-                                <tr data-summary-index="{{ $i }}">
-                                    <td class="font-medium bg-slate-50">{{ $i }}</td>
-                                    <td class="text-slate-700 font-medium text-left px-2">
-                                        {{$bom->ms_formule_name}} ({{$bom->chemistry_hd_name}})
-                                        <input type="hidden" name="sum_name[{{ $i }}]" value="{{$bom->ms_formule_name}} ({{$bom->chemistry_hd_name}})">
-                                    </td>
-                                    <td><input type="text" name="sum_en1[{{ $i }}]" class="form-control sum-en1" readonly></td>
-                                    <td><input type="text" name="sum_en2[{{ $i }}]" class="form-control sum-en2" readonly></td>
-                                    <td><input type="text" name="sum_en3[{{ $i }}]" class="form-control sum-en3" readonly></td>
-                                    <td><input type="text" name="sum_en4[{{ $i }}]" class="form-control sum-en4" readonly></td>
-                                    
-                                    <td class="sum-eval-display font-bold text-center">-</td>
-                                    <input type="hidden" name="sum_eval[{{ $i }}]" class="sum-eval-val">
-                                </tr>
-                            @endfor
+                            @if ($dt && count($dt) > 0)
+                                @foreach ($dt as $index => $item)
+                                    @php $i = $index + 1; @endphp
+                                    <tr data-summary-index="{{ $i }}">
+                                        <td class="font-medium bg-slate-50">{{ $i }}</td>
+                                        <td class="text-slate-700 font-medium text-left px-2">
+                                            {{ $item->sizename ?? ($bom->ms_formule_name . ' (' . $bom->chemistry_hd_name . ')') }}
+                                            <input type="hidden" name="sum_name[{{ $i }}]" value="{{ $item->sizename ?? ($bom->ms_formule_name . ' (' . $bom->chemistry_hd_name . ')') }}">
+                                        </td>
+                                        <td><input type="text" name="sum_en1[{{ $i }}]" class="form-control sum-en1" value="{{ $item->ratiocurve1 ?? '' }}" readonly></td>
+                                        <td><input type="text" name="sum_en2[{{ $i }}]" class="form-control sum-en2" value="{{ $item->ratiocurve2 ?? '' }}" readonly></td>
+                                        <td><input type="text" name="sum_en3[{{ $i }}]" class="form-control sum-en3" value="{{ $item->ratiocurve3 ?? '' }}" readonly></td>
+                                        <td><input type="text" name="sum_en4[{{ $i }}]" class="form-control sum-en4" value="{{ $item->ratiocurve4 ?? '' }}" readonly></td>
+                                        
+                                        <td class="sum-eval-display font-bold text-center">
+                                            @if(isset($item->evaluation) && $item->evaluation == 'Pass')
+                                                <span class="text-green-600 bg-green-50 px-1 rounded border border-green-200">Pass</span>
+                                            @elseif(isset($item->evaluation) && $item->evaluation == 'Fail')
+                                                <span class="text-red-600 bg-red-50 px-1 rounded border border-red-200">Fail</span>
+                                            @else
+                                                -
+                                            @endif
+                                        </td>
+                                        <input type="hidden" name="sum_eval[{{ $i }}]" class="sum-eval-val" value="{{ $item->evaluation ?? '' }}">
+                                    </tr>
+                                @endforeach
+                            @else
+                                @for($i = 1; $i <= 6; $i++)
+                                    <tr data-summary-index="{{ $i }}">
+                                        <td class="font-medium bg-slate-50">{{ $i }}</td>
+                                        <td class="text-slate-700 font-medium text-left px-2">
+                                            {{$bom->ms_formule_name}} ({{$bom->chemistry_hd_name}})
+                                            <input type="hidden" name="sum_name[{{ $i }}]" value="{{$bom->ms_formule_name}} ({{$bom->chemistry_hd_name}})">
+                                        </td>
+                                        <td><input type="text" name="sum_en1[{{ $i }}]" class="form-control sum-en1" readonly></td>
+                                        <td><input type="text" name="sum_en2[{{ $i }}]" class="form-control sum-en2" readonly></td>
+                                        <td><input type="text" name="sum_en3[{{ $i }}]" class="form-control sum-en3" readonly></td>
+                                        <td><input type="text" name="sum_en4[{{ $i }}]" class="form-control sum-en4" readonly></td>
+                                        
+                                        <td class="sum-eval-display font-bold text-center">-</td>
+                                        <input type="hidden" name="sum_eval[{{ $i }}]" class="sum-eval-val">
+                                    </tr>
+                                @endfor
+                            @endif                        
                         </tbody>
                     </table>
                 </div>
@@ -266,7 +320,7 @@
                         <span class="font-bold text-slate-700">ผู้จัดทำ (Prepared by):</span>
                         <div class="text-right">
                             <span class="text-[9px] text-slate-500">วันที่:</span>
-                            <input type="date" name="results_date" class="border-b border-slate-400 bg-transparent outline-none px-1 text-center inline-block w-28 text-[9.5px]" value="{{ date('Y-m-d') }}">
+                            <input type="date" name="results_date" class="border-b border-slate-400 bg-transparent outline-none px-1 text-center inline-block w-28 text-[9.5px]" value="{{ $hd->proficiency_test_results_date ?? date('Y-m-d') }}">
                         </div>
                     </div>
                     <div class="flex items-center pt-2">
@@ -275,7 +329,7 @@
                     </div>
                     <div class="flex items-center pt-1">
                         <span class="text-slate-600 w-16">ชื่อ-นามสกุล:</span>
-                        <input type="text" name="person_at" class="border-b border-slate-400 bg-transparent outline-none px-1 flex-grow text-center font-medium" value="{{ Auth::user()->name }}">
+                        <input type="text" name="person_at" class="border-b border-slate-400 bg-transparent outline-none px-1 flex-grow text-center font-medium" value="{{ $hd->person_at ?? Auth::user()->name }}">
                     </div>
                 </div>
 
@@ -285,7 +339,7 @@
                         <span class="font-bold text-slate-700">ผู้ตรวจสอบ/อนุมัติ (Checked / Approved):</span>
                         <div class="text-right">
                             <span class="text-[9px] text-slate-500">วันที่:</span>
-                            <input type="date" name="approved_date" class="border-b border-slate-400 bg-transparent outline-none px-1 text-center inline-block w-28 text-[9.5px]">
+                            <input type="date" name="approved_date" class="border-b border-slate-400 bg-transparent outline-none px-1 text-center inline-block w-28 text-[9.5px]" value="{{ $hd->approved_date ?? date('Y-m-d') }}">
                         </div>
                     </div>
                     <div class="flex items-center pt-2">
@@ -294,7 +348,7 @@
                     </div>
                     <div class="flex items-center pt-1">
                         <span class="text-slate-600 w-16">ชื่อ-นามสกุล:</span>
-                        <input type="text" name="approved_at" class="border-b border-slate-400 bg-transparent outline-none px-1 flex-grow text-center font-medium" placeholder="(ระบุชื่อผู้ตรวจสอบ)">
+                        <input type="text" name="approved_at" class="border-b border-slate-400 bg-transparent outline-none px-1 flex-grow text-center font-medium" placeholder="(ระบุชื่อผู้ตรวจสอบ)" value="{{ $hd->approved_at ?? '' }}">
                     </div>
                 </div>
             </div>
