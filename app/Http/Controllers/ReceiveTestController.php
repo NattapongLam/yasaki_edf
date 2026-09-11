@@ -329,13 +329,24 @@ class ReceiveTestController extends Controller
 
     public function ReceiveResult(Request $request)
     {
-        $hd = ArRequestorderHd::leftjoin('ar_requestorder_statuses','ar_requestorder_hds.ar_requestorder_statuses_id','=','ar_requestorder_statuses.ar_requestorder_statuses_id')
-        ->leftjoin('receive_test_lists','ar_requestorder_hds.ar_requestorder_hds_id','=','receive_test_lists.ar_requestorder_hds_id')
-        ->leftjoin('chemistry_hd','chemistry_hd.chemistry_hd_id','=','receive_test_lists.chemistry_hd_id')
-        ->leftjoin('TestHeaders','ar_requestorder_hds.ar_requestorder_hds_docuno','=','TestHeaders.Lot')
-        ->where('ar_requestorder_hds.ar_requestorder_statuses_id',7)
-        ->get();
-        return view('testsamples.form-testsamples-result', compact('hd'));
+        // กำหนดค่าเริ่มต้นเป็น วันแรก และ วันสุดท้าย ของเดือนปัจจุบัน
+        $startDate = $request->input('start_date', now()->startOfMonth()->format('Y-m-d'));
+        $endDate = $request->input('end_date', now()->endOfMonth()->format('Y-m-d'));
+
+        $query = ArRequestorderHd::leftjoin('ar_requestorder_statuses','ar_requestorder_hds.ar_requestorder_statuses_id','=','ar_requestorder_statuses.ar_requestorder_statuses_id')
+            ->leftjoin('receive_test_lists','ar_requestorder_hds.ar_requestorder_hds_id','=','receive_test_lists.ar_requestorder_hds_id')
+            ->leftjoin('chemistry_hd','chemistry_hd.chemistry_hd_id','=','receive_test_lists.chemistry_hd_id')
+            ->leftjoin('TestHeaders','ar_requestorder_hds.ar_requestorder_hds_docuno','=','TestHeaders.Lot')
+            ->where('ar_requestorder_hds.ar_requestorder_statuses_id', 7);
+
+        // กรองตามช่วงวันที่ 
+        // หมายเหตุ: กรุณาเปลี่ยน 'ar_requestorder_hds.created_at' ให้ตรงกับชื่อฟิลด์วันที่จริงในตาราง ar_requestorder_hds ของคุณ (เช่น created_at, date, หรือชื่ออื่นๆ)
+        $query->whereBetween('ar_requestorder_hds.ar_requestorder_hds_date', [$startDate,$endDate]);
+
+        $hd = $query->get();
+
+        // ส่งตัวแปร $startDate และ $endDate กลับไปแสดงที่หน้า Blade ด้วย
+        return view('testsamples.form-testsamples-result', compact('hd', 'startDate', 'endDate'));
     }
 
     public function confirmDelReceiveTest(Request $request)

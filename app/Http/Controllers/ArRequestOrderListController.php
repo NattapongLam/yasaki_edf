@@ -26,10 +26,18 @@ class ArRequestOrderListController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $hd = ArRequestorderHd::leftjoin('ar_requestorder_statuses','ar_requestorder_hds.ar_requestorder_statuses_id','=','ar_requestorder_statuses.ar_requestorder_statuses_id')->get();
-        return view('sales.form-requestorder-list', compact('hd'));
+        // กำหนดค่าเริ่มต้นเป็นวันแรกและวันสุดท้ายของเดือนปัจจุบัน
+        $startDate = $request->input('start_date', now()->startOfMonth()->format('Y-m-d'));
+        $endDate = $request->input('end_date', now()->endOfMonth()->format('Y-m-d'));
+
+        $hd = DB::table('ar_requestorder_hds') // ปรับชื่อตารางตามจริงของคุณ
+            ->leftJoin('ar_requestorder_statuses', 'ar_requestorder_hds.ar_requestorder_statuses_id', '=', 'ar_requestorder_statuses.ar_requestorder_statuses_id')
+            ->select('ar_requestorder_hds.*', 'ar_requestorder_statuses.ar_requestorder_statuses_name')
+            ->whereBetween('ar_requestorder_hds_date', [$startDate, $endDate])
+            ->get();
+        return view('sales.form-requestorder-list', compact('hd','startDate', 'endDate'));
     }
 
     /**
