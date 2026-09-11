@@ -261,7 +261,7 @@
             </table>
 
             <!-- Statistical Analysis Section: Temperature (°C) -->
-            <div class="section-title">Statistical Analysis & Tests - Temperature (°C)</div>
+            <div class="section-title">Statistical Analysis & Tests - Temperature (25 - 31 °C)</div>
             <table class="stat-table" style="margin-bottom: 4px;">
                 <tr>
                     <th style="width: 25%;">Parameter (°C)</th>
@@ -286,7 +286,7 @@
             </table>
 
             <!-- Statistical Analysis Section: Relative Humidity (%RH) -->
-            <div class="section-title">Statistical Analysis & Tests - Relative Humidity (%RH)</div>
+            <div class="section-title">Statistical Analysis & Tests - Relative Humidity (40 - 60 %RH)</div>
             <table class="stat-table" style="margin-bottom: 4px;">
                 <tr>
                     <th style="width: 25%;">Parameter (%RH)</th>
