@@ -18,7 +18,22 @@
     <div class="card-body">
         <div class="row">
             <div class="col-12 col-md-6"><h3 class="card-title">ตรวจเช็คประจำวันเครื่องมือวัด</h3></div>
-        </div>       
+        </div> 
+        <!-- ฟอร์มเลือกช่วงวันที่ (แสดงค่าเดือนปัจจุบันเป็นค่าเริ่มต้น) -->
+        <div class="row mb-3">
+            <div class="col-md-3">
+                <label for="start_date" class="form-label">จากวันที่:</label>
+                <input type="date" id="start_date" class="form-control" value="{{ $startDate }}">
+            </div>
+            <div class="col-md-3">
+                <label for="end_date" class="form-label">ถึงวันที่:</label>
+                <input type="date" id="end_date" class="form-control" value="{{ $endDate }}">
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+                <button type="button" id="btn-filter" class="btn btn-primary me-2"><i class="fas fa-search"></i> ค้นหา</button>
+                <button type="button" id="btn-reset" class="btn btn-secondary"><i class="fas fa-redo"></i> รีเซ็ต</button>
+            </div>
+        </div>
         <table id="tb_job" class="table table-bordered dt-responsive nowrap w-100 text-center">
             <thead>
                 <tr>
@@ -54,17 +69,33 @@
 @push('scriptjs')
 <script>
 $(document).ready(function() {
+    // ตั้งค่า DataTable ปกติ
     $('#tb_job').DataTable({
         "pageLength": 50,
         "lengthMenu": [
             [10, 25, 50, -1],
             [10, 25, 50, "All"]
         ],
-            dom: 'Bfrtip',
-            buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
         ]
-    })
+    });
+
+    // Event เมื่อคลิกปุ่มค้นหา
+    $('#btn-filter').click(function() {
+        let startDate = $('#start_date').val();
+        let endDate = $('#end_date').val();
+
+        // ส่งค่าผ่าน Query String ไปยัง Controller (เปลี่ยนเส้นทาง URL ปัจจุบันพร้อมพารามิเตอร์)
+        let currentUrl = "{{ url()->current() }}";
+        window.location.href = `${currentUrl}?start_date=${startDate}&end_date=${endDate}`;
+    });
+
+    // Event เมื่อคลิกปุ่มรีเซ็ต
+    $('#btn-reset').click(function() {
+        window.location.href = "{{ url()->current() }}";
+    });
 });
 confirmDel = (refid) =>{
 Swal.fire({

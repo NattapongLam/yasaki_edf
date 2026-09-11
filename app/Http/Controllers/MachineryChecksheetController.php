@@ -21,10 +21,18 @@ class MachineryChecksheetController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $hd = MachineryChecksheetHd::where('machinery_checksheet_hds_flag',true)->get();
-        return view('machinerysetup.form-machinerychecksheet-list', compact('hd'));
+        // กำหนดค่าเริ่มต้นเป็นวันแรกและวันสุดท้ายของเดือนปัจจุบัน
+        $startDate = $request->input('start_date', now()->startOfMonth()->format('Y-m-d'));
+        $endDate = $request->input('end_date', now()->endOfMonth()->format('Y-m-d'));
+
+        $hd = DB::table('machinery_checksheet_hds')
+            ->join('machinery_lists', 'machinery_checksheet_hds.machinery_lists_id', '=', 'machinery_lists.machinery_lists_id') // ปรับชื่อคอลัมน์ Join ตามฐานข้อมูลจริงของคุณ
+            ->select('machinery_checksheet_hds.*', 'machinery_lists.*')
+            ->whereBetween('machinery_checksheet_hds_date', [$startDate, $endDate])
+            ->get();
+        return view('machinerysetup.form-machinerychecksheet-list', compact('hd','startDate', 'endDate'));
     }
 
     /**

@@ -21,12 +21,24 @@ class CalibrationChecksheetController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $hd = CalibrationChecksheetHd::where('calibration_checksheet_hds_flag',true)->get();
-        return view('calibrationsetup.form-calibrationchecksheet-list', compact('hd'));
-    }
+        // กำหนดค่าเริ่มต้นเป็น วันแรก และ วันสุดท้าย ของเดือนปัจจุบัน
+        $startDate = $request->input('start_date', now()->startOfMonth()->format('Y-m-d'));
+        $endDate = $request->input('end_date', now()->endOfMonth()->format('Y-m-d'));
 
+        $query = DB::table('calibration_checksheet_hds')
+            ->join('calibration_lists', 'calibration_checksheet_hds.calibration_lists_id', '=', 'calibration_lists.calibration_lists_id')
+            ->select('calibration_checksheet_hds.*', 'calibration_lists.*');
+
+        // กรองตามช่วงวันที่ที่เลือก หรือใช้ค่าเริ่มต้นของเดือนปัจจุบัน
+        $query->whereBetween('calibration_checksheet_hds_date', [$startDate, $endDate]);
+
+        $hd = $query->get();
+
+        // ส่งค่า $startDate และ $endDate กลับไปแสดงที่หน้า Blade ด้วย
+        return view('calibrationsetup.form-calibrationchecksheet-list', compact('hd', 'startDate', 'endDate'));
+    }
     /**
      * Show the form for creating a new resource.
      *
