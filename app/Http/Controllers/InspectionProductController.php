@@ -23,11 +23,32 @@ class InspectionProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(\Illuminate\Http\Request $request)
     {
-        $hd = InspectionProductHd::leftjoin('wh_product_lists','inspection_product_hds.wh_product_lists_id','=','wh_product_lists.wh_product_lists_id')
-        ->where('inspection_product_hds_flag',true)
-        ->get();
+        $query = InspectionProductHd::leftjoin(
+            'wh_product_lists', 
+            'inspection_product_hds.wh_product_lists_id', 
+            '=', 
+            'wh_product_lists.wh_product_lists_id'
+        )
+        ->where('inspection_product_hds_flag', true);
+
+        // ตรวจสอบว่ามีการเลือกเดือนมาหรือไม่
+        if ($request->filled('month')) {
+            $yearMonth = explode('-', $request->month);
+            $year = $yearMonth[0];
+            $month = $yearMonth[1];
+
+            $query->whereYear('inspection_product_hds.inspection_product_hds_date', $year)
+                ->whereMonth('inspection_product_hds.inspection_product_hds_date', $month);
+        } else {
+            // ค่าเริ่มต้น: แสดงข้อมูลของเดือนปัจจุบัน
+            $query->whereYear('inspection_product_hds.inspection_product_hds_date', \Carbon\Carbon::now()->year)
+                ->whereMonth('inspection_product_hds.inspection_product_hds_date', \Carbon\Carbon::now()->month);
+        }
+
+        $hd = $query->get();
+
         return view('inspection.form-inspectionproduct-list', compact('hd'));
     }
 

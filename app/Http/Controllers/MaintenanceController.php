@@ -24,9 +24,31 @@ class MaintenanceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(\Illuminate\Http\Request $request)
     {
-        $hd = RepairMachineryHd::leftjoin('repair_machinery_statuses','repair_machinery_hds.repair_machinery_statuses_id','=','repair_machinery_statuses.repair_machinery_statuses_id')->get();
+        $query = RepairMachineryHd::leftjoin(
+            'repair_machinery_statuses', 
+            'repair_machinery_hds.repair_machinery_statuses_id', 
+            '=', 
+            'repair_machinery_statuses.repair_machinery_statuses_id'
+        );
+
+        // ถ้ามีการเลือกเดือน (รูปแบบ YYYY-MM เช่น 2026-06)
+        if ($request->filled('month')) {
+            $yearMonth = explode('-', $request->month);
+            $year = $yearMonth[0];
+            $month = $yearMonth[1];
+
+            $query->whereYear('repair_machinery_hds.repair_machinery_hds_date', $year)
+                ->whereMonth('repair_machinery_hds.repair_machinery_hds_date', $month);
+        } else {
+            // ค่าเริ่มต้น: แสดงข้อมูลของเดือนปัจจุบัน
+            $query->whereYear('repair_machinery_hds.repair_machinery_hds_date', \Carbon\Carbon::now()->year)
+                ->whereMonth('repair_machinery_hds.repair_machinery_hds_date', \Carbon\Carbon::now()->month);
+        }
+
+        $hd = $query->get();
+
         return view('machinerysetup.form-maintenances-list', compact('hd'));
     }
 

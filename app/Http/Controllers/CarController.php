@@ -20,9 +20,25 @@ class CarController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(\Illuminate\Http\Request $request)
     {
-        $hd = DocCar::leftjoin('doc_statuses','doc_cars.doc_statuses_id','=','doc_statuses.doc_statuses_id')->get();
+        $query = DocCar::leftjoin(
+            'doc_statuses', 
+            'doc_cars.doc_statuses_id', 
+            '=', 
+            'doc_statuses.doc_statuses_id'
+        );
+
+        // ตรวจสอบว่ามีการเลือกปีมาหรือไม่
+        if ($request->filled('year')) {
+            $query->whereYear('doc_cars.doc_cars_date', $request->year);
+        } else {
+            // ค่าเริ่มต้น: แสดงข้อมูลของปีปัจจุบัน (เช่น ปี 2026)
+            $query->whereYear('doc_cars.doc_cars_date', \Carbon\Carbon::now()->year);
+        }
+
+        $hd = $query->get();
+
         return view('dcc.form-car-list', compact('hd'));
     }
 

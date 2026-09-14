@@ -18,9 +18,27 @@
 <div class="card">
     <div class="card-body">
         <div class="row mb-3">
-            <div class="col-12 col-md-6"><h3 class="card-title">ทะเบียน CAR</h3></div>
-            <div class="col-12 col-md-6"><a style="float: right" href="{{route('car.create')}}" class="btn btn-primary"><i class="fas fa-plus"></i> เพิ่มรายการ</a></div>
-        </div>             
+            <div class="col-12 col-md-4"><h3 class="card-title">ทะเบียน CAR</h3></div>
+            <div class="col-12 col-md-8">
+                <!-- ฟอร์มเลือกปี -->
+                <form action="{{ route('car.index') }}" method="GET" class="row g-2 justify-content-end">
+                    <div class="col-auto align-self-center">
+                        <label for="year" class="col-form-label">เลือกปี (ค.ศ.):</label>
+                    </div>
+                    <div class="col-auto">
+                        <input type="number" name="year" value="{{ request('year', \Carbon\Carbon::now()->year) }}" class="form-control" style="width: 100px;" placeholder="2026">
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-secondary"><i class="fas fa-search"></i> ค้นหา</button>
+                        <a href="{{ route('car.index') }}" class="btn btn-light">ปีปัจจุบัน</a>
+                    </div>
+                    <div class="col-auto">
+                        <a href="{{ route('car.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> เพิ่มรายการ</a>
+                    </div>
+                </form>
+            </div>
+        </div>            
+            
         <table id="tb_job" class="table table-bordered dt-responsive nowrap w-100 text-center">
             <thead>
                 <tr>
@@ -40,17 +58,17 @@
             <tbody>
                 @foreach ($hd as $item)
                     <tr>
-                        <td>{{$item->doc_cars_docuno}}</td>
-                        <td>{{$item->doc_cars_date}}</td>
-                        <td>{{$item->doc_cars_relevant}}</td>
-                        <td>{{$item->doc_cars_issuingdep}}</td>
-                        <td>{{$item->doc_cars_relevantdep}}</td>
-                        <td>{{$item->doc_cars_defects}}</td>
-                        <td>{{$item->doc_cars_problem}}</td>
-                        <td>{{$item->doc_cars_topics}}</td>
-                        <td>{{$item->doc_statuses_name}}</td>
+                        <td>{{ $item->doc_cars_docuno }}</td>
+                        <td>{{ $item->doc_cars_date }}</td>
+                        <td>{{ $item->doc_cars_relevant }}</td>
+                        <td>{{ $item->doc_cars_issuingdep }}</td>
+                        <td>{{ $item->doc_cars_relevantdep }}</td>
+                        <td>{{ $item->doc_cars_defects }}</td>
+                        <td>{{ $item->doc_cars_problem }}</td>
+                        <td>{{ $item->doc_cars_topics }}</td>
+                        <td>{{ $item->doc_statuses_name }}</td>
                         <td>
-                            <a href="{{route('car.edit',$item->doc_cars_id)}}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
+                            <a href="{{ route('car.edit', $item->doc_cars_id) }}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
                         </td>
                         <td>
                             <a href="javascript:void(0)" class="btn btn-danger btn-sm" onclick="confirmDel('{{ $item->doc_cars_id }}')"><i class="fas fa-trash"></i></a>
@@ -79,63 +97,61 @@ $(document).ready(function() {
         ]
     });
 });
-confirmDel = (refid) =>{
-Swal.fire({
-    title: 'คุณแน่ใจหรือไม่ !',
-    text: `คุณต้องการลบรายการนี้หรือไม่ ?`,
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonText: 'ยืนยัน',
-    cancelButtonText: 'ยกเลิก',
-    confirmButtonClass: 'btn btn-success',
-    cancelButtonClass: 'btn btn-danger',
-    buttonsStyling: false         
-}).then(function(result) {
-    if (result.value) {
-        $.ajax({
-            url: `{{ url('/CancelCar') }}`,
-            type: "POST",
-            data: {
-                "_token": "{{ csrf_token() }}",
-                "refid": refid,               
-            },           
-            dataType: "json",
-            success: function(data) {
-                // console.log(data);
-                if (data.status == true) {
-                    Swal.fire({
-                        title: 'สำเร็จ',
-                        text: 'ยกเลิกเอกสารเรียบร้อยแล้ว',
-                        icon: 'success'
-                    }).then(function() {
-                        location.reload();
-                    });
-                } else {
-                    Swal.fire({
-                        title: 'ไม่สำเร็จ',
-                        text: 'ยกเลิกเอกสารไม่สำเร็จ',
-                        icon: 'error'
-                    });
-                }
-               
-            },
-            error: function(data) {
-                Swal.fire({
-                        title: 'ไม่สำเร็จ',
-                        text: 'ยกเลิกเอกสารไม่สำเร็จ',
-                        icon: 'error'
-                    });            }
-        });
 
-    } else if ( // Read more about handling dismissals
-        result.dismiss === Swal.DismissReason.cancel) {
-        Swal.fire({
-            title: 'ยกเลิก',
-            text: 'โปรดตรวจสอบข้อมูลอีกครั้งเพื่อความถูกต้อง :)',
-            icon: 'error'
-        });
-    }
-});
+function confirmDel(refid) {
+    Swal.fire({
+        title: 'คุณแน่ใจหรือไม่ !',
+        text: `คุณต้องการลบรายการนี้หรือไม่ ?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'ยืนยัน',
+        cancelButtonText: 'ยกเลิก',
+        confirmButtonClass: 'btn btn-success',
+        cancelButtonClass: 'btn btn-danger',
+        buttonsStyling: false         
+    }).then(function(result) {
+        if (result.value) {
+            $.ajax({
+                url: `{{ url('/CancelCar') }}`,
+                type: "POST",
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "refid": refid,               
+                },         
+                dataType: "json",
+                success: function(data) {
+                    if (data.status == true) {
+                        Swal.fire({
+                            title: 'สำเร็จ',
+                            text: 'ยกเลิกเอกสารเรียบร้อยแล้ว',
+                            icon: 'success'
+                        }).then(function() {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'ไม่สำเร็จ',
+                            text: 'ยกเลิกเอกสารไม่สำเร็จ',
+                            icon: 'error'
+                        });
+                    }
+                },
+                error: function(data) {
+                    Swal.fire({
+                        title: 'ไม่สำเร็จ',
+                        text: 'ยกเลิกเอกสารไม่สำเร็จ',
+                        icon: 'error'
+                    });           
+                }
+            });
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+            Swal.fire({
+                title: 'ยกเลิก',
+                text: 'โปรดตรวจสอบข้อมูลอีกครั้งเพื่อความถูกต้อง :)',
+                icon: 'error'
+            });
+        }
+    });
 }
 </script>
 @endpush

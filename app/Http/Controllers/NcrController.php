@@ -21,10 +21,25 @@ class NcrController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(\Illuminate\Http\Request $request)
     {
-        $hd = DocNcr::leftjoin('doc_ncr_statuses','doc_ncrs.doc_ncr_statuses_id','=','doc_ncr_statuses.doc_ncr_statuses_id')
-        ->get();
+        $query = DocNcr::leftjoin(
+            'doc_ncr_statuses', 
+            'doc_ncrs.doc_ncr_statuses_id', 
+            '=', 
+            'doc_ncr_statuses.doc_ncr_statuses_id'
+        );
+
+        // ตรวจสอบว่ามีการเลือกปีมาหรือไม่
+        if ($request->filled('year')) {
+            $query->whereYear('doc_ncrs.doc_ncrs_date', $request->year);
+        } else {
+            // ค่าเริ่มต้น: แสดงข้อมูลของปีปัจจุบัน (เช่น ปี 2026)
+            $query->whereYear('doc_ncrs.doc_ncrs_date', \Carbon\Carbon::now()->year);
+        }
+
+        $hd = $query->get();
+
         return view('dcc.form-ncr-list', compact('hd'));
     }
 

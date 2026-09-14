@@ -23,11 +23,32 @@ class InspectionMachineryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(\Illuminate\Http\Request $request)
     {
-        $hd = InspectionMachineryHd::leftjoin('machinery_lists','inspection_machinery_hds.machinery_lists_id','=','machinery_lists.machinery_lists_id')
-        ->where('inspection_machinery_hds_flag',true)
-        ->get();
+        $query = InspectionMachineryHd::leftjoin(
+            'machinery_lists', 
+            'inspection_machinery_hds.machinery_lists_id', 
+            '=', 
+            'machinery_lists.machinery_lists_id'
+        )
+        ->where('inspection_machinery_hds_flag', true);
+
+        // ตรวจสอบว่ามีการเลือกเดือนมาหรือไม่
+        if ($request->filled('month')) {
+            $yearMonth = explode('-', $request->month);
+            $year = $yearMonth[0];
+            $month = $yearMonth[1];
+
+            $query->whereYear('inspection_machinery_hds.inspection_machinery_hds_date', $year)
+                ->whereMonth('inspection_machinery_hds.inspection_machinery_hds_date', $month);
+        } else {
+            // ค่าเริ่มต้น: แสดงข้อมูลของเดือนปัจจุบัน
+            $query->whereYear('inspection_machinery_hds.inspection_machinery_hds_date', \Carbon\Carbon::now()->year)
+                ->whereMonth('inspection_machinery_hds.inspection_machinery_hds_date', \Carbon\Carbon::now()->month);
+        }
+
+        $hd = $query->get();
+
         return view('inspection.form-inspectionmachinery-list', compact('hd'));
     }
 

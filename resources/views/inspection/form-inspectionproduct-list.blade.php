@@ -14,12 +14,31 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     @endif
+
 <div class="card">
     <div class="card-body">
-        <div class="row">
-            <div class="col-12 col-md-6"><h3 class="card-title">ใบตรวจรับสินค้า</h3></div>           
-            <div class="col-12 col-md-6"><a style="float: right" href="{{route('inspection-product.create')}}" class="btn btn-primary"><i class="fas fa-plus"></i> เพิ่มรายการ</a></div>
+        <div class="row mb-3">
+            <div class="col-12 col-md-4"><h3 class="card-title">ใบตรวจรับสินค้า</h3></div>       
+            <div class="col-12 col-md-8">
+                <!-- ฟอร์มเลือกเดือน -->
+                <form action="{{ route('inspection-product.index') }}" method="GET" class="row g-2 justify-content-end">
+                    <div class="col-auto align-self-center">
+                        <label for="month" class="col-form-label">เลือกเดือน:</label>
+                    </div>
+                    <div class="col-auto">
+                        <input type="month" name="month" value="{{ request('month', \Carbon\Carbon::now()->format('Y-m')) }}" class="form-control">
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-secondary"><i class="fas fa-search"></i> ค้นหา</button>
+                        <a href="{{ route('inspection-product.index') }}" class="btn btn-light">เดือนปัจจุบัน</a>
+                    </div>
+                    <div class="col-auto">
+                        <a href="{{ route('inspection-product.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> เพิ่มรายการ</a>
+                    </div>
+                </form>
+            </div>
         </div>       
+
         <table id="tb_job" class="table table-bordered dt-responsive nowrap w-100 text-center">
             <thead>  
                 <tr>
@@ -28,16 +47,16 @@
                     <th>สินค้า</th>
                     <th>แก้ไข</th>
                     <th>ยกเลิก</th>
-                </tr>         
+                </tr>        
             </thead>
             <tbody>
                  @foreach ($hd as $item)
-                   <tr>
-                        <td>{{$item->inspection_product_hds_date}}</td>
-                        <td>{{$item->inspection_product_hds_docuno}}</td>
-                        <td>{{$item->wh_product_lists_code}}/{{$item->wh_product_lists_name1}}</td>
+                    <tr>
+                        <td>{{ $item->inspection_product_hds_date }}</td>
+                        <td>{{ $item->inspection_product_hds_docuno }}</td>
+                        <td>{{ $item->wh_product_lists_code }}/{{ $item->wh_product_lists_name1 }}</td>
                         <td>
-                            <a href="{{route('inspection-product.edit',$item->inspection_product_hds_id)}}" class="btn btn-sm btn-warning" >
+                            <a href="{{ route('inspection-product.edit', $item->inspection_product_hds_id) }}" class="btn btn-sm btn-warning">
                                 <i class="fas fa-edit"></i>
                             </a>
                         </td>
@@ -52,6 +71,7 @@
 </div>
 </div>
 @endsection
+
 @push('scriptjs')
 <script>
 $(document).ready(function() {
@@ -61,69 +81,67 @@ $(document).ready(function() {
             [10, 25, 50, -1],
             [10, 25, 50, "All"]
         ],
-            dom: 'Bfrtip',
-            buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
         ]
-    })
+    });
 });
-confirmDel = (refid) =>{
-Swal.fire({
-    title: 'คุณแน่ใจหรือไม่ !',
-    text: `คุณต้องการลบรายการนี้หรือไม่ ?`,
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonText: 'ยืนยัน',
-    cancelButtonText: 'ยกเลิก',
-    confirmButtonClass: 'btn btn-success',
-    cancelButtonClass: 'btn btn-danger',
-    buttonsStyling: false         
-}).then(function(result) {
-    if (result.value) {
-        $.ajax({
-            url: `{{ url('/CancelInspectionPdHd') }}`,
-            type: "POST",
-            data: {
-                "_token": "{{ csrf_token() }}",
-                "refid": refid,               
-            },           
-            dataType: "json",
-            success: function(data) {
-                // console.log(data);
-                if (data.status == true) {
-                    Swal.fire({
-                        title: 'สำเร็จ',
-                        text: 'ยกเลิกเอกสารเรียบร้อยแล้ว',
-                        icon: 'success'
-                    }).then(function() {
-                        location.reload();
-                    });
-                } else {
-                    Swal.fire({
-                        title: 'ไม่สำเร็จ',
-                        text: 'ยกเลิกเอกสารไม่สำเร็จ',
-                        icon: 'error'
-                    });
-                }
-               
-            },
-            error: function(data) {
-                Swal.fire({
-                        title: 'ไม่สำเร็จ',
-                        text: 'ยกเลิกเอกสารไม่สำเร็จ',
-                        icon: 'error'
-                    });            }
-        });
 
-    } else if ( // Read more about handling dismissals
-        result.dismiss === Swal.DismissReason.cancel) {
-        Swal.fire({
-            title: 'ยกเลิก',
-            text: 'โปรดตรวจสอบข้อมูลอีกครั้งเพื่อความถูกต้อง :)',
-            icon: 'error'
-        });
-    }
-});
+function confirmDel(refid) {
+    Swal.fire({
+        title: 'คุณแน่ใจหรือไม่ !',
+        text: `คุณต้องการลบรายการนี้หรือไม่ ?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'ยืนยัน',
+        cancelButtonText: 'ยกเลิก',
+        confirmButtonClass: 'btn btn-success',
+        cancelButtonClass: 'btn btn-danger',
+        buttonsStyling: false         
+    }).then(function(result) {
+        if (result.value) {
+            $.ajax({
+                url: `{{ url('/CancelInspectionPdHd') }}`,
+                type: "POST",
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "refid": refid,               
+                },         
+                dataType: "json",
+                success: function(data) {
+                    if (data.status == true) {
+                        Swal.fire({
+                            title: 'สำเร็จ',
+                            text: 'ยกเลิกเอกสารเรียบร้อยแล้ว',
+                            icon: 'success'
+                        }).then(function() {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'ไม่สำเร็จ',
+                            text: 'ยกเลิกเอกสารไม่สำเร็จ',
+                            icon: 'error'
+                        });
+                    }
+                },
+                error: function(data) {
+                    Swal.fire({
+                        title: 'ไม่สำเร็จ',
+                        text: 'ยกเลิกเอกสารไม่สำเร็จ',
+                        icon: 'error'
+                    });           
+                }
+            });
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+            Swal.fire({
+                title: 'ยกเลิก',
+                text: 'โปรดตรวจสอบข้อมูลอีกครั้งเพื่อความถูกต้อง :)',
+                icon: 'error'
+            });
+        }
+    });
 }
 </script>
 @endpush
