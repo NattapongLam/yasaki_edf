@@ -24,12 +24,43 @@ class WhReturnStockListController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(\Illuminate\Http\Request $request)
     {
-        $hd = WhReturnstockHd::leftjoin('wh_returnstock_statuses','wh_returnstock_hds.wh_returnstock_statuses_id','=','wh_returnstock_statuses.wh_returnstock_statuses_id')
-        ->leftjoin('wh_warehouses','wh_returnstock_hds.wh_warehouses_id','=','wh_warehouses.wh_warehouses_id')
-        ->leftjoin('wh_issuestock_hds','wh_returnstock_hds.wh_issuestock_hds_id','=','wh_issuestock_hds.wh_issuestock_hds_id')
-        ->get();
+        $query = WhReturnstockHd::leftjoin(
+            'wh_returnstock_statuses', 
+            'wh_returnstock_hds.wh_returnstock_statuses_id', 
+            '=', 
+            'wh_returnstock_statuses.wh_returnstock_statuses_id'
+        )
+        ->leftjoin(
+            'wh_warehouses', 
+            'wh_returnstock_hds.wh_warehouses_id', 
+            '=', 
+            'wh_warehouses.wh_warehouses_id'
+        )
+        ->leftjoin(
+            'wh_issuestock_hds', 
+            'wh_returnstock_hds.wh_issuestock_hds_id', 
+            '=', 
+            'wh_issuestock_hds.wh_issuestock_hds_id'
+        );
+
+        // ตรวจสอบว่ามีการระบุช่วงวันที่มาหรือไม่
+        if ($request->filled('from_date') && $request->filled('to_date')) {
+            $query->whereBetween('wh_returnstock_hds.wh_returnstock_hds_date', [
+                $request->from_date, 
+                $request->to_date
+            ]);
+        } else {
+            // ค่าเริ่มต้น: แสดงข้อมูลของเดือนปัจจุบัน (ตั้งแต่วันแรกถึงวันสุดท้ายของเดือน)
+            $query->whereBetween('wh_returnstock_hds.wh_returnstock_hds_date', [
+                \Carbon\Carbon::now()->startOfMonth()->format('Y-m-d'),
+                \Carbon\Carbon::now()->endOfMonth()->format('Y-m-d')
+            ]);
+        }
+
+        $hd = $query->get();
+
         return view('warehouses.form-returnstock-list', compact('hd'));
     }
 

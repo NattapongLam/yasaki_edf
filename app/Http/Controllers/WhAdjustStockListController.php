@@ -24,11 +24,37 @@ class WhAdjustStockListController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(\Illuminate\Http\Request $request)
     {
-        $hd = WhAdjuststockHd::leftjoin('wh_adjuststock_statuses','wh_adjuststock_hds.wh_adjuststock_statuses_id','=','wh_adjuststock_statuses.wh_adjuststock_statuses_id')
-        ->leftjoin('wh_warehouses','wh_adjuststock_hds.wh_warehouses_id','=','wh_warehouses.wh_warehouses_id')
-        ->get();
+        $query = WhAdjuststockHd::leftjoin(
+            'wh_adjuststock_statuses', 
+            'wh_adjuststock_hds.wh_adjuststock_statuses_id', 
+            '=', 
+            'wh_adjuststock_statuses.wh_adjuststock_statuses_id'
+        )
+        ->leftjoin(
+            'wh_warehouses', 
+            'wh_adjuststock_hds.wh_warehouses_id', 
+            '=', 
+            'wh_warehouses.wh_warehouses_id'
+        );
+
+        // ตรวจสอบว่ามีการระบุช่วงวันที่มาหรือไม่
+        if ($request->filled('from_date') && $request->filled('to_date')) {
+            $query->whereBetween('wh_adjuststock_hds.wh_adjuststock_hds_date', [
+                $request->from_date, 
+                $request->to_date
+            ]);
+        } else {
+            // ค่าเริ่มต้น: แสดงข้อมูลของเดือนปัจจุบัน (ตั้งแต่วันแรกถึงวันสุดท้ายของเดือน)
+            $query->whereBetween('wh_adjuststock_hds.wh_adjuststock_hds_date', [
+                \Carbon\Carbon::now()->startOfMonth()->format('Y-m-d'),
+                \Carbon\Carbon::now()->endOfMonth()->format('Y-m-d')
+            ]);
+        }
+
+        $hd = $query->get();
+
         return view('warehouses.form-adjuststock-list', compact('hd'));
     }
 
