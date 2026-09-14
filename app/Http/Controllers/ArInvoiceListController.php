@@ -23,11 +23,27 @@ class ArInvoiceListController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(\Illuminate\Http\Request $request)
     {
-        $hd = ArInvoiceHd::leftjoin('ar_invoice_statuses','ar_invoice_hds.ar_invoice_statuses_id','=','ar_invoice_statuses.ar_invoice_statuses_id')
-        ->leftjoin('ar_quotation_hds','ar_quotation_hds.ar_quotation_hds_id','=','ar_invoice_hds.ar_quotation_hds_id')
-        ->get();
+        $query = ArInvoiceHd::leftjoin('ar_invoice_statuses', 'ar_invoice_hds.ar_invoice_statuses_id', '=', 'ar_invoice_statuses.ar_invoice_statuses_id')
+        ->leftjoin('ar_quotation_hds', 'ar_quotation_hds.ar_quotation_hds_id', '=', 'ar_invoice_hds.ar_quotation_hds_id');
+
+        // ตรวจสอบว่ามีการระบุช่วงวันที่มาหรือไม่
+        if ($request->filled('from_date') && $request->filled('to_date')) {
+            $query->whereBetween('ar_invoice_hds.ar_invoice_hds_date', [
+                $request->from_date, 
+                $request->to_date
+            ]);
+        } else {
+            // ค่าเริ่มต้น: แสดงข้อมูลของเดือนปัจจุบัน (ตั้งแต่วันแรกถึงวันสุดท้ายของเดือน)
+            $query->whereBetween('ar_invoice_hds.ar_invoice_hds_date', [
+                \Carbon\Carbon::now()->startOfMonth()->format('Y-m-d'),
+                \Carbon\Carbon::now()->endOfMonth()->format('Y-m-d')
+            ]);
+        }
+
+        $hd = $query->get();
+
         return view('sales.form-invoice-list', compact('hd'));
     }
 

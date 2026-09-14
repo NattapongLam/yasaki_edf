@@ -27,9 +27,31 @@ class ArQuotationListController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(\Illuminate\Http\Request $request)
     {
-        $hd = ArQuotationHd::leftjoin('ar_quotation_statuses','ar_quotation_hds.ar_quotation_statuses_id','=','ar_quotation_statuses.ar_quotation_statuses_id')->get();
+        $query = ArQuotationHd::leftjoin(
+            'ar_quotation_statuses', 
+            'ar_quotation_hds.ar_quotation_statuses_id', 
+            '=', 
+            'ar_quotation_statuses.ar_quotation_statuses_id'
+        );
+
+        // ตรวจสอบว่ามีการระบุช่วงวันที่มาหรือไม่
+        if ($request->filled('from_date') && $request->filled('to_date')) {
+            $query->whereBetween('ar_quotation_hds.ar_quotation_hds_date', [
+                $request->from_date, 
+                $request->to_date
+            ]);
+        } else {
+            // ค่าเริ่มต้น: แสดงข้อมูลของเดือนปัจจุบัน (ตั้งแต่วันแรกถึงวันสุดท้ายของเดือน)
+            $query->whereBetween('ar_quotation_hds.ar_quotation_hds_date', [
+                \Carbon\Carbon::now()->startOfMonth()->format('Y-m-d'),
+                \Carbon\Carbon::now()->endOfMonth()->format('Y-m-d')
+            ]);
+        }
+
+        $hd = $query->get();
+
         return view('sales.form-quotation-list', compact('hd'));
     }
 

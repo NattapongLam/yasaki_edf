@@ -22,11 +22,32 @@ class ComplaintsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(\Illuminate\Http\Request $request)
     {
-        $hd = CustomerComplaintsList::leftjoin('ar_customer_lists','customer_complaints_lists.ar_customer_lists_id','=','ar_customer_lists.ar_customer_lists_id')
-        ->where('customer_complaints_lists_flag',true)
-        ->get();
+        $query = CustomerComplaintsList::leftjoin(
+            'ar_customer_lists', 
+            'customer_complaints_lists.ar_customer_lists_id', 
+            '=', 
+            'ar_customer_lists.ar_customer_lists_id'
+        )
+        ->where('customer_complaints_lists_flag', true);
+
+        // ตรวจสอบว่ามีการระบุช่วงวันที่มาหรือไม่
+        if ($request->filled('from_date') && $request->filled('to_date')) {
+            $query->whereBetween('customer_complaints_lists.customer_complaints_lists_date', [
+                $request->from_date, 
+                $request->to_date
+            ]);
+        } else {
+            // ค่าเริ่มต้น: แสดงข้อมูลของเดือนปัจจุบัน (ตั้งแต่วันแรกถึงวันสุดท้ายของเดือน)
+            $query->whereBetween('customer_complaints_lists.customer_complaints_lists_date', [
+                \Carbon\Carbon::now()->startOfMonth()->format('Y-m-d'),
+                \Carbon\Carbon::now()->endOfMonth()->format('Y-m-d')
+            ]);
+        }
+
+        $hd = $query->get();
+
         return view('customers.form-complaints-list', compact('hd'));
     }
 

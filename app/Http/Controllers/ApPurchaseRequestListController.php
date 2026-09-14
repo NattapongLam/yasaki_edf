@@ -22,11 +22,37 @@ class ApPurchaseRequestListController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(\Illuminate\Http\Request $request)
     {
-        $hd = ApPurchaserequestHd::leftjoin('ap_purchaserequest_statuses','ap_purchaserequest_hds.ap_purchaserequest_statuses_id','=','ap_purchaserequest_statuses.ap_purchaserequest_statuses_id')
-        ->leftjoin('ms_allocate','ap_purchaserequest_hds.ms_allocate_id','=','ms_allocate.ms_allocate_id')
-        ->get();
+        $query = ApPurchaserequestHd::leftjoin(
+            'ap_purchaserequest_statuses', 
+            'ap_purchaserequest_hds.ap_purchaserequest_statuses_id', 
+            '=', 
+            'ap_purchaserequest_statuses.ap_purchaserequest_statuses_id'
+        )
+        ->leftjoin(
+            'ms_allocate', 
+            'ap_purchaserequest_hds.ms_allocate_id', 
+            '=', 
+            'ms_allocate.ms_allocate_id'
+        );
+
+        // ตรวจสอบว่ามีการระบุช่วงวันที่มาหรือไม่
+        if ($request->filled('from_date') && $request->filled('to_date')) {
+            $query->whereBetween('ap_purchaserequest_hds.ap_purchaserequest_hds_date', [
+                $request->from_date, 
+                $request->to_date
+            ]);
+        } else {
+            // ค่าเริ่มต้น: แสดงข้อมูลของเดือนปัจจุบัน (ตั้งแต่วันแรกถึงวันสุดท้ายของเดือน)
+            $query->whereBetween('ap_purchaserequest_hds.ap_purchaserequest_hds_date', [
+                \Carbon\Carbon::now()->startOfMonth()->format('Y-m-d'),
+                \Carbon\Carbon::now()->endOfMonth()->format('Y-m-d')
+            ]);
+        }
+
+        $hd = $query->get();
+
         return view('purchases.form-purchaserequest-list', compact('hd'));
     }
 

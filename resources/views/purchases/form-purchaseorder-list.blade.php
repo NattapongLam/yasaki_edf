@@ -16,10 +16,34 @@
     @endif
 <div class="card">
     <div class="card-body">
-        <div class="row">
-            <div class="col-12 col-md-6"><h3 class="card-title">ใบสั่งซื้อ</h3></div>
-            <div class="col-12 col-md-6"><a style="float: right" href="{{route('purchaseorders.create')}}" class="btn btn-primary"><i class="fas fa-plus"></i> เพิ่มรายการ</a></div>
-        </div>       
+        <div class="row mb-3">
+            <div class="col-12 col-md-3"><h3 class="card-title">ใบสั่งซื้อ</h3></div>
+            <div class="col-12 col-md-9">
+                <!-- ฟอร์มเลือกช่วงวันที่ -->
+                <form action="{{ route('purchaseorders.index') }}" method="GET" class="row g-2 justify-content-end">
+                    <div class="col-auto align-self-center">
+                        <label class="col-form-label">จากวันที่:</label>
+                    </div>
+                    <div class="col-auto">
+                        <input type="date" name="from_date" value="{{ request('from_date', \Carbon\Carbon::now()->startOfMonth()->format('Y-m-d')) }}" class="form-control">
+                    </div>
+                    <div class="col-auto align-self-center">
+                        <label class="col-form-label">ถึง:</label>
+                    </div>
+                    <div class="col-auto">
+                        <input type="date" name="to_date" value="{{ request('to_date', \Carbon\Carbon::now()->endOfMonth()->format('Y-m-d')) }}" class="form-control">
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-secondary"><i class="fas fa-search"></i> ค้นหา</button>
+                        <a href="{{ route('purchaseorders.index') }}" class="btn btn-light">เดือนนี้</a>
+                    </div>
+                    <div class="col-auto">
+                        <a href="{{route('purchaseorders.create')}}" class="btn btn-primary"><i class="fas fa-plus"></i> เพิ่มรายการ</a>
+                    </div>
+                </form>
+            </div>
+        </div>      
+        
         <table id="tb_job" class="table table-bordered dt-responsive nowrap w-100 text-center">
             <thead>
                 <tr>
@@ -28,10 +52,10 @@
                     <th>เลขที่</th>
                     <th>ผู้จำหน่าย</th>
                     <th>ยอดเงิน</th>
-                    <th>ผู้อนุมัติ</th>                   
+                    <th>ผู้อนุมัติ</th>                 
                     <th>แก้ไข</th>
                     <th>ยกเลิก</th>
-                    <td></td>  
+                    <th></th>  
                 </tr>
             </thead>
             <tbody>
@@ -93,8 +117,8 @@
                                 target="_blank"
                                 class="btn btn-info">
                                 🖨 พิมพ์ใบสั่งซื้อ
-                                </a>
-                            </td>                  
+                            </a>
+                        </td>             
                     </tr>
                 @endforeach
             </tbody>
@@ -137,10 +161,9 @@ Swal.fire({
             data: {
                 "_token": "{{ csrf_token() }}",
                 "refid": refid,               
-            },           
+            },         
             dataType: "json",
             success: function(data) {
-                // console.log(data);
                 if (data.status == true) {
                     Swal.fire({
                         title: 'สำเร็จ',
@@ -163,10 +186,10 @@ Swal.fire({
                         title: 'ไม่สำเร็จ',
                         text: 'ยกเลิกรายการไม่สำเร็จ',
                         icon: 'error'
-                    });            }
+                    });           }
         });
 
-    } else if ( // Read more about handling dismissals
+    } else if ( 
         result.dismiss === Swal.DismissReason.cancel) {
         Swal.fire({
             title: 'ยกเลิก',
