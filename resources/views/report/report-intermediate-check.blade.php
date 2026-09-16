@@ -3,117 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <title>YSK5-FM-LAB-12 บันทึกค่าการตรวจสอบเครื่องมือระหว่างการใช้งาน (Intermediate Check Form)</title>
-    <style>
+   <style>
         @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
         
         @media print {
             @page {
                 size: A4 landscape;
-                margin: 4mm; /* ลด Margin หน้ากระดาษเหลือ 4mm เพื่อให้พื้นที่พิมพ์เพิ่มขึ้น */
+                margin: 5mm; /* ตั้งระยะขอบกระดาษพอดีสำหรับการพิมพ์ A4 แนวนอน */
             }
-            .no-print { display: none !important; }
+            .no-print { 
+                display: none !important; 
+            }
             body { 
-                background-color: white !important; 
+                background-color: #ffffff !important; 
                 padding: 0 !important; 
                 margin: 0 !important; 
-                -webkit-print-color-adjust: exact; /* บังคับพิมพ์สีพื้นหลัง/ตาราง */
+                -webkit-print-color-adjust: exact !important; 
+                print-color-adjust: exact !important; 
             }
             .container { 
                 border: none !important; 
                 box-shadow: none !important; 
-                padding: 0 !important; 
+                padding: 2px !important; 
                 width: 100% !important;
                 max-width: 100% !important;
+                background-color: #ffffff !important;
+            }
+            /* คงสีพื้นหลังตารางและช่องกรอกตอนพิมพ์ */
+            .data-table th, .stat-table th, .info-table td.label, td[style*="background-color"] {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            input.form-control, select.form-control, textarea.form-control {
+                border: 1px solid #94a3b8 !important;
+                background-color: #ffffff !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
             }
         }
 
         body {
             font-family: 'Sarabun', sans-serif;
-            font-size: 9.5px; /* ลดขนาดฟอนต์พื้นฐานลงเล็กน้อย */
-            color: #333;
+            font-size: 10px;
+            color: #334155;
             margin: 0;
-            padding: 5px;
-            background-color: #f1f5f9;
+            padding: 10px;
+            background-color: #f8fafc;
         }
+
         .container {
             max-width: 1500px;
             margin: 0 auto;
-            background: #fff;
-            padding: 10px;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            background: #ffffff;
+            padding: 16px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
         }
+
         .header-table, .info-table, .data-table, .stat-table, .sig-table {
             width: 100%;
             border-collapse: collapse;
         }
+
         .header-table td {
             vertical-align: middle;
-            padding: 2px;
+            padding: 4px;
         }
+
         .info-table {
-            margin-top: 4px;
-            margin-bottom: 6px;
+            margin-top: 6px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            overflow: hidden;
             border: 1px solid #cbd5e1;
-            background-color: #f8fafc;
         }
         .info-table td {
-            padding: 3px 6px; /* ลด Padding ในตารางข้อมูล */
+            padding: 4px 6px;
             font-size: 9.5px;
-            border: 1px solid #e2e8f0;
+            border: 1px solid #cbd5e1;
+            background-color: #ffffff;
         }
+        .info-table td.label {
+            background-color: #f1f5f9;
+            font-weight: 600;
+            color: #334155;
+            width: 15%;
+        }
+
         .data-table th, .data-table td, 
         .stat-table th, .stat-table td,
         .sig-table td {
             border: 1px solid #cbd5e1;
-            padding: 2px 3px; /* กระชับตารางข้อมูลผลทดสอบ */
+            padding: 3px 4px;
             font-size: 9px;
             text-align: center;
             vertical-align: middle;
         }
+
         .data-table th, .stat-table th {
             background-color: #f1f5f9;
             font-weight: 600;
             color: #1e293b;
         }
-        input.form-control {
+
+        input.form-control, select.form-control, textarea.form-control {
             width: 100%;
             text-align: center;
             background-color: #ffffff;
             border: 1px solid #cbd5e1;
-            border-radius: 3px;
-            padding: 2px;
+            border-radius: 4px;
+            padding: 2px 4px;
             font-size: 9px;
+            font-family: 'Sarabun', sans-serif;
+            color: #1e293b;
             outline: none;
             box-sizing: border-box;
-            height: 20px; /* ลดความสูงช่องกรอกข้อมูลเล็กน้อย */
+            height: 22px;
         }
-        input.form-control:focus {
+
+        select.form-control {
+            text-align-last: center;
+        }
+
+        textarea.form-control {
+            height: auto;
+            min-height: 26px;
+            resize: vertical;
+            text-align: left;
+        }
+
+        input.form-control:focus, select.form-control:focus, textarea.form-control:focus {
             border-color: #3b82f6;
-            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
         }
+
         .section-title {
-            font-weight: bold;
+            font-weight: 700;
             font-size: 10px;
             color: #1e293b;
-            margin-top: 6px;
+            margin-top: 8px;
             margin-bottom: 3px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
+        .section-title::before {
+            content: '';
+            display: inline-block;
+            width: 3px;
+            height: 10px;
+            background-color: #2563eb;
+            border-radius: 2px;
+        }
+
         .toolbar {
             max-width: 1500px;
-            margin: 0 auto 8px auto;
-            background: #fff;
-            padding: 8px 12px;
-            border-radius: 8px;
+            margin: 0 auto 10px auto;
+            background: #ffffff;
+            padding: 10px 16px;
+            border-radius: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
         }
+
         .btn {
-            padding: 5px 12px;
-            border-radius: 4px;
-            font-size: 11px;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 12px;
             font-weight: 500;
             cursor: pointer;
             border: none;
@@ -121,23 +181,37 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
+            transition: background-color 0.2s;
         }
         .btn-success { background-color: #16a34a; }
         .btn-success:hover { background-color: #15803d; }
         .btn-primary { background-color: #2563eb; }
         .btn-primary:hover { background-color: #1d4ed8; }
+
+        .alert {
+            max-width: 1500px; 
+            margin: 0 auto 10px auto; 
+            padding: 10px 14px; 
+            border-radius: 8px; 
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .alert-success { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+        .alert-danger { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
     @if(session('success'))
-        <div style="max-width: 1500px; margin: 0 auto 8px auto; padding: 8px; background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; border-radius: 6px; font-size: 11px;" class="no-print">
+        <div class="alert alert-success no-print">
             <i class="fas fa-check-circle"></i> {{ session('success') }}
         </div>
     @endif
     @if(session('error'))
-        <div style="max-width: 1500px; margin: 0 auto 8px auto; padding: 8px; background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; border-radius: 6px; font-size: 11px;" class="no-print">
+        <div class="alert alert-danger no-print">
             <i class="fas fa-exclamation-circle"></i> {{ session('error') }}
         </div>
     @endif
@@ -145,11 +219,12 @@
     <form action="{{ route('report.intermediate-check.store', isset($testId) ? $testId : 1) }}" method="POST" id="checkForm">
         @csrf
         <input type="hidden" name="receive_test_lists_id" value="{{$header->receive_test_lists_id}}">
+        
         <!-- Toolbar (No Print) -->
         <div class="toolbar no-print">
             <div>
-                <strong style="color: #334155; font-size: 12px;">YSK5-FM-LAB-12</strong>
-                <span style="color: #64748b; font-size: 10px; margin-left: 8px;">บันทึกค่าการตรวจสอบเครื่องมือระหว่างการใช้งาน (Intermediate Check)</span>
+                <strong style="color: #1e293b; font-size: 13px;"><i class="fas fa-file-alt text-blue-600"></i> YSK5-FM-LAB-12</strong>
+                <span style="color: #64748b; font-size: 11px; margin-left: 8px;">บันทึกค่าการตรวจสอบเครื่องมือระหว่างการใช้งาน (Intermediate Check)</span>
             </div>
             <div style="display: flex; gap: 8px;">
                 <button type="submit" class="btn btn-success">
@@ -164,16 +239,16 @@
         <div class="container print-container">
             
             <!-- Header -->
-            <table class="header-table" style="border-bottom: 2px solid #cbd5e1; padding-bottom: 4px; margin-bottom: 4px;">
+            <table class="header-table" style="border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; margin-bottom: 6px;">
                 <tr>
                     <td style="width: 20%;">
-                        <img src="{{ URL::asset('assets/images/KK-C.png') }}" style="height: 28px; object-fit: contain;" alt="Logo">
+                        <img src="{{ URL::asset('assets/images/KK-C.png') }}" style="height: 32px; object-fit: contain;" alt="Logo">
                     </td>
                     <td style="width: 60%; text-align: center;">
-                        <h2 style="font-size: 12px; font-weight: bold; margin: 0; color: #1e293b;">บันทึกค่าการตรวจสอบเครื่องมือระหว่างการใช้งาน (Intermediate Check)</h2>
+                        <h2 style="font-size: 13px; font-weight: 700; margin: 0; color: #1e293b;">บันทึกค่าการตรวจสอบเครื่องมือระหว่างการใช้งาน (Intermediate Check)</h2>
                     </td>
                     <td style="width: 20%; text-align: right;">
-                        <span style="font-size: 8.5px; font-weight: 600; color: #475569; background-color: #f1f5f9; padding: 2px 5px; border-radius: 4px; border: 1px solid #cbd5e1;">YSK5-FM-LAB-12: Rev.00: 01/08/2569</span>
+                        <span style="font-size: 9px; font-weight: 600; color: #475569; background-color: #f1f5f9; padding: 3px 6px; border-radius: 4px; border: 1px solid #cbd5e1;">YSK5-FM-LAB-12: Rev.00: 01/08/2569</span>
                     </td>
                 </tr>
             </table>
@@ -181,32 +256,64 @@
             <!-- Instrument Info Fields -->
             <table class="info-table">
                 <tr>
-                    <td style="width: 15%; font-weight: bold; color: #334155;">Instrument Name:</td>
-                    <td style="width: 35%;"><input type="text" name="instrument_name" class="form-control" value="{{ isset($hd->instrument_name) ? $hd->instrument_name : (isset($cal->calibration_lists_name2) ? $cal->calibration_lists_name2 : '') }}"></td>
-                    <td style="width: 15%; font-weight: bold; color: #334155;">Specification:</td>
-                    <td style="width: 35%;"><input type="text" name="specification" class="form-control" value="{{ isset($hd->specification) ? $hd->specification : '' }}"></td>
+                    <td class="label">Instrument Name:</td>
+                    <td><input type="text" name="instrument_name" class="form-control" value="{{ isset($hd->instrument_name) ? $hd->instrument_name : (isset($cal->calibration_lists_name2) ? $cal->calibration_lists_name2 : '') }}"></td>
+                    <td class="label">Specification:</td>
+                    <td><input type="text" name="specification" class="form-control" value="{{ isset($hd->specification) ? $hd->specification : '' }}"></td>
                 </tr>
                 <tr>
-                    <td style="font-weight: bold; color: #334155;">Model:</td>
+                    <td class="label">Model:</td>
                     <td><input type="text" name="model" class="form-control" value="{{ isset($hd->model) ? $hd->model : (isset($bom->ms_formule_name) ? $bom->ms_formule_name : '') }}"></td>
-                    <td style="font-weight: bold; color: #334155;">Serial Number:</td>
+                    <td class="label">Serial Number:</td>
                     <td><input type="text" name="serial_number" class="form-control" value="{{ isset($hd->serial_number) ? $hd->serial_number : (isset($cal->calibration_lists_serialno) ? $cal->calibration_lists_serialno : '') }}"></td>
                 </tr>
                 <tr>
-                    <td style="font-weight: bold; color: #334155;">Cal Date:</td>
+                    <td class="label">Cal Date:</td>
                     <td><input type="date" name="cal_date" class="form-control" value="{{ isset($hd->cal_date) ? $hd->cal_date : (isset($cal->calibration_lists_nextdate) ? $cal->calibration_lists_nextdate : '') }}"></td>
-                    <td style="font-weight: bold; color: #334155;">Certificate No.:</td>
+                    <td class="label">Certificate No.:</td>
                     <td><input type="text" name="certificate_no" class="form-control" value="{{ isset($hd->certificate_no) ? $hd->certificate_no : (isset($cal->calibration_lists_reamrk) ? $cal->calibration_lists_reamrk : '') }}"></td>
                 </tr>
                 <tr>
-                    <td style="font-weight: bold; color: #334155;">Refer Doc.:</td>
+                    <td class="label">Refer Doc.:</td>
                     <td><input type="text" name="refer_doc" class="form-control" value="{{ isset($hd->refer_doc) ? $hd->refer_doc : (isset($reqdoc->ar_requestorder_hds_docuno) ? $reqdoc->ar_requestorder_hds_docuno : '') }}"></td>
-                    <td style="font-weight: bold; color: #334155;">Test Range Voltage:</td>
+                    <td class="label">Test Range Voltage:</td>
                     <td><input type="text" name="test_range_voltage" class="form-control" value="{{ isset($hd->test_range_voltage) ? $hd->test_range_voltage : '' }}"></td>
+                </tr>
+                <tr>
+                    <td class="label">Test Status:</td>
+                    <td>
+                        <select class="form-control" name="test_status">
+                            <option value="Normal" {{ (isset($hd->test_status) && $hd->test_status == 'Normal') ? 'selected' : '' }}>Normal (ปกติสมบูรณ์)</option>
+                            <option value="Interrupted" {{ (isset($hd->test_status) && $hd->test_status == 'Interrupted') ? 'selected' : '' }}>Interrupted (หยุดชั่วคราวแล้วทดสอบต่อ)</option>
+                            <option value="Aborted" {{ (isset($hd->test_status) && $hd->test_status == 'Aborted') ? 'selected' : '' }}>Aborted (ยกเลิกกลางคัน/ต้องทดสอบใหม่)</option>
+                        </select>
+                    </td>
+                    <td class="label">Incident Point:</td>
+                    <td><input type="text" name="incident_point" class="form-control" value="{{ isset($hd->incident_point) ? $hd->incident_point : '' }}"></td>
+                </tr>
+                <tr>
+                    <td class="label">Problem Category:</td>
+                    <td>
+                        <select class="form-control" name="problem_category">
+                            <option value="-" {{ (isset($hd->problem_category) && $hd->problem_category == '-') ? 'selected' : '' }}>-</option>
+                            <option value="Equipment Drift" {{ (isset($hd->problem_category) && $hd->problem_category == 'Equipment Drift') ? 'selected' : '' }}>Equipment Drift (เซ็นเซอร์/เครื่องมือวัดดริฟต์)</option>
+                            <option value="Environment Out" {{ (isset($hd->problem_category) && $hd->problem_category == 'Environment Out') ? 'selected' : '' }}>Environment Out (อุณหภูมิ/ความชื้นห้องแล็บหลุดเกณฑ์)</option>
+                            <option value="Power/System Failure" {{ (isset($hd->problem_category) && $hd->problem_category == 'Power/System Failure') ? 'selected' : '' }}>Power/System Failure (ไฟตก/ระบบขัดข้อง)</option>
+                            <option value="Mechanical Issue" {{ (isset($hd->problem_category) && $hd->problem_category == 'Mechanical Issue') ? 'selected' : '' }}>Mechanical Issue (เสียงรบกวน/สั่นสะเทือน/รอยรั่ว)</option>
+                            <option value="Operator Error" {{ (isset($hd->problem_category) && $hd->problem_category == 'Operator Error') ? 'selected' : '' }}>Operator Error (ข้อผิดพลาดจากการคีย์/เตรียมตัวอย่าง)</option>
+                        </select>
+                    </td>
+                    <td class="label">Data Validity:</td>
+                    <td>
+                        <select class="form-control" name="data_validity">
+                            <option value="Valid" {{ (isset($hd->data_validity) && $hd->data_validity == 'Valid') ? 'selected' : '' }}>Valid (ผลการวัดยังคงน่าเชื่อถือ/ใช้งานได้)</option>
+                            <option value="Invalid" {{ (isset($hd->data_validity) && $hd->data_validity == 'Invalid') ? 'selected' : '' }}>Invalid (ผลการวัดใช้ไม่ได้ ต้องทำ Intermediate Check ใหม่)</option>
+                        </select>
+                    </td>
                 </tr>
             </table>
 
-            <!-- Table: Intermediate Check Data (Points: 100, 150, 200, 250, 300, 350) -->
+            <!-- Table: Intermediate Check Data -->
             <table class="data-table">
                 <thead>
                     <tr>
@@ -241,7 +348,6 @@
                                 {{ $point }}
                                 <input type="hidden" name="point[{{ $index }}]" value="{{ $point }}">
                             </td>
-
                             <td><input type="number" step="any" name="bc_n1_c[{{ $index }}]" class="form-control" value="{{ isset($previousHeader->{'result'.$point.'_n1temp'}) ? $previousHeader->{'result'.$point.'_n1temp'} : '' }}"></td>
                             <td><input type="number" step="any" name="bc_n1_rh[{{ $index }}]" class="form-control" value="{{ isset($previousHeader->{'result'.$point.'_n1moisture'}) ? $previousHeader->{'result'.$point.'_n1moisture'} : '' }}"></td>
                             <td><input type="number" step="any" name="bc_n2_c[{{ $index }}]" class="form-control" value="{{ isset($previousHeader->{'result'.$point.'_n2temp'}) ? $previousHeader->{'result'.$point.'_n2temp'} : '' }}"></td>
@@ -262,24 +368,24 @@
 
             <!-- Statistical Analysis Section: Temperature (°C) -->
             <div class="section-title">Statistical Analysis & Tests - Temperature (25 - 31 °C)</div>
-            <table class="stat-table" style="margin-bottom: 4px;">
+            <table class="stat-table" style="margin-bottom: 6px;">
                 <tr>
                     <th style="width: 25%;">Parameter (°C)</th>
                     <th style="width: 37.5%;">Test 1 (Before Cal)</th>
                     <th style="width: 37.5%;">Test 2 (1st Test Date)</th>
                 </tr>
                 <tr>
-                    <td style="text-align: left; font-weight: 500;">Mean (Ȳ)</td>
-                    <td><input type="text" name="stat_c_test1_mean" id="stat_c_test1_mean" class="form-control" value="{{isset($hd->stat_c_test1_mean) ? $hd->stat_c_test1_mean : 0.0000}}" readonly></td>
-                    <td><input type="text" name="stat_c_test2_mean" id="stat_c_test2_mean" class="form-control" value="{{isset($hd->stat_c_test2_mean) ? $hd->stat_c_test2_mean : 0.0000}}" readonly></td>
+                    <td style="text-align: left; font-weight: 500; padding-left: 8px;">Mean (Ȳ)</td>
+                    <td><input type="text" name="stat_c_test1_mean" id="stat_c_test1_mean" class="form-control" value="{{isset($hd->stat_c_test1_mean) ? $hd->stat_c_test1_mean : '0.0000'}}" readonly></td>
+                    <td><input type="text" name="stat_c_test2_mean" id="stat_c_test2_mean" class="form-control" value="{{isset($hd->stat_c_test2_mean) ? $hd->stat_c_test2_mean : '0.0000'}}" readonly></td>
                 </tr>
                 <tr>
-                    <td style="text-align: left; font-weight: 500;">Variances (S²)</td>
-                    <td><input type="text" name="stat_c_test1_var" id="stat_c_test1_var" class="form-control" value="{{isset($hd->stat_c_test1_var) ? $hd->stat_c_test1_var : 0.0000}}" readonly></td>
-                    <td><input type="text" name="stat_c_test2_var" id="stat_c_test2_var" class="form-control" value="{{isset($hd->stat_c_test2_var) ? $hd->stat_c_test2_var : 0.0000}}" readonly></td>
+                    <td style="text-align: left; font-weight: 500; padding-left: 8px;">Variances (S²)</td>
+                    <td><input type="text" name="stat_c_test1_var" id="stat_c_test1_var" class="form-control" value="{{isset($hd->stat_c_test1_var) ? $hd->stat_c_test1_var : '0.0000'}}" readonly></td>
+                    <td><input type="text" name="stat_c_test2_var" id="stat_c_test2_var" class="form-control" value="{{isset($hd->stat_c_test2_var) ? $hd->stat_c_test2_var : '0.0000'}}" readonly></td>
                 </tr>
                 <tr>
-                    <td style="text-align: left; font-weight: 500;">Observations (N)</td>
+                    <td style="text-align: left; font-weight: 500; padding-left: 8px;">Observations (N)</td>
                     <td><input type="text" name="stat_c_test1_obs" class="form-control" value="{{ isset($hd->stat_c_test1_obs) ? $hd->stat_c_test1_obs : count($points) }}" readonly></td>
                     <td><input type="text" name="stat_c_test2_obs" class="form-control" value="{{ isset($hd->stat_c_test2_obs) ? $hd->stat_c_test2_obs : count($points) }}" readonly></td>
                 </tr>
@@ -287,24 +393,24 @@
 
             <!-- Statistical Analysis Section: Relative Humidity (%RH) -->
             <div class="section-title">Statistical Analysis & Tests - Relative Humidity (40 - 60 %RH)</div>
-            <table class="stat-table" style="margin-bottom: 4px;">
+            <table class="stat-table" style="margin-bottom: 6px;">
                 <tr>
                     <th style="width: 25%;">Parameter (%RH)</th>
                     <th style="width: 37.5%;">Test 1 (Before Cal)</th>
                     <th style="width: 37.5%;">Test 2 (1st Test Date)</th>
                 </tr>
                 <tr>
-                    <td style="text-align: left; font-weight: 500;">Mean (Ȳ)</td>
-                    <td><input type="text" name="stat_rh_test1_mean" id="stat_rh_test1_mean" class="form-control" value="{{isset($hd->stat_rh_test1_mean) ? $hd->stat_rh_test1_mean : 0.0000}}" readonly></td>
-                    <td><input type="text" name="stat_rh_test2_mean" id="stat_rh_test2_mean" class="form-control" value="{{isset($hd->stat_rh_test2_mean) ? $hd->stat_rh_test2_mean : 0.0000}}" readonly></td>
+                    <td style="text-align: left; font-weight: 500; padding-left: 8px;">Mean (Ȳ)</td>
+                    <td><input type="text" name="stat_rh_test1_mean" id="stat_rh_test1_mean" class="form-control" value="{{isset($hd->stat_rh_test1_mean) ? $hd->stat_rh_test1_mean : '0.0000'}}" readonly></td>
+                    <td><input type="text" name="stat_rh_test2_mean" id="stat_rh_test2_mean" class="form-control" value="{{isset($hd->stat_rh_test2_mean) ? $hd->stat_rh_test2_mean : '0.0000'}}" readonly></td>
                 </tr>
                 <tr>
-                    <td style="text-align: left; font-weight: 500;">Variances (S²)</td>
-                    <td><input type="text" name="stat_rh_test1_var" id="stat_rh_test1_var" class="form-control" value="{{isset($hd->stat_rh_test1_var) ? $hd->stat_rh_test1_var : 0.0000}}" readonly></td>
-                    <td><input type="text" name="stat_rh_test2_var" id="stat_rh_test2_var" class="form-control" value="{{isset($hd->stat_rh_test2_var) ? $hd->stat_rh_test2_var : 0.0000}}" readonly></td>
+                    <td style="text-align: left; font-weight: 500; padding-left: 8px;">Variances (S²)</td>
+                    <td><input type="text" name="stat_rh_test1_var" id="stat_rh_test1_var" class="form-control" value="{{isset($hd->stat_rh_test1_var) ? $hd->stat_rh_test1_var : '0.0000'}}" readonly></td>
+                    <td><input type="text" name="stat_rh_test2_var" id="stat_rh_test2_var" class="form-control" value="{{isset($hd->stat_rh_test2_var) ? $hd->stat_rh_test2_var : '0.0000'}}" readonly></td>
                 </tr>
                 <tr>
-                    <td style="text-align: left; font-weight: 500;">Observations (N)</td>
+                    <td style="text-align: left; font-weight: 500; padding-left: 8px;">Observations (N)</td>
                     <td><input type="text" name="stat_rh_test1_obs" class="form-control" value="{{ isset($hd->stat_rh_test1_obs) ? $hd->stat_rh_test1_obs : count($points) }}" readonly></td>
                     <td><input type="text" name="stat_rh_test2_obs" class="form-control" value="{{ isset($hd->stat_rh_test2_obs) ? $hd->stat_rh_test2_obs : count($points) }}" readonly></td>
                 </tr>
@@ -313,22 +419,38 @@
             <!-- Result & Signatures -->
             <table class="sig-table">
                 <tr>
-                    <td colspan="4" style="text-align: left; font-weight: bold; background-color: #f8fafc; padding: 4px 6px;">
+                    <td colspan="3" style="text-align: left; font-weight: 600; background-color: #f8fafc; padding: 6px 8px;">
                         สรุปผลการประเมินสถิติ (F-Test / t-Test): 
-                        <input type="text" name="summary_result" id="summary_result" class="form-control" style="display: inline-block; width: 65%; margin-left: 10px;" value="{{ isset($hd->summary_result) ? $hd->summary_result : '' }}">
+                        <input type="text" name="summary_result" id="summary_result" class="form-control" style="display: inline-block; width: 62%; margin-left: 10px;" value="{{ isset($hd->summary_result) ? $hd->summary_result : '' }}">
+                    </td>
+                    <td style="background-color: #f8fafc; padding: 6px 8px; font-weight: 600;">
+                        เลขที่ใบ CAR/NCR:
+                        <input type="text" name="result_doc" id="result_doc" class="form-control" style="display: inline-block; width: 55%; margin-left: 6px;" value="{{ isset($hd->result_doc) ? $hd->result_doc : '' }}">
                     </td>
                 </tr>
                 <tr>
-                    <td style="width: 15%; font-weight: bold; padding: 3px;">จัดทำโดย:</td>
-                    <td style="width: 35%; padding: 3px;"><input type="text" name="creator" class="form-control" value="{{ isset($hd->creator) ? $hd->creator : (Auth::check() ? Auth::user()->name : '') }}"></td>
-                    <td style="width: 15%; font-weight: bold; padding: 3px;">วันที่:</td>
-                    <td style="width: 35%; padding: 3px;"><input type="date" name="created_date" class="form-control" value="{{ isset($hd->created_date) ? $hd->created_date : date('Y-m-d') }}"></td>
+                    <td colspan="4" style="text-align: left; font-weight: 600; background-color: #f8fafc; padding: 6px 8px;">
+                        รายละเอียดปัญหา (Problem Description): 
+                        <textarea name="problem_description" id="problem_description" class="form-control" style="display: inline-block; width: 72%; margin-left: 10px; vertical-align: middle;">{{ isset($hd->problem_description) ? trim($hd->problem_description) : '' }}</textarea>
+                    </td>
                 </tr>
                 <tr>
-                    <td style="font-weight: bold; padding: 3px;">ตรวจสอบและรับรองโดย:</td>
-                    <td style="padding: 3px;"><input type="text" name="approver" class="form-control" value="{{ isset($hd->approver) ? $hd->approver : '' }}"></td>
-                    <td style="font-weight: bold; padding: 3px;">วันที่:</td>
-                    <td style="padding: 3px;"><input type="date" name="approved_date" class="form-control" value="{{ isset($hd->approved_date) ? $hd->approved_date : '' }}"></td>
+                    <td colspan="4" style="text-align: left; font-weight: 600; background-color: #f8fafc; padding: 6px 8px;">
+                        การแก้ไขเบื้องต้น (Action Taken): 
+                        <textarea name="action_taken" id="action_taken" class="form-control" style="display: inline-block; width: 72%; margin-left: 10px; vertical-align: middle;">{{ isset($hd->action_taken) ? trim($hd->action_taken) : '' }}</textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 15%; font-weight: 600; padding: 5px;">จัดทำโดย:</td>
+                    <td style="width: 35%; padding: 5px;"><input type="text" name="creator" class="form-control" value="{{ isset($hd->creator) ? $hd->creator : (Auth::check() ? Auth::user()->name : '') }}"></td>
+                    <td style="width: 15%; font-weight: 600; padding: 5px;">วันที่:</td>
+                    <td style="width: 35%; padding: 5px;"><input type="date" name="created_date" class="form-control" value="{{ isset($hd->created_date) ? $hd->created_date : date('Y-m-d') }}"></td>
+                </tr>
+                <tr>
+                    <td style="font-weight: 600; padding: 5px;">ตรวจสอบและรับรองโดย:</td>
+                    <td style="padding: 5px;"><input type="text" name="approver" class="form-control" value="{{ isset($hd->approver) ? $hd->approver : '' }}"></td>
+                    <td style="font-weight: 600; padding: 5px;">วันที่:</td>
+                    <td style="padding: 5px;"><input type="date" name="approved_date" class="form-control" value="{{ isset($hd->approved_date) ? $hd->approved_date : '' }}"></td>
                 </tr>
             </table>
 

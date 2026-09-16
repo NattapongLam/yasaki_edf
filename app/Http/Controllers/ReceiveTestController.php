@@ -490,17 +490,18 @@ class ReceiveTestController extends Controller
 
     public function showChart($testId, Request $request)
     {
+        // 1. ตรวจสอบข้อมูลส่วนหัวของคำขอ (Request Order)
         $ck = ArRequestorderHd::where('ar_requestorder_hds_docuno', $testId)->first();
         if (!$ck) {
             return redirect()->back()->with('error', 'ไม่พบข้อมูลเอกสารการทดสอบนี้');
         }
 
-        $class = ArRequestorderDt::where('ar_requestorder_hds_id', $ck->ar_requestorder_hds_id)->first();
-        if (!$class) {
+        $classRecord = ArRequestorderDt::where('ar_requestorder_hds_id', $ck->ar_requestorder_hds_id)->first();
+        if (!$classRecord) {
             return redirect()->back()->with('error', 'ไม่พบข้อมูลรายละเอียด JIS Class ของการทดสอบนี้');
         }
 
-        // 1. ดึงข้อมูลส่วนหัวของรายงานปัจจุบัน
+        // 2. ดึงข้อมูลส่วนหัวของรายงานปัจจุบันจาก TestHeaders
         $header = DB::table('TestHeaders')
             ->where('Lot', $testId)
             ->first();
@@ -509,24 +510,35 @@ class ReceiveTestController extends Controller
             return redirect()->back()->with('error', 'ไม่พบข้อมูลรายงานการทดสอบนี้');
         }
 
-        // ดึง 10 TestID ล่าสุดของ FormulaNumber นี้
+        // ดึง 10 TestID ล่าสุดของ FormulaNumber นี้ (เรียงจากเก่าไปใหม่สำหรับแสดง Control Chart)
         $recentHeaders = DB::table('TestHeaders')
             ->where('FormulaNumber', $header->FormulaNumber)
             ->orderBy('TestID', 'desc')
-            ->limit(10)
             ->get()
             ->reverse()
             ->values();
 
         // 3. รับค่าอุณหภูมิที่เลือก (ค่าเริ่มต้น 100)
-        $targetTemp = $request->get('temperature', 100);
+        $targetTemp = (int)$request->get('temperature', 100);
+        $class = $classRecord->ar_requestorder_dts_jis_class;
 
-        // 4. วนลูปดึงข้อมูลดิบของแต่ละ TestID มาทำเป็น Subgroups (นำ T_Inc และ T_Dec มาเฉลี่ยกัน)
+        // ดึงค่า Master Control Limits จาก ms_xandrchart ตาม Class และ Temperature
+        $masterLimit = DB::table('ms_xandrchart')
+            ->where('ms_xandrchart_class', $class)
+            ->where('ms_xandrchart_temp', (string)$targetTemp)
+            ->first();
+
+        if (!$masterLimit) {
+            return redirect()->back()->with('error', 'ไม่พบข้อมูล Master Control Limits (ms_xandrchart) สำหรับอุณหภูมินี้');
+        }
+
+        // 4. วนลูปดึงข้อมูลดิบของแต่ละ TestID มาทำเป็น Subgroups (เฉลี่ย T_Inc และ T_Dec)
         $subgroups = [];
         $allValuesForSD = [];
+        $sumXBar = 0;
+        $sumR = 0;
 
         foreach ($recentHeaders as $index => $hItem) {
-            // ดึงข้อมูลและคำนวณค่า: ถ้า T_Dec เป็น 0 ให้ใช้ T_Inc ตัวเดียว ไม่งั้นให้นำมาเฉลี่ยกัน
             $dt = DB::table('TestDetails')
                 ->where('TestID', $hItem->TestID)
                 ->where('Temperature', (string)$targetTemp)
@@ -540,13 +552,25 @@ class ReceiveTestController extends Controller
                 $xBar = array_sum($chunk) / count($chunk);
                 $rVal = max($chunk) - min($chunk);
 
+                $sumXBar += $xBar;
+                $sumR += $rVal;
+
                 $subgroups[] = [
-                    'set_no' => 'Set ' . ($index + 1),
-                    'lot'    => $hItem->Lot,
-                    'date'   => $hItem->TestDate ?? '-',
-                    'values' => $chunk,
-                    'x_bar'  => round($xBar, 4),
-                    'r'      => round($rVal, 4),
+                    'set_no'    => 'Set ' . ($index + 1),
+                    'lot'       => $hItem->Lot,
+                    'date'      => $hItem->TestDate ?? '-',
+                    'values'    => $chunk,
+                    'n1'        => $chunk[0],
+                    'n2'        => $chunk[1],
+                    'n3'        => $chunk[2],
+                    'x_bar'     => round($xBar, 4),
+                    'r'         => round($rVal, 4),
+                    'ucl_x'     => (float)$masterLimit->ucl_x,
+                    'lcl_x'     => (float)$masterLimit->lcl_x,
+                    'ucl_r'     => (float)$masterLimit->ucl_r,
+                    'lcl_r'     => (float)$masterLimit->lcl_r,
+                    'is_out_x'  => ($xBar > $masterLimit->ucl_x || $xBar < $masterLimit->lcl_x),
+                    'is_out_r'  => ($rVal > $masterLimit->ucl_r || $rVal < $masterLimit->lcl_r),
                 ];
 
                 $allValuesForSD = array_merge($allValuesForSD, $chunk);
@@ -554,89 +578,68 @@ class ReceiveTestController extends Controller
         }
 
         $m = count($subgroups);
-        $targetMu = 0.45;
+        if ($m === 0) {
+            return redirect()->back()->with('error', 'ไม่มีข้อมูลดิบเพียงพอสำหรับการสร้างกราฟ SPC (ต้องการอย่างน้อย 3 ค่าต่อ TestID)');
+        }
+
+        // 5. กำหนดค่าเกณฑ์มาตรฐาน (JIS D 4411) ตาม Class และ Temperature
         $jisMinVal = 0.25;
         $jisMaxVal = 0.70;
         $tolerance = 0.10;
+        $maxWearRate = '0.5 หรือน้อยกว่า';
 
-        // ----------------------------------------------------
-        // 5. แยกเงื่อนไขตาม JIS Class (Class 4 vs Class 3)
-        // ----------------------------------------------------
-        if ($class->ar_requestorder_dts_jis_class == "CLASS_4") {
-            if ($m === 0) {
-                return redirect()->back()->with('error', 'ไม่มีข้อมูลดิบเพียงพอสำหรับการสร้างกราฟ Class 4');
-            }
-
-            // กำหนดค่า Tolerance ตามอุณหภูมิของ Class 4
-            switch ((int)$targetTemp) {
-                case 100: $jisMinVal = 0.25; $jisMaxVal = 0.65; $tolerance = 0.08; break;
-                case 150: $jisMinVal = 0.25; $jisMaxVal = 0.70; $tolerance = 0.10; break;
-                case 200:
-                case 250: $jisMinVal = 0.25; $jisMaxVal = 0.70; $tolerance = 0.12; break;
-                case 300: $jisMinVal = 0.25; $jisMaxVal = 0.70; $tolerance = 0.14; break;
-                case 350: $jisMinVal = 0.20; $jisMaxVal = 0.70; $tolerance = 0.14; break;
-            }
-
-        } elseif ($class->ar_requestorder_dts_jis_class == "CLASS_3") {
-            if ($m === 0) {
-                return redirect()->back()->with('error', 'ไม่มีข้อมูลดิบเพียงพอสำหรับการสร้างกราฟ Class 3');
-            }
-
-            // กำหนดเกณฑ์ของ Class 3 ตามอุณหภูมิจริง
-            switch ((int)$targetTemp) {
+        if ($class === "CLASS_3") {
+            switch ($targetTemp) {
                 case 100:
-                    $jisMinVal = 0.25;
-                    $jisMaxVal = 0.65;
-                    $tolerance = 0.08;
+                    $jisMinVal = 0.25; $jisMaxVal = 0.65; $tolerance = 0.08; $maxWearRate = '0.5 หรือน้อยกว่า';
                     break;
                 case 150:
-                    $jisMinVal = 0.25;
-                    $jisMaxVal = 0.70;
-                    $tolerance = 0.10;
+                    $jisMinVal = 0.25; $jisMaxVal = 0.70; $tolerance = 0.10; $maxWearRate = '0.7 หรือน้อยกว่า';
                     break;
                 case 200:
-                    $jisMinVal = 0.25;
-                    $jisMaxVal = 0.70;
-                    $tolerance = 0.12;
+                    $jisMinVal = 0.25; $jisMaxVal = 0.70; $tolerance = 0.12; $maxWearRate = '1.0 หรือน้อยกว่า';
                     break;
                 case 250:
-                    $jisMinVal = 0.20; // ต่ำลงมาอยู่ที่ 0.20 ตามเกณฑ์ Class 3
-                    $jisMaxVal = 0.70;
-                    $tolerance = 0.12;
+                    $jisMinVal = 0.20; $jisMaxVal = 0.70; $tolerance = 0.12; $maxWearRate = '1.5 หรือน้อยกว่า';
                     break;
                 case 300:
-                    $jisMinVal = 0.15; // ต่ำลงมาถึง 0.15 ตามเกณฑ์ Class 3
-                    $jisMaxVal = 0.70;
-                    $tolerance = 0.14;
+                    $jisMinVal = 0.15; $jisMaxVal = 0.70; $tolerance = 0.14; $maxWearRate = '3.0 หรือน้อยกว่า';
                     break;
                 case 350:
-                    // มาตรฐาน Class 3 ไม่มีข้อมูลทดสอบที่ 350°C
-                    $jisMinVal = null;
-                    $jisMaxVal = null;
-                    $tolerance = null;
+                    $jisMinVal = null; $jisMaxVal = null; $tolerance = null; $maxWearRate = 'ไม่มีการทดสอบ';
                     break;
-                default:
-                    $jisMinVal = 0.25;
-                    $jisMaxVal = 0.70;
-                    $tolerance = 0.10;
+            }
+        } elseif ($class === "CLASS_4") {
+            switch ($targetTemp) {
+                case 100:
+                    $jisMinVal = 0.25; $jisMaxVal = 0.65; $tolerance = 0.08; $maxWearRate = '0.5 หรือน้อยกว่า';
+                    break;
+                case 150:
+                    $jisMinVal = 0.25; $jisMaxVal = 0.70; $tolerance = 0.10; $maxWearRate = '0.7 หรือน้อยกว่า';
+                    break;
+                case 200:
+                    $jisMinVal = 0.25; $jisMaxVal = 0.70; $tolerance = 0.12; $maxWearRate = '1.0 หรือน้อยกว่า';
+                    break;
+                case 250:
+                    $jisMinVal = 0.25; $jisMaxVal = 0.70; $tolerance = 0.12; $maxWearRate = '1.5 หรือน้อยกว่า';
+                    break;
+                case 300:
+                    $jisMinVal = 0.25; $jisMaxVal = 0.70; $tolerance = 0.14; $maxWearRate = '2.5 หรือน้อยกว่า';
+                    break;
+                case 350:
+                    $jisMinVal = 0.20; $jisMaxVal = 0.70; $tolerance = 0.14; $maxWearRate = '3.5 หรือน้อยกว่า';
+                    break;
             }
         }
 
-        // 6. คำนวณค่าทางสถิติ Control Chart (n = 3)
-        $A2 = 1.023;
-        $D3 = 0.0;
-        $D4 = 2.574;
-        $d2 = 1.693;
+        // 6. คำนวณค่าสถิติ Control Chart และ Process Performance ตามมาตรฐาน YSK5-FM-LAB-13
+        $grandXBar = $sumXBar / $m;
+        $averageR  = $sumR / $m;
+        
+        $d2 = 1.693; // Constant for subgroup n = 3
+        $sdRBar = ($d2 > 0) ? $averageR / $d2 : 0; // Short-term variation (R-bar / d2)
 
-        $grandXBar = ($m > 0) ? array_sum(array_column($subgroups, 'x_bar')) / $m : 0;
-        $averageR  = ($m > 0) ? array_sum(array_column($subgroups, 'r')) / $m : 0;
-
-        $uclX = $grandXBar + ($A2 * $averageR);
-        $lclX = $grandXBar - ($A2 * $averageR);
-        $uclR = $D4 * $averageR;
-        $lclR = $D3 * $averageR;
-        $sigma_R = ($d2 > 0) ? $averageR / $d2 : 0;
-
+        // คำนวณ Sample Standard Deviation (Overall SD)
         $nTotal = count($allValuesForSD);
         $overallMean = ($nTotal > 0) ? array_sum($allValuesForSD) / $nTotal : 0;
         $varianceSum = 0;
@@ -645,58 +648,75 @@ class ReceiveTestController extends Controller
         }
         $overallSD = ($nTotal > 1) ? sqrt($varianceSum / ($nTotal - 1)) : 0;
 
-        // ตรวจสอบค่า USL/LSL กรณีเป็นค่า Null (เช่น อุณหภูมิ 350°C ของ Class 3)
         $USL = $jisMaxVal;
         $LSL = $jisMinVal;
 
-        $cp  = ($USL !== null && $sigma_R > 0) ? ($USL - $LSL) / (6 * $sigma_R) : 0;
-        $cpu = ($USL !== null && $sigma_R > 0) ? ($USL - $grandXBar) / (3 * $sigma_R) : 0;
-        $cpl = ($LSL !== null && $sigma_R > 0) ? ($grandXBar - $LSL) / (3 * $sigma_R) : 0;
+        // คำนวณ Cp, Cpk (Short-term)
+        $cp  = ($USL !== null && $LSL !== null && $sdRBar > 0) ? ($USL - $LSL) / (6 * $sdRBar) : 0;
+        $cpu = ($USL !== null && $sdRBar > 0) ? ($USL - $grandXBar) / (3 * $sdRBar) : 0;
+        $cpl = ($LSL !== null && $sdRBar > 0) ? ($grandXBar - $LSL) / (3 * $sdRBar) : 0;
         $cpk = ($USL !== null && $LSL !== null) ? min($cpu, $cpl) : 0;
 
-        $pp  = ($USL !== null && $overallSD > 0) ? ($USL - $LSL) / (6 * $overallSD) : 0;
+        // คำนวณ Pp, Ppk (Overall Performance)
+        $pp  = ($USL !== null && $LSL !== null && $overallSD > 0) ? ($USL - $LSL) / (6 * $overallSD) : 0;
         $ppu = ($USL !== null && $overallSD > 0) ? ($USL - $grandXBar) / (3 * $overallSD) : 0;
         $ppl = ($LSL !== null && $overallSD > 0) ? ($grandXBar - $LSL) / (3 * $overallSD) : 0;
         $ppk = ($USL !== null && $LSL !== null) ? min($ppu, $ppl) : 0;
 
+        // รวบรวมข้อมูลทั้งหมดส่งเข้า View
         $spcData = [
-            'subgroups'   => $subgroups,
-            'grand_x_bar' => round($grandXBar, 4),
-            'average_r'   => round($averageR, 4),
-            'ucl_x'       => round($uclX, 4),
-            'lcl_x'       => round($lclX, 4),
-            'ucl_r'       => round($uclR, 4),
-            'lcl_r'       => round($lclR, 4),
-            'sigma_r'     => round($sigma_R, 4),
-            'overall_sd'  => round($overallSD, 4),
-            'cp'          => round($cp, 2),
-            'cpk'         => round($cpk, 2),
-            'pp'          => round($pp, 2),
-            'ppk'         => round($ppk, 2),
-            'usl'         => $USL ?? '-',
-            'lsl'         => $LSL ?? '-',
-            'tolerance'   => $tolerance ?? '-',
-            'target_temp' => $targetTemp,
-            'target_mu'   => $targetMu,
-            'jis_class'   => $class->ar_requestorder_dts_jis_class
+            'form_no'       => 'YSK5-FM-LAB-13',
+            'subgroups'     => $subgroups,
+            'grand_x_bar'   => round($grandXBar, 4),
+            'average_r'     => round($averageR, 4),
+            'ucl_x'         => round((float)$masterLimit->ucl_x, 4),
+            'lcl_x'         => round((float)$masterLimit->lcl_x, 4),
+            'ucl_r'         => round((float)$masterLimit->ucl_r, 4),
+            'lcl_r'         => round((float)$masterLimit->lcl_r, 4),
+            'sigma_r'       => round($sdRBar, 4),
+            'overall_sd'    => round($overallSD, 4),
+            'cp'            => round($cp, 2),
+            'cpk'           => round($cpk, 2),  // <-- แก้ตรงนี้จาก `cpk` เป็น 'cpk'
+            'pp'            => round($pp, 2),
+            'ppk'           => round($ppk, 2),
+            'usl'           => $USL ?? '-',
+            'lsl'           => $LSL ?? '-',
+            'tolerance'     => $tolerance ?? '-',
+            'wear_rate'     => $maxWearRate,
+            'target_temp'   => $targetTemp,
+            'target_mu'     => 0.45,
+            'jis_class'     => $class,
+            'master_limits' => $masterLimit
         ];
 
         return view('report.report-xbar-r-chart', compact('header', 'spcData', 'testId'));
     }
-
     /**
      * ฟังก์ชันกำหนดค่า USL, LSL และ Tolerance ตามมาตรฐาน JIS D 4411 Class 4 แยกตามช่วงอุณหภูมิ
      */
     private function getJisSpecByTemperature(float $temp)
     {
         if ($temp <= 100) {
-            return ['usl' => 0.65, 'lsl' => 0.25, 'tolerance' => 0.08];
+            return [
+                'usl'       => 0.65, 
+                'lsl'       => 0.25, 
+                'tolerance' => 0.08,
+                'wear_rate' => 2.5  // เพิ่มค่า Max Wear Rate ตามมาตรฐาน (ตัวเลขสามารถปรับเปลี่ยนได้ตามจริงของคุณ)
+            ];
         } elseif ($temp > 100 && $temp <= 300) {
-            // อุณหภูมิสูงขึ้น ช่วงเกณฑ์ขยายเป็น 0.25 - 0.70 และ Tolerance ขยับตามความเสถียร
-            return ['usl' => 0.70, 'lsl' => 0.25, 'tolerance' => 0.11];
+            return [
+                'usl'       => 0.70, 
+                'lsl'       => 0.25, 
+                'tolerance' => 0.11,
+                'wear_rate' => 3.5  // เพิ่มค่า Max Wear Rate
+            ];
         } else {
-            // อุณหภูมิสูงมาก (เช่น 350°C ขึ้นไป) ปรับเกณฑ์ยอมรับตามความเหมาะสม
-            return ['usl' => 0.70, 'lsl' => 0.20, 'tolerance' => 0.14];
+            return [
+                'usl'       => 0.70, 
+                'lsl'       => 0.20, 
+                'tolerance' => 0.14,
+                'wear_rate' => 5.0  // เพิ่มค่า Max Wear Rate
+            ];
         }
     }
     public function showPtTest($testId, Request $request)
@@ -888,7 +908,7 @@ class ReceiveTestController extends Controller
                     'cal_date'           => $request->cal_date,
                     'certificate_no'     => $request->certificate_no,
                     'refer_doc'          => $request->refer_doc,
-                    'test_range_voltage' => $request->test_range_voltage,
+                    'test_range_voltage' => $request->test_range_voltage ?? '-',
                     'creator'            => $request->creator,
                     'created_date'       => $request->created_date,
                     
@@ -911,6 +931,13 @@ class ReceiveTestController extends Controller
                     'summary_result'     => $request->summary_result,
                     'approver'           => $request->approver,
                     'approved_date'      => $request->approved_date,
+                    'test_status'       => $request->test_status,
+                    'incident_point'    => $request->incident_point,
+                    'problem_category'  => $request->problem_category,
+                    'data_validity'     => $request->data_validity,
+                    'result_doc'        => $request->result_doc,
+                    'problem_description' => $request->problem_description,
+                    'action_taken' => $request->action_taken
                 ]
             );
 
