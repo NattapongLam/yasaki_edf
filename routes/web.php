@@ -103,6 +103,7 @@ Route::post('/confirmDelChemistryHd' , [App\Http\Controllers\ChemistryController
 Route::get('/report/compareformulas/print/{id}',[App\Http\Controllers\ReportFormulaController::class,'PrintCompareFormula'])->name('report.compareformulas.print');
 Route::get('/analyze-formulas' , [App\Http\Controllers\ReportFormulaController::class , 'AnalyzeFormulas']);
 Route::post('/get-formula-detail', [App\Http\Controllers\ReportFormulaController::class, 'getFormulaDetail'])->name('report.get.formula.detail');
+Route::get('/testheaders/check', [App\Http\Controllers\ReportFormulaController::class, 'checkTestHeaders'])->name('testheaders.check');
 Route::resource('/receive-test' , App\Http\Controllers\ReceiveTestController::class);
 Route::get('/receive-result' , [App\Http\Controllers\ReceiveTestController::class , 'ReceiveResult']);
 Route::get('/receive-chart/{testId}', [App\Http\Controllers\ReceiveTestController::class, 'showChart'])->name('report.xbar');

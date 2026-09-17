@@ -44,81 +44,88 @@
                 </div>
             </div>
         </div>
-
         <div class="card-body pt-4">
 
             {{-- Select Formula Grid --}}
             <div class="row g-4 transition-grid" id="formula-selection-row">
 
-                {{-- Formula 1 --}}
-                <div class="formula-card-wrapper" id="wrapper-select-1" data-formula="1">
-                    <div class="formula-box p-4 rounded-4 border shadow-sm h-100">
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="formula-number bg-primary text-white">1</div>
-                            <h4 class="mb-0 ms-3 fw-semibold">สูตรที่ 1</h4>
-                        </div>
+                {{-- สูตรที่ 1 --}}
+<div class="formula-card-wrapper" id="wrapper-select-1" data-formula="1">
+    <div class="formula-box p-4 rounded-4 border shadow-sm h-100">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="d-flex align-items-center">
+                <div class="formula-number bg-primary text-white">1</div>
+                <h4 class="mb-0 ms-3 fw-semibold">สูตรที่ 1</h4>
+            </div>
+            <!-- ปุ่มไปหน้าตรวจสอบ TestHeaders สำหรับสูตรที่ 1 -->
+            <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3 check-header-btn" data-target="1">
+                <i class="mdi mdi-open-in-new me-1"></i> เช็ค TestHeaders
+            </button>
+        </div>
 
-                        <label class="form-label fw-semibold text-muted">
-                            เลือกสูตรเคมี
-                        </label>
+        <label class="form-label fw-semibold text-muted">เลือกสูตรเคมี</label>
+        <select class="form-control select2" id="formula_1">
+            <option value="">กรุณาเลือก</option>
+            @foreach($hd as $item)
+                <option value="{{ $item->TestID }}" data-formula-number="{{ $item->FormulaNumber }}">
+                  วันที่ : {{ \Carbon\Carbon::parse($item->TestDate)->format('d/m/Y') }}  {{ $item->FormulaNumber }} ({{$item->Remarks}})
+                </option>
+            @endforeach
+        </select>
+    </div>
+</div>
 
-                        <select class="form-control select2" id="formula_1">
-                            <option value="">กรุณาเลือก</option>
-                            @foreach($hd as $item)
-                                <option value="{{ $item->TestID }}">
-                                  วันที่ : {{ \Carbon\Carbon::parse($item->TestDate)->format('d/m/Y') }}  {{ $item->FormulaNumber }} ({{$item->Remarks}})
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
+{{-- สูตรที่ 2 --}}
+<div class="formula-card-wrapper" id="wrapper-select-2" data-formula="2">
+    <div class="formula-box p-4 rounded-4 border shadow-sm h-100">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="d-flex align-items-center">
+                <div class="formula-number bg-success text-white">2</div>
+                <h4 class="mb-0 ms-3 fw-semibold">สูตรที่ 2</h4>
+            </div>
+            <!-- ปุ่มไปหน้าตรวจสอบ TestHeaders สำหรับสูตรที่ 2 -->
+            <button type="button" class="btn btn-sm btn-outline-success rounded-pill px-3 check-header-btn" data-target="2">
+                <i class="mdi mdi-open-in-new me-1"></i> เช็ค TestHeaders
+            </button>
+        </div>
 
-                {{-- Formula 2 --}}
-                <div class="formula-card-wrapper" id="wrapper-select-2" data-formula="2">
-                    <div class="formula-box p-4 rounded-4 border shadow-sm h-100">
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="formula-number bg-success text-white">2</div>
-                            <h4 class="mb-0 ms-3 fw-semibold">สูตรที่ 2</h4>
-                        </div>
+        <label class="form-label fw-semibold text-muted">เลือกสูตรเคมี</label>
+        <select class="form-control select2" id="formula_2">
+            <option value="">กรุณาเลือก</option>
+            @foreach($hd as $item)
+                <option value="{{ $item->TestID }}" data-formula-number="{{ $item->FormulaNumber }}">
+                    วันที่ : {{ \Carbon\Carbon::parse($item->TestDate)->format('d/m/Y') }} {{ $item->FormulaNumber }} ({{$item->Remarks}})
+                </option>
+            @endforeach
+        </select>
+    </div>
+</div>
 
-                        <label class="form-label fw-semibold text-muted">
-                            เลือกสูตรเคมี
-                        </label>
+{{-- สูตรที่ 3 --}}
+<div class="formula-card-wrapper" id="wrapper-select-3" data-formula="3">
+    <div class="formula-box p-4 rounded-4 border shadow-sm h-100">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="d-flex align-items-center">
+                <div class="formula-number bg-warning text-white">3</div>
+                <h4 class="mb-0 ms-3 fw-semibold">สูตรที่ 3</h4>
+            </div>
+            <!-- ปุ่มไปหน้าตรวจสอบ TestHeaders สำหรับสูตรที่ 3 -->
+            <button type="button" class="btn btn-sm btn-outline-dark rounded-pill px-3 check-header-btn" data-target="3">
+                <i class="mdi mdi-open-in-new me-1"></i> เช็ค TestHeaders
+            </button>
+        </div>
 
-                        <select class="form-control select2" id="formula_2">
-                            <option value="">กรุณาเลือก</option>
-                            @foreach($hd as $item)
-                                <option value="{{ $item->TestID }}">
-                                    วันที่ : {{ \Carbon\Carbon::parse($item->TestDate)->format('d/m/Y') }} {{ $item->FormulaNumber }} ({{$item->Remarks}})
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-
-                {{-- Formula 3 --}}
-                <div class="formula-card-wrapper" id="wrapper-select-3" data-formula="3">
-                    <div class="formula-box p-4 rounded-4 border shadow-sm h-100">
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="formula-number bg-warning text-white">3</div>
-                            <h4 class="mb-0 ms-3 fw-semibold">สูตรที่ 3</h4>
-                        </div>
-
-                        <label class="form-label fw-semibold text-muted">
-                            เลือกสูตรเคมี
-                        </label>
-
-                        <select class="form-control select2" id="formula_3">
-                         <option value="">กรุณาเลือก</option>
-                            @foreach($hd as $item)
-                                <option value="{{ $item->TestID }}">
-                                     วันที่ : {{ \Carbon\Carbon::parse($item->TestDate)->format('d/m/Y') }} {{ $item->FormulaNumber }} ({{$item->Remarks}})
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-
+        <label class="form-label fw-semibold text-muted">เลือกสูตรเคมี</label>
+        <select class="form-control select2" id="formula_3">
+            <option value="">กรุณาเลือก</option>
+            @foreach($hd as $item)
+                <option value="{{ $item->TestID }}" data-formula-number="{{ $item->FormulaNumber }}">
+                     วันที่ : {{ \Carbon\Carbon::parse($item->TestDate)->format('d/m/Y') }} {{ $item->FormulaNumber }} ({{$item->Remarks}})
+                </option>
+            @endforeach
+        </select>
+    </div>
+</div>
             </div>
 
             {{-- Table & Graph Result Grid --}}
@@ -619,6 +626,24 @@ $(document).on('click', '.hide-wear-direct-btn', function () {
 });
 $(document).on('click', '.hide-radar-direct-btn', function () {
     $(this).closest('.card').parent().fadeOut(300);
+});
+// กดปุ่มเพื่อส่ง FormulaNumber ไปยังอีกหน้า
+$(document).on('click', '.check-header-btn', function () {
+    let target = $(this).data('target'); // จะได้ค่า 1, 2 หรือ 3
+    let selectedOption = $('#formula_' + target).find(':selected');
+    let formulaNumber = selectedOption.data('formula-number');
+
+    // ตรวจสอบว่าผู้ใช้เลือกสูตรหรือยัง
+    if (!formulaNumber) {
+        alert('กรุณาเลือกสูตรเคมีก่อนดำเนินการต่อ');
+        return;
+    }
+
+    // กำหนด URL ปลายทางที่คุณต้องการส่งค่าไป (สามารถเปลี่ยน route ตามจริงได้)
+    let url = "{{ route('testheaders.check') }}?formula_number=" + encodeURIComponent(formulaNumber);
+    
+    // พาผู้ใช้ไปยังหน้าใหม่
+    window.location.href = url;
 });
 </script>
 

@@ -465,4 +465,35 @@ class ReportFormulaController extends Controller
         ], 500);
     }
 }
+
+    public function checkTestHeaders(Request $request)
+    {
+        $formulaNumber = $request->query('formula_number');
+        
+        $tests = DB::table('TestHeaders')
+                ->where('FormulaNumber', $formulaNumber)
+                ->orderBy('TestDate', 'asc')
+                ->get();
+
+        $testIds = $tests->pluck('TestID');
+        
+        // ดึงข้อมูล TestFrictions ทั้งหมดของสูตรนี้
+        $allFrictions = DB::table('TestFrictions')
+                ->whereIn('TestID', $testIds)
+                ->get();
+
+        $frictionsByTest = [];
+        foreach ($testIds as $testId) {
+            $frictionsRows = $allFrictions->where('TestID', $testId);
+            
+            // แก้ไขจาก 'Type' เป็น 'SampleSet' (ปรับค่า 'n1', 'n2', 'n3' ตามข้อมูลจริงในฐานข้อมูลของคุณ เช่น ถ้าระบบเก็บเป็นตัวเลข 1, 2, 3 ให้เปลี่ยนเป็นตัวเลขครับ)
+            $frictionsByTest[$testId] = [
+                'n1' => $frictionsRows->where('SampleSet', 'N1')->values()->toArray(),
+                'n2' => $frictionsRows->where('SampleSet', 'N2')->values()->toArray(),
+                'n3' => $frictionsRows->where('SampleSet', 'N3')->values()->toArray(),
+            ];
+        }
+
+        return view('report.report-formulaslist', compact('formulaNumber', 'tests', 'frictionsByTest'));
+    }
 }
