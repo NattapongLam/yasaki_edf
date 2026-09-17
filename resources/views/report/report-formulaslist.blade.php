@@ -423,7 +423,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 data: dataPoints,
                 borderColor: monthColors[m],
                 backgroundColor: 'transparent',
-                borderWidth: 0.75, // ปรับความหนาของเส้นเป็น 0.75 ตามต้องการ
+                borderWidth: 1, 
                 tension: 0.1,
                 spanGaps: true
             });
