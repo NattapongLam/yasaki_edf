@@ -53,6 +53,8 @@ Route::group([
 ],function(){
 Route::resource('/vendorgroups' , App\Http\Controllers\ApVendorGroupController::class);
 Route::resource('/vendorlists' , App\Http\Controllers\ApVendorListController::class);
+Route::post('/vendors/evaluation/store', [App\Http\Controllers\ApVendorListController::class, 'storeEvaluation'])->name('vendor.evaluation.store');
+Route::post('/confirmDelVendorEvaluation' , [App\Http\Controllers\ApVendorListController::class , 'confirmDelVendorEvaluation']);
 });
 Route::group([
     'middleware' =>  ['auth','permission:setup-products']

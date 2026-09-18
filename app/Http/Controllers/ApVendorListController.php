@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use Carbon\Carbon;
+use App\Models\ApVendorGroup;
 use App\Models\ApVendorList;
 use App\Models\OtherCountry;
-use Illuminate\Http\Request;
-use App\Models\ApVendorGroup;
 use App\Models\OtherProvince;
+use App\Models\SupplierEvaluation;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
 
 class ApVendorListController extends Controller
 {
@@ -110,7 +111,11 @@ class ApVendorListController extends Controller
      */
     public function show($id)
     {
-        //
+        $hd = ApVendorList::find($id);
+        $list = SupplierEvaluation::where('ap_vendor_lists_id',$id)
+            ->where('supplier_evaluations_flag',1)
+            ->get();
+        return view('vendors.form-vendor-show', compact('hd','list'));
     }
 
     /**
@@ -196,5 +201,98 @@ class ApVendorListController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function storeEvaluation(Request $request)
+    {
+        $request->validate([
+            'ap_vendor_lists_id' => ['required'],
+            'supplier' => ['required'],
+            'evaluation_date' => ['required', 'date'],
+            'goods_services' => ['required'],
+            'period_evaluated' => ['required'],
+            'score_1' => ['required', 'integer'],
+            'score_2' => ['required', 'integer'],
+            'score_3' => ['required', 'integer'],
+            'score_4' => ['required', 'integer'],
+            'score_5' => ['required', 'integer'],
+        ]);
+
+        $evaluationData = [
+            'ap_vendor_lists_id' => $request->ap_vendor_lists_id,
+            'supplier' => $request->supplier,
+            'evaluation_date' => $request->evaluation_date,
+            'goods_services' => $request->goods_services,
+            'period_evaluated' => $request->period_evaluated,
+            
+            // Score 1
+            'score_1' => $request->score_1,
+            'score_from_1' => $request->score_from_1,
+            'notes_1' => $request->notes_1,
+            
+            // Score 2
+            'score_2' => $request->score_2,
+            'score_from_2' => $request->score_from_2,
+            'notes_2' => $request->notes_2,
+            
+            // Score 3
+            'score_3' => $request->score_3,
+            'score_from_3' => $request->score_from_3,
+            'notes_3' => $request->notes_3,
+            
+            // Score 4
+            'score_4' => $request->score_4,
+            'score_from_4' => $request->score_from_4,
+            'notes_4' => $request->notes_4,
+            
+            // Score 5
+            'score_5' => $request->score_5,
+            'score_from_5' => $request->score_from_5,
+            'notes_5' => $request->notes_5,
+            
+            'decision' => $request->decision,
+            'follow_up_date' => $request->follow_up_date,
+            'supplier_evaluations_flag' => true,
+            'person_at' => Auth::user()->name,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ];
+
+        try {
+            DB::beginTransaction();
+            // บันทึกข้อมูลลงตาราง supplier_evaluations (แนะนำให้สร้าง Model SupplierEvaluation มารองรับด้วย)
+            DB::table('supplier_evaluations')->insert($evaluationData);
+            DB::commit();
+
+            return redirect()->back()->with('success', 'บันทึกแบบประเมินผู้ขายเรียบร้อยแล้ว');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            return redirect()->back()->with('error', 'เกิดข้อผิดพลาดในการบันทึกแบบประเมิน: ' . $e->getMessage());
+        }
+    }
+    public function confirmDelVendorEvaluation(Request $request)
+    {
+        $id = $request->refid;
+        try {
+            DB::beginTransaction();
+            DB::table('supplier_evaluations')
+            ->where('supplier_evaluations_id',$id)
+            ->update([
+                'updated_at' => Carbon::now(),
+                'supplier_evaluations_flag' => 0,
+            ]);
+            DB::commit();                      
+            return response()->json([
+                'status' => true,
+                'message' => 'ยกเลิกเรียบร้อยแล้ว'
+            ]);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
     }
 }

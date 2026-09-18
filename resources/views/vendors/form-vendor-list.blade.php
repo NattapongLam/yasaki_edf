@@ -32,6 +32,7 @@
                     <th>ผู้ติดต่อ</th>
                     <th>เบอร์โทร</th>
                     <th>แก้ไข</th>
+                    <th>ประเมินผู้ขาย</th>
                 </tr>
             </thead>
             <tbody>
@@ -61,6 +62,11 @@
                         </td>
                         <td>
                             <a href="{{route('vendorlists.edit',$item->ap_vendor_lists_id)}}" class="btn btn-sm btn-warning" >
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="{{route('vendorlists.show',$item->ap_vendor_lists_id)}}" class="btn btn-sm btn-primary" >
                                 <i class="fas fa-edit"></i>
                             </a>
                         </td>
