@@ -297,7 +297,7 @@ function renderCombinedFrictionChart(frictions, cleanId) {
             scales: { 
                 y: { 
                     min: 0.00,           
-                    max: 0.60,           
+                    max: 0.70,           
                     ticks: {
                         stepSize: 0.10,  
                         callback: function(value) {
@@ -446,7 +446,7 @@ document.addEventListener("DOMContentLoaded", function () {
             scales: { 
                 y: { 
                     min: 0.00,
-                    max: 0.60,
+                    max: 0.70,
                     ticks: {
                         stepSize: 0.10,
                         callback: function(value) {

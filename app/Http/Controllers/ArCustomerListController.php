@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use Carbon\Carbon;
+use App\Models\ArCustomerGroup;
+use App\Models\ArCustomerList;
+use App\Models\CustomerSatisfactionSurvey;
 use App\Models\OtherCountry;
-use Illuminate\Http\Request;
 use App\Models\OtherDistrict;
 use App\Models\OtherProvince;
-use App\Models\ArCustomerList;
-use App\Models\ArCustomerGroup;
 use App\Models\OtherSubDistrict;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
 
 class ArCustomerListController extends Controller
 {
@@ -111,7 +112,11 @@ class ArCustomerListController extends Controller
      */
     public function show($id)
     {
-        //
+        $hd = ArCustomerList::find($id);
+        $list = CustomerSatisfactionSurvey::where('ar_customer_lists_id',$id)
+        ->where('customer_satisfaction_surveys_flag',1)
+        ->get();
+        return view('customers.form-customer-show', compact('hd','list'));
     }
 
     /**
@@ -202,5 +207,78 @@ class ArCustomerListController extends Controller
     {
         $subdistricts = OtherSubDistrict::where('other_districts_id', $district_id)->where('other_sub_districts_flag',true)->get();
         return response()->json($subdistricts);
+    }
+    public function storeSurvey(Request $request)
+    {
+        $request->validate([
+            'ar_customer_lists_id' => ['required', 'exists:ar_customer_lists,ar_customer_lists_id'],
+            'ar_customer_lists_name' => ['required'],
+            'ar_customer_lists_contact' => ['required'],
+            'ar_customer_lists_tel' => ['required'],
+            'customer_satisfaction_surveys_date' => ['required', 'date'],
+        ]);
+
+        $data = [
+            'ar_customer_lists_id' => $request->ar_customer_lists_id,
+            'ar_customer_lists_name' => $request->ar_customer_lists_name,
+            'ar_customer_lists_contact' => $request->ar_customer_lists_contact,
+            'ar_customer_lists_tel' => $request->ar_customer_lists_tel,
+            'customer_satisfaction_surveys_date' => $request->customer_satisfaction_surveys_date,
+            'quality_1' => $request->quality_1,
+            'quality_2' => $request->quality_2,
+            'quality_3' => $request->quality_3,
+            'delivery_1' => $request->delivery_1,
+            'delivery_2' => $request->delivery_2,
+            'delivery_3' => $request->delivery_3,
+            'personnel_1' => $request->personnel_1,
+            'personnel_2' => $request->personnel_2,
+            'personnel_3' => $request->personnel_3,
+            'communication_1' => $request->communication_1,
+            'communication_2' => $request->communication_2,
+            'communication_3' => $request->communication_3,
+            'suggestions_1' => $request->suggestions_1,
+            'suggestions_2' => $request->suggestions_2,
+            'customer_satisfaction_surveys_flag' => true,
+            'person_at' => Auth::user()->name,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ];
+
+        try {
+            DB::beginTransaction();
+            \App\Models\CustomerSatisfactionSurvey::create($data);
+            DB::commit();
+
+            return redirect()->back()->with('success', 'บันทึกแบบประเมินความพึงพอใจเรียบร้อยแล้ว');
+        } catch (\Exception $e) {
+            DB::rollback();
+            Log::error($e->getMessage());
+            return redirect()->back()->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล: ' . $e->getMessage());
+        }
+    }
+
+    public function confirmDelCustomerSurvey(Request $request)
+    {
+        $id = $request->refid;
+        try {
+            DB::beginTransaction();
+            DB::table('customer_satisfaction_surveys')
+            ->where('customer_satisfaction_surveys_id',$id)
+            ->update([
+                'updated_at' => Carbon::now(),
+                'customer_satisfaction_surveys_flag' => 0,
+            ]);
+            DB::commit();                      
+            return response()->json([
+                'status' => true,
+                'message' => 'ยกเลิกเรียบร้อยแล้ว'
+            ]);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
     }
 }

@@ -642,8 +642,8 @@ $(document).on('click', '.check-header-btn', function () {
     // กำหนด URL ปลายทางที่คุณต้องการส่งค่าไป (สามารถเปลี่ยน route ตามจริงได้)
     let url = "{{ route('testheaders.check') }}?formula_number=" + encodeURIComponent(formulaNumber);
     
-    // พาผู้ใช้ไปยังหน้าใหม่
-    window.location.href = url;
+    // เปิด URL ไปยัง Tab ใหม่
+    window.open(url, '_blank');
 });
 </script>
 

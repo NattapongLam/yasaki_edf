@@ -41,6 +41,8 @@ Route::group([
 ],function(){
 Route::resource('/customergroups' , App\Http\Controllers\ArCustomerGroupController::class);
 Route::resource('/customerlists' , App\Http\Controllers\ArCustomerListController::class);
+Route::post('/customer-satisfaction/store', [App\Http\Controllers\ArCustomerListController::class, 'storeSurvey'])->name('customers.storeSurvey');
+Route::post('/confirmDelCustomerSurvey' , [App\Http\Controllers\ArCustomerListController::class , 'confirmDelCustomerSurvey']);
 Route::get('/get-districts/{province_id}', [App\Http\Controllers\ArCustomerListController::class, 'getDistricts']);
 Route::get('/get-subdistricts/{district_id}', [App\Http\Controllers\ArCustomerListController::class, 'getSubDistricts']);
 Route::resource('/complaints' , App\Http\Controllers\ComplaintsController::class);
