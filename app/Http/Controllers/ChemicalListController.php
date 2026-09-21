@@ -86,6 +86,13 @@ class ChemicalListController extends Controller
             'chemical_lists_vendor' => $request->chemical_lists_vendor,
             'chemical_lists_bom' => $request->chemical_lists_bom,
             'chemical_lists_refdocuno' => $request->chemical_lists_refdocuno,
+            'chemical_lists_purity' => $request->chemical_lists_purity,
+            'chemical_lists_b_density' => $request->chemical_lists_b_density,
+            'chemical_lists_t_density' => $request->chemical_lists_t_density,
+            'chemical_lists_meshsize' => $request->chemical_lists_meshsize,
+            'chemical_lists_components' => $request->chemical_lists_components,
+            'chemical_lists_charpyvalue' => $request->chemical_lists_charpyvalue,
+            'chemical_lists_paticalsize' => $request->chemical_lists_paticalsize
         ];
 
         // File 1 Upload
@@ -123,6 +130,8 @@ class ChemicalListController extends Controller
                         'chemical_subs_flag'    => 1,
                         'created_at'            => Carbon::now(),
                         'updated_at'            => Carbon::now(),
+                        'chemical_subs_color'   => $request->chemical_subs_color[$key] ?? null,
+                        'physical_state'        => $request->physical_state[$key] ?? null,
                     ]);
                 }
             }
@@ -208,6 +217,13 @@ class ChemicalListController extends Controller
             'chemical_lists_vendor' => $request->chemical_lists_vendor,
             'chemical_lists_bom' => $request->chemical_lists_bom,
             'chemical_lists_refdocuno' => $request->chemical_lists_refdocuno,
+            'chemical_lists_purity' => $request->chemical_lists_purity,
+            'chemical_lists_b_density' => $request->chemical_lists_b_density,
+            'chemical_lists_t_density' => $request->chemical_lists_t_density,
+            'chemical_lists_meshsize' => $request->chemical_lists_meshsize,
+            'chemical_lists_components' => $request->chemical_lists_components,
+            'chemical_lists_charpyvalue' => $request->chemical_lists_charpyvalue,
+            'chemical_lists_paticalsize' => $request->chemical_lists_paticalsize
         ]; 
 
         // การจัดการไฟล์แนบ 1 (หากมีการอัปโหลดใหม่เข้ามา)
@@ -253,6 +269,8 @@ class ChemicalListController extends Controller
                         'chemical_subs_flag'    => 1,
                         'created_at'            => Carbon::now(),
                         'updated_at'            => Carbon::now(),
+                        'chemical_subs_color'   => $request->chemical_subs_color[$key] ?? null,
+                        'physical_state'        => $request->physical_state[$key] ?? null,
                     ]);
                 }
             }

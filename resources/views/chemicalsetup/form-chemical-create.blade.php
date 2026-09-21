@@ -38,7 +38,53 @@
                     <input type="text" class="form-control" name="chemical_lists_grade" id="chemical_lists_grade">
                 </div>
             </div> 
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label for="chemical_lists_purity" class="col-form-label">Purity</label>
+                    <input type="text" class="form-control" name="chemical_lists_purity" id="chemical_lists_purity">
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-group">
+                    <label for="chemical_lists_b_density" class="col-form-label">B Density</label>
+                    <input type="text" class="form-control" name="chemical_lists_b_density" id="chemical_lists_b_density">
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-group">
+                    <label for="chemical_lists_t_density" class="col-form-label">T Density g/cm3</label>
+                    <input type="text" class="form-control" name="chemical_lists_t_density" id="chemical_lists_t_density">
+                </div>
+            </div>
         </div> 
+        <div class="row">
+            <div class="col-3">
+                <div class="form-group">
+                    <label for="chemical_lists_meshsize" class="col-form-label">Mesh Size (Mesh)</label>
+                    <input type="text" class="form-control" name="chemical_lists_meshsize" id="chemical_lists_meshsize">
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-group">
+                    <label for="chemical_lists_components" class="col-form-label">Chemical Components</label>
+                    <input type="text" class="form-control" name="chemical_lists_components" id="chemical_lists_components">
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-group">
+                    <label for="chemical_lists_charpyvalue" class="col-form-label">Charpy Value</label>
+                    <input type="text" class="form-control" name="chemical_lists_charpyvalue" id="chemical_lists_charpyvalue">
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-group">
+                    <label for="chemical_lists_paticalsize" class="col-form-label">Patical size</label>
+                    <input type="text" class="form-control" name="chemical_lists_paticalsize" id="chemical_lists_paticalsize">
+                </div>
+            </div>
+        </div>
         <div class="row">
             <div class="col-3">
                 <div class="form-group">
@@ -207,10 +253,12 @@
                         <thead>
                             <tr>
                                 <th style="width: 3%">No.</th>
-                                <th style="width: 40%">ชื่อสาร</th>
-                                <th style="width: 10%">เลขทะเบียน CAS</th>
-                                <th style="width: 10%">เลขทะเบียน EC</th>
-                                <th style="width: 10%">% โดยน้ำหนัก</th>
+                                <th style="width: 35%">ชื่อสาร</th>
+                                <th style="width: 7%">เลขทะเบียน CAS</th>
+                                <th style="width: 7%">เลขทะเบียน EC</th>
+                                <th style="width: 7%">% โดยน้ำหนัก</th>
+                                <th style="width: 7%">Color</th>
+                                <th style="width: 7%">Physical state</th>
                                 <th style="width: 3%"></th>
                             </tr>
                         </thead>
@@ -298,6 +346,8 @@ document.getElementById('addRowBtn').addEventListener('click', function () {
         <td><input type="text" name="chemical_subs_casno[]" class="form-control"/></td>
         <td><input type="text" name="chemical_subs_ecno[]" class="form-control"/></td>
         <td><input type="text" name="chemical_subs_qty[]" class="form-control"/></td>
+        <td><input type="text" name="chemical_subs_color[]" class="form-control"/></td>
+        <td><input type="text" name="physical_state[]" class="form-control"/></td>
         <td><button type="button" class="btn btn-danger btn-sm deleteRow">ลบ</button></td>
     `;
 
