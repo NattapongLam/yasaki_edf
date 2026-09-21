@@ -203,7 +203,7 @@
             <div class="col-3">
                 <div class="form-group">
                     <label for="dimensions_id" class="col-form-label">เครื่องวัดชิ้นงานที่1</label>
-                    <select class="form-control" name="dimensions_id" required>
+                    <select class="form-control select2" name="dimensions_id" required>
                         <option value="">กรุณาเลือกเครื่องวัด</option>
                         @foreach ($cal as $item)
                             <option value="{{$item->calibration_lists_id}}">{{$item->calibration_lists_name1}} ({{$item->calibration_lists_code}})</option>
@@ -214,7 +214,7 @@
             <div class="col-3">
                 <div class="form-group">
                     <label for="dimensions_id1" class="col-form-label">เครื่องวัดชิ้นงานที่2</label>
-                    <select class="form-control" name="dimensions_id1" required>
+                    <select class="form-control select2" name="dimensions_id1" required>
                         <option value="">กรุณาเลือกเครื่องวัด</option>
                         @foreach ($cal as $item)
                             <option value="{{$item->calibration_lists_id}}">{{$item->calibration_lists_name1}} ({{$item->calibration_lists_code}})</option>
@@ -225,7 +225,7 @@
             <div class="col-3">
                 <div class="form-group">
                     <label for="chemistry_hd_id" class="col-form-label">สูตรเคมี</label>
-                    <select class="form-control" name="chemistry_hd_id" required>
+                    <select class="form-control select2" name="chemistry_hd_id" required>
                         <option value="0">กรุณาเลือกสูตร</option>
                         @foreach ($bom as $item)
                             <option value="{{$item->chemistry_hd_id}}">{{$item->ms_formule_name}} ({{$item->chemistry_hd_name}})</option>
@@ -248,7 +248,7 @@
             <div class="col-3">
                 <div class="form-group">
                     <label for="weight_id" class="col-form-label">เครื่องชั่งชิ้นงาน</label>
-                    <select class="form-control" name="weight_id" required>
+                    <select class="form-control select2" name="weight_id" required>
                         <option value="">กรุณาเลือกเครื่องชั่ง</option>
                         @foreach ($cal as $item)
                             <option value="{{$item->calibration_lists_id}}">{{$item->calibration_lists_name1}} ({{$item->calibration_lists_code}})</option>
@@ -337,6 +337,12 @@
 @endsection
 @push('scriptjs')
 <script>
+$('.select2').select2({
+        theme: 'bootstrap-5', // หรือปรับตามธีมที่ใช้งาน (เช่น 'default')
+        width: '100%',        // ป้องกันปัญหาช่อง select หดสั้น
+        placeholder: 'กรุณาเลือกข้อมูล',
+        allowClear: true
+    });
 function prevFile(input, elm) {
     if (input.files && input.files[0]) {
         var reader = new FileReader();

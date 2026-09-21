@@ -391,7 +391,7 @@
             <div class="col-3">
                 <div class="form-group">
                     <label for="result_dimensions_id" class="col-form-label">เครื่องวัดชิ้นงานที่1</label>
-                    <select class="form-control" name="result_dimensions_id" required>
+                    <select class="form-control select2" name="result_dimensions_id" required>
                         <option value="">กรุณาเลือกเครื่องวัด</option>
                         @foreach ($cal as $item)
                             <option value="{{$item->calibration_lists_id}}">{{$item->calibration_lists_name1}} ({{$item->calibration_lists_code}})</option>
@@ -402,7 +402,7 @@
             <div class="col-3">
                 <div class="form-group">
                     <label for="result_dimensions_id1" class="col-form-label">เครื่องวัดชิ้นงานที่2</label>
-                    <select class="form-control" name="result_dimensions_id1" required>
+                    <select class="form-control select2" name="result_dimensions_id1" required>
                         <option value="">กรุณาเลือกเครื่องวัด</option>
                         @foreach ($cal as $item)
                             <option value="{{$item->calibration_lists_id}}">{{$item->calibration_lists_name1}} ({{$item->calibration_lists_code}})</option>
@@ -433,7 +433,7 @@
             <div class="col-3">
                 <div class="form-group">
                     <label for="result_weight_id" class="col-form-label">เครื่องชั่งชิ้นงาน</label>
-                    <select class="form-control" name="result_weight_id" required>
+                    <select class="form-control select2" name="result_weight_id" required>
                         <option value="">กรุณาเลือกเครื่องชั่ง</option>
                         @foreach ($cal as $item)
                             <option value="{{$item->calibration_lists_id}}">{{$item->calibration_lists_name1}} ({{$item->calibration_lists_code}})</option>
@@ -758,6 +758,12 @@
 @endsection
 @push('scriptjs')
 <script>
+$('.select2').select2({
+        theme: 'bootstrap-5', // หรือปรับตามธีมที่ใช้งาน (เช่น 'default')
+        width: '100%',        // ป้องกันปัญหาช่อง select หดสั้น
+        placeholder: 'กรุณาเลือกข้อมูล',
+        allowClear: true
+    });
 function prevFile(input, elm) {
     if (input.files && input.files[0]) {
         var reader = new FileReader();
@@ -777,44 +783,53 @@ function updateRowNumbers() {
 }
 
 document.getElementById('addRowBtn').addEventListener('click', function () {
-        const tbody = document.getElementById('tableBody');
+    const tbody = document.getElementById('tableBody');
 
-        const newRow = document.createElement('tr');
-        newRow.innerHTML = `
-            <td>
-                <span class="row-number"></span>
-                <input type="hidden" name="receive_test_subs_listno[]" class="row-number-hidden"/>
-            </td>
-            <td>
-                <select class="form-control" name="calibration_lists_id[]">
-                        <option value="">กรุณาเลือกเครื่องมือ</option>
-                        @foreach ($cal as $item)
-                            <option value="{{$item->calibration_lists_id}}">{{$item->calibration_lists_name1}} ({{$item->calibration_lists_code}})</option>
-                        @endforeach
-                </select>
-            </td>
-            <td>
-                <textarea class="form-control" name="receive_test_subs_note[]" rows="1" placeholder="เพิ่มเติม"></textarea>
-            </td>
-            <td>
-                <input class="form-control" type="text" name="receive_test_subs_time[]" value="0">
-            </td>
-            <td>
-                <input class="form-control" type="text" name="before_testing[]" value="0">
-            </td>
-             <td>
-                <input class="form-control" type="text" name="after_testing[]" value="0">
-            </td>
-            <td>
-                <input class="form-control" type="text" name="total_testing[]" value="0">
-            </td>
-            <td>
-                <button type="button" class="btn btn-danger btn-sm deleteRow">ลบ</button>
-            </td>
-        `;
+    const newRow = document.createElement('tr');
+    newRow.innerHTML = `
+        <td>
+            <span class="row-number"></span>
+            <input type="hidden" name="receive_test_subs_listno[]" class="row-number-hidden"/>
+        </td>
+        <td>
+            <select class="form-control select2" name="calibration_lists_id[]">
+                <option value="">กรุณาเลือกเครื่องมือ</option>
+                @foreach ($cal as $item)
+                    <option value="{{$item->calibration_lists_id}}">{{$item->calibration_lists_name1}} ({{$item->calibration_lists_code}})</option>
+                @endforeach
+            </select>
+        </td>
+        <td>
+            <textarea class="form-control" name="receive_test_subs_note[]" rows="1" placeholder="เพิ่มเติม"></textarea>
+        </td>
+        <td>
+            <input class="form-control" type="text" name="receive_test_subs_time[]" value="0">
+        </td>
+        <td>
+            <input class="form-control" type="text" name="before_testing[]" value="0">
+        </td>
+         <td>
+            <input class="form-control" type="text" name="after_testing[]" value="0">
+        </td>
+        <td>
+            <input class="form-control" type="text" name="total_testing[]" value="0">
+        </td>
+        <td>
+            <button type="button" class="btn btn-danger btn-sm deleteRow">ลบ</button>
+        </td>
+    `;
 
-        tbody.appendChild(newRow);
-        updateRowNumbers(); 
+    tbody.appendChild(newRow);
+
+    // 👇 เพิ่มคำสั่งตรงนี้เพื่อให้ Select2 ทำงานกับแถวที่สร้างขึ้นใหม่
+    $(newRow).find('.select2').select2({
+        theme: 'bootstrap-5',
+        width: '100%',
+        placeholder: 'กรุณาเลือกข้อมูล',
+        allowClear: true
+    });
+
+    updateRowNumbers(); 
 });
 
 document.getElementById('tableBody').addEventListener('click', function (e) {
