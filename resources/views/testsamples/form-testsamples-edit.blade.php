@@ -783,53 +783,52 @@ function updateRowNumbers() {
 }
 
 document.getElementById('addRowBtn').addEventListener('click', function () {
-    const tbody = document.getElementById('tableBody');
+    const tbody = $('#tableBody'); // ใช้ jQuery จัดการ tbody
 
-    const newRow = document.createElement('tr');
-    newRow.innerHTML = `
-        <td>
-            <span class="row-number"></span>
-            <input type="hidden" name="receive_test_subs_listno[]" class="row-number-hidden"/>
-        </td>
-        <td>
-            <select class="form-control select2" name="calibration_lists_id[]">
-                <option value="">กรุณาเลือกเครื่องมือ</option>
-                @foreach ($cal as $item)
-                    <option value="{{$item->calibration_lists_id}}">{{$item->calibration_lists_name1}} ({{$item->calibration_lists_code}})</option>
-                @endforeach
-            </select>
-        </td>
-        <td>
-            <textarea class="form-control" name="receive_test_subs_note[]" rows="1" placeholder="เพิ่มเติม"></textarea>
-        </td>
-        <td>
-            <input class="form-control" type="text" name="receive_test_subs_time[]" value="0">
-        </td>
-        <td>
-            <input class="form-control" type="text" name="before_testing[]" value="0">
-        </td>
-         <td>
-            <input class="form-control" type="text" name="after_testing[]" value="0">
-        </td>
-        <td>
-            <input class="form-control" type="text" name="total_testing[]" value="0">
-        </td>
-        <td>
-            <button type="button" class="btn btn-danger btn-sm deleteRow">ลบ</button>
-        </td>
-    `;
+    // สร้าง HTML ด้วย jQuery Template
+    const newRow = $(`
+        <tr>
+            <td>
+                <span class="row-number"></span>
+                <input type="hidden" name="receive_test_subs_listno[]" class="row-number-hidden"/>
+            </td>
+            <td>
+                <select class="form-control" name="calibration_lists_id[]">
+                    <option value="">กรุณาเลือกเครื่องมือ</option>
+                    @foreach ($cal as $item)
+                        <option value="{{$item->calibration_lists_id}}">{{$item->calibration_lists_name1}} ({{$item->calibration_lists_code}})</option>
+                    @endforeach
+                </select>
+            </td>
+            <td>
+                <textarea class="form-control" name="receive_test_subs_note[]" rows="1" placeholder="เพิ่มเติม"></textarea>
+            </td>
+            <td>
+                <input class="form-control" type="text" name="receive_test_subs_time[]" value="0">
+            </td>
+            <td>
+                <input class="form-control" type="text" name="before_testing[]" value="0">
+            </td>
+            <td>
+                <input class="form-control" type="text" name="after_testing[]" value="0">
+            </td>
+            <td>
+                <input class="form-control" type="text" name="total_testing[]" value="0">
+            </td>
+            <td>
+                <button type="button" class="btn btn-danger btn-sm deleteRow">ลบ</button>
+            </td>
+        </tr>
+    `);
 
-    tbody.appendChild(newRow);
+    // Append เข้าตาราง
+    tbody.append(newRow);
 
-    // 👇 เพิ่มคำสั่งตรงนี้เพื่อให้ Select2 ทำงานกับแถวที่สร้างขึ้นใหม่
-    $(newRow).find('.select2').select2({
-        theme: 'bootstrap-5',
-        width: '100%',
-        placeholder: 'กรุณาเลือกข้อมูล',
-        allowClear: true
-    });
 
-    updateRowNumbers(); 
+    // เรียกฟังก์ชันจัดเรียงลำดับแถวใหม่ (ถ้ามี)
+    if (typeof updateRowNumbers === 'function') {
+        updateRowNumbers();
+    }
 });
 
 document.getElementById('tableBody').addEventListener('click', function (e) {
