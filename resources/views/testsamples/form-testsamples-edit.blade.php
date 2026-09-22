@@ -391,7 +391,7 @@
             <div class="col-3">
                 <div class="form-group">
                     <label for="result_dimensions_id" class="col-form-label">เครื่องวัดชิ้นงานที่1</label>
-                    <select class="form-control select2" name="result_dimensions_id" required>
+                    <select class="form-control" name="result_dimensions_id" required>
                         <option value="">กรุณาเลือกเครื่องวัด</option>
                         @foreach ($cal as $item)
                             <option value="{{$item->calibration_lists_id}}">{{$item->calibration_lists_name1}} ({{$item->calibration_lists_code}})</option>
@@ -402,7 +402,7 @@
             <div class="col-3">
                 <div class="form-group">
                     <label for="result_dimensions_id1" class="col-form-label">เครื่องวัดชิ้นงานที่2</label>
-                    <select class="form-control select2" name="result_dimensions_id1" required>
+                    <select class="form-control" name="result_dimensions_id1" required>
                         <option value="">กรุณาเลือกเครื่องวัด</option>
                         @foreach ($cal as $item)
                             <option value="{{$item->calibration_lists_id}}">{{$item->calibration_lists_name1}} ({{$item->calibration_lists_code}})</option>
@@ -433,7 +433,7 @@
             <div class="col-3">
                 <div class="form-group">
                     <label for="result_weight_id" class="col-form-label">เครื่องชั่งชิ้นงาน</label>
-                    <select class="form-control select2" name="result_weight_id" required>
+                    <select class="form-control" name="result_weight_id" required>
                         <option value="">กรุณาเลือกเครื่องชั่ง</option>
                         @foreach ($cal as $item)
                             <option value="{{$item->calibration_lists_id}}">{{$item->calibration_lists_name1}} ({{$item->calibration_lists_code}})</option>
