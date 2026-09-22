@@ -665,7 +665,7 @@ Note: The reported uncertainty is based on a standard uncertainty multiplied by 
             <td>{{ $hd->FormulaNumber }}</td>
         </tr>
         <tr>
-            <th>Lot No.</th>
+            <th>Remark.</th>
             <td>{{ $reqdt->ar_requestorder_hds_remark }}</td>
         </tr>
         <tr>

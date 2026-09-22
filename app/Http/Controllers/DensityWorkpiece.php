@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class DensityWorkpiece extends Controller
 {
@@ -64,9 +65,7 @@ class DensityWorkpiece extends Controller
             // ค้นหาชื่อ Product และ Mold เพิ่มเติมถ้าจำเป็น (หรือดึงจาก Request / Ajax)
             $product = DB::table('ms_edf_moldlist')->where('product_code', $request->product_code)->first();
             $mold = DB::table('ms_edf_moldlist')->where('mlod_code', $request->mlod_code)->first();
-
-            // 1. บันทึกข้อมูล Header (density_workpiece_hds)
-            $header = DensityWorkpieceHd::create([
+            $data = [
                 'product_code'                 => $request->product_code,
                 'product_name'                 => $product ? $product->product_name : null, // ปรับตามฟิลด์จริง
                 'mlod_code'                    => $request->mlod_code,
@@ -84,7 +83,21 @@ class DensityWorkpiece extends Controller
                 'product_sides'                => $request->product_sides,
                 'created_at'                   => Carbon::now(), 
                 'updated_at'                   => Carbon::now(),
-            ]);
+            ];
+            if ($request->hasFile('density_workpiece_hds_file1')) {
+                $data['density_workpiece_hds_file1'] = $request->file('density_workpiece_hds_file1')->storeAs('images/DensityWorkpiece_File', "IMG_" . Carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('density_workpiece_hds_file1')->extension());
+            }
+            if ($request->hasFile('density_workpiece_hds_file2')) {
+                $data['density_workpiece_hds_file2'] = $request->file('density_workpiece_hds_file2')->storeAs('images/DensityWorkpiece_File', "IMG_" . Carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('density_workpiece_hds_file2')->extension());
+            }
+            if ($request->hasFile('density_workpiece_hds_file3')) {
+                $data['density_workpiece_hds_file3'] = $request->file('density_workpiece_hds_file3')->storeAs('images/DensityWorkpiece_File', "IMG_" . Carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('density_workpiece_hds_file3')->extension());
+            }
+            if ($request->hasFile('density_workpiece_hds_file4')) {
+                $data['density_workpiece_hds_file4'] = $request->file('density_workpiece_hds_file4')->storeAs('images/DensityWorkpiece_File', "IMG_" . Carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('density_workpiece_hds_file4')->extension());
+            }
+            // 1. บันทึกข้อมูล Header (density_workpiece_hds)
+            $header = DensityWorkpieceHd::create($data);
 
             // 2. บันทึกข้อมูล Detail (density_workpiece_dts) ตามจำนวน Cavity ที่ส่งมาเป็น Array
             if ($request->has('cavity') && is_array($request->cavity)) {

@@ -107,6 +107,32 @@
                     </div>
                 </div>
             </div>
+            <div class="row mt-2">
+                <div class="col-3">
+                    <div class="form-group">
+                        <label for="density_workpiece_hds_file1" class="col-form-label">รูปภาพ</label>
+                        <input type="file" class="form-control" name="density_workpiece_hds_file1" >
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="form-group">
+                        <label for="density_workpiece_hds_file2" class="col-form-label">รูปภาพ</label>
+                        <input type="file" class="form-control" name="density_workpiece_hds_file2" >
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="form-group">
+                        <label for="density_workpiece_hds_file3" class="col-form-label">รูปภาพ</label>
+                        <input type="file" class="form-control" name="density_workpiece_hds_file3" >
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="form-group">
+                        <label for="density_workpiece_hds_file4" class="col-form-label">รูปภาพ</label>
+                        <input type="file" class="form-control" name="density_workpiece_hds_file4" >
+                    </div>
+                </div>
+            </div>
             <div class="row mt-3">
                 <div class="table-responsive">
                     <table class="table table-bordered text-center align-middle">
