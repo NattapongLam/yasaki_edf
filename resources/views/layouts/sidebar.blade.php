@@ -148,7 +148,7 @@
                         <li>
                             <a href="javascript: void(0);" class="has-arrow" key="t-vertical">แบบบันทึก</a>
                             <ul class="sub-menu" aria-expanded="true">
-                                <li><a href="#" key="t-default">ความหนาแน่นของชิ้นงาน</a></li> 
+                                <li><a href="{{route('density-workpiece.index')}}" key="t-default">ความหนาแน่นของชิ้นงาน</a></li> 
                             </ul>
                         </li>
                     </ul>                                         

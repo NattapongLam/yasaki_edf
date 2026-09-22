@@ -103,7 +103,11 @@ Route::get('/chemistrys/{id}/print',[App\Http\Controllers\ChemistryController::c
 Route::get('/chemistrys/{id}/printlog',[App\Http\Controllers\ChemistryController::class, 'printlog'])->name('chemistrys.printlog');
 Route::post('/confirmDelChemistryDt' , [App\Http\Controllers\ChemistryController::class , 'confirmDelChemistryDt']);
 Route::post('/confirmDelChemistryHd' , [App\Http\Controllers\ChemistryController::class , 'confirmDelChemistryHd']);
-
+Route::resource('/density-workpiece' , App\Http\Controllers\DensityWorkpiece::class);
+Route::get('/get-molds', [App\Http\Controllers\DensityWorkpiece::class, 'getMolds'])->name('get.molds');
+Route::get('/get-numbers', [App\Http\Controllers\DensityWorkpiece::class, 'getNumbers'])->name('get.numbers');
+Route::get('/get-number-details', [App\Http\Controllers\DensityWorkpiece::class, 'getNumberDetails'])->name('get.number.details');
+Route::post('/confirmDelDensityWorkpiece' , [App\Http\Controllers\DensityWorkpiece::class , 'confirmDelDensityWorkpiece']);
 Route::get('/report/compareformulas/print/{id}',[App\Http\Controllers\ReportFormulaController::class,'PrintCompareFormula'])->name('report.compareformulas.print');
 Route::get('/analyze-formulas' , [App\Http\Controllers\ReportFormulaController::class , 'AnalyzeFormulas']);
 Route::post('/get-formula-detail', [App\Http\Controllers\ReportFormulaController::class, 'getFormulaDetail'])->name('report.get.formula.detail');
