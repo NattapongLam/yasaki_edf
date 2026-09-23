@@ -16,171 +16,136 @@
     </div>
     @endif
 
-    <div class="card">
-        <div class="card-body">
+    <div class="card border-0 shadow-sm print-card">
+        <div class="card-body p-4">
             <form method="POST" class="form-horizontal" action="{{ route('density-workpiece.update', $hd->density_workpiece_hds_id) }}" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')  
                 
-                <div class="row">
-                    <div class="col-12 col-md-6">
-                        <h3 class="card-title">ความหนาแน่นของชิ้นงาน</h3>
-                    </div>         
-                </div>
-
-                <div class="row mt-2">
-                    <div class="col-6">
-                        <div class="form-group">
-                            <label class="form-label">Product</label>
-                            <input class="form-control" value="{{ $hd->product_name }} ({{$hd->product_code }})" readonly>
-                        </div>             
+                <!-- ส่วนหัวเอกสาร -->
+                <div class="row border-bottom pb-3 mb-3 align-items-center">
+                    <div class="col-8">
+                        <h4 class="fw-bold text-dark mb-1">ใบรายงานการตรวจสอบความหนาแน่นของชิ้นงาน</h4>
+                        <p class="text-muted mb-0 small">Density Workpiece Inspection Report</p>
                     </div>
-                    <div class="col-6">
-                        <div class="form-group">
-                            <label class="form-label">Mold</label>
-                            <input class="form-control" value="{{ $hd->mlod_name }} ({{$hd->mlod_code }})" readonly>
-                        </div>             
+                    <div class="col-4 text-end d-print-none">
+                        <button type="button" class="btn btn-secondary me-2" onclick="window.print()">
+                            <i class="mdi mdi-printer me-1"></i> พิมพ์เอกสาร
+                        </button>
+                        <button type="submit" class="btn btn-primary">บันทึกข้อมูล</button>
                     </div>
                 </div>
 
-                <div class="row mt-2">
-                    <div class="col-3">
-                        <div class="form-group">
-                            <label class="form-label">Area (cm²)</label>
-                            <input class="form-control" name="mlod_area" id="mlod_area" value="{{ $hd->mlod_area }}" readonly>
-                        </div>
+                <!-- ข้อมูลทั่วไป (Header Info) -->
+                <div class="row g-3 mb-3 bg-light p-3 rounded border">
+                    <div class="col-6 col-md-6">
+                        <label class="form-label text-muted small mb-1">Product</label>
+                        <input class="form-control form-control-sm bg-white fw-bold" value="{{ $hd->product_name }} ({{$hd->product_code }})" readonly>
+                    </div>            
+                    <div class="col-6 col-md-6">
+                        <label class="form-label text-muted small mb-1">Mold</label>
+                        <input class="form-control form-control-sm bg-white fw-bold" value="{{ $hd->mlod_name }} ({{$hd->mlod_code }})" readonly>
                     </div>
-                    <div class="col-3">
-                        <div class="form-group">
-                            <label class="form-label">Pressure</label>
-                            <input class="form-control" name="mlod_pressure" id="mlod_pressure" value="{{ $hd->mlod_pressure }}" readonly>
-                        </div>
+
+                    <div class="col-6 col-md-3">
+                        <label class="form-label text-muted small mb-1">Area (cm²)</label>
+                        <input class="form-control form-control-sm bg-white" name="mlod_area" id="mlod_area" value="{{ $hd->mlod_area }}" readonly>
                     </div>
-                    <div class="col-3">
-                        <div class="form-group">
-                            <label class="form-label">Weight</label>
-                            <input class="form-control" name="chemical_weight" value="{{ $hd->chemical_weight }}" readonly>
-                        </div>
+                    <div class="col-6 col-md-3">
+                        <label class="form-label text-muted small mb-1">Pressure</label>
+                        <input class="form-control form-control-sm bg-white" name="mlod_pressure" id="mlod_pressure" value="{{ $hd->mlod_pressure }}" readonly>
                     </div>
-                    <div class="col-3">
-                        <div class="form-group">
-                            <label class="form-label">Temp</label>
-                            <input class="form-control" name="chemical_temp" value="{{ $hd->chemical_temp }}" readonly>
-                        </div>
+                    <div class="col-6 col-md-3">
+                        <label class="form-label text-muted small mb-1">Weight</label>
+                        <input class="form-control form-control-sm bg-white" name="chemical_weight" value="{{ $hd->chemical_weight }}" readonly>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <label class="form-label text-muted small mb-1">Temp</label>
+                        <input class="form-control form-control-sm bg-white" name="chemical_temp" value="{{ $hd->chemical_temp }}" readonly>
+                    </div>
+
+                    <div class="col-6 col-md-3">
+                        <label class="form-label text-muted small mb-1">Formule</label>
+                        <input class="form-control form-control-sm bg-white" name="ms_formule_name" value="{{ $hd->ms_formule_name }}" readonly>                
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <label class="form-label text-muted small mb-1">Number</label>
+                        <input class="form-control form-control-sm bg-white" value="{{ $hd->chemistry_hd_name }}" readonly>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <label class="form-label text-muted small mb-1">Density (Target)</label>
+                        <input class="form-control form-control-sm bg-white fw-bold text-primary" name="total_density" id="total_density" value="{{ $hd->total_density }}" readonly>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <label class="form-label text-muted small mb-1">Date</label>
+                        <input class="form-control form-control-sm bg-white fw-bold" value="{{ $hd->density_workpiece_hds_date}}" readonly>
                     </div>
                 </div>
 
-                <div class="row mt-2">
-                    <div class="col-3">
-                        <div class="form-group">
-                            <label class="form-label">Formule</label>
-                            <input class="form-control" name="ms_formule_name" value="{{ $hd->ms_formule_name }}" readonly>                     
-                        </div>
-                    </div>
-                    <div class="col-3">
-                        <div class="form-group">
-                            <label class="form-label">Number</label>
-                            <input class="form-control" value="{{ $hd->chemistry_hd_name }}" readonly>
-                        </div>
-                    </div>
-                    <div class="col-3">
-                        <div class="form-group">
-                            <label class="form-label">Density (Target)</label>
-                            <input class="form-control" name="total_density" id="total_density" value="{{ $hd->total_density }}" readonly>
-                        </div>
-                    </div>
-                    <div class="col-3">
-                        <div class="form-group">
-                            <label class="form-label">Sides</label>
-                            <select class="form-control" name="product_sides">
-                                <option value="{{ $hd->product_sides }}">{{ $hd->product_sides }}</option>
-                            </select>
-                        </div>
-                    </div>
+                <!-- ตารางข้อมูลชิ้นงาน -->
+                <div class="table-responsive">
+                    <table class="table table-bordered table-sm text-center align-middle print-table">
+                        <thead class="table-light">
+                            <tr>
+                                <th rowspan="2" class="align-middle">ลำดับ</th>
+                                <th colspan="2">เหล็ก</th>
+                                <th colspan="2">เหล็ก + กาว</th>
+                                <th colspan="2">เหล็ก + กาว + เคมี</th>
+                                <th rowspan="2" class="align-middle">น้ำหนักเคมี (g)</th>
+                                <th rowspan="2" class="align-middle">ความหนาก้อนเคมี (cm)</th>
+                                <th rowspan="2" class="align-middle">Volume (cm³)</th>
+                                <th rowspan="2" class="align-middle">Density (g/cm³)<br>ρ = mass / Vol</th>
+                                <th rowspan="2" class="align-middle">%Porosity</th>
+                                <th rowspan="2" class="align-middle">Sides</th>
+                            </tr>
+                            <tr>
+                                <th>น้ำหนัก (g)</th>
+                                <th>ความหนา (mm)</th>
+                                <th>น้ำหนัก (g)</th>
+                                <th>ความหนา (mm)</th>
+                                <th>น้ำหนัก (g)</th>
+                                <th>ความหนา (mm)</th>
+                            </tr>
+                        </thead>
+                        <!-- ย้ายส่วนสรุปผล (Summary) มาไว้ที่ส่วนหัวของตาราง (thead รอง) หรือแสดงก่อน tbody -->
+                        <tbody id="summary_table_section" class="fw-bold bg-light">
+                            <!-- ผลรวมสรุปจะถูกแทรกลงตรงนี้ผ่าน JavaScript -->
+                        </tbody>
+                        <tbody id="cavity_table_body">
+                            @foreach ($dt as $item)
+                            <tr>
+                                <td class="fw-bold bg-light">{{ $item->density_workpiece_dts_listno }}</td>
+                                <td><input type="number" step="any" class="form-control form-control-sm text-center iron-w" name="cavity[{{ $item->density_workpiece_dts_listno }}][weight_1]" value="{{ $item->weight_1 }}"></td>
+                                <td><input type="number" step="any" class="form-control form-control-sm text-center iron-t" name="cavity[{{ $item->density_workpiece_dts_listno }}][thickness_1]" value="{{ $item->thickness_1 }}"></td>
+                                <td><input type="number" step="any" class="form-control form-control-sm text-center glue-w" name="cavity[{{ $item->density_workpiece_dts_listno }}][weight_2]" value="{{ $item->weight_2 }}"></td>
+                                <td><input type="number" step="any" class="form-control form-control-sm text-center glue-t" name="cavity[{{ $item->density_workpiece_dts_listno }}][thickness_2]" value="{{ $item->thickness_2 }}"></td>
+                                <td><input type="number" step="any" class="form-control form-control-sm text-center chem-w" name="cavity[{{ $item->density_workpiece_dts_listno }}][weight_3]" value="{{ $item->weight_3 }}"></td>
+                                <td><input type="number" step="any" class="form-control form-control-sm text-center chem-t" name="cavity[{{ $item->density_workpiece_dts_listno }}][thickness_3]" value="{{ $item->thickness_3 }}"></td>
+                                <td><input type="text" class="form-control form-control-sm text-center calc-weight-chem bg-light" name="cavity[{{ $item->density_workpiece_dts_listno }}][weight_chemical]" value="{{ $item->weight_chemical }}" readonly></td>
+                                <td><input type="text" class="form-control form-control-sm text-center calc-thickness-chem bg-light" name="cavity[{{ $item->density_workpiece_dts_listno }}][thickness_chemical]" value="{{ $item->thickness_chemical }}" readonly></td>
+                                <td><input type="text" class="form-control form-control-sm text-center calc-volume bg-light" name="cavity[{{ $item->density_workpiece_dts_listno }}][density_workpiece_dts_volume]" value="{{ $item->density_workpiece_dts_volume }}" readonly></td>
+                                <td><input type="text" class="form-control form-control-sm text-center calc-density bg-light" name="cavity[{{ $item->density_workpiece_dts_listno }}][density_workpiece_dts_density]" value="{{ $item->density_workpiece_dts_density }}" readonly></td>
+                                <td><input type="text" class="form-control form-control-sm text-center calc-porosity bg-light" name="cavity[{{ $item->density_workpiece_dts_listno }}][density_workpiece_dts_porosity]" value="{{ $item->density_workpiece_dts_porosity }}" readonly></td>
+                                <td>
+                                    <select class="form-control form-control-sm text-center" name="cavity[{{ $item->density_workpiece_dts_listno }}][product_sides]">
+                                        <option value="{{$item->product_sides}}">{{$item->product_sides}}</option>
+                                        <option value="ซ้าย">ซ้าย</option>
+                                        <option value="ขวา">ขวา</option>
+                                        <option value="ซ้าย-ขวา">ซ้าย-ขวา</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
 
-                <div class="row mt-3">
-                    <div class="table-responsive">
-                        <table class="table table-bordered text-center align-middle">
-                            <thead>
-                                <tr>
-                                    <th rowspan="2">ลำดับ</th>
-                                    <th colspan="2">เหล็ก</th>
-                                    <th colspan="2">เหล็ก + กาว</th>
-                                    <th colspan="2">เหล็ก + กาว + เคมี</th>
-                                    <th rowspan="2">น้ำหนักเคมี (g)</th>
-                                    <th rowspan="2">ความหนาก้อนเคมี (cm)</th>
-                                    <th rowspan="2">Volume (cm³)</th>
-                                    <th rowspan="2">Density (g/cm³)<br>ρ = mass / Volume</th>
-                                    <th rowspan="2">%Porosity</th>
-                                    <th rowspan="2">Sides</th>
-                                </tr>
-                                <tr>
-                                    <th>น้ำหนัก (g)</th>
-                                    <th>ความหนา (mm)</th>
-                                    <th>น้ำหนัก (g)</th>
-                                    <th>ความหนา (mm)</th>
-                                    <th>น้ำหนัก (g)</th>
-                                    <th>ความหนา (mm)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="cavity_table_body">
-                                @foreach ($dt as $item)
-                                <tr>
-                                    <td class="text-center">{{ $item->density_workpiece_dts_listno }}</td>
-                                    <td>
-                                        <input type="number" step="any" class="form-control iron-w" name="cavity[{{ $item->density_workpiece_dts_listno }}][weight_1]" value="{{ $item->weight_1 }}">
-                                    </td>
-                                    <td>
-                                        <input type="number" step="any" class="form-control iron-t" name="cavity[{{ $item->density_workpiece_dts_listno }}][thickness_1]" value="{{ $item->thickness_1 }}">
-                                    </td>
-                                    <td>
-                                        <input type="number" step="any" class="form-control glue-w" name="cavity[{{ $item->density_workpiece_dts_listno }}][weight_2]" value="{{ $item->weight_2 }}">
-                                    </td>
-                                    <td>
-                                        <input type="number" step="any" class="form-control glue-t" name="cavity[{{ $item->density_workpiece_dts_listno }}][thickness_2]" value="{{ $item->thickness_2 }}">
-                                    </td>
-                                    <td>
-                                        <input type="number" step="any" class="form-control chem-w" name="cavity[{{ $item->density_workpiece_dts_listno }}][weight_3]" value="{{ $item->weight_3 }}">
-                                    </td>
-                                    <td>
-                                        <input type="number" step="any" class="form-control chem-t" name="cavity[{{ $item->density_workpiece_dts_listno }}][thickness_3]" value="{{ $item->thickness_3 }}">
-                                    </td>
-                                    <td>
-                                        <input type="text" class="form-control calc-weight-chem bg-light" name="cavity[{{ $item->density_workpiece_dts_listno }}][weight_chemical]" value="{{ $item->weight_chemical }}" readonly>
-                                    </td>
-                                    <td>
-                                        <input type="text" class="form-control calc-thickness-chem bg-light" name="cavity[{{ $item->density_workpiece_dts_listno }}][thickness_chemical]" value="{{ $item->thickness_chemical }}" readonly>
-                                    </td>
-                                    <td>
-                                        <input type="text" class="form-control calc-volume bg-light" name="cavity[{{ $item->density_workpiece_dts_listno }}][density_workpiece_dts_volume]" value="{{ $item->density_workpiece_dts_volume }}" readonly>
-                                    </td>
-                                    <td>
-                                        <input type="text" class="form-control calc-density bg-light" name="cavity[{{ $item->density_workpiece_dts_listno }}][density_workpiece_dts_density]" value="{{ $item->density_workpiece_dts_density }}" readonly>
-                                    </td>
-                                    <td>
-                                        <input type="text" class="form-control calc-porosity bg-light" name="cavity[{{ $item->density_workpiece_dts_listno }}][density_workpiece_dts_porosity]" value="{{ $item->density_workpiece_dts_porosity }}" readonly>
-                                    </td>
-                                    <td>
-                                        <select class="form-control" name="cavity[{{ $item->density_workpiece_dts_listno }}][product_sides]">
-                                            <option value="{{$item->product_sides}}">{{$item->product_sides}}</option>
-                                            <option value="ซ้าย">ซ้าย</option>
-                                            <option value="ขวา">ขวา</option>
-                                            <option value="ซ้าย-ขวา">ซ้าย-ขวา</option>
-                                        </select>
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                            <tfoot id="cavity_table_footer" style="font-weight: bold; background-color: #f8f9fa;">
-                                <!-- ผลรวมจะถูกคำนวณผ่าน JavaScript -->
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="row mt-3">
+                <!-- ปุ่มด้านล่าง (ซ่อนเวลาพิมพ์) -->
+                <div class="row mt-3 d-print-none">
                     <div class="col-12 text-end">
+                        <button type="button" class="btn btn-secondary me-2" onclick="window.print()">
+                            <i class="mdi mdi-printer me-1"></i> พิมพ์เอกสาร
+                        </button>
                         <button type="submit" class="btn btn-primary">บันทึกข้อมูล</button>
                     </div>
                 </div>
@@ -195,6 +160,73 @@
     .select2-results__options {
         max-height: 200px !important;
         overflow-y: auto !important;
+    }
+
+    /* ================= สไตล์สำหรับการพิมพ์เอกสาร (Print CSS) ================= */
+    @media print {
+        @page {
+            size: A4 landscape;
+            margin: 10mm;
+        }
+
+        body * {
+            visibility: hidden;
+        }
+
+        .print-card, .print-card * {
+            visibility: visible;
+        }
+
+        .print-card {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            border: none !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+        }
+
+        .d-print-none, button, .btn, .alert {
+            display: none !important;
+        }
+
+        .form-control, select.form-control {
+            border: none !important;
+            border-bottom: 1px dotted #999 !important;
+            background-color: transparent !important;
+            box-shadow: none !important;
+            padding: 1px 0 !important;
+            text-align: center;
+            font-size: 11px;
+        }
+
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+        .table-responsive {
+            overflow: visible !important;
+        }
+
+        table.print-table {
+            font-size: 11px;
+            width: 100% !important;
+            border-collapse: collapse !important;
+        }
+
+        table.print-table th, 
+        table.print-table td {
+            padding: 4px 6px !important;
+            border: 1px solid #333 !important;
+        }
+        
+        tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+        }
     }
 </style>
 <script>
@@ -229,11 +261,10 @@ function calculateRow(rowTr) {
 function calculateAllRows() {
     var rows = $('#cavity_table_body tr');
     if (rows.length === 0) {
-        $('#cavity_table_footer').hide();
+        $('#summary_table_section').hide();
         return;
     }
 
-    // กำหนดกลุ่ม Side ที่ต้องการคำนวณแยก
     var sidesList = ['ซ้าย', 'ขวา', 'ซ้าย-ขวา'];
     var sideData = {};
 
@@ -269,18 +300,18 @@ function calculateAllRows() {
         }
     });
 
-    var footerHtml = '';
+    var summaryHtml = '';
 
     sidesList.forEach(function(side) {
         var data = sideData[side];
         if (data.count > 0) {
             var count = data.count;
-            footerHtml += `
-                <tr class="table-light fw-bold text-dark">
-                    <td colspan="12" class="text-start ps-3 bg-light">ด้าน: ${side}</td>
+            summaryHtml += `
+                <tr class="table-secondary fw-bold text-dark">
+                    <td colspan="13" class="text-start ps-3">สรุปผลด้าน: ${side}</td>
                 </tr>
-                <tr>
-                    <td>Total (${side})</td>
+                <tr class="table-light">
+                    <td class="fw-semibold">Total (${side})</td>
                     <td>${data.sumIronW.toFixed(2)}</td>
                     <td>${data.sumIronT.toFixed(2)}</td>
                     <td>${data.sumGlueW.toFixed(2)}</td>
@@ -292,10 +323,10 @@ function calculateAllRows() {
                     <td>${data.sumVolume.toFixed(2)}</td>
                     <td>${data.sumDensity.toFixed(2)}</td>
                     <td>${data.sumPorosity.toFixed(2)}</td>
-                    <td></td>
+                    <td>-</td>
                 </tr>
-                <tr>
-                    <td>Average (${side})</td>
+                <tr class="table-light">
+                    <td class="fw-semibold">Average (${side})</td>
                     <td>${(data.sumIronW / count).toFixed(2)}</td>
                     <td>${(data.sumIronT / count).toFixed(2)}</td>
                     <td>${(data.sumGlueW / count).toFixed(2)}</td>
@@ -307,25 +338,23 @@ function calculateAllRows() {
                     <td>${(data.sumVolume / count).toFixed(2)}</td>
                     <td>${(data.sumDensity / count).toFixed(2)}</td>
                     <td>${(data.sumPorosity / count).toFixed(2)}</td>
-                    <td></td>
+                    <td>-</td>
                 </tr>
             `;
         }
     });
 
-    if (footerHtml === '') {
-        $('#cavity_table_footer').hide();
+    if (summaryHtml === '') {
+        $('#summary_table_section').hide();
     } else {
-        $('#cavity_table_footer').html(footerHtml).show();
+        $('#summary_table_section').html(summaryHtml).show();
     }
 }
 
-// Event เมื่อพิมพ์ข้อมูลในช่อง input
 $(document).on('input', '.iron-w, .iron-t, .glue-w, .glue-t, .chem-w, .chem-t', function() {
     calculateAllRows();
 });
 
-// Event เมื่อเปลี่ยนค่า Dropdown Sides ในแต่ละแถว
 $(document).on('change', 'select[name*="[product_sides]"]', function() {
     calculateAllRows();
 });
