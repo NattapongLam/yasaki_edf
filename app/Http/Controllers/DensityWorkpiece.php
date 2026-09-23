@@ -119,6 +119,7 @@ class DensityWorkpiece extends Controller
                         'density_workpiece_dts_porosity'=> $item['density_workpiece_dts_porosity'] ?? 0,
                         'created_at'                    => Carbon::now(), 
                         'updated_at'                    => Carbon::now(),
+                        'product_sides'                 => $item['product_sides'],
                     ]);
                 }
             }
