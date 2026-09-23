@@ -56,7 +56,6 @@ class DensityWorkpiece extends Controller
             'mlod_code' => 'required|not_in:-',
             'ms_formule_name' => 'required|not_in:-',
             'chemistry_hd_name' => 'required|not_in:-',
-            'product_sides' => 'required|not_in:-',
         ]);
 
         // ใช้ Database Transaction เพื่อความปลอดภัย หากเกิดข้อผิดพลาดจะ Rollback ทั้งหมด
