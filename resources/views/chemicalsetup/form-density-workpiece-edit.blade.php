@@ -113,6 +113,7 @@
                                     <th rowspan="2">Volume (cm³)</th>
                                     <th rowspan="2">Density (g/cm³)<br>ρ = mass / Volume</th>
                                     <th rowspan="2">%Porosity</th>
+                                    <th rowspan="2">Sides</th>
                                 </tr>
                                 <tr>
                                     <th>น้ำหนัก (g)</th>
@@ -159,6 +160,14 @@
                                     </td>
                                     <td>
                                         <input type="text" class="form-control calc-porosity bg-light" name="cavity[{{ $item->density_workpiece_dts_listno }}][density_workpiece_dts_porosity]" value="{{ $item->density_workpiece_dts_porosity }}" readonly>
+                                    </td>
+                                    <td>
+                                        <select class="form-control" name="cavity[{{ $item->density_workpiece_dts_listno }}][product_sides]">
+                                            <option value="{{$item->product_sides}}">{{$item->product_sides}}</option>
+                                            <option value="ซ้าย">ซ้าย</option>
+                                            <option value="ขวา">ขวา</option>
+                                            <option value="ซ้าย-ขวา">ซ้าย-ขวา</option>
+                                        </select>
                                     </td>
                                 </tr>
                                 @endforeach
@@ -224,64 +233,101 @@ function calculateAllRows() {
         return;
     }
 
-    let sumIronW = 0, sumIronT = 0;
-    let sumGlueW = 0, sumGlueT = 0;
-    let sumChemW = 0, sumChemT = 0;
-    let sumWeightChem = 0, sumThicknessChem = 0, sumVolume = 0, sumDensity = 0, sumPorosity = 0;
-    let count = rows.length;
+    // กำหนดกลุ่ม Side ที่ต้องการคำนวณแยก
+    var sidesList = ['ซ้าย', 'ขวา', 'ซ้าย-ขวา'];
+    var sideData = {};
+
+    sidesList.forEach(function(side) {
+        sideData[side] = {
+            sumIronW: 0, sumIronT: 0,
+            sumGlueW: 0, sumGlueT: 0,
+            sumChemW: 0, sumChemT: 0,
+            sumWeightChem: 0, sumThicknessChem: 0,
+            sumVolume: 0, sumDensity: 0, sumPorosity: 0,
+            count: 0
+        };
+    });
 
     rows.each(function() {
         calculateRow(this);
+        var currentSide = $(this).find('select[name*="[product_sides]"]').val();
 
-        sumIronW += parseFloat($(this).find('.iron-w').val()) || 0;
-        sumIronT += parseFloat($(this).find('.iron-t').val()) || 0;
-        sumGlueW += parseFloat($(this).find('.glue-w').val()) || 0;
-        sumGlueT += parseFloat($(this).find('.glue-t').val()) || 0;
-        sumChemW += parseFloat($(this).find('.chem-w').val()) || 0;
-        sumChemT += parseFloat($(this).find('.chem-t').val()) || 0;
+        if (sideData[currentSide]) {
+            sideData[currentSide].count++;
+            sideData[currentSide].sumIronW += parseFloat($(this).find('.iron-w').val()) || 0;
+            sideData[currentSide].sumIronT += parseFloat($(this).find('.iron-t').val()) || 0;
+            sideData[currentSide].sumGlueW += parseFloat($(this).find('.glue-w').val()) || 0;
+            sideData[currentSide].sumGlueT += parseFloat($(this).find('.glue-t').val()) || 0;
+            sideData[currentSide].sumChemW += parseFloat($(this).find('.chem-w').val()) || 0;
+            sideData[currentSide].sumChemT += parseFloat($(this).find('.chem-t').val()) || 0;
 
-        sumWeightChem += parseFloat($(this).find('.calc-weight-chem').val()) || 0;
-        sumThicknessChem += parseFloat($(this).find('.calc-thickness-chem').val()) || 0;
-        sumVolume += parseFloat($(this).find('.calc-volume').val()) || 0;
-        sumDensity += parseFloat($(this).find('.calc-density').val()) || 0;
-        sumPorosity += parseFloat($(this).find('.calc-porosity').val()) || 0;
+            sideData[currentSide].sumWeightChem += parseFloat($(this).find('.calc-weight-chem').val()) || 0;
+            sideData[currentSide].sumThicknessChem += parseFloat($(this).find('.calc-thickness-chem').val()) || 0;
+            sideData[currentSide].sumVolume += parseFloat($(this).find('.calc-volume').val()) || 0;
+            sideData[CurrentSide] = sideData[currentSide]; // dummy ref
+            sideData[currentSide].sumDensity += parseFloat($(this).find('.calc-density').val()) || 0;
+            sideData[currentSide].sumPorosity += parseFloat($(this).find('.calc-porosity').val()) || 0;
+        }
     });
 
-    var footerHtml = `
-        <tr>
-            <td>Total</td>
-            <td>${sumIronW.toFixed(2)}</td>
-            <td>${sumIronT.toFixed(2)}</td>
-            <td>${sumGlueW.toFixed(2)}</td>
-            <td>${sumGlueT.toFixed(2)}</td>
-            <td>${sumChemW.toFixed(2)}</td>
-            <td>${sumChemT.toFixed(2)}</td>
-            <td>${sumWeightChem.toFixed(2)}</td>
-            <td>${sumThicknessChem.toFixed(2)}</td>
-            <td>${sumVolume.toFixed(2)}</td>
-            <td>${sumDensity.toFixed(2)}</td>
-            <td>${sumPorosity.toFixed(2)}</td>
-        </tr>
-        <tr>
-            <td>Average</td>
-            <td>${(sumIronW / count).toFixed(2)}</td>
-            <td>${(sumIronT / count).toFixed(2)}</td>
-            <td>${(sumGlueW / count).toFixed(2)}</td>
-            <td>${(sumGlueT / count).toFixed(2)}</td>
-            <td>${(sumChemW / count).toFixed(2)}</td>
-            <td>${(sumChemT / count).toFixed(2)}</td>
-            <td>${(sumWeightChem / count).toFixed(2)}</td>
-            <td>${(sumThicknessChem / count).toFixed(2)}</td>
-            <td>${(sumVolume / count).toFixed(2)}</td>
-            <td>${(sumDensity / count).toFixed(2)}</td>
-            <td>${(sumPorosity / count).toFixed(2)}</td>
-        </tr>
-    `;
+    var footerHtml = '';
 
-    $('#cavity_table_footer').html(footerHtml).show();
+    sidesList.forEach(function(side) {
+        var data = sideData[side];
+        if (data.count > 0) {
+            var count = data.count;
+            footerHtml += `
+                <tr class="table-light fw-bold text-dark">
+                    <td colspan="13" class="text-start ps-3 bg-light">ด้าน: ${side}</td>
+                </tr>
+                <tr>
+                    <td>Total (${side})</td>
+                    <td>${data.sumIronW.toFixed(2)}</td>
+                    <td>${data.sumIronT.toFixed(2)}</td>
+                    <td>${data.sumGlueW.toFixed(2)}</td>
+                    <td>${data.sumGlueT.toFixed(2)}</td>
+                    <td>${data.sumChemW.toFixed(2)}</td>
+                    <td>${data.sumChemT.toFixed(2)}</td>
+                    <td>${data.sumWeightChem.toFixed(2)}</td>
+                    <td>${data.sumThicknessChem.toFixed(2)}</td>
+                    <td>${data.sumVolume.toFixed(2)}</td>
+                    <td>${data.sumDensity.toFixed(2)}</td>
+                    <td>${data.sumPorosity.toFixed(2)}</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Average (${side})</td>
+                    <td>${(data.sumIronW / count).toFixed(2)}</td>
+                    <td>${(data.sumIronT / count).toFixed(2)}</td>
+                    <td>${(data.sumGlueW / count).toFixed(2)}</td>
+                    <td>${(data.sumGlueT / count).toFixed(2)}</td>
+                    <td>${(data.sumChemW / count).toFixed(2)}</td>
+                    <td>${(data.sumChemT / count).toFixed(2)}</td>
+                    <td>${(data.sumWeightChem / count).toFixed(2)}</td>
+                    <td>${(data.sumThicknessChem / count).toFixed(2)}</td>
+                    <td>${(data.sumVolume / count).toFixed(2)}</td>
+                    <td>${(data.sumDensity / count).toFixed(2)}</td>
+                    <td>${(data.sumPorosity / count).toFixed(2)}</td>
+                    <td></td>
+                </tr>
+            `;
+        }
+    });
+
+    if (footerHtml === '') {
+        $('#cavity_table_footer').hide();
+    } else {
+        $('#cavity_table_footer').html(footerHtml).show();
+    }
 }
 
+// Event เมื่อพิมพ์ข้อมูลในช่อง input
 $(document).on('input', '.iron-w, .iron-t, .glue-w, .glue-t, .chem-w, .chem-t', function() {
+    calculateAllRows();
+});
+
+// Event เมื่อเปลี่ยนค่า Dropdown Sides ในแต่ละแถว
+$(document).on('change', 'select[name*="[product_sides]"]', function() {
     calculateAllRows();
 });
 </script>

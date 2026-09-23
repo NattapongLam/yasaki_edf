@@ -189,6 +189,7 @@ class DensityWorkpiece extends Controller
                             'density_workpiece_dts_volume'  => $item['density_workpiece_dts_volume'] ?? 0,
                             'density_workpiece_dts_density' => $item['density_workpiece_dts_density'] ?? 0,
                             'density_workpiece_dts_porosity'=> $item['density_workpiece_dts_porosity'] ?? 0,
+                            'product_sides'                 => $item['product_sides'],
                         ]
                     );
                 }
