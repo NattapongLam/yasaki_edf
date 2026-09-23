@@ -83,6 +83,7 @@ class DensityWorkpiece extends Controller
                 'product_sides'                => $request->product_sides,
                 'created_at'                   => Carbon::now(), 
                 'updated_at'                   => Carbon::now(),
+                'density_workpiece_hds_date'   => $request->density_workpiece_hds_date,
             ];
             if ($request->hasFile('density_workpiece_hds_file1')) {
                 $data['density_workpiece_hds_file1'] = $request->file('density_workpiece_hds_file1')->storeAs('images/DensityWorkpiece_File', "IMG_" . Carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('density_workpiece_hds_file1')->extension());

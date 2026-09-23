@@ -23,16 +23,18 @@
         <table id="tb_job" class="table table-bordered dt-responsive nowrap w-100 text-center">
             <thead>
                 <tr>
-                  <th>แม่พิมพ์</th>
-                  <th>สินค้า</th>
-                  <th>สูตรเคมี</th>
-                  <th>อัพเดท</th>
-                  <th>ยกเลิก</th>
+                    <th>วันที่</th>
+                    <th>แม่พิมพ์</th>
+                    <th>สินค้า</th>
+                    <th>สูตรเคมี</th>
+                    <th>อัพเดท</th>
+                    <th>ยกเลิก</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($hd as $item)
                     <tr>
+                        <td>{{$item->density_workpiece_hds_date}}</td>
                         <td>{{$item->mlod_name}} ({{$item->mlod_code}})</td>
                         <td>{{$item->product_name}} ({{$item->product_code}})</td>
                         <td>{{$item->ms_formule_name}} ({{$item->chemistry_hd_name}})</td>
