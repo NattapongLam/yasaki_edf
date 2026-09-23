@@ -17,68 +17,62 @@
     @endif
 
     <div class="card border-0 shadow-sm print-card">
-        <div class="card-body p-4">
+        <div class="card-body p-3">
             <form method="POST" class="form-horizontal" action="{{ route('density-workpiece.update', $hd->density_workpiece_hds_id) }}" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')  
                 
                 <!-- ส่วนหัวเอกสาร -->
-                <div class="row border-bottom pb-3 mb-3 align-items-center">
+                <div class="row border-bottom pb-2 mb-2 align-items-center">
                     <div class="col-8">
-                        <h4 class="fw-bold text-dark mb-1">ใบรายงานการตรวจสอบความหนาแน่นของชิ้นงาน</h4>
-                        <p class="text-muted mb-0 small">Density Workpiece Inspection Report</p>
+                        <h5 class="fw-bold text-dark mb-0">ใบรายงานการตรวจสอบความหนาแน่นของชิ้นงาน</h5>
+                        <small class="text-muted">Density Workpiece Inspection Report</small>
                     </div>
                     <div class="col-4 text-end d-print-none">
-                        <button type="button" class="btn btn-secondary me-2" onclick="window.print()">
+                        <button type="button" class="btn btn-secondary btn-sm me-2" onclick="window.print()">
                             <i class="mdi mdi-printer me-1"></i> พิมพ์เอกสาร
                         </button>
-                        <button type="submit" class="btn btn-primary">บันทึกข้อมูล</button>
+                        <button type="submit" class="btn btn-primary btn-sm">บันทึกข้อมูล</button>
                     </div>
                 </div>
 
                 <!-- ข้อมูลทั่วไป (Header Info) -->
-                <div class="row g-3 mb-3 bg-light p-3 rounded border">
+                <div class="row g-2 mb-2 bg-light p-2 rounded border small">
                     <div class="col-6 col-md-6">
-                        <label class="form-label text-muted small mb-1">Product</label>
-                        <input class="form-control form-control-sm bg-white fw-bold" value="{{ $hd->product_name }} ({{$hd->product_code }})" readonly>
+                        <span class="text-muted">Product:</span> <span class="fw-bold">{{ $hd->product_name }} ({{$hd->product_code }})</span>
                     </div>            
                     <div class="col-6 col-md-6">
-                        <label class="form-label text-muted small mb-1">Mold</label>
-                        <input class="form-control form-control-sm bg-white fw-bold" value="{{ $hd->mlod_name }} ({{$hd->mlod_code }})" readonly>
+                        <span class="text-muted">Mold:</span> <span class="fw-bold">{{ $hd->mlod_name }} ({{$hd->mlod_code }})</span>
                     </div>
 
-                    <div class="col-6 col-md-3">
-                        <label class="form-label text-muted small mb-1">Area (cm²)</label>
-                        <input class="form-control form-control-sm bg-white" name="mlod_area" id="mlod_area" value="{{ $hd->mlod_area }}" readonly>
+                    <div class="col-3 col-md-3">
+                        <span class="text-muted">Area:</span> <span class="fw-semibold">{{ $hd->mlod_area }} cm²</span>
+                        <input type="hidden" name="mlod_area" id="mlod_area" value="{{ $hd->mlod_area }}">
                     </div>
-                    <div class="col-6 col-md-3">
-                        <label class="form-label text-muted small mb-1">Pressure</label>
-                        <input class="form-control form-control-sm bg-white" name="mlod_pressure" id="mlod_pressure" value="{{ $hd->mlod_pressure }}" readonly>
+                    <div class="col-3 col-md-3">
+                        <span class="text-muted">Pressure:</span> <span class="fw-semibold">{{ $hd->mlod_pressure }}</span>
+                        <input type="hidden" name="mlod_pressure" id="mlod_pressure" value="{{ $hd->mlod_pressure }}">
                     </div>
-                    <div class="col-6 col-md-3">
-                        <label class="form-label text-muted small mb-1">Weight</label>
-                        <input class="form-control form-control-sm bg-white" name="chemical_weight" value="{{ $hd->chemical_weight }}" readonly>
+                    <div class="col-3 col-md-3">
+                        <span class="text-muted">Weight:</span> <span class="fw-semibold">{{ $hd->chemical_weight }}</span>
                     </div>
-                    <div class="col-6 col-md-3">
-                        <label class="form-label text-muted small mb-1">Temp</label>
-                        <input class="form-control form-control-sm bg-white" name="chemical_temp" value="{{ $hd->chemical_temp }}" readonly>
+                    <div class="col-3 col-md-3">
+                        <span class="text-muted">Temp:</span> <span class="fw-semibold">{{ $hd->chemical_temp }}</span>
                     </div>
 
-                    <div class="col-6 col-md-3">
-                        <label class="form-label text-muted small mb-1">Formule</label>
-                        <input class="form-control form-control-sm bg-white" name="ms_formule_name" value="{{ $hd->ms_formule_name }}" readonly>                
+                    <div class="col-3 col-md-3">
+                        <span class="text-muted">Formule:</span> <span class="fw-semibold">{{ $hd->ms_formule_name }}</span>            
                     </div>
-                    <div class="col-6 col-md-3">
-                        <label class="form-label text-muted small mb-1">Number</label>
-                        <input class="form-control form-control-sm bg-white" value="{{ $hd->chemistry_hd_name }}" readonly>
+                    <div class="col-3 col-md-3">
+                        <span class="text-muted">Number:</span> <span class="fw-semibold">{{ $hd->chemistry_hd_name }}</span>
                     </div>
-                    <div class="col-6 col-md-3">
-                        <label class="form-label text-muted small mb-1">Density (Target)</label>
-                        <input class="form-control form-control-sm bg-white fw-bold text-primary" name="total_density" id="total_density" value="{{ $hd->total_density }}" readonly>
+                    <div class="col-3 col-md-3">
+                        <span class="text-muted">Target Density:</span> <span class="fw-bold text-primary" id="target_density_text">{{ $hd->total_density }}</span>
+                        <input type="hidden" name="total_density" id="total_density" value="{{ $hd->total_density }}">
                     </div>
-                    <div class="col-6 col-md-3">
-                        <label class="form-label text-muted small mb-1">Date</label>
-                        <input class="form-control form-control-sm bg-white fw-bold" value="{{ $hd->density_workpiece_hds_date}}" readonly>
+                    <div class="col-3 col-md-3">
+                        <span class="text-muted">Date:</span> <span class="fw-semibold">{{ $hd->density_workpiece_hds_date }}</span>
+                        <input type="hidden" name="product_sides" value="{{ $hd->product_sides }}">
                     </div>
                 </div>
 
@@ -92,9 +86,9 @@
                                 <th colspan="2">เหล็ก + กาว</th>
                                 <th colspan="2">เหล็ก + กาว + เคมี</th>
                                 <th rowspan="2" class="align-middle">น้ำหนักเคมี (g)</th>
-                                <th rowspan="2" class="align-middle">ความหนาก้อนเคมี (cm)</th>
+                                <th rowspan="2" class="align-middle">ความหนาก้อน (cm)</th>
                                 <th rowspan="2" class="align-middle">Volume (cm³)</th>
-                                <th rowspan="2" class="align-middle">Density (g/cm³)<br>ρ = mass / Vol</th>
+                                <th rowspan="2" class="align-middle">Density (g/cm³)</th>
                                 <th rowspan="2" class="align-middle">%Porosity</th>
                                 <th rowspan="2" class="align-middle">Sides</th>
                             </tr>
@@ -107,7 +101,7 @@
                                 <th>ความหนา (mm)</th>
                             </tr>
                         </thead>
-                        <!-- ย้ายส่วนสรุปผล (Summary) มาไว้ที่ส่วนหัวของตาราง (thead รอง) หรือแสดงก่อน tbody -->
+                        <!-- ส่วนสรุปผลด้านบน -->
                         <tbody id="summary_table_section" class="fw-bold bg-light">
                             <!-- ผลรวมสรุปจะถูกแทรกลงตรงนี้ผ่าน JavaScript -->
                         </tbody>
@@ -140,6 +134,26 @@
                     </table>
                 </div>
 
+                <!-- ส่วนแสดงกราฟ (Chart.js Dashboard) - ขยายเต็มหน้า -->
+                <div class="row mt-4">
+                    <div class="col-12 mb-3">
+                        <div class="card border shadow-sm print-chart-card">
+                            <div class="card-body">
+                                <h6 class="fw-bold text-dark mb-2">กราฟเปรียบเทียบ Density กับ Target</h6>
+                                <canvas id="densityChart" height="90"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mb-3">
+                        <div class="card border shadow-sm print-chart-card">
+                            <div class="card-body">
+                                <h6 class="fw-bold text-dark mb-2">กราฟแนวโน้ม %Porosity</h6>
+                                <canvas id="porosityChart" height="90"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- ปุ่มด้านล่าง (ซ่อนเวลาพิมพ์) -->
                 <div class="row mt-3 d-print-none">
                     <div class="col-12 text-end">
@@ -156,17 +170,26 @@
 @endsection
 
 @push('scriptjs')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- เพิ่ม ChartDataLabels plugin เพื่อโชว์ตัวเลขบนกราฟ -->
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+
 <style>
     .select2-results__options {
         max-height: 200px !important;
         overflow-y: auto !important;
     }
 
-    /* ================= สไตล์สำหรับการพิมพ์เอกสาร (Print CSS) ================= */
     @media print {
         @page {
             size: A4 landscape;
-            margin: 10mm;
+            margin: 5mm;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            -webkit-print-color-adjust: exact;
         }
 
         body * {
@@ -187,8 +210,24 @@
             padding: 0 !important;
         }
 
-        .d-print-none, button, .btn, .alert {
+        button, .btn, .alert {
             display: none !important;
+        }
+
+        .print-hide-total {
+            display: none !important;
+        }
+
+        table.print-table {
+            font-size: 9px !important;
+            width: 100% !important;
+            border-collapse: collapse !important;
+        }
+
+        table.print-table th, 
+        table.print-table td {
+            padding: 2px 3px !important;
+            border: 1px solid #333 !important;
         }
 
         .form-control, select.form-control {
@@ -196,9 +235,10 @@
             border-bottom: 1px dotted #999 !important;
             background-color: transparent !important;
             box-shadow: none !important;
-            padding: 1px 0 !important;
+            padding: 0 !important;
+            height: auto !important;
             text-align: center;
-            font-size: 11px;
+            font-size: 9px;
         }
 
         select {
@@ -207,20 +247,21 @@
             appearance: none;
         }
 
+       .print-chart-card {
+            border: 1px solid #ddd !important;
+            box-shadow: none !important;
+            margin-top: 10px !important;
+            page-break-inside: avoid;
+        }
+
+        .print-chart-card canvas {
+            width: 100% !important;
+            height: auto !important;
+            max-height: 140px !important;
+        }
+
         .table-responsive {
             overflow: visible !important;
-        }
-
-        table.print-table {
-            font-size: 11px;
-            width: 100% !important;
-            border-collapse: collapse !important;
-        }
-
-        table.print-table th, 
-        table.print-table td {
-            padding: 4px 6px !important;
-            border: 1px solid #333 !important;
         }
         
         tr {
@@ -230,6 +271,9 @@
     }
 </style>
 <script>
+let densityChartInstance = null;
+let porosityChartInstance = null;
+
 $(document).ready(function() {
     calculateAllRows();
 });
@@ -279,9 +323,23 @@ function calculateAllRows() {
         };
     });
 
+    var chartLabels = [];
+    var chartActualDensity = [];
+    var chartTargetDensity = [];
+    var chartPorosity = [];
+    var chartSides = [];
+    var targetDensityVal = parseFloat($('#total_density').val()) || 0;
+
     rows.each(function() {
         calculateRow(this);
         var currentSide = $(this).find('select[name*="[product_sides]"]').val();
+        var listNo = $(this).find('td:first').text().trim();
+
+        chartLabels.push('Cavity ' + listNo);
+        chartActualDensity.push(parseFloat($(this).find('.calc-density').val()) || 0);
+        chartTargetDensity.push(targetDensityVal);
+        chartPorosity.push(parseFloat($(this).find('.calc-porosity').val()) || 0);
+        chartSides.push(currentSide);
 
         if (sideData[currentSide]) {
             sideData[currentSide].count++;
@@ -307,10 +365,10 @@ function calculateAllRows() {
         if (data.count > 0) {
             var count = data.count;
             summaryHtml += `
-                <tr class="table-secondary fw-bold text-dark">
-                    <td colspan="13" class="text-start ps-3">สรุปผลด้าน: ${side}</td>
+                <tr class="table-secondary fw-bold text-dark print-hide-total">
+                    <td colspan="13" class="text-start ps-2">สรุปผลด้าน: ${side}</td>
                 </tr>
-                <tr class="table-light">
+                <tr class="table-light print-hide-total">
                     <td class="fw-semibold">Total (${side})</td>
                     <td>${data.sumIronW.toFixed(2)}</td>
                     <td>${data.sumIronT.toFixed(2)}</td>
@@ -349,6 +407,138 @@ function calculateAllRows() {
     } else {
         $('#summary_table_section').html(summaryHtml).show();
     }
+
+    updateCharts(chartLabels, chartActualDensity, chartTargetDensity, chartPorosity, chartSides);
+}
+
+function updateCharts(labels, actualDensity, targetDensity, porosity, sides) {
+    const backgroundColors = sides.map(side => {
+        if (side === 'ซ้าย') return 'rgba(54, 162, 235, 0.7)';
+        if (side === 'ขวา') return 'rgba(255, 159, 64, 0.7)';
+        if (side === 'ซ้าย-ขวา') return 'rgba(153, 102, 255, 0.7)';
+        return 'rgba(201, 203, 207, 0.7)';
+    });
+
+    const borderColors = sides.map(side => {
+        if (side === 'ซ้าย') return 'rgba(54, 162, 235, 1)';
+        if (side === 'ขวา') return 'rgba(255, 159, 64, 1)';
+        if (side === 'ซ้าย-ขวา') return 'rgba(153, 102, 255, 1)';
+        return 'rgba(201, 203, 207, 1)';
+    });
+
+    // 1. กราฟ Density (พร้อม Datalabels และแสดงค่า Side บนกราฟ)
+    const ctxDensity = document.getElementById('densityChart').getContext('2d');
+    if (densityChartInstance) {
+        densityChartInstance.destroy();
+    }
+    densityChartInstance = new Chart(ctxDensity, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Actual Density',
+                    data: actualDensity,
+                    backgroundColor: backgroundColors,
+                    borderColor: borderColors,
+                    borderWidth: 1
+                },
+                {
+                    label: 'Target Density',
+                    data: targetDensity,
+                    type: 'line',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 2,
+                    fill: false,
+                    pointRadius: 0,
+                    datalabels: {
+                        display: false // ซ่อนตัวเลขของ Target เส้นตรงเพื่อไม่ให้รก
+                    }
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        title: function(context) {
+                            let index = context[0].dataIndex;
+                            return context[0].label + ' (' + sides[index] + ')';
+                        }
+                    }
+                },
+                datalabels: {
+                    anchor: 'end',
+                    align: 'top',
+                    formatter: function(value, context) {
+                        if (context.datasetIndex === 0) {
+                            let index = context.dataIndex;
+                            // แสดงทั้ง Side และค่าตัวเลข เช่น "ซ้าย\n1.0250"
+                            return sides[index] + '\n' + value.toFixed(4);
+                        }
+                        return '';
+                    },
+                    font: {
+                        size: 10,
+                        weight: 'bold'
+                    },
+                    color: '#333'
+                }
+            },
+            scales: { 
+                y: { 
+                    beginAtZero: false,
+                    grace: '15% ' // เผื่อพื้นที่ด้านบนให้ตัวหนังสือไม่ชนขอบกราฟ
+                } 
+            }
+        },
+        plugins: [ChartDataLabels]
+    });
+
+    // 2. กราฟ %Porosity (พร้อม Datalabels แสดงตัวเลข)
+    const ctxPorosity = document.getElementById('porosityChart').getContext('2d');
+    if (porosityChartInstance) {
+        porosityChartInstance.destroy();
+    }
+    porosityChartInstance = new Chart(ctxPorosity, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: '%Porosity',
+                data: porosity,
+                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderWidth: 2,
+                tension: 0.1,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                datalabels: {
+                    align: 'top',
+                    formatter: function(value) {
+                        return value.toFixed(2) + '%';
+                    },
+                    font: {
+                        size: 10,
+                        weight: 'bold'
+                    },
+                    color: '#333'
+                }
+            },
+            scales: { 
+                y: { 
+                    beginAtZero: true,
+                    grace: '15%'
+                } 
+            }
+        },
+        plugins: [ChartDataLabels]
+    });
 }
 
 $(document).on('input', '.iron-w, .iron-t, .glue-w, .glue-t, .chem-w, .chem-t', function() {
