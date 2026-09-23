@@ -80,7 +80,7 @@ class DensityWorkpiece extends Controller
                 'ms_formule_name'              => $request->ms_formule_name,
                 'chemistry_hd_name'            => $request->chemistry_hd_name,
                 'total_density'                => $request->total_density,
-                'product_sides'                => $request->product_sides,
+                'product_sides'                => '-',
                 'created_at'                   => Carbon::now(), 
                 'updated_at'                   => Carbon::now(),
                 'density_workpiece_hds_date'   => $request->density_workpiece_hds_date,
