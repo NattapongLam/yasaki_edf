@@ -264,7 +264,6 @@ function calculateAllRows() {
             sideData[currentSide].sumWeightChem += parseFloat($(this).find('.calc-weight-chem').val()) || 0;
             sideData[currentSide].sumThicknessChem += parseFloat($(this).find('.calc-thickness-chem').val()) || 0;
             sideData[currentSide].sumVolume += parseFloat($(this).find('.calc-volume').val()) || 0;
-            sideData[CurrentSide] = sideData[currentSide]; // dummy ref
             sideData[currentSide].sumDensity += parseFloat($(this).find('.calc-density').val()) || 0;
             sideData[currentSide].sumPorosity += parseFloat($(this).find('.calc-porosity').val()) || 0;
         }
@@ -278,7 +277,7 @@ function calculateAllRows() {
             var count = data.count;
             footerHtml += `
                 <tr class="table-light fw-bold text-dark">
-                    <td colspan="13" class="text-start ps-3 bg-light">ด้าน: ${side}</td>
+                    <td colspan="12" class="text-start ps-3 bg-light">ด้าน: ${side}</td>
                 </tr>
                 <tr>
                     <td>Total (${side})</td>

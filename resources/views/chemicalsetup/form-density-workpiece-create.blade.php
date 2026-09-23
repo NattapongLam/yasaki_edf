@@ -414,6 +414,7 @@ function calculateAllRows() {
                 <td>${totalData.sumVolume.toFixed(2)}</td>
                 <td>${totalData.sumDensity.toFixed(2)}</td>
                 <td>${totalData.sumPorosity.toFixed(2)}</td>
+                <td></td>
             </tr>
             <tr class="fw-bold bg-light">
                 <td>Average (All)</td>
@@ -428,6 +429,7 @@ function calculateAllRows() {
                 <td>${(totalData.sumVolume / allCount).toFixed(2)}</td>
                 <td>${(totalData.sumDensity / allCount).toFixed(2)}</td>
                 <td>${(totalData.sumPorosity / allCount).toFixed(2)}</td>
+                <td></td>
             </tr>
         `;
     }
