@@ -31,13 +31,13 @@
                     <label for="chemical_lists_refcode" class="col-form-label">รหัสอ้างอิง</label>
                     <input type="text" class="form-control" name="chemical_lists_refcode" id="chemical_lists_refcode">
                 </div>
-            </div> 
+            </div>            
             <div class="col-3">
                 <div class="form-group">
                     <label for="chemical_lists_grade" class="col-form-label">Grade</label>
                     <input type="text" class="form-control" name="chemical_lists_grade" id="chemical_lists_grade">
                 </div>
-            </div> 
+            </div>            
         </div>
         <div class="row">
             <div class="col-6">
@@ -98,10 +98,16 @@
                         title="กรอกได้เฉพาะตัวเลข หรือเลขทศนิยมเท่านั้น">
                 </div>
             </div> 
-            <div class="col-6">
+            <div class="col-3">
                 <div class="form-group">
-                    <label for="chemical_lists_remark" class="col-form-label">ชื่อเคมี/องค์ประกอบ</label>
-                    <input type="text" class="form-control" name="chemical_lists_remark" id="chemical_lists_remark">
+                    <label for="chemical_lists_color" class="col-form-label">Color</label>
+                    <input class="form-control" name="chemical_lists_color">
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-group">
+                    <label for="chemical_lists_ph" class="col-form-label">PH</label>
+                    <input class="form-control" name="chemical_lists_ph">
                 </div>
             </div>
             <div class="col-3">
@@ -238,6 +244,12 @@
                 <div class="form-group">
                     <label for="chemical_lists_bom" class="col-form-label">สูตรเคมี</label>
                     <input type="text" class="form-control" name="chemical_lists_bom" id="chemical_lists_bom">
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-group">
+                    <label for="chemical_lists_remark" class="col-form-label">หมายเหตุ</label>
+                    <input type="text" class="form-control" name="chemical_lists_remark" id="chemical_lists_remark">
                 </div>
             </div>
         </div>

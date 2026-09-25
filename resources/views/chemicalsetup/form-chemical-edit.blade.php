@@ -100,12 +100,18 @@
                         value="{{$hd->chemical_lists_density}}">
                 </div>
             </div> 
-            <div class="col-6">
+             <div class="col-3">
                 <div class="form-group">
-                    <label for="chemical_lists_remark" class="col-form-label">ชื่อเคมี/องค์ประกอบ</label>
-                    <input type="text" class="form-control" name="chemical_lists_remark" id="chemical_lists_remark" value="{{$hd->chemical_lists_remark}}">
+                    <label for="chemical_lists_color" class="col-form-label">Color</label>
+                    <input class="form-control" name="chemical_lists_color" value="{{$hd->chemical_lists_color}}">
                 </div>
             </div>
+            <div class="col-3">
+                <div class="form-group">
+                    <label for="chemical_lists_ph" class="col-form-label">PH</label>
+                    <input class="form-control" name="chemical_lists_ph" value="{{$hd->chemical_lists_ph}}">
+                </div>
+            </div>      
             <div class="col-3">
                 <div class="form-group">
                     <label for="chemical_groups_id" class="col-form-label">Group</label>
@@ -264,6 +270,12 @@
                 <div class="form-group">
                     <label for="chemical_lists_bom" class="col-form-label">สูตรเคมี</label>
                     <input type="text" class="form-control" name="chemical_lists_bom" id="chemical_lists_bom" value="{{$hd->chemical_lists_bom}}">
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-group">
+                    <label for="chemical_lists_remark" class="col-form-label">ชื่อเคมี/องค์ประกอบ</label>
+                    <input type="text" class="form-control" name="chemical_lists_remark" id="chemical_lists_remark" value="{{$hd->chemical_lists_remark}}">
                 </div>
             </div>
         </div>
