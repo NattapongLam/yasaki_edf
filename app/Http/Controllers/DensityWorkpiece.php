@@ -217,22 +217,17 @@ class DensityWorkpiece extends Controller
 
     public function getMolds(Request $request)
     {
-        $productCode = $request->input('product_code');      
-        // ดึงรายการแม่พิมพ์ทั้งหมดของสินค้านั้น
+        $productCode =$request->input('product_code');      
+        
+        // ดึงรายการแม่พิมพ์ทั้งหมด พร้อมกับ area, pressure และ cavity ของแต่ละ mold
         $molds = DB::table('ms_edf_moldlist')
-            ->select('mlod_code', 'mlod_name')
+            ->select('mlod_code', 'mlod_name', 'mlod_area', 'mlod_pressure', 'mlod_cavity')
             ->where('product_code', $productCode)
-            ->groupBy('mlod_code', 'mlod_name')
+            ->groupBy('mlod_code', 'mlod_name', 'mlod_area', 'mlod_pressure', 'mlod_cavity')
             ->get();
 
-        // ดึงข้อมูลรายละเอียด (Area, Pressure ฯลฯ)
-        $area = DB::table('ms_edf_moldlist')
-            ->where('product_code', $productCode)
-            ->first(); 
-        // ส่งออกเป็น JSON แบบ Array
         return response()->json([
-            'molds' => $molds,
-            'area' => $area
+            'molds' => $molds
         ]);
     }
 

@@ -21,7 +21,7 @@
             <div class="row">
                 <div class="col-12 col-md-6"><h3 class="card-title">ความหนาแน่นของชิ้นงาน</h3></div>          
             </div>
-            <div class="row mt-2">             
+            <div class="row mt-2">            
                 <div class="col-6">
                     <div class="form-group">
                         <label class="form-label">Product</label>
@@ -31,7 +31,7 @@
                                 <option value="{{ $product->product_code }}">{{ $product->product_code }}/{{$product->product_name }}</option>
                             @endforeach
                         </select>
-                    </div>              
+                    </div>             
                 </div>
                 <div class="col-6">
                     <div class="form-group">
@@ -39,7 +39,7 @@
                         <select class="form-control" name="mlod_code" id="mlod_code">
                             <option value="-">กรุณาเลือก</option>
                         </select>
-                    </div>              
+                    </div>             
                 </div>
             </div>
             <div class="row mt-2">
@@ -208,16 +208,19 @@ $('select[name="product_code"]').on('change', function() {
             type: 'GET',
             data: { product_code: productCode },
             success: function(response) {
-                $.each(response.molds, function(index, item) {
-                    moldSelect.append('<option value="' + item.mlod_code + '">' + item.mlod_code + ' / ' + item.mlod_name + '</option>');
-                });
-                moldSelect.trigger('change');
-
-                if (response.area) {
-                    $('#mlod_area').val(response.area.mlod_area);
-                    $('#mlod_pressure').val(response.area.mlod_pressure);
-                    $('#mlod_cavity').val(response.area.mlod_cavity);
+                if (response.molds) {
+                    $.each(response.molds, function(index, item) {
+                        moldSelect.append(`
+                            <option value="${item.mlod_code}" 
+                                    data-area="${item.mlod_area ?? ''}" 
+                                    data-pressure="${item.mlod_pressure ?? ''}" 
+                                    data-cavity="${item.mlod_cavity ?? 0}">
+                                ${item.mlod_code} / ${item.mlod_name}
+                            </option>
+                        `);
+                    });
                 }
+                moldSelect.trigger('change');
             }
         });
     }
@@ -301,7 +304,7 @@ function calculateAllRows() {
 
     let groups = {
         'ซ้าย': { count: 0, sumIronW: 0, sumIronT: 0, sumGlueW: 0, sumGlueT: 0, sumChemW: 0, sumChemT: 0, sumWeightChem: 0, sumThicknessChem: 0, sumVolume: 0, sumDensity: 0, sumPorosity: 0 },
-        'ขวา': { count: 0, sumIronW: 0, sumIronT: 0, sumGlueW: 0, sumGlueT: 0, sumChemW: 0, sumChemT: 0, sumWeightChem: 0, sumThicknessChem: 0, sumVolume: 0, sumDensity: 0, sumPorosity: 0 },
+        'ขวา': { count: 0, sumIronW: 0, sumIronT: 0, sumGlueW: 0, sumGlueT: 0, sumGlueW: 0, sumGlueT: 0, sumChemW: 0, sumChemT: 0, sumWeightChem: 0, sumThicknessChem: 0, sumVolume: 0, sumDensity: 0, sumPorosity: 0 },
         'ซ้าย-ขวา': { count: 0, sumIronW: 0, sumIronT: 0, sumGlueW: 0, sumGlueT: 0, sumChemW: 0, sumChemT: 0, sumWeightChem: 0, sumThicknessChem: 0, sumVolume: 0, sumDensity: 0, sumPorosity: 0 }
     };
 
@@ -439,8 +442,17 @@ function calculateAllRows() {
 
 // เมื่อเลือก Mold และสร้างแถวตาม Cavity
 $('#mlod_code').on('change', function() {
-    var selectedMoldCode = $(this).val();
-    var cavityCount = $('#mlod_cavity').val(); 
+    var selectedOption = $(this).find(':selected');
+    var selectedMoldCode = selectedOption.val();
+    
+    var moldArea = selectedOption.data('area') || '';
+    var moldPressure = selectedOption.data('pressure') || '';
+    var cavityCount = selectedOption.data('cavity') || 0;
+
+    $('#mlod_area').val(moldArea);
+    $('#mlod_pressure').val(moldPressure);
+    $('#mlod_cavity').val(cavityCount);
+
     var tbody = $('#cavity_table_body');
     tbody.empty();
 
