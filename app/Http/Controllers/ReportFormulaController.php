@@ -466,34 +466,108 @@ class ReportFormulaController extends Controller
     }
 }
 
-    public function checkTestHeaders(Request $request)
-    {
-        $formulaNumber = $request->query('formula_number');
-        
-        $tests = DB::table('TestHeaders')
-                ->where('FormulaNumber', $formulaNumber)
-                ->orderBy('TestDate', 'asc')
-                ->get();
+public function checkTestHeaders(Request $request)
+{
+    $formulaNumber = $request->query('formula_number');
+    
+    // 1. ดึงข้อมูล TestHeaders ตามสูตรเคมี
+    $tests = DB::table('TestHeaders')
+            ->where('FormulaNumber', $formulaNumber)
+            ->orderBy('TestDate', 'asc')
+            ->get();
 
-        $testIds = $tests->pluck('TestID');
-        
-        // ดึงข้อมูล TestFrictions ทั้งหมดของสูตรนี้
-        $allFrictions = DB::table('TestFrictions')
-                ->whereIn('TestID', $testIds)
-                ->get();
+    $testIds = $tests->pluck('TestID');
+    
+    // ดึงข้อมูล TestFrictions ทั้งหมดของสูตรนี้
+    $allFrictions = DB::table('TestFrictions')
+            ->whereIn('TestID', $testIds)
+            ->get();
 
-        $frictionsByTest = [];
-        foreach ($testIds as $testId) {
-            $frictionsRows = $allFrictions->where('TestID', $testId);
-            
-            // แก้ไขจาก 'Type' เป็น 'SampleSet' (ปรับค่า 'n1', 'n2', 'n3' ตามข้อมูลจริงในฐานข้อมูลของคุณ เช่น ถ้าระบบเก็บเป็นตัวเลข 1, 2, 3 ให้เปลี่ยนเป็นตัวเลขครับ)
-            $frictionsByTest[$testId] = [
-                'n1' => $frictionsRows->where('SampleSet', 'N1')->values()->toArray(),
-                'n2' => $frictionsRows->where('SampleSet', 'N2')->values()->toArray(),
-                'n3' => $frictionsRows->where('SampleSet', 'N3')->values()->toArray(),
+    $frictionsByTest = [];
+    foreach ($testIds as $testId) {
+        $frictionsRows = $allFrictions->where('TestID', $testId);
+        
+        $frictionsByTest[$testId] = [
+            'n1' => $frictionsRows->where('SampleSet', 'N1')->values()->toArray(),
+            'n2' => $frictionsRows->where('SampleSet', 'N2')->values()->toArray(),
+            'n3' => $frictionsRows->where('SampleSet', 'N3')->values()->toArray(),
+        ];
+    }
+
+    // 2. ดึงข้อมูล Density Headers ที่ Active และตรงกับสูตรเคมี
+    $densitys = DB::table('density_workpiece_hds')
+            ->where('density_workpiece_hds_flag', true)
+            ->where('chemistry_hd_name', $formulaNumber)
+            ->get();
+
+    // Map ค่า mlod_code และ product_code จาก density_workpiece_hds_id
+    $moldCodeMap = $densitys->pluck('mlod_code', 'density_workpiece_hds_id')->toArray();
+    $productCodeMap = $densitys->pluck('product_code', 'density_workpiece_hds_id')->toArray();
+    $densityIds = array_keys($moldCodeMap);
+
+    // 3. ดึงข้อมูล Density Details ตามรายการทั้งหมด เรียงตาม Header และ Listno
+    $allDensitys = DB::table('density_workpiece_dts')
+            ->whereIn('density_workpiece_hds_id', $densityIds)
+            ->orderBy('density_workpiece_dts_id', 'asc')
+            ->orderBy('density_workpiece_dts_listno', 'asc')
+            ->get();
+
+    // 4. จัดกลุ่มข้อมูลแยกตาม mold_code และ product_code พร้อมรันเลข List ต่อเนื่อง
+    $chartsPerMold = [];
+    foreach ($allDensitys as $row) {
+        $hdsId = $row->density_workpiece_hds_id;
+        $moldCode = $moldCodeMap[$hdsId] ?? 'Unknown Mold';
+        $productCode = $productCodeMap[$hdsId] ?? 'Unknown Product';
+        
+        // สร้าง Key ผสมระหว่าง Mold และ Product เพื่อแยกกราฟออกจากกันอย่างอิสระ
+        $groupKey = $moldCode . ' | Product: ' . $productCode;
+        
+        if (!isset($chartsPerMold[$groupKey])) {
+            $chartsPerMold[$groupKey] = [
+                'mold_code' => $moldCode,
+                'product_code' => $productCode,
+                'labels' => [],
+                'actualDensity' => [],
+                'targetDensity' => [],
+                'porosity' => [],
+                'sides' => [],
+                'rawActual' => [],
+                'counter' => 1 // ตัวนับรันเลข List ใหม่ต่อเนื่องกัน 1, 2, 3...
             ];
         }
+        
+        $actualVal = floatval($row->density_workpiece_dts_density ?? 0);
+        $porosityVal = floatval($row->density_workpiece_dts_porosity ?? 0);
 
-        return view('report.report-formulaslist', compact('formulaNumber', 'tests', 'frictionsByTest'));
+        $chartsPerMold[$groupKey]['labels'][] = 'Cavity: ' . $chartsPerMold[$groupKey]['counter'];
+        $chartsPerMold[$GroupKey ?? $groupKey]['counter']++; 
+
+        $chartsPerMold[$groupKey]['actualDensity'][] = $actualVal;
+        $chartsPerMold[$groupKey]['porosity'][] = $porosityVal;
+        $chartsPerMold[$groupKey]['sides'][] = $row->product_sides ?? 'ไม่ระบุ';
+
+        // เก็บค่าดิบสำหรับนำไปหาค่าเฉลี่ย (AVG)
+        $chartsPerMold[$groupKey]['rawActual'][] = $actualVal;
     }
+
+    // 5. คำนวณค่าเฉลี่ย (AVG) ของ Actual Density ในแต่ละกลุ่ม มาตั้งเป็นเส้น targetDensity
+    foreach ($chartsPerMold as $groupKey => &$data) {
+        $count = count($data['rawActual']);
+        $avgActual = $count > 0 ? (array_sum($data['rawActual']) / $count) : 0;
+        
+        // กำหนดให้เส้น targetDensity เป็นค่าเฉลี่ยของ actualDensity ในกลุ่มนั้นๆ
+        $data['targetDensity'] = array_fill(0, $count, $avgActual);
+    }
+    unset($data);
+
+    // 6. ส่งข้อมูลทั้งหมดไปยังหน้า View
+    return view('report.report-formulaslist', compact(
+        'formulaNumber', 
+        'tests', 
+        'frictionsByTest', 
+        'densitys', 
+        'allDensitys', 
+        'chartsPerMold'
+    ));
+}
 }

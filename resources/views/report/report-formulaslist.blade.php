@@ -26,44 +26,74 @@
         <div class="card-body pt-4">
             
             {{-- Charts Section: Group 1 (Hardness, Noise, Shearing) --}}
-            <div class="row mb-3">
+            <div class="row mb-3 g-3 flex-container">
                 <!-- Hardness Chart -->
-                <div class="col-xl-4 col-md-12 mb-4">
+                <div class="col-md-4 card-wrapper mb-4">
                     <div class="card border-0 shadow rounded-4 h-100">
-                        <div class="card-header bg-primary text-white">
-                            <h6 class="mb-0 fw-bold"><i class="mdi mdi-chart-line me-1"></i> กราฟ Hardness (HRB)</h6>
+                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center flex-grow-1" type="button" data-bs-toggle="collapse" data-bs-target="#collapseHardness" aria-expanded="true">
+                                <h6 class="mb-0 fw-bold"><i class="mdi mdi-chart-line me-1"></i> กราฟ Hardness (HRB)</h6>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="mdi mdi-chevron-down fs-5" data-bs-toggle="collapse" data-bs-target="#collapseHardness" style="cursor: pointer;"></i>
+                                <button type="button" class="btn btn-sm text-white p-0 btn-remove-card" title="ลบการ์ดนี้" onclick="removeCard(event, this);">
+                                    <i class="mdi mdi-close fs-5"></i>
+                                </button>
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <div style="height: 300px;">
-                                <canvas id="hardnessLineChart"></canvas>
+                        <div class="collapse show" id="collapseHardness">
+                            <div class="card-body">
+                                <div style="height: 300px;">
+                                    <canvas id="hardnessLineChart"></canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Noise Chart -->
-                <div class="col-xl-4 col-md-12 mb-4">
+                <div class="col-md-4 card-wrapper mb-4">
                     <div class="card border-0 shadow rounded-4 h-100">
-                        <div class="card-header bg-success text-white">
-                            <h6 class="mb-0 fw-bold"><i class="mdi mdi-chart-line me-1"></i> กราฟ Noise (dB)</h6>
+                        <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center flex-grow-1" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNoise" aria-expanded="true">
+                                <h6 class="mb-0 fw-bold"><i class="mdi mdi-chart-line me-1"></i> กราฟ Noise (dB)</h6>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="mdi mdi-chevron-down fs-5" data-bs-toggle="collapse" data-bs-target="#collapseNoise" style="cursor: pointer;"></i>
+                                <button type="button" class="btn btn-sm text-white p-0 btn-remove-card" title="ลบการ์ดนี้" onclick="removeCard(event, this);">
+                                    <i class="mdi mdi-close fs-5"></i>
+                                </button>
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <div style="height: 300px;">
-                                <canvas id="noiseLineChart"></canvas>
+                        <div class="collapse show" id="collapseNoise">
+                            <div class="card-body">
+                                <div style="height: 300px;">
+                                    <canvas id="noiseLineChart"></canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Shearing Chart -->
-                <div class="col-xl-4 col-md-12 mb-4">
+                <div class="col-md-4 card-wrapper mb-4">
                     <div class="card border-0 shadow rounded-4 h-100">
-                        <div class="card-header bg-warning text-dark">
-                            <h6 class="mb-0 fw-bold"><i class="mdi mdi-chart-line me-1"></i> กราฟ Shearing (mm²)</h6>
+                        <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center flex-grow-1" type="button" data-bs-toggle="collapse" data-bs-target="#collapseShearing" aria-expanded="true">
+                                <h6 class="mb-0 fw-bold"><i class="mdi mdi-chart-line me-1"></i> กราฟ Shearing (mm²)</h6>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="mdi mdi-chevron-down fs-5" data-bs-toggle="collapse" data-bs-target="#collapseShearing" style="cursor: pointer;"></i>
+                                <button type="button" class="btn btn-sm text-dark p-0 btn-remove-card" title="ลบการ์ดนี้" onclick="removeCard(event, this);">
+                                    <i class="mdi mdi-close fs-5"></i>
+                                </button>
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <div style="height: 300px;">
-                                <canvas id="shearingLineChart"></canvas>
+                        <div class="collapse show" id="collapseShearing">
+                            <div class="card-body">
+                                <div style="height: 300px;">
+                                    <canvas id="shearingLineChart"></canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -71,44 +101,74 @@
             </div>
 
             {{-- Charts Section: Group 2 (Normal_Avg, Hot_Avg, Wear_Avg) --}}
-            <div class="row mb-3">
+            <div class="row mb-3 g-3 flex-container">
                 <!-- Normal_Avg Chart -->
-                <div class="col-xl-4 col-md-12 mb-4">
+                <div class="col-md-4 card-wrapper mb-4">
                     <div class="card border-0 shadow rounded-4 h-100">
-                        <div class="card-header bg-info text-dark">
-                            <h6 class="mb-0 fw-bold"><i class="mdi mdi-chart-line me-1"></i> กราฟ Normal</h6>
+                        <div class="card-header bg-info text-dark d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center flex-grow-1" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNormal" aria-expanded="true">
+                                <h6 class="mb-0 fw-bold"><i class="mdi mdi-chart-line me-1"></i> กราฟ Normal</h6>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="mdi mdi-chevron-down fs-5" data-bs-toggle="collapse" data-bs-target="#collapseNormal" style="cursor: pointer;"></i>
+                                <button type="button" class="btn btn-sm text-dark p-0 btn-remove-card" title="ลบการ์ดนี้" onclick="removeCard(event, this);">
+                                    <i class="mdi mdi-close fs-5"></i>
+                                </button>
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <div style="height: 300px;">
-                                <canvas id="normalAvgLineChart"></canvas>
+                        <div class="collapse show" id="collapseNormal">
+                            <div class="card-body">
+                                <div style="height: 300px;">
+                                    <canvas id="normalAvgLineChart"></canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Hot_Avg Chart -->
-                <div class="col-xl-4 col-md-12 mb-4">
+                <div class="col-md-4 card-wrapper mb-4">
                     <div class="card border-0 shadow rounded-4 h-100">
-                        <div class="card-header bg-danger text-white">
-                            <h6 class="mb-0 fw-bold"><i class="mdi mdi-chart-line me-1"></i> กราฟ Hot</h6>
+                        <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center flex-grow-1" type="button" data-bs-toggle="collapse" data-bs-target="#collapseHot" aria-expanded="true">
+                                <h6 class="mb-0 fw-bold"><i class="mdi mdi-chart-line me-1"></i> กราฟ Hot</h6>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="mdi mdi-chevron-down fs-5" data-bs-toggle="collapse" data-bs-target="#collapseHot" style="cursor: pointer;"></i>
+                                <button type="button" class="btn btn-sm text-white p-0 btn-remove-card" title="ลบการ์ดนี้" onclick="removeCard(event, this);">
+                                    <i class="mdi mdi-close fs-5"></i>
+                                </button>
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <div style="height: 300px;">
-                                <canvas id="hotAvgLineChart"></canvas>
+                        <div class="collapse show" id="collapseHot">
+                            <div class="card-body">
+                                <div style="height: 300px;">
+                                    <canvas id="hotAvgLineChart"></canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Wear_Avg Chart -->
-                <div class="col-xl-4 col-md-12 mb-4">
+                <div class="col-md-4 card-wrapper mb-4">
                     <div class="card border-0 shadow rounded-4 h-100">
-                        <div class="card-header bg-secondary text-white">
-                            <h6 class="mb-0 fw-bold"><i class="mdi mdi-chart-line me-1"></i> กราฟ Wear</h6>
+                        <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center flex-grow-1" type="button" data-bs-toggle="collapse" data-bs-target="#collapseWear" aria-expanded="true">
+                                <h6 class="mb-0 fw-bold"><i class="mdi mdi-chart-line me-1"></i> กราฟ Wear</h6>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="mdi mdi-chevron-down fs-5" data-bs-toggle="collapse" data-bs-target="#collapseWear" style="cursor: pointer;"></i>
+                                <button type="button" class="btn btn-sm text-white p-0 btn-remove-card" title="ลบการ์ดนี้" onclick="removeCard(event, this);">
+                                    <i class="mdi mdi-close fs-5"></i>
+                                </button>
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <div style="height: 300px;">
-                                <canvas id="wearAvgLineChart"></canvas>
+                        <div class="collapse show" id="collapseWear">
+                            <div class="card-body">
+                                <div style="height: 300px;">
+                                    <canvas id="wearAvgLineChart"></canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -116,15 +176,25 @@
             </div>
 
             {{-- Charts Section: Group 3 (Monthly Temperature Friction AVG Chart - ปีปัจจุบัน) --}}
-            <div class="row">
-                <div class="col-12 mb-4">
+            <div class="row g-3 flex-container">
+                <div class="col-md-12 card-wrapper mb-4">
                     <div class="card border-0 shadow rounded-4 h-100">
-                        <div class="card-header bg-primary text-white">
-                            <h6 class="mb-0 fw-bold"><i class="mdi mdi-chart-timeline-variant me-1"></i> กราฟค่าเฉลี่ย Friction รายเดือน (แกนX: อุณหภูมิ / เส้น: เดือน) ประจำปี 2026</h6>
+                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center flex-grow-1" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMonthly" aria-expanded="true">
+                                <h6 class="mb-0 fw-bold"><i class="mdi mdi-chart-timeline-variant me-1"></i> กราฟค่าเฉลี่ย Friction รายเดือน (แกนX: อุณหภูมิ / เส้น: เดือน) ประจำปี 2026</h6>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="mdi mdi-chevron-down fs-5" data-bs-toggle="collapse" data-bs-target="#collapseMonthly" style="cursor: pointer;"></i>
+                                <button type="button" class="btn btn-sm text-white p-0 btn-remove-card" title="ลบการ์ดนี้" onclick="removeCard(event, this);">
+                                    <i class="mdi mdi-close fs-5"></i>
+                                </button>
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <div style="height: 400px;">
-                                <canvas id="monthlyTemperatureChart"></canvas>
+                        <div class="collapse show" id="collapseMonthly">
+                            <div class="card-body">
+                                <div style="height: 400px;">
+                                    <canvas id="monthlyTemperatureChart"></canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -132,88 +202,236 @@
             </div>
 
             {{-- Test Headers Data Table Section --}}
-            <div class="card border-0 shadow rounded-4 mt-2">
-                <div class="card-header bg-dark text-white">
-                    <h5 class="mb-0 fw-bold">
-                        <i class="mdi mdi-table me-2"></i> ประวัติการทดสอบทั้งหมดของสูตร {{ $formulaNumber }}
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-hover align-middle table-sm-custom text-center">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>#</th>
-                                    <th>วันที่ทดสอบ</th>
-                                    <th>Hardness</th>
-                                    <th>Noise</th>
-                                    <th>Shearing</th>
-                                    <th>Normal</th>
-                                    <th>Hot</th>
-                                    <th>Wear</th>
-                                    <th>หมายเหตุ</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($tests as $index => $item)
-                                    <tr>
-                                        <td>{{ $index + 1 }}</td>
-                                        <td>{{ $item->TestDate ? \Carbon\Carbon::parse($item->TestDate)->format('d/m/Y') : '-' }}</td>
-                                        <td>{{ number_format((float)($item->Hardness ?? 0), 2) }}</td>
-                                        <td>{{ number_format((float)($item->Noise ?? 0), 2) }}</td>
-                                        <td>{{ number_format((float)($item->Shearing ?? 0), 2) }}</td>
-                                        <td class="fw-bold text-info">{{ $item->Normal_Avg !== null ? number_format((float)$item->Normal_Avg, 4) : '-' }}</td>
-                                        <td class="fw-bold text-danger">{{ $item->Hot_Avg !== null ? number_format((float)$item->Hot_Avg, 4) : '-' }}</td>
-                                        <td class="fw-bold text-secondary">{{ $item->Wear_Avg !== null ? number_format((float)$item->Wear_Avg, 4) : '-' }}</td>
-                                        <td class="text-start">{{ $item->Remarks ?? '-' }}</td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="9" class="text-center text-muted py-4">ไม่พบข้อมูลประวัติการทดสอบสำหรับ FormulaNumber นี้</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+            <div class="row g-3 flex-container">
+                <div class="col-md-12 card-wrapper mb-4">
+                    <div class="card border-0 shadow rounded-4">
+                        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center flex-grow-1" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTableHistory" aria-expanded="true">
+                                <h5 class="mb-0 fw-bold">
+                                    <i class="mdi mdi-table me-2"></i> ประวัติการทดสอบทั้งหมดของสูตร {{ $formulaNumber }}
+                                </h5>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="mdi mdi-chevron-down fs-5" data-bs-toggle="collapse" data-bs-target="#collapseTableHistory" style="cursor: pointer;"></i>
+                                <button type="button" class="btn btn-sm text-white p-0 btn-remove-card" title="ลบการ์ดนี้" onclick="removeCard(event, this);">
+                                    <i class="mdi mdi-close fs-5"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="collapse show" id="collapseTableHistory">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover align-middle table-sm-custom text-center">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>#</th>
+                                                <th>วันที่ทดสอบ</th>
+                                                <th>Hardness</th>
+                                                <th>Noise</th>
+                                                <th>Shearing</th>
+                                                <th>Normal</th>
+                                                <th>Hot</th>
+                                                <th>Wear</th>
+                                                <th>หมายเหตุ</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @forelse($tests as $index => $item)
+                                                <tr>
+                                                    <td>{{ $index + 1 }}</td>
+                                                    <td>{{ $item->TestDate ? \Carbon\Carbon::parse($item->TestDate)->format('d/m/Y') : '-' }}</td>
+                                                    <td>{{ number_format((float)($item->Hardness ?? 0), 2) }}</td>
+                                                    <td>{{ number_format((float)($item->Noise ?? 0), 2) }}</td>
+                                                    <td>{{ number_format((float)($item->Shearing ?? 0), 2) }}</td>
+                                                    <td class="fw-bold text-info">{{ $item->Normal_Avg !== null ? number_format((float)$item->Normal_Avg, 4) : '-' }}</td>
+                                                    <td class="fw-bold text-danger">{{ $item->Hot_Avg !== null ? number_format((float)$item->Hot_Avg, 4) : '-' }}</td>
+                                                    <td class="fw-bold text-secondary">{{ $item->Wear_Avg !== null ? number_format((float)$item->Wear_Avg, 4) : '-' }}</td>
+                                                    <td class="text-start">{{ $item->Remarks ?? '-' }}</td>
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="9" class="text-center text-muted py-4">ไม่พบข้อมูลประวัติการทดสอบสำหรับ FormulaNumber นี้</td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
             {{-- TestFrictions Combined Charts Section (แสดงเฉพาะ TestID ที่มีข้อมูล) --}}
-            <div class="card border-0 shadow rounded-4 mt-4">
-                <div class="card-header bg-secondary text-white">
-                    <h5 class="mb-0 fw-bold">
-                        <i class="mdi mdi-chart-multiline me-2"></i> กราฟรวมค่า Friction (100°C ถึง Fall) แยกตามแต่ละ TestID
-                    </h5>
-                </div>
-                <div class="card-body">
-                    @php $hasAnyFrictionChart = false; @endphp
-
-                    @foreach($tests as $index => $item)
-                        @php 
-                            $cleanId = preg_replace('/[^a-zA-Z0-9]/', '_', $item->TestID); 
-                            $testFrictions = $frictionsByTest[$item->TestID] ?? ['n1' => [], 'n2' => [], 'n3' => []];
-                            $hasData = !empty($testFrictions['n1']) || !empty($testFrictions['n2']) || !empty($testFrictions['n3']);
-                        @endphp
-
-                        @if($hasData)
-                            @php $hasAnyFrictionChart = true; @endphp
-                            <div class="card border shadow-sm rounded-4 mb-4 p-3">
-                                <h5 class="fw-bold text-dark mb-3">
-                                    <i class="mdi mdi-identifier text-primary"></i> TestID: {{ $item->TestID }} 
-                                    <span class="text-muted fs-6 ms-2">(วันที่: {{ $item->TestDate ? \Carbon\Carbon::parse($item->TestDate)->format('d/m/Y') : '-' }})</span>
+            <div class="row g-3 flex-container">
+                <div class="col-md-12 card-wrapper mb-4">
+                    <div class="card border-0 shadow rounded-4">
+                        <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center flex-grow-1" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFrictionAll" aria-expanded="true">
+                                <h5 class="mb-0 fw-bold">
+                                    <i class="mdi mdi-chart-multiline me-2"></i> กราฟรวมค่า Friction (100°C ถึง Fall) แยกตามแต่ละ TestID
                                 </h5>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="mdi mdi-chevron-down fs-5" data-bs-toggle="collapse" data-bs-target="#collapseFrictionAll" style="cursor: pointer;"></i>
+                                <button type="button" class="btn btn-sm text-white p-0 btn-remove-card" title="ลบการ์ดนี้" onclick="removeCard(event, this);">
+                                    <i class="mdi mdi-close fs-5"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="collapse show" id="collapseFrictionAll">
+                            <div class="card-body">
+                                @php $hasAnyFrictionChart = false; @endphp
 
-                                <div style="height: 350px;">
-                                    <canvas id="chartCombined-{{ $cleanId }}"></canvas>
+                                @foreach($tests as $index => $item)
+                                    @php 
+                                        $cleanId = preg_replace('/[^a-zA-Z0-9]/', '_', $item->TestID); 
+                                        $testFrictions = $frictionsByTest[$item->TestID] ?? ['n1' => [], 'n2' => [], 'n3' => []];
+                                        $hasData = !empty($testFrictions['n1']) || !empty($testFrictions['n2']) || !empty($testFrictions['n3']);
+                                    @endphp
+
+                                    @if($hasData)
+                                        @php $hasAnyFrictionChart = true; @endphp
+                                        <div class="card border shadow-sm rounded-4 mb-4 p-3 card-wrapper">
+                                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                                <div class="d-flex align-items-center flex-grow-1" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTest-{{ $cleanId }}" aria-expanded="true">
+                                                    <h5 class="fw-bold text-dark mb-0">
+                                                        <i class="mdi mdi-identifier text-primary"></i> TestID: {{ $item->TestID }} 
+                                                        <span class="text-muted fs-6 ms-2">(วันที่: {{ $item->TestDate ? \Carbon\Carbon::parse($item->TestDate)->format('d/m/Y') : '-' }})</span>
+                                                    </h5>
+                                                </div>
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <i class="mdi mdi-chevron-down fs-5 text-muted" data-bs-toggle="collapse" data-bs-target="#collapseTest-{{ $cleanId }}" style="cursor: pointer;"></i>
+                                                    <button type="button" class="btn btn-sm text-secondary p-0 btn-remove-card" title="ลบการ์ดนี้" onclick="removeCard(event, this);">
+                                                        <i class="mdi mdi-close fs-5"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <div class="collapse show" id="collapseTest-{{ $cleanId }}">
+                                                <div style="height: 350px;">
+                                                    <canvas id="chartCombined-{{ $cleanId }}"></canvas>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+                                @endforeach
+
+                                @if(!$hasAnyFrictionChart)
+                                    <div class="text-center text-muted py-4">ไม่พบข้อมูล TestFrictions สำหรับแสดงกราฟในทุก TestID</div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Density Workpiece Table Section --}}
+            <div class="row g-3 flex-container">
+                <div class="col-md-12 card-wrapper mb-4">
+                    <div class="card border-0 shadow rounded-4">
+                        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center flex-grow-1" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDensityTable" aria-expanded="true">
+                                <h5 class="mb-0 fw-bold">
+                                    <i class="mdi mdi-table me-2"></i> ความหนาแน่นของชิ้นงาน {{ $formulaNumber }}
+                                </h5>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="mdi mdi-chevron-down fs-5" data-bs-toggle="collapse" data-bs-target="#collapseDensityTable" style="cursor: pointer;"></i>
+                                <button type="button" class="btn btn-sm text-white p-0 btn-remove-card" title="ลบการ์ดนี้" onclick="removeCard(event, this);">
+                                    <i class="mdi mdi-close fs-5"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="collapse show" id="collapseDensityTable">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover align-middle table-sm-custom text-center">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>#</th>
+                                                <th>วันที่</th>
+                                                <th>แม่พิมพ์</th>
+                                                <th>สินค้า</th>
+                                                <th>Area(cm²)</th>
+                                                <th>Pressure</th>
+                                                <th>Temp</th>
+                                                <th>Density(Target)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @forelse($densitys as $index => $item)
+                                                <tr>
+                                                    <td>{{ $index + 1 }}</td>
+                                                    <td>{{ $item->density_workpiece_hds_date ? \Carbon\Carbon::parse($item->density_workpiece_hds_date)->format('d/m/Y') : '-' }}</td>
+                                                    <td>{{ $item->mlod_name }} ({{$item->mlod_code}})</td>
+                                                    <td>{{ $item->product_name }} ({{$item->product_code}})</td>
+                                                    <td>{{ number_format((float)($item->mlod_area ?? 0), 2) }}</td>
+                                                    <td class="fw-bold text-info">{{ $item->mlod_pressure !== null ? number_format((float)$item->mlod_pressure, 2) : '-' }}</td>
+                                                    <td class="fw-bold text-danger">{{ $item->chemical_temp }}</td>
+                                                    <td class="fw-bold text-secondary">{{ $item->total_density !== null ? number_format((float)$item->total_density, 2) : '-' }}</td>
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="8" class="text-center text-muted py-4">ไม่พบข้อมูลความหนาแน่นสำหรับ FormulaNumber นี้</td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
-                        @endif
-                    @endforeach
-
-                    @if(!$hasAnyFrictionChart)
-                        <div class="text-center text-muted py-4">ไม่พบข้อมูล TestFrictions สำหรับแสดงกราฟในทุก TestID</div>
-                    @endif
+                        </div>
+                    </div>
                 </div>
+            </div>
+
+            {{-- Charts Section: Density & %Porosity (แยกตาม Mold Code และ Product Code) --}}
+            <div class="row g-3 flex-container">
+                @foreach($chartsPerMold as $groupKey => $data)
+                    @php 
+                        $safeId = preg_replace('/[^A-Za-z0-9]/', '_', $groupKey); 
+                    @endphp
+                    
+                    <!-- แสดงผลแบบ Col-6 คู่กัน -->
+                    <div class="col-md-12 mb-4 card-wrapper">           
+                        <div class="card border shadow-sm h-100">
+                            <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center flex-grow-1" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMold_{{ $safeId }}" aria-expanded="true">
+                                    <h5 class="mb-0 fw-bold">
+                                        <i class="mdi mdi-chart-multiline me-2"></i> รหัสแม่พิมพ์: {{ $data['mold_code'] }} <span class="fs-6 fw-normal text-light">({{ $data['product_code'] }})</span>
+                                    </h5>
+                                </div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="mdi mdi-chevron-down fs-5" data-bs-toggle="collapse" data-bs-target="#collapseMold_{{ $safeId }}" style="cursor: pointer;"></i>
+                                    <button type="button" class="btn btn-sm text-white p-0 btn-remove-card" title="ลบการ์ดนี้" onclick="removeCard(event, this);">
+                                        <i class="mdi mdi-close fs-5"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="collapse show" id="collapseMold_{{ $safeId }}">
+                                <div class="card-body">
+                                    <!-- กราฟ Density -->
+                                    <div class="mb-4">
+                                        <h6 class="fw-bold text-secondary mb-2">เปรียบเทียบ Density กับ Target</h6>
+                                        <div style="height: 250px;">
+                                            <canvas id="densityChart_{{ $safeId }}"></canvas>
+                                        </div>
+                                    </div>
+                                    
+                                    <hr>
+
+                                    <!-- กราฟ %Porosity -->
+                                    <div>
+                                        <h6 class="fw-bold text-secondary mb-2">แนวโน้ม %Porosity</h6>
+                                        <div style="height: 250px;">
+                                            <canvas id="porosityChart_{{ $safeId }}"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
             </div>
 
         </div>
@@ -224,8 +442,51 @@
 @push('scriptjs')
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 <script>
+// ฟังก์ชันสำหรับลบการ์ดพร้อมยืนยันด้วย SweetAlert2 (เพิ่มการป้องกัน Event Propagation)
+function removeCard(event, button) {
+    event.stopPropagation();
+    event.preventDefault();
+
+    Swal.fire({
+        title: 'ยืนยันการลบการ์ด?',
+        text: "คุณต้องการลบการ์ดนี้ออกจากหน้าจอใช่หรือไม่",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'ใช่, ลบออก',
+        cancelButtonText: 'ยกเลิก'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            let wrapper = $(button).closest('.card-wrapper');
+            if (wrapper.length === 0) {
+                wrapper = $(button).closest('.col-md-6, .col-md-4, .col-md-12');
+            }
+            
+            // เก็บอ้างอิงถึง row ไว้ก่อนลบการ์ดออก
+            let parentRow = wrapper.closest('.row');
+
+            wrapper.fadeOut(300, function() {
+                $(this).remove();
+                
+                // ตรวจสอบการ์ดที่เหลืออยู่ในแถวนี้
+                let remainingCards = parentRow.find('.card-wrapper');
+                
+                // ถ้าเหลือการ์ด 2 ใบ ให้ปรับเป็น col-md-6 (คนละครึ่งจอ)
+                if (remainingCards.length === 2) {
+                    remainingCards.removeClass('col-md-4 col-md-12').addClass('col-md-6');
+                }
+                // ถ้าเหลือการ์ด 1 ใบ ให้ปรับเป็น col-md-12 (เต็มหน้าจอ)
+                else if (remainingCards.length === 1) {
+                    remainingCards.removeClass('col-md-4 col-md-6').addClass('col-md-12');
+                }
+            });
+        }
+    });
+}
 // Custom Plugin สำหรับแสดงตัวเลขบนจุดกราฟ (Data Labels)
 const valueLabelsPlugin = {
     id: 'valueLabelsPlugin',
@@ -254,7 +515,7 @@ const valueLabelsPlugin = {
     }
 };
 
-// ฟังก์ชันสร้างกราฟ Friction รวมเฉพาะ N1, N2, N3 พร้อมตั้งค่าสเกล Y (0.15 - 0.55)
+// ฟังก์ชันสร้างกราฟ Friction รวมเฉพาะ N1, N2, N3 พร้อมตั้งค่าสเกล Y (0.00 - 0.70)
 function renderCombinedFrictionChart(frictions, cleanId) {
     if (!frictions) return;
     let n1 = frictions.n1 ?? [], n2 = frictions.n2 ?? [], n3 = frictions.n3 ?? [];
@@ -296,8 +557,8 @@ function renderCombinedFrictionChart(frictions, cleanId) {
             },
             scales: { 
                 y: { 
-                    min: 0.00,           
-                    max: 0.70,           
+                    min: 0.00,          
+                    max: 0.70,          
                     ticks: {
                         stepSize: 0.10,  
                         callback: function(value) {
@@ -464,6 +725,114 @@ document.addEventListener("DOMContentLoaded", function () {
         let cleanId = testId.replace(/[^a-zA-Z0-9]/g, '_');
         renderCombinedFrictionChart(frictionsByTest[testId], cleanId);
     }
+
+    // 8. วนลูปสร้างกราฟ Density และ %Porosity แยกตามแต่ละ Mold และ Product ที่ส่งมา
+    let moldData = @json($chartsPerMold ?? []);
+    Object.keys(moldData).forEach(groupKey => {
+        let safeId = groupKey.replace(/[^A-Za-z0-9]/g, '_');
+        let item = moldData[groupKey];
+
+        let labels = item.labels;
+        let actualDensity = item.actualDensity;
+        let targetDensity = item.targetDensity;
+        let porosity = item.porosity;
+        let sides = item.sides;
+
+        let backgroundColors = sides.map(side => {
+            if (side === 'ซ้าย') return 'rgba(54, 162, 235, 0.7)';
+            if (side === 'ขวา') return 'rgba(255, 159, 64, 0.7)';
+            if (side === 'ซ้าย-ขวา') return 'rgba(153, 102, 255, 0.7)';
+            return 'rgba(201, 203, 207, 0.7)';
+        });
+
+        // สร้างกราฟ Density
+        let ctxDensity = document.getElementById('densityChart_' + safeId);
+        if (ctxDensity) {
+            new Chart(ctxDensity.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Actual Density',
+                            data: actualDensity,
+                            backgroundColor: backgroundColors,
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Target Density',
+                            data: targetDensity,
+                            type: 'line',
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 2,
+                            fill: false,
+                            pointRadius: 0,
+                            datalabels: { display: false }
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } },
+                        datalabels: {
+                            anchor: 'end',
+                            align: 'top',
+                            formatter: function(value, context) {
+                                if (context.datasetIndex === 0) {
+                                    let idx = context.dataIndex;
+                                    return sides[idx] + '\n' + Number(value).toFixed(4);
+                                }
+                                return '';
+                            },
+                            font: { size: 9, weight: 'bold' },
+                            color: '#333'
+                        }
+                    },
+                    scales: { y: { beginAtZero: false, grace: '15%' } }
+                },
+                plugins: [ChartDataLabels]
+            });
+        }
+
+        // สร้างกราฟ %Porosity
+        let ctxPorosity = document.getElementById('porosityChart_' + safeId);
+        if (ctxPorosity) {
+            new Chart(ctxPorosity.getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: '%Porosity',
+                        data: porosity,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderWidth: 2,
+                        tension: 0.1,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } },
+                        datalabels: {
+                            align: 'top',
+                            formatter: function(value) {
+                                return Number(value).toFixed(2) + '%';
+                            },
+                            font: { size: 9, weight: 'bold' },
+                            color: '#333'
+                        }
+                    },
+                    scales: { y: { beginAtZero: true, grace: '15%' } }
+                },
+                plugins: [ChartDataLabels]
+            });
+        }
+    });
 });
 </script>
 
@@ -474,6 +843,22 @@ document.addEventListener("DOMContentLoaded", function () {
 .table-sm-custom th, .table-sm-custom td {
     padding: 8px 10px !important;
     vertical-align: middle;
+}
+/* อนิเมชันหมุนลูกศรเวลาเปิด-ปิดการ์ด */
+[data-bs-toggle="collapse"] .mdi-chevron-down {
+    transition: transform 0.3s ease;
+}
+[data-bs-toggle="collapse"].collapsed .mdi-chevron-down,
+[data-bs-toggle="collapse"][aria-expanded="false"] .mdi-chevron-down {
+    transform: rotate(-90deg);
+}
+.btn-remove-card:hover {
+    opacity: 0.7;
+}
+
+/* ระบบ Grid ที่ใช้ร่วมกับ col-md-6 และการ์ด */
+.card-wrapper {
+    transition: all 0.3s ease;
 }
 </style>
 @endpush
