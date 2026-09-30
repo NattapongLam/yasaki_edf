@@ -45,9 +45,9 @@
                             <span class="text-muted" style="font-size: 11px;">CUSTOMER COMPLAINT & CORRECTIVE ACTION RECORD</span>
                         </td>
                         <td style="width: 28%; font-size: 11px; vertical-align: middle;" class="p-2">
-                            <div class="mb-0.5"><b>Doc No.:</b> FM-LAB-01</div>
-                            <div class="mb-0.5"><b>Revision:</b> 01</div>
-                            <div><b>Eff. Date:</b> 01/01/2026</div>
+                            <div class="mb-0.5"><b>Doc No.:</b> YSK5-FM-LAB-19</div>
+                            <div class="mb-0.5"><b>Revision:</b> 00</div>
+                            <div><b>Eff. Date:</b> 01/08/2026</div>
                         </td>
                     </tr>
                 </table>
