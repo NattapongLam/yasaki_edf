@@ -461,12 +461,12 @@ $('#mlod_code').on('change', function() {
             var row = `
                 <tr>
                     <td class="text-center">${i}</td>
-                    <td class="text-center"><input type="number" step="any" class="form-control iron-w" name="cavity[${i}][weight_1]" value="0"></td>
-                    <td class="text-center"><input type="number" step="any" class="form-control iron-t" name="cavity[${i}][thickness_1]" value="0"></td>
-                    <td class="text-center"><input type="number" step="any" class="form-control glue-w" name="cavity[${i}][weight_2]" value="0"></td>
-                    <td class="text-center"><input type="number" step="any" class="form-control glue-t" name="cavity[${i}][thickness_2]" value="0"></td>
-                    <td class="text-center"><input type="number" step="any" class="form-control chem-w" name="cavity[${i}][weight_3]" value="0"></td>
-                    <td class="text-center"><input type="number" step="any" class="form-control chem-t" name="cavity[${i}][thickness_3]" value="0"></td>
+                    <td class="text-center"><input type="text" step="any" class="form-control iron-w" name="cavity[${i}][weight_1]" value="0"></td>
+                    <td class="text-center"><input type="text" step="any" class="form-control iron-t" name="cavity[${i}][thickness_1]" value="0"></td>
+                    <td class="text-center"><input type="text" step="any" class="form-control glue-w" name="cavity[${i}][weight_2]" value="0"></td>
+                    <td class="text-center"><input type="text" step="any" class="form-control glue-t" name="cavity[${i}][thickness_2]" value="0"></td>
+                    <td class="text-center"><input type="text" step="any" class="form-control chem-w" name="cavity[${i}][weight_3]" value="0"></td>
+                    <td class="text-center"><input type="text" step="any" class="form-control chem-t" name="cavity[${i}][thickness_3]" value="0"></td>
                     <td class="text-center"><input type="text" class="form-control calc-weight-chem bg-light" name="cavity[${i}][weight_chemical]" value="0" readonly></td>
                     <td class="text-center"><input type="text" class="form-control calc-thickness-chem bg-light" name="cavity[${i}][thickness_chemical]" value="0" readonly></td>
                     <td class="text-center"><input type="text" class="form-control calc-volume bg-light" name="cavity[${i}][density_workpiece_dts_volume]" value="0" readonly></td>

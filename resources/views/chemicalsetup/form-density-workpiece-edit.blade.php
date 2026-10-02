@@ -109,12 +109,12 @@
                             @foreach ($dt as $item)
                             <tr>
                                 <td class="fw-bold bg-light">{{ $item->density_workpiece_dts_listno }}</td>
-                                <td><input type="number" step="any" class="form-control form-control-sm text-center iron-w" name="cavity[{{ $item->density_workpiece_dts_listno }}][weight_1]" value="{{ $item->weight_1 }}"></td>
-                                <td><input type="number" step="any" class="form-control form-control-sm text-center iron-t" name="cavity[{{ $item->density_workpiece_dts_listno }}][thickness_1]" value="{{ $item->thickness_1 }}"></td>
-                                <td><input type="number" step="any" class="form-control form-control-sm text-center glue-w" name="cavity[{{ $item->density_workpiece_dts_listno }}][weight_2]" value="{{ $item->weight_2 }}"></td>
-                                <td><input type="number" step="any" class="form-control form-control-sm text-center glue-t" name="cavity[{{ $item->density_workpiece_dts_listno }}][thickness_2]" value="{{ $item->thickness_2 }}"></td>
-                                <td><input type="number" step="any" class="form-control form-control-sm text-center chem-w" name="cavity[{{ $item->density_workpiece_dts_listno }}][weight_3]" value="{{ $item->weight_3 }}"></td>
-                                <td><input type="number" step="any" class="form-control form-control-sm text-center chem-t" name="cavity[{{ $item->density_workpiece_dts_listno }}][thickness_3]" value="{{ $item->thickness_3 }}"></td>
+                                <td><input type="text" step="any" class="form-control form-control-sm text-center iron-w" name="cavity[{{ $item->density_workpiece_dts_listno }}][weight_1]" value="{{ $item->weight_1 }}"></td>
+                                <td><input type="text" step="any" class="form-control form-control-sm text-center iron-t" name="cavity[{{ $item->density_workpiece_dts_listno }}][thickness_1]" value="{{ $item->thickness_1 }}"></td>
+                                <td><input type="text" step="any" class="form-control form-control-sm text-center glue-w" name="cavity[{{ $item->density_workpiece_dts_listno }}][weight_2]" value="{{ $item->weight_2 }}"></td>
+                                <td><input type="text" step="any" class="form-control form-control-sm text-center glue-t" name="cavity[{{ $item->density_workpiece_dts_listno }}][thickness_2]" value="{{ $item->thickness_2 }}"></td>
+                                <td><input type="text" step="any" class="form-control form-control-sm text-center chem-w" name="cavity[{{ $item->density_workpiece_dts_listno }}][weight_3]" value="{{ $item->weight_3 }}"></td>
+                                <td><input type="text" step="any" class="form-control form-control-sm text-center chem-t" name="cavity[{{ $item->density_workpiece_dts_listno }}][thickness_3]" value="{{ $item->thickness_3 }}"></td>
                                 <td><input type="text" class="form-control form-control-sm text-center calc-weight-chem bg-light" name="cavity[{{ $item->density_workpiece_dts_listno }}][weight_chemical]" value="{{ $item->weight_chemical }}" readonly></td>
                                 <td><input type="text" class="form-control form-control-sm text-center calc-thickness-chem bg-light" name="cavity[{{ $item->density_workpiece_dts_listno }}][thickness_chemical]" value="{{ $item->thickness_chemical }}" readonly></td>
                                 <td><input type="text" class="form-control form-control-sm text-center calc-volume bg-light" name="cavity[{{ $item->density_workpiece_dts_listno }}][density_workpiece_dts_volume]" value="{{ $item->density_workpiece_dts_volume }}" readonly></td>
