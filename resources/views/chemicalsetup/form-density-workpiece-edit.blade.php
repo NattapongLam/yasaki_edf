@@ -74,6 +74,16 @@
                         <span class="text-muted">Date:</span> <span class="fw-semibold">{{ $hd->density_workpiece_hds_date }}</span>
                         <input type="hidden" name="product_sides" value="{{ $hd->product_sides }}">
                     </div>
+
+                    <!-- ช่องแสดงค่า Upper Density และ Lower Density ที่คำนวณจาก SQL -->
+                    <div class="col-3 col-md-3 mt-2">
+                        <span class="text-muted">Upper Density:</span> 
+                        <input type="text" step="any" class="form-control form-control-sm d-inline-block w-auto bg-light fw-bold text-success" name="upper_density" id="upper_density" value="{{ isset($hd->upper_density) ? number_format($hd->upper_density, 4, '.', '') : '' }}" readonly>
+                    </div>
+                    <div class="col-3 col-md-3 mt-2">
+                        <span class="text-muted">Lower Density:</span> 
+                        <input type="text" step="any" class="form-control form-control-sm d-inline-block w-auto bg-light fw-bold text-danger" name="lower_density" id="lower_density" value="{{ isset($hd->lower_density) ? number_format($hd->lower_density, 4, '.', '') : '' }}" readonly>
+                    </div>
                 </div>
 
                 <!-- ตารางข้อมูลชิ้นงาน -->
@@ -101,7 +111,6 @@
                                 <th>ความหนา (mm)</th>
                             </tr>
                         </thead>
-                        <!-- ส่วนสรุปผลด้านบน -->
                         <tbody id="summary_table_section" class="fw-bold bg-light">
                             <!-- ผลรวมสรุปจะถูกแทรกลงตรงนี้ผ่าน JavaScript -->
                         </tbody>
@@ -134,12 +143,12 @@
                     </table>
                 </div>
 
-                <!-- ส่วนแสดงกราฟ (Chart.js Dashboard) - ขยายเต็มหน้า -->
+                <!-- ส่วนแสดงกราฟ (Chart.js Dashboard) -->
                 <div class="row mt-4">
                     <div class="col-12 mb-3">
                         <div class="card border shadow-sm print-chart-card">
                             <div class="card-body">
-                                <h6 class="fw-bold text-dark mb-2">กราฟเปรียบเทียบ Density กับ Target</h6>
+                                <h6 class="fw-bold text-dark mb-2">กราฟเปรียบเทียบ Density กับ Target, Upper และ Lower</h6>
                                 <canvas id="densityChart" height="90"></canvas>
                             </div>
                         </div>
@@ -171,7 +180,6 @@
 
 @push('scriptjs')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<!-- เพิ่ม ChartDataLabels plugin เพื่อโชว์ตัวเลขบนกราฟ -->
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 
 <style>
@@ -328,7 +336,14 @@ function calculateAllRows() {
     var chartTargetDensity = [];
     var chartPorosity = [];
     var chartSides = [];
+    
     var targetDensityVal = parseFloat($('#total_density').val()) || 0;
+    
+    var upperInputVal = $('#upper_density').val();
+    var lowerInputVal = $('#lower_density').val();
+    
+    var upperVal = (upperInputVal !== '' && !isNaN(upperInputVal)) ? parseFloat(upperInputVal) : null;
+    var lowerVal = (lowerInputVal !== '' && !isNaN(lowerInputVal)) ? parseFloat(lowerInputVal) : null;
 
     rows.each(function() {
         calculateRow(this);
@@ -338,6 +353,7 @@ function calculateAllRows() {
         chartLabels.push('Cavity ' + listNo);
         chartActualDensity.push(parseFloat($(this).find('.calc-density').val()) || 0);
         chartTargetDensity.push(targetDensityVal);
+
         chartPorosity.push(parseFloat($(this).find('.calc-porosity').val()) || 0);
         chartSides.push(currentSide);
 
@@ -408,10 +424,10 @@ function calculateAllRows() {
         $('#summary_table_section').html(summaryHtml).show();
     }
 
-    updateCharts(chartLabels, chartActualDensity, chartTargetDensity, chartPorosity, chartSides);
+    updateCharts(chartLabels, chartActualDensity, chartTargetDensity, upperVal, lowerVal, chartPorosity, chartSides);
 }
 
-function updateCharts(labels, actualDensity, targetDensity, porosity, sides) {
+function updateCharts(labels, actualDensity, targetDensity, upperVal, lowerVal, porosity, sides) {
     const backgroundColors = sides.map(side => {
         if (side === 'ซ้าย') return 'rgba(54, 162, 235, 0.7)';
         if (side === 'ขวา') return 'rgba(255, 159, 64, 0.7)';
@@ -426,36 +442,71 @@ function updateCharts(labels, actualDensity, targetDensity, porosity, sides) {
         return 'rgba(201, 203, 207, 1)';
     });
 
-    // 1. กราฟ Density (พร้อม Datalabels และแสดงค่า Side บนกราฟ)
+    // 1. กราฟ Density
     const ctxDensity = document.getElementById('densityChart').getContext('2d');
     if (densityChartInstance) {
         densityChartInstance.destroy();
     }
+    
+    let densityDatasets = [
+        {
+            label: 'Actual Density',
+            data: actualDensity,
+            backgroundColor: backgroundColors,
+            borderColor: borderColors,
+            borderWidth: 1,
+            order: 2
+        },
+        {
+            label: 'Target Density',
+            data: targetDensity,
+            type: 'line',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 2,
+            fill: false,
+            pointRadius: 0,
+            order: 1,
+            datalabels: { display: false }
+        }
+    ];
+
+    if (upperVal !== null) {
+        let upperLineData = new Array(labels.length).fill(upperVal);
+        densityDatasets.push({
+            label: 'Upper Density',
+            data: upperLineData,
+            type: 'line',
+            borderColor: 'rgba(40, 167, 69, 1)',
+            borderWidth: 2,
+            borderDash: [5, 5],
+            fill: false,
+            pointRadius: 0,
+            order: 1,
+            datalabels: { display: false }
+        });
+    }
+
+    if (lowerVal !== null) {
+        let lowerLineData = new Array(labels.length).fill(lowerVal);
+        densityDatasets.push({
+            label: 'Lower Density',
+            data: lowerLineData,
+            type: 'line',
+            borderColor: 'rgba(220, 53, 69, 1)',
+            borderWidth: 2,
+            borderDash: [5, 5],
+            fill: false,
+            pointRadius: 0,
+            order: 1,
+            datalabels: { display: false }
+        });
+    }
+
     densityChartInstance = new Chart(ctxDensity, {
         type: 'bar',
         data: {
             labels: labels,
-            datasets: [
-                {
-                    label: 'Actual Density',
-                    data: actualDensity,
-                    backgroundColor: backgroundColors,
-                    borderColor: borderColors,
-                    borderWidth: 1
-                },
-                {
-                    label: 'Target Density',
-                    data: targetDensity,
-                    type: 'line',
-                    borderColor: 'rgba(255, 99, 132, 1)',
-                    borderWidth: 2,
-                    fill: false,
-                    pointRadius: 0,
-                    datalabels: {
-                        display: false // ซ่อนตัวเลขของ Target เส้นตรงเพื่อไม่ให้รก
-                    }
-                }
-            ]
+            datasets: densityDatasets
         },
         options: {
             responsive: true,
@@ -474,7 +525,6 @@ function updateCharts(labels, actualDensity, targetDensity, porosity, sides) {
                     formatter: function(value, context) {
                         if (context.datasetIndex === 0) {
                             let index = context.dataIndex;
-                            // แสดงทั้ง Side และค่าตัวเลข เช่น "ซ้าย\n1.0250"
                             return sides[index] + '\n' + value.toFixed(4);
                         }
                         return '';
@@ -489,39 +539,69 @@ function updateCharts(labels, actualDensity, targetDensity, porosity, sides) {
             scales: { 
                 y: { 
                     beginAtZero: false,
-                    grace: '15% ' // เผื่อพื้นที่ด้านบนให้ตัวหนังสือไม่ชนขอบกราฟ
+                    grace: '15%' 
                 } 
             }
         },
         plugins: [ChartDataLabels]
     });
 
-    // 2. กราฟ %Porosity (พร้อม Datalabels แสดงตัวเลข)
+    // 2. กราฟ %Porosity (กำหนด Limit ควบคุม เช่น Max Limit = 5.0%)
     const ctxPorosity = document.getElementById('porosityChart').getContext('2d');
     if (porosityChartInstance) {
         porosityChartInstance.destroy();
     }
+
+    let maxPorosityLimit = 5.0; // กำหนดค่าเกณฑ์สูงสุดที่ยอมรับได้ (สามารถปรับเปลี่ยนได้ตามต้องการ)
+    let porosityLimitData = new Array(labels.length).fill(maxPorosityLimit);
+
+    // กำหนดสีและขนาดจุด (Point) แยกตามเงื่อนไข ถ้าเกิน 5.0% ให้เป็นสีแดงและจุดใหญ่ขึ้น
+    let porosityPointColors = porosity.map(val => val > maxPorosityLimit ? 'rgba(220, 53, 69, 1)' : 'rgba(75, 192, 192, 1)');
+    let porosityPointRadius = porosity.map(val => val > maxPorosityLimit ? 6 : 3);
+
     porosityChartInstance = new Chart(ctxPorosity, {
         type: 'line',
         data: {
             labels: labels,
-            datasets: [{
-                label: '%Porosity',
-                data: porosity,
-                borderColor: 'rgba(75, 192, 192, 1)',
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderWidth: 2,
-                tension: 0.1,
-                fill: true
-            }]
+            datasets: [
+                {
+                    label: '%Porosity',
+                    data: porosity,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    pointBackgroundColor: porosityPointColors,
+                    pointBorderColor: porosityPointColors,
+                    pointRadius: porosityPointRadius,
+                    borderWidth: 2,
+                    tension: 0.1,
+                    fill: true,
+                    order: 2
+                },
+                {
+                    label: 'Max Limit (5.0%)',
+                    data: porosityLimitData,
+                    type: 'line',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 2,
+                    borderDash: [5, 5],
+                    fill: false,
+                    pointRadius: 0,
+                    order: 1,
+                    datalabels: { display: false }
+                }
+            ]
         },
         options: {
             responsive: true,
             plugins: {
                 datalabels: {
                     align: 'top',
-                    formatter: function(value) {
-                        return value.toFixed(2) + '%';
+                    formatter: function(value, context) {
+                        // แสดงป้ายตัวเลขเฉพาะชุดข้อมูล %Porosity (Dataset แรก)
+                        if (context.datasetIndex === 0) {
+                            return value.toFixed(2) + '%';
+                        }
+                        return '';
                     },
                     font: {
                         size: 10,

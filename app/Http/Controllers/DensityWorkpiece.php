@@ -152,8 +152,20 @@ class DensityWorkpiece extends Controller
      */
     public function edit($id)
     {
-        $hd = DensityWorkpieceHd::find($id);
-        $dt = DensityWorkpieceDt::where('density_workpiece_hds_id',$id)->get();
+        // ตัวอย่างการใช้ SQL Query คำนวณค่า Upper / Lower อัตโนมัติ (เช่น เผื่อ/ขาด 5% จาก total_density)
+        $hd = DB::table('density_workpiece_hds')
+            ->select(
+                'density_workpiece_hds.*',
+                DB::raw('total_density * 1.05 as upper_density'), // ตัวอย่างสูตร SQL: สูงกว่า Target 5%
+                DB::raw('total_density * 0.95 as lower_density')  // ตัวอย่างสูตร SQL: ต่ำกว่า Target 5%
+            )
+            ->where('density_workpiece_hds_id', $id)
+            ->first();
+
+        $dt = DB::table('density_workpiece_dts')
+            ->where('density_workpiece_hds_id', $id)
+            ->orderBy('density_workpiece_dts_listno', 'asc')
+            ->get();
         return view('chemicalsetup.form-density-workpiece-edit', compact('hd','dt'));
     }
 
