@@ -494,15 +494,25 @@ public function checkTestHeaders(Request $request)
         ];
     }
 
-    // 2. ดึงข้อมูล Density Headers ที่ Active และตรงกับสูตรเคมี
+    // 2. ดึงข้อมูล Density Headers ที่ Active และตรงกับสูตรเคมี (พร้อมดึงค่า Upper/Lower ตามตัวอย่างของคุณ)
     $densitys = DB::table('density_workpiece_hds')
+            ->select(
+                'density_workpiece_hds.*',
+                DB::raw('total_density * 1.05 as upper_density'), // ปรับสูตรคำนวณหรือเปลี่ยนเป็นชื่อฟิลด์จริงตามต้องการ
+                DB::raw('total_density * 0.95 as lower_density')  
+            )
             ->where('density_workpiece_hds_flag', true)
             ->where('chemistry_hd_name', $formulaNumber)
             ->get();
 
-    // Map ค่า mlod_code และ product_code จาก density_workpiece_hds_id
+    // Map ค่าต่างๆ จาก density_workpiece_hds_id
     $moldCodeMap = $densitys->pluck('mlod_code', 'density_workpiece_hds_id')->toArray();
     $productCodeMap = $densitys->pluck('product_code', 'density_workpiece_hds_id')->toArray();
+    
+    // สร้าง Map สำหรับเก็บค่า Upper และ Lower ของแต่ละ Header
+    $upperDensityMap = $densitys->pluck('upper_density', 'density_workpiece_hds_id')->toArray();
+    $lowerDensityMap = $densitys->pluck('lower_density', 'density_workpiece_hds_id')->toArray();
+    
     $densityIds = array_keys($moldCodeMap);
 
     // 3. ดึงข้อมูล Density Details ตามรายการทั้งหมด เรียงตาม Header และ Listno
@@ -519,6 +529,10 @@ public function checkTestHeaders(Request $request)
         $moldCode = $moldCodeMap[$hdsId] ?? 'Unknown Mold';
         $productCode = $productCodeMap[$hdsId] ?? 'Unknown Product';
         
+        // ดึงค่า Upper และ Lower จาก Header ที่ผูกไว้ (หากมีหลายเรคอร์ดใน Header เดียวกัน ค่าจะใช้เรทเดียวกันตาม Header)
+        $upperVal = floatval($upperDensityMap[$hdsId] ?? 0);
+        $lowerVal = floatval($lowerDensityMap[$hdsId] ?? 0);
+        
         // สร้าง Key ผสมระหว่าง Mold และ Product เพื่อแยกกราฟออกจากกันอย่างอิสระ
         $groupKey = $moldCode . ' | Product: ' . $productCode;
         
@@ -529,10 +543,12 @@ public function checkTestHeaders(Request $request)
                 'labels' => [],
                 'actualDensity' => [],
                 'targetDensity' => [],
+                'upperDensity' => [], // อาเรย์เก็บค่า Upper Limit สำหรับส่งเข้ากราฟ
+                'lowerDensity' => [], // อาเรย์เก็บค่า Lower Limit สำหรับส่งเข้ากราฟ
                 'porosity' => [],
                 'sides' => [],
                 'rawActual' => [],
-                'counter' => 1 // ตัวนับรันเลข List ใหม่ต่อเนื่องกัน 1, 2, 3...
+                'counter' => 1 
             ];
         }
         
@@ -540,9 +556,11 @@ public function checkTestHeaders(Request $request)
         $porosityVal = floatval($row->density_workpiece_dts_porosity ?? 0);
 
         $chartsPerMold[$groupKey]['labels'][] = 'Cavity: ' . $chartsPerMold[$groupKey]['counter'];
-        $chartsPerMold[$GroupKey ?? $groupKey]['counter']++; 
+        $chartsPerMold[$groupKey]['counter']++; 
 
         $chartsPerMold[$groupKey]['actualDensity'][] = $actualVal;
+        $chartsPerMold[$groupKey]['upperDensity'][] = $upperVal; // เติมค่า Upper ลงอาเรย์ตามจำนวน Cavity
+        $chartsPerMold[$groupKey]['lowerDensity'][] = $lowerVal; // เติมค่า Lower ลงอาเรย์ตามจำนวน Cavity
         $chartsPerMold[$groupKey]['porosity'][] = $porosityVal;
         $chartsPerMold[$groupKey]['sides'][] = $row->product_sides ?? 'ไม่ระบุ';
 
@@ -555,7 +573,6 @@ public function checkTestHeaders(Request $request)
         $count = count($data['rawActual']);
         $avgActual = $count > 0 ? (array_sum($data['rawActual']) / $count) : 0;
         
-        // กำหนดให้เส้น targetDensity เป็นค่าเฉลี่ยของ actualDensity ในกลุ่มนั้นๆ
         $data['targetDensity'] = array_fill(0, $count, $avgActual);
     }
     unset($data);

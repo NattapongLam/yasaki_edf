@@ -737,6 +737,8 @@ document.addEventListener("DOMContentLoaded", function () {
         let targetDensity = item.targetDensity;
         let porosity = item.porosity;
         let sides = item.sides;
+        let upperDensity = item.upperDensity || []; // <--- เพิ่มบรรทัดนี้
+        let lowerDensity = item.lowerDensity || []; // <--- เพิ่มบรรทัดนี้
 
         let backgroundColors = sides.map(side => {
             if (side === 'ซ้าย') return 'rgba(54, 162, 235, 0.7)';
@@ -763,8 +765,30 @@ document.addEventListener("DOMContentLoaded", function () {
                             label: 'Target Density',
                             data: targetDensity,
                             type: 'line',
-                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderColor: 'rgba(255, 99, 132, 1)', // สีแดงสำหรับ Target
                             borderWidth: 2,
+                            fill: false,
+                            pointRadius: 0,
+                            datalabels: { display: false }
+                        },
+                        {
+                            label: 'Upper Limit',
+                            data: upperDensity, // สมมติว่ามีตัวแปรอาร์เรย์ upperDensity จากฝั่ง Controller
+                            type: 'line',
+                            borderColor: 'rgba(220, 53, 69, 0.8)', // สีแดงเข้ม/ส้ม สำหรับUpper
+                            borderDash: [5, 5], // เส้นประ
+                            borderWidth: 1.5,
+                            fill: false,
+                            pointRadius: 0,
+                            datalabels: { display: false }
+                        },
+                        {
+                            label: 'Lower Limit',
+                            data: lowerDensity, // สมมติว่ามีตัวแปรอาร์เรย์ lowerDensity จากฝั่ง Controller
+                            type: 'line',
+                            borderColor: 'rgba(255, 193, 7, 0.8)', // สีเหลือง/ส้ม สำหรับLower
+                            borderDash: [5, 5], // เส้นประ
+                            borderWidth: 1.5,
                             fill: false,
                             pointRadius: 0,
                             datalabels: { display: false }
@@ -797,37 +821,74 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         // สร้างกราฟ %Porosity
+        // สร้างกราฟ %Porosity ตามรูปแบบภาพตัวอย่าง
         let ctxPorosity = document.getElementById('porosityChart_' + safeId);
         if (ctxPorosity) {
+            let maxLimitValue = 5.0; // กำหนดค่า Max Limit (หรือดึงค่ามาจากตัวแปรฝั่ง PHP ได้ครับ)
+            let porosityLimitLine = Array(porosity.length).fill(maxLimitValue);
+
+            // กำหนดสีของจุด: ถ้าเกิน 5.0 ให้เป็นสีแดง ถ้าปกติให้เป็นสีฟ้า/เขียว
+            let pointColors = porosity.map(val => (val > maxLimitValue ? '#dc3545' : '#0dcaf0'));
+            let pointRadii = porosity.map(val => (val > maxLimitValue ? 6 : 4));
+
             new Chart(ctxPorosity.getContext('2d'), {
                 type: 'line',
                 data: {
                     labels: labels,
-                    datasets: [{
-                        label: '%Porosity',
-                        data: porosity,
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderWidth: 2,
-                        tension: 0.1,
-                        fill: true
-                    }]
+                    datasets: [
+                        {
+                            label: '%Porosity',
+                            data: porosity,
+                            borderColor: '#0dcaf0',
+                            backgroundColor: 'rgba(13, 202, 240, 0.15)',
+                            borderWidth: 2,
+                            tension: 0.1,
+                            fill: true,
+                            pointBackgroundColor: pointColors,
+                            pointBorderColor: pointColors,
+                            pointRadius: pointRadii
+                        },
+                        {
+                            label: 'Max Limit (' + maxLimitValue + '%)',
+                            data: porosityLimitLine,
+                            type: 'line',
+                            borderColor: '#dc3545',
+                            borderDash: [5, 5],
+                            borderWidth: 1.5,
+                            fill: false,
+                            pointRadius: 0,
+                            datalabels: { display: false }
+                        }
+                    ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } },
+                        legend: { 
+                            position: 'top', 
+                            labels: { boxWidth: 12, font: { size: 11 } } 
+                        },
                         datalabels: {
                             align: 'top',
                             formatter: function(value) {
                                 return Number(value).toFixed(2) + '%';
                             },
                             font: { size: 9, weight: 'bold' },
-                            color: '#333'
+                            color: function(context) {
+                                // ถ้าจุดไหนเกิน Limit ให้ตัวหนังสือเป็นสีแดงเด่นชัด
+                                let val = context.dataset.data[context.dataIndex];
+                                return val > maxLimitValue ? '#dc3545' : '#333';
+                            }
                         }
                     },
-                    scales: { y: { beginAtZero: true, grace: '15%' } }
+                    scales: { 
+                        y: { 
+                            beginAtZero: true, 
+                            grace: '15%',
+                            title: { display: true, text: '%Porosity' }
+                        } 
+                    }
                 },
                 plugins: [ChartDataLabels]
             });
