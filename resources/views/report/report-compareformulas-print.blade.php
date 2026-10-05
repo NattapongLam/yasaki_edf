@@ -693,7 +693,22 @@ Note: The reported uncertainty is based on a standard uncertainty multiplied by 
         </tr>
     </table>
 </div>
-
+<table style="margin-top: 6px;">
+    <tr>
+        <th style="width: 22%;">Address</th>
+        <td>
+            {{ 
+                collect([
+                    $cust->ar_customer_lists_address1 ?? null,
+                    $subd->other_sub_districts_name1 ?? null,
+                    $dist->other_districts_name1 ?? null,
+                    $prov->other_provinces_name1 ?? null,
+                    $subd->other_sub_districts_zipcode ?? null
+                ])->filter()->implode(', ') 
+            }}
+        </td>
+    </tr>
+</table>
 <table class="spec-photo" style="margin-top:6px;">
     <tr>
         <th colspan="2">Sample Photo Before Test</th>

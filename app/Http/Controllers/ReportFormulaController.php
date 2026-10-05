@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ArCustomerList;
 use App\Models\ArRequestorderDt;
 use App\Models\ArRequestorderHd;
 use App\Models\CalibrationList;
+use App\Models\OtherDistrict;
+use App\Models\OtherProvince;
+use App\Models\OtherSubDistrict;
 use App\Models\ReceiveTestList;
 use App\Models\ReceiveTestSub;
 use Illuminate\Http\Request;
@@ -217,6 +221,10 @@ class ReportFormulaController extends Controller
         ->where('receive_test_subs.receive_test_lists_id',$rechd->receive_test_lists_id)
         ->where('receive_test_subs.receive_test_lists_flag',true)
         ->get();
+        $cust = ArCustomerList::where('ar_customer_lists_name1',$reqhd->ar_requestorder_hds_customer)->first();
+        $prov = OtherProvince::find($cust->other_provinces_id);
+        $dist = OtherDistrict::find($cust->other_districts_id);
+        $subd = OtherSubDistrict::find($cust->other_sub_districts_id);
     // 1. กำหนดค่าตัวหารตามหลักมาตรวิทยา (คงเดิม)
     $divNormal = 2.0;          // สำหรับค่าจากใบเซอร์สอบเทียบ (Normal Distribution, k=2)
     $divRectangular = sqrt(3); // สำหรับค่าความละเอียดหน้าจอ (Resolution / Rectangular Distribution)
@@ -297,6 +305,7 @@ class ReportFormulaController extends Controller
             'report.report-compareformulas-print',compact(
                 'hd','friction','dt','frictionPoints','wearRatePoints','temps','safeUpper','safeLower','jisMin','jisMax','targetUpper','targetLower'
                 ,'reqhd','reqdt','rechd','caldimensions','calweight','cal','bomdt','caldimensions1','mjis','average_rmp','expandedUncertainty'
+                ,'cust','prov','dist','subd'
             )
         );
     }
