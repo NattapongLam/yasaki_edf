@@ -22,7 +22,7 @@
                 <div class="col-12 col-md-6"><h3 class="card-title">ความหนาแน่นของชิ้นงาน</h3></div>          
             </div>
             <div class="row mt-2">            
-                <div class="col-6">
+                <div class="col-4">
                     <div class="form-group">
                         <label class="form-label">Product</label>
                         <select class="form-control select2" name="product_code">
@@ -33,13 +33,19 @@
                         </select>
                     </div>             
                 </div>
-                <div class="col-6">
+                <div class="col-4">
                     <div class="form-group">
                         <label class="form-label">Mold</label>
                         <select class="form-control" name="mlod_code" id="mlod_code">
                             <option value="-">กรุณาเลือก</option>
                         </select>
                     </div>             
+                </div>
+                <div class="col-4">
+                    <div class="form-group">
+                        <label class="form-label">Machinery</label>
+                        <input class="form-control" name="machinery_name">
+                    </div>
                 </div>
             </div>
             <div class="row mt-2">

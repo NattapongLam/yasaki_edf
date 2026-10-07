@@ -38,13 +38,15 @@
 
                 <!-- ข้อมูลทั่วไป (Header Info) -->
                 <div class="row g-2 mb-2 bg-light p-2 rounded border small">
-                    <div class="col-6 col-md-6">
+                    <div class="col-4 col-md-4">
                         <span class="text-muted">Product:</span> <span class="fw-bold">{{ $hd->product_name }} ({{$hd->product_code }})</span>
                     </div>            
-                    <div class="col-6 col-md-6">
+                    <div class="col-4 col-md-4">
                         <span class="text-muted">Mold:</span> <span class="fw-bold">{{ $hd->mlod_name }} ({{$hd->mlod_code }})</span>
                     </div>
-
+                     <div class="col-4 col-md-4">
+                        <span class="text-muted">Machinery:</span> <span class="fw-bold">{{ $hd->machinery_name }}</span>
+                    </div>
                     <div class="col-3 col-md-3">
                         <span class="text-muted">Area:</span> <span class="fw-semibold">{{ $hd->mlod_area }} cm²</span>
                         <input type="hidden" name="mlod_area" id="mlod_area" value="{{ $hd->mlod_area }}">

@@ -36,6 +36,7 @@ class DensityWorkpiece extends Controller
     {
         $pd = DB::table('ms_edf_moldlist')
                 ->select('product_code', 'product_name')
+                ->where('product_code','LIKE','002-%')
                 ->groupBy('product_code', 'product_name')
                 ->get();
         $formule = DB::table('ms_formule')->get();
@@ -83,6 +84,7 @@ class DensityWorkpiece extends Controller
                 'created_at'                   => Carbon::now(), 
                 'updated_at'                   => Carbon::now(),
                 'density_workpiece_hds_date'   => $request->density_workpiece_hds_date,
+                'machinery_name'               => $request->machinery_name
             ];
             if ($request->hasFile('density_workpiece_hds_file1')) {
                 $data['density_workpiece_hds_file1'] = $request->file('density_workpiece_hds_file1')->storeAs('images/DensityWorkpiece_File', "IMG_" . Carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('density_workpiece_hds_file1')->extension());
