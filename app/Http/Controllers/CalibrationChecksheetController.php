@@ -28,6 +28,7 @@ class CalibrationChecksheetController extends Controller
         $endDate = $request->input('end_date', now()->endOfMonth()->format('Y-m-d'));
 
         $query = DB::table('calibration_checksheet_hds')
+            ->where('calibration_checksheet_hds_flag',true)
             ->join('calibration_lists', 'calibration_checksheet_hds.calibration_lists_id', '=', 'calibration_lists.calibration_lists_id')
             ->select('calibration_checksheet_hds.*', 'calibration_lists.*');
 
