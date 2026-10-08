@@ -84,8 +84,22 @@
         </div>
     @endif
 
+    <!-- กล่องแสดงข้อผิดพลาดจากการ Validate -->
+    @if ($errors->any())
+        <div class="max-w-[1400px] mx-auto mb-3 p-3 bg-red-100 text-red-700 rounded-lg border border-red-300 text-sm no-print">
+            <div class="font-bold mb-1"><i class="fas fa-exclamation-triangle mr-1"></i> กรุณาตรวจสอบข้อมูลช่องที่จำเป็น:</div>
+            <ul class="list-disc pl-5">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <form action="{{ route('report.daily-check.store', $testId ?? 1) }}" method="POST">
         @csrf
+        <!-- Hidden input ป้องกันกรณี Parameter ID ไม่ส่งมา -->
+        <input type="hidden" name="receive_test_lists_id" value="{{ $testId ?? 1 }}">
 
         <!-- Toolbar (No Print) -->
         <div class="max-w-[1400px] mx-auto mb-3 p-3 bg-white shadow-sm rounded-lg flex justify-between items-center no-print">
@@ -121,35 +135,35 @@
             <div class="grid grid-cols-2 md:grid-cols-2 gap-3 bg-slate-50 p-3 rounded-md border border-slate-200 text-xs">
                 <div class="flex items-center gap-2">
                     <span class="font-semibold text-slate-700 w-28 shrink-0">Instrument Name:</span>
-                    <input type="text" name="instrument_name" class="form-control" value="{{ $hd->instrument_name ?? $cal->calibration_lists_name2 ?? '' }}">
+                    <input type="text" name="instrument_name" class="form-control" value="{{ old('instrument_name', $hd->instrument_name ?? $cal->calibration_lists_name2 ?? '') }}">
                 </div>
                 <div class="flex items-center gap-2">
                     <span class="font-semibold text-slate-700 w-28 shrink-0">Specification:</span>
-                    <input type="text" name="specification" class="form-control" value="{{ $hd->specification ?? '' }}">
+                    <input type="text" name="specification" class="form-control" value="{{ old('specification', $hd->specification ?? '') }}">
                 </div>
                 <div class="flex items-center gap-2">
                     <span class="font-semibold text-slate-700 w-28 shrink-0">Model:</span>
-                    <input type="text" name="model" class="form-control" value="{{ $hd->model ?? $bom->ms_formule_name ?? '' }}">
+                    <input type="text" name="model" class="form-control" value="{{ old('model', $hd->model ?? $bom->ms_formule_name ?? '') }}">
                 </div>
                 <div class="flex items-center gap-2">
                     <span class="font-semibold text-slate-700 w-28 shrink-0">Serial Number:</span>
-                    <input type="text" name="serial_number" class="form-control" value="{{ $hd->serial_number ?? $cal->calibration_lists_serialno ?? '' }}">
+                    <input type="text" name="serial_number" class="form-control" value="{{ old('serial_number', $hd->serial_number ?? $cal->calibration_lists_serialno ?? '') }}">
                 </div>
                 <div class="flex items-center gap-2">
                     <span class="font-semibold text-slate-700 w-28 shrink-0">Cal Date:</span>
-                    <input type="date" name="cal_date" class="form-control" value="{{ $hd->cal_date ?? $cal->calibration_lists_nextdate ?? '' }}">
+                    <input type="date" name="cal_date" class="form-control" value="{{ old('cal_date', $hd->cal_date ?? $cal->calibration_lists_nextdate ?? '') }}">
                 </div>
                 <div class="flex items-center gap-2">
                     <span class="font-semibold text-slate-700 w-28 shrink-0">Certificate No.:</span>
-                    <input type="text" name="certificate_no" class="form-control" value="{{ $hd->certificate_no ?? $cal->calibration_lists_reamrk ?? '' }}">
+                    <input type="text" name="certificate_no" class="form-control" value="{{ old('certificate_no', $hd->certificate_no ?? $cal->calibration_lists_reamrk ?? '') }}">
                 </div>
                 <div class="flex items-center gap-2">
                     <span class="font-semibold text-slate-700 w-28 shrink-0">Refer Doc.:</span>
-                    <input type="text" name="refer_doc" class="form-control" value="{{ $hd->refer_doc ?? $reqdoc->ar_requestorder_hds_docuno ?? '' }}">
+                    <input type="text" name="refer_doc" class="form-control" value="{{ old('refer_doc', $hd->refer_doc ?? $reqdoc->ar_requestorder_hds_docuno ?? '') }}">
                 </div>
                 <div class="flex items-center gap-2">
                     <span class="font-semibold text-slate-700 w-28 shrink-0">Test Range Voltage:</span>
-                    <input type="text" name="test_range_voltage" class="form-control" value="{{ $hd->test_range_voltage ?? '' }}">
+                    <input type="text" name="test_range_voltage" class="form-control" value="{{ old('test_range_voltage', $hd->test_range_voltage ?? '') }}">
                 </div>
             </div>
 
@@ -174,7 +188,7 @@
                                 <th class="w-24">N3</th>
                             </tr>
                         </thead>
-                       <tbody id="table-body">
+                        <tbody id="table-body">
     @if ($dt && $dt->count() > 0)
         @foreach ($dt as $index => $item)
             @php $i = $index + 1; @endphp
@@ -220,7 +234,7 @@
                 </td>
             </tr>
         @endfor 
-    @endif                        
+    @endif                                
 </tbody>
                     </table>
                 </div>

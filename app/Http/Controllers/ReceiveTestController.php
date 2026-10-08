@@ -722,23 +722,28 @@ class ReceiveTestController extends Controller
     public function showPtTest($testId, Request $request)
     {
         $header = ReceiveTestList::find($testId);
-        $bom = DB::table('chemistry_hd')->where('chemistry_hd_id',$header->chemistry_hd_id)->first();
-        $hd = ProficiencyTestResult::where('receive_test_lists_id',$testId)->first();
-        $dt = ProficiencyTestResult::where('receive_test_lists_id',$testId)->get();
         if (!$header) {
             return redirect()->back()->with('error', 'ไม่พบข้อมูลรายงานการทดสอบนี้');
         }
-       return view('report.report-pt-test', compact('header', 'testId','bom','hd','dt'));              
+
+        $bom = DB::table('chemistry_hd')->where('chemistry_hd_id', $header->chemistry_hd_id)->first();
+        
+        $hd = ProficiencyTestResult::where('receive_test_lists_id', $testId)->first();
+        
+        // ดึงข้อมูลทั้งหมดแล้วจัดกลุ่มด้วย key เป็น proficiency_test_results_no เพื่อเรียกใช้ง่ายใน View
+        $dt = ProficiencyTestResult::where('receive_test_lists_id', $testId)
+                ->get()
+                ->keyBy('proficiency_test_results_no');
+
+        return view('report.report-pt-test', compact('header', 'testId', 'bom', 'hd', 'dt'));            
     }
 
     public function storePtTest(Request $request, $testId)
     {
-        // ตัวอย่างการใช้ Database Transaction เพื่อความปลอดภัยของข้อมูล
         DB::beginTransaction();
         try {
-            // วนลูปบันทึกข้อมูลทั้ง 6 แถว
             for ($i = 1; $i <= 6; $i++) {
-                // ตรวจสอบว่ามีข้อมูลแถวนี้ส่งมาหรือไม่ (ป้องกันกรณีแถวว่าง)
+                // บันทึกเฉพาะแถวที่มีการกรอกข้อมูล Report Size หรือ Ref Value มา
                 if ($request->has("ref_rep.$i")) {
                     ProficiencyTestResult::updateOrCreate(
                         [
@@ -747,26 +752,25 @@ class ReceiveTestController extends Controller
                         ],
                         [
                             'measuring_instrument' => $request->input("measuring_instrument"),
-                            'reportsize' => $request->input("ref_rep.$i"),
-                            'sizeuncertainty' => $request->input("ref_unc.$i"),
-                            'refvalue' => $request->input("ref_val.$i"),
-                            'sizecurve1' => $request->input("lab_c1.$i"),
-                            'sizecurve2' => $request->input("lab_c2.$i"),
-                            'sizecurve3' => $request->input("lab_c3.$i"),
-                            'sizecurve4' => $request->input("lab_c4.$i"),
-                            'labuncertainty' => $request->input("lab_u.$i"),
-                            'sizename' => $request->input("sum_name.$i"), // หรือชื่อสูตรที่ต้องการ
-                            'ratiocurve1' => $request->input("sum_en1.$i"),
-                            'ratiocurve2' => $request->input("sum_en2.$i"),
-                            'ratiocurve3' => $request->input("sum_en3.$i"),
-                            'ratiocurve4' => $request->input("sum_en4.$i"),
-                            'evaluation' => $request->input("sum_eval.$i"), // Pass / Fail
+                            'reportsize'           => $request->input("ref_rep.$i"),
+                            'sizeuncertainty'      => $request->input("ref_unc.$i"),
+                            'refvalue'             => $request->input("ref_val.$i"),
+                            'sizecurve1'           => $request->input("lab_c1.$i"),
+                            'sizecurve2'           => $request->input("lab_c2.$i"),
+                            'sizecurve3'           => $request->input("lab_c3.$i"),
+                            'sizecurve4'           => $request->input("lab_c4.$i"),
+                            'labuncertainty'       => $request->input("lab_u.$i"),
+                            'sizename'             => $request->input("sum_name.$i"),
+                            'ratiocurve1'          => $request->input("sum_en1.$i"),
+                            'ratiocurve2'          => $request->input("sum_en2.$i"),
+                            'ratiocurve3'          => $request->input("sum_en3.$i"),
+                            'ratiocurve4'          => $request->input("sum_en4.$i"),
+                            'evaluation'           => $request->input("sum_eval.$i"), 
                             'proficiency_test_results_date' => $request->input("results_date"),
-                            'person_at' => $request->input("person_at"),
-                            'approved_date' => $request->input("approved_date"),
-                            'approved_at' => $request->input("approved_at"),
+                            'person_at'            => $request->input("person_at"),
+                            'approved_date'        => $request->input("approved_date"),
+                            'approved_at'          => $request->input("approved_at"),
                             'proficiency_test_results_flag' => true,
-                            
                         ]
                     );
                 }
@@ -785,64 +789,68 @@ class ReceiveTestController extends Controller
     {
         $header = ReceiveTestList::find($testId);
         $cal = DB::table('calibration_lists')->where('calibration_lists_code','4411-001')->first();
-        $bom = DB::table('chemistry_hd')->where('chemistry_hd_id',$header->chemistry_hd_id)->first();
-        $reqdoc = ArRequestorderHd::where('ar_requestorder_hds_id',$header->ar_requestorder_hds_id)->first();
+        $bom = DB::table('chemistry_hd')->where('chemistry_hd_id', $header->chemistry_hd_id ?? null)->first();
+        $reqdoc = ArRequestorderHd::where('ar_requestorder_hds_id', $header->ar_requestorder_hds_id ?? null)->first();
+        
         if (!$header) {
             return redirect()->back()->with('error', 'ไม่พบข้อมูลรายงานการทดสอบนี้');
         }
-        $hd = CheckFormHd::where('receive_test_lists_id',$testId)->first();
-        if($hd){
-            $dt = CheckFormDt::where('check_form_hds_id', $hd->check_form_hds_id)->get();             
-        }else{
+
+        $hd = CheckFormHd::where('receive_test_lists_id', $testId)->first();
+        
+        if ($hd) {
+            $dt = CheckFormDt::where('check_form_hds_id', $hd->check_form_hds_id)->get();            
+        } else {
             $dt = null;
         }
-        return view('report.report-check-form', compact('header', 'testId','cal','bom','reqdoc','hd','dt'));              
+
+        return view('report.report-check-form', compact('header', 'testId', 'cal', 'bom', 'reqdoc', 'hd', 'dt'));            
     }
 
     public function CheckFormstore(Request $request, $id = null)
     {
-        // ตรวจสอบความถูกต้องของข้อมูลเบื้องต้น
+        // ตรวจสอบความถูกต้องของข้อมูล (ปรับฟิลด์ที่อาจว่างให้เป็น nullable ป้องกันหลุด validation)
         $request->validate([
-            'instrument_name' => 'required|string|max:255',
-            'model' => 'required|string|max:255',
-            'serial_number' => 'required|string|max:255',
-            'cal_date' => 'required|date',
-            'certificate_no' => 'required|string|max:255',
-            'refer_doc' => 'required|string|max:255',
-            'test_range_voltage' => 'required|string|max:255',
+            'instrument_name'    => 'required|string|max:255',
+            'model'              => 'required|string|max:255',
+            'serial_number'      => 'required|string|max:255',
+            'cal_date'           => 'required|date',
+            'certificate_no'     => 'required|string|max:255',
+            'refer_doc'          => 'required|string|max:255',
+            'test_range_voltage' => 'nullable|string|max:255',
+            'specification'      => 'nullable|string|max:255',
         ]);
+
+        // ดึงค่า receive_test_lists_id จาก Input ซ่อน หรือจากพารามิเตอร์ Route
+        $receiveTestListsId = $request->input('receive_test_lists_id') ?? $id;
 
         DB::beginTransaction();
 
         try {
-            // บันทึกหรืออัปเดตข้อมูลส่วนหัว (Header: check_form_hds)
-            // หากส่ง $id มา (Update) จะทำการค้นหาแล้วอัปเดต ถ้าไม่มีจะสร้างใหม่ (Insert)
+            // บันทึกหรืออัปเดตข้อมูลส่วนหัว (Header) โดยผูกกับ receive_test_lists_id
             $header = CheckFormHd::updateOrCreate(
-                ['receive_test_lists_id' => $id], // เงื่อนไขสำหรับเช็คว่ามีอยู่แล้วหรือไม่
+                ['receive_test_lists_id' => $receiveTestListsId], 
                 [
-                    'instrument_name'    => $request->instrument_name,
-                    'specification'      => $request->specification,
-                    'model'              => $request->model,
-                    'serial_number'      => $request->serial_number,
-                    'cal_date'           => $request->cal_date,
-                    'certificate_no'     => $request->certificate_no,
-                    'refer_doc'          => $request->refer_doc,
-                    'test_range_voltage' => $request->test_range_voltage,
+                    'instrument_name'     => $request->instrument_name,
+                    'specification'       => $request->specification,
+                    'model'               => $request->model,
+                    'serial_number'       => $request->serial_number,
+                    'cal_date'            => $request->cal_date,
+                    'certificate_no'      => $request->certificate_no,
+                    'refer_doc'           => $request->refer_doc,
+                    'test_range_voltage'  => $request->test_range_voltage,
                     'check_form_hds_flag' => true,
-                    'person_at'          => Auth::user()->name ?? 'System',
-                    'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now(),
+                    'person_at'           => Auth::user()->name ?? 'System',
+                    'updated_at'          => Carbon::now(),
                 ]
             );
 
-            // หากเป็นการอัปเดต (Update) สามารถเคลียร์รายการย่อยเก่าทิ้งแล้วบันทึกใหม่ หรือใช้วิธี updateOrCreate ทีละแถว
-            // ในที่นี้เลือกใช้แบบลบของเก่าแล้ว Insert ใหม่สำหรับรายการย่อย เพื่อความสะดวกและแม่นยำตามจำนวนแถวที่ส่งมา
+            // เคลียร์รายการย่อยเก่าทิ้งแล้วบันทึกใหม่ตามรอบข้อมูลที่ส่งมา
             CheckFormDt::where('check_form_hds_id', $header->check_form_hds_id)->delete();
 
-            // บันทึกข้อมูลตารางรายการย่อย (Details: check_form_dts)
+            // บันทึกข้อมูลตารางรายการย่อย (Details)
             if ($request->has('x1') && is_array($request->x1)) {
                 foreach ($request->x1 as $i => $val) {
-                    // ตรวจสอบว่ามีข้อมูลส่งมา หรือบันทึกตามจำนวนรอบลูป
                     CheckFormDt::create([
                         'check_form_hds_id'   => $header->check_form_hds_id,
                         'check_date'          => $request->check_date[$i] ?? date('Y-m-d'),
@@ -855,8 +863,8 @@ class ReceiveTestController extends Controller
                         'max_spec'            => $request->max_spec[$i] ?? null,
                         'pass_fail'           => $request->pass_fail[$i] ?? null,
                         'checker'             => $request->checker[$i] ?? null,
-                        'created_at' => Carbon::now(),
-                        'updated_at' => Carbon::now(),
+                        'created_at'          => Carbon::now(),
+                        'updated_at'          => Carbon::now(),
                     ]);
                 }
             }
@@ -867,7 +875,7 @@ class ReceiveTestController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล: ' . $e->getMessage())->withInput();
         }
     }
 
