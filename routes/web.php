@@ -108,6 +108,7 @@ Route::get('/get-molds', [App\Http\Controllers\DensityWorkpiece::class, 'getMold
 Route::get('/get-numbers', [App\Http\Controllers\DensityWorkpiece::class, 'getNumbers'])->name('get.numbers');
 Route::get('/get-number-details', [App\Http\Controllers\DensityWorkpiece::class, 'getNumberDetails'])->name('get.number.details');
 Route::post('/confirmDelDensityWorkpiece' , [App\Http\Controllers\DensityWorkpiece::class , 'confirmDelDensityWorkpiece']);
+Route::resource('/density-workcloth' , App\Http\Controllers\DensityWorkcloth::class);
 Route::get('/report/compareformulas/print/{id}',[App\Http\Controllers\ReportFormulaController::class,'PrintCompareFormula'])->name('report.compareformulas.print');
 Route::get('/analyze-formulas' , [App\Http\Controllers\ReportFormulaController::class , 'AnalyzeFormulas']);
 Route::post('/get-formula-detail', [App\Http\Controllers\ReportFormulaController::class, 'getFormulaDetail'])->name('report.get.formula.detail');

@@ -149,7 +149,7 @@
                             <a href="javascript: void(0);" class="has-arrow" key="t-vertical">แบบบันทึก</a>
                             <ul class="sub-menu" aria-expanded="true">
                                 <li><a href="{{route('density-workpiece.index')}}" key="t-default">ความหนาแน่นของดิสเบรก</a></li> 
-                                <li><a href="#" key="t-default">ความหนาแน่นของผ้าชิ้น</a></li> 
+                                <li><a href="{{route('density-workcloth.index')}}" key="t-default">ความหนาแน่นของผ้าชิ้น</a></li> 
                             </ul>
                         </li>
                     </ul>                                         

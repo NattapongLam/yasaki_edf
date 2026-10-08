@@ -25,7 +25,7 @@
                 <!-- ส่วนหัวเอกสาร -->
                 <div class="row border-bottom pb-2 mb-2 align-items-center">
                     <div class="col-8">
-                        <h5 class="fw-bold text-dark mb-0">ใบรายงานการตรวจสอบความหนาแน่นของชิ้นงาน</h5>
+                        <h5 class="fw-bold text-dark mb-0">ใบรายงานการตรวจสอบความหนาแน่นของดิสเบรก</h5>
                         <small class="text-muted">Density Workpiece Inspection Report</small>
                     </div>
                     <div class="col-4 text-end d-print-none">

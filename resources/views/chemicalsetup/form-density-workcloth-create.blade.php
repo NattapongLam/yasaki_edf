@@ -16,12 +16,12 @@
     @endif
 <div class="card">
     <div class="card-body">
-        <form method="POST" class="form-horizontal" action="{{ route('density-workpiece.store') }}" enctype="multipart/form-data">
+         <form method="POST" class="form-horizontal" action="{{ route('density-workcloth.store') }}" enctype="multipart/form-data">
             @csrf
-            <div class="row">
-                <div class="col-12 col-md-6"><h3 class="card-title">ความหนาแน่นของดิสเบรก</h3></div>          
-            </div>
-            <div class="row mt-2">            
+        <div class="row">
+            <div class="col-12 col-md-6"><h3 class="card-title">ความหนาแน่นของผ้าชิ้น</h3></div>
+        </div>
+        <div class="row mt-2">            
                 <div class="col-4">
                     <div class="form-group">
                         <label class="form-label">Product</label>
@@ -104,33 +104,33 @@
                 <div class="col-3">
                     <div class="form-group">
                         <label class="form-label">Date</label>
-                        <input class="form-control" type="date" name="density_workpiece_hds_date" value="{{ date('Y-m-d') }}">
+                        <input class="form-control" type="date" name="density_workcloth_hds_date" value="{{ date('Y-m-d') }}">
                     </div>
                 </div>
             </div>
             <div class="row mt-2">
                 <div class="col-3">
                     <div class="form-group">
-                        <label for="density_workpiece_hds_file1" class="col-form-label">รูปภาพ</label>
-                        <input type="file" class="form-control" name="density_workpiece_hds_file1" >
+                        <label for="density_workcloth_hds_file1" class="col-form-label">รูปภาพ</label>
+                        <input type="file" class="form-control" name="density_workcloth_hds_file1" >
                     </div>
                 </div>
                 <div class="col-3">
                     <div class="form-group">
-                        <label for="density_workpiece_hds_file2" class="col-form-label">รูปภาพ</label>
-                        <input type="file" class="form-control" name="density_workpiece_hds_file2" >
+                        <label for="density_workcloth_hds_file2" class="col-form-label">รูปภาพ</label>
+                        <input type="file" class="form-control" name="density_workcloth_hds_file2" >
                     </div>
                 </div>
                 <div class="col-3">
                     <div class="form-group">
-                        <label for="density_workpiece_hds_file3" class="col-form-label">รูปภาพ</label>
-                        <input type="file" class="form-control" name="density_workpiece_hds_file3" >
+                        <label for="density_workcloth_hds_file3" class="col-form-label">รูปภาพ</label>
+                        <input type="file" class="form-control" name="density_workcloth_hds_file3" >
                     </div>
                 </div>
                 <div class="col-3">
                     <div class="form-group">
-                        <label for="density_workpiece_hds_file4" class="col-form-label">รูปภาพ</label>
-                        <input type="file" class="form-control" name="density_workpiece_hds_file4" >
+                        <label for="density_workcloth_hds_file4" class="col-form-label">รูปภาพ</label>
+                        <input type="file" class="form-control" name="density_workcloth_hds_file4" >
                     </div>
                 </div>
             </div>
@@ -140,23 +140,21 @@
                         <thead>
                             <tr>
                                 <th rowspan="2">ลำดับ</th>
-                                <th colspan="2">เหล็ก</th>
-                                <th colspan="2">เหล็ก + กาว</th>
-                                <th colspan="2">เหล็ก + กาว + เคมี</th>
-                                <th rowspan="2">น้ำหนักเคมี (g)</th>
+                                <th colspan="1">ผ้าชิ้นก่อนกรอ</th>
+                                <th colspan="6">ความหนาผ้าชิ้นก่อนกรอ (mm)</th>
                                 <th rowspan="2">ความหนาก้อนเคมี (cm)</th>
                                 <th rowspan="2">Volume (cm³)</th>
-                                <th rowspan="2">Density (g/cm³)<br>ρ = mass / Volume</th>
+                                <th rowspan="2">Density (g/cm³)</th>
                                 <th rowspan="2">%Porosity</th>
-                                <th rowspan="2">Sides</th>
                             </tr>
                             <tr>
                                 <th>น้ำหนัก (g)</th>
-                                <th>ความหนา (mm)</th>
-                                <th>น้ำหนัก (g)</th>
-                                <th>ความหนา (mm)</th>
-                                <th>น้ำหนัก (g)</th>
-                                <th>ความหนา (mm)</th>
+                                <th>จุดที่ 1</th>
+                                <th>จุดที่ 2</th>
+                                <th>จุดที่ 3</th>
+                                <th>จุดที่ 4</th>
+                                <th>จุดที่ 5</th>
+                                <th>จุดที่ 6</th>
                             </tr>
                         </thead>
                         <tbody id="cavity_table_body">
@@ -169,18 +167,17 @@
                         </tfoot>
                     </table>
                 </div>
-            </div>
+            </div> 
             <div class="row mt-3">
                 <div class="col-12 text-end">
                     <button type="submit" class="btn btn-primary">บันทึกข้อมูล</button>
                 </div>
             </div>
-        </form>
+        </form>      
     </div>
 </div>
 </div>
 @endsection
-
 @push('scriptjs')
 <style>
     .select2-results__options {
@@ -277,30 +274,39 @@ $('#chemistry_hd_name').on('change', function() {
     }
 });
 
-// ฟังก์ชันคำนวณแต่ละแถวตามสูตร
+// ฟังก์ชันคำนวณแต่ละแถวตามสูตร (ปรับให้แมตช์กับคลาสใหม่ในตาราง)
 function calculateRow(rowTr) {
-    var glueW = parseFloat($(rowTr).find('.glue-w').val()) || 0;
-    var glueT = parseFloat($(rowTr).find('.glue-t').val()) || 0;
-    var chemW = parseFloat($(rowTr).find('.chem-w').val()) || 0;
-    var chemT = parseFloat($(rowTr).find('.chem-t').val()) || 0;
+    var weight = parseFloat($(rowTr).find('.iron-w').val()) || 0; // น้ำหนัก (g)
+    
+    // ความหนาผ้าชิ้นก่อนกรอ จุดที่ 1 ถึง 6
+    var t1 = parseFloat($(rowTr).find('.thick-1').val()) || 0;
+    var t2 = parseFloat($(rowTr).find('.thick-2').val()) || 0;
+    var t3 = parseFloat($(rowTr).find('.thick-3').val()) || 0;
+    var t4 = parseFloat($(rowTr).find('.thick-4').val()) || 0;
+    var t5 = parseFloat($(rowTr).find('.thick-5').val()) || 0;
+    var t6 = parseFloat($(rowTr).find('.thick-6').val()) || 0;
 
+    // ตัวอย่าง: หาค่าเฉลี่ยความหนาก่อนกรอ หรือใช้สูตรคำนวณความหนาก้อนเคมีตามที่คุณต้องการ
+    // สมมติ: ใช้ค่าเฉลี่ยความหนา 6 จุดแปลงเป็น cm (หาร 10) หรือตามโจทย์ของคุณ
+    var validPoints = [t1, t2, t3, t4, t5, t6].filter(val => val > 0);
+    var avgThicknessMm = validPoints.length > 0 ? (validPoints.reduce((a, b) => a + b, 0) / validPoints.length) : 0;
+    
+    var thicknessChem = avgThicknessMm / 10; // แปลง mm เป็น cm
     var mlodArea = parseFloat($('#mlod_area').val()) || 0;
     var targetDensity = parseFloat($('#total_density').val()) || 0;
 
-    var weightChem = chemW - glueW;
-    var thicknessChem = (chemT - glueT) / 10;
-    var volume = thicknessChem * mlodArea;
-    var density = (volume > 0) ? (weightChem / volume) : 0;
-    var porosity = (targetDensity > 0) ? (((targetDensity - density) / targetDensity) * 100) : 0;
+    var volume = thicknessChem * mlodArea; // Volume (cm³) = ความหนาก้อนเคมี (cm) * Area (cm²)
+    var density = (volume > 0) ? (weight / volume) : 0; // Density (g/cm³) = น้ำหนัก / Volume
+    var porosity = (targetDensity > 0) ? (((targetDensity - density) / targetDensity) * 100) : 0; // %Porosity
 
-    $(rowTr).find('.calc-weight-chem').val(weightChem > 0 ? weightChem.toFixed(4) : '0');
+    // แสดงผลลงในช่อง Input แบบ Readonly
     $(rowTr).find('.calc-thickness-chem').val(thicknessChem > 0 ? thicknessChem.toFixed(4) : '0');
     $(rowTr).find('.calc-volume').val(volume > 0 ? volume.toFixed(4) : '0');
     $(rowTr).find('.calc-density').val(density > 0 ? density.toFixed(4) : '0');
     $(rowTr).find('.calc-porosity').val(porosity !== 0 ? porosity.toFixed(4) : '0');
 }
 
-// คำนวณตารางทั้งหมดและแยกสรุปผล Total / Average ตาม Sides
+// คำนวณตารางทั้งหมดและสรุปผล Total / Average
 function calculateAllRows() {
     var rows = $('#cavity_table_body tr');
     if (rows.length === 0 || rows.find('td.text-muted').length > 0) {
@@ -308,55 +314,35 @@ function calculateAllRows() {
         return;
     }
 
-    let groups = {
-        'ซ้าย': { count: 0, sumIronW: 0, sumIronT: 0, sumGlueW: 0, sumGlueT: 0, sumChemW: 0, sumChemT: 0, sumWeightChem: 0, sumThicknessChem: 0, sumVolume: 0, sumDensity: 0, sumPorosity: 0 },
-        'ขวา': { count: 0, sumIronW: 0, sumIronT: 0, sumGlueW: 0, sumGlueT: 0, sumGlueW: 0, sumGlueT: 0, sumChemW: 0, sumChemT: 0, sumWeightChem: 0, sumThicknessChem: 0, sumVolume: 0, sumDensity: 0, sumPorosity: 0 },
-        'ซ้าย-ขวา': { count: 0, sumIronW: 0, sumIronT: 0, sumGlueW: 0, sumGlueT: 0, sumChemW: 0, sumChemT: 0, sumWeightChem: 0, sumThicknessChem: 0, sumVolume: 0, sumDensity: 0, sumPorosity: 0 }
+    let totalData = { 
+        count: 0, sumWeight: 0, sumT1: 0, sumT2: 0, sumT3: 0, sumT4: 0, sumT5: 0, sumT6: 0, 
+        sumThicknessChem: 0, sumVolume: 0, sumDensity: 0, sumPorosity: 0 
     };
-
-    let totalData = { count: 0, sumIronW: 0, sumIronT: 0, sumGlueW: 0, sumGlueT: 0, sumChemW: 0, sumChemT: 0, sumWeightChem: 0, sumThicknessChem: 0, sumVolume: 0, sumDensity: 0, sumPorosity: 0 };
 
     rows.each(function() {
         calculateRow(this);
 
-        var side = $(this).find('select[name*="[product_sides]"]').val();
-        
-        let ironW = parseFloat($(this).find('.iron-w').val()) || 0;
-        let ironT = parseFloat($(this).find('.iron-t').val()) || 0;
-        let glueW = parseFloat($(this).find('.glue-w').val()) || 0;
-        let glueT = parseFloat($(this).find('.glue-t').val()) || 0;
-        let chemW = parseFloat($(this).find('.chem-w').val()) || 0;
-        let chemT = parseFloat($(this).find('.chem-t').val()) || 0;
+        let weight = parseFloat($(this).find('.iron-w').val()) || 0;
+        let t1 = parseFloat($(this).find('.thick-1').val()) || 0;
+        let t2 = parseFloat($(this).find('.thick-2').val()) || 0;
+        let t3 = parseFloat($(this).find('.thick-3').val()) || 0;
+        let t4 = parseFloat($(this).find('.thick-4').val()) || 0;
+        let t5 = parseFloat($(this).find('.thick-5').val()) || 0;
+        let t6 = parseFloat($(this).find('.thick-6').val()) || 0;
 
-        let weightChem = parseFloat($(this).find('.calc-weight-chem').val()) || 0;
         let thicknessChem = parseFloat($(this).find('.calc-thickness-chem').val()) || 0;
         let volume = parseFloat($(this).find('.calc-volume').val()) || 0;
         let density = parseFloat($(this).find('.calc-density').val()) || 0;
         let porosity = parseFloat($(this).find('.calc-porosity').val()) || 0;
 
-        if (groups[side]) {
-            groups[side].count++;
-            groups[side].sumIronW += ironW;
-            groups[side].sumIronT += ironT;
-            groups[side].sumGlueW += glueW;
-            groups[side].sumGlueT += glueT;
-            groups[side].sumChemW += chemW;
-            groups[side].sumChemT += chemT;
-            groups[side].sumWeightChem += weightChem;
-            groups[side].sumThicknessChem += thicknessChem;
-            groups[side].sumVolume += volume;
-            groups[side].sumDensity += density;
-            groups[side].sumPorosity += porosity;
-        }
-
         totalData.count++;
-        totalData.sumIronW += ironW;
-        totalData.sumIronT += ironT;
-        totalData.sumGlueW += glueW;
-        totalData.sumGlueT += glueT;
-        totalData.sumChemW += chemW;
-        totalData.sumChemT += chemT;
-        totalData.sumWeightChem += weightChem;
+        totalData.sumWeight += weight;
+        totalData.sumT1 += t1;
+        totalData.sumT2 += t2;
+        totalData.sumT3 += t3;
+        totalData.sumT4 += t4;
+        totalData.sumT5 += t5;
+        totalData.sumT6 += t6;
         totalData.sumThicknessChem += thicknessChem;
         totalData.sumVolume += volume;
         totalData.sumDensity += density;
@@ -364,46 +350,6 @@ function calculateAllRows() {
     });
 
     var footerHtml = '';
-
-    $.each(groups, function(sideName, data) {
-        if (data.count > 0) {
-            let avgCount = data.count;
-            footerHtml += `
-                <tr class="table-secondary">
-                    <td colspan="12" class="text-start fw-bold">Side: ${sideName}</td>
-                </tr>
-                <tr>
-                    <td>Total (${sideName})</td>
-                    <td>${data.sumIronW.toFixed(2)}</td>
-                    <td>${data.sumIronT.toFixed(2)}</td>
-                    <td>${data.sumGlueW.toFixed(2)}</td>
-                    <td>${data.sumGlueT.toFixed(2)}</td>
-                    <td>${data.sumChemW.toFixed(2)}</td>
-                    <td>${data.sumChemT.toFixed(2)}</td>
-                    <td>${data.sumWeightChem.toFixed(2)}</td>
-                    <td>${data.sumThicknessChem.toFixed(2)}</td>
-                    <td>${data.sumVolume.toFixed(2)}</td>
-                    <td>${data.sumDensity.toFixed(2)}</td>
-                    <td>${data.sumPorosity.toFixed(2)}</td>
-                </tr>
-                <tr>
-                    <td>Average (${sideName})</td>
-                    <td>${(data.sumIronW / avgCount).toFixed(2)}</td>
-                    <td>${(data.sumIronT / avgCount).toFixed(2)}</td>
-                    <td>${(data.sumGlueW / avgCount).toFixed(2)}</td>
-                    <td>${(data.sumGlueT / avgCount).toFixed(2)}</td>
-                    <td>${(data.sumChemW / avgCount).toFixed(2)}</td>
-                    <td>${(data.sumChemT / avgCount).toFixed(2)}</td>
-                    <td>${(data.sumWeightChem / avgCount).toFixed(2)}</td>
-                    <td>${(data.sumThicknessChem / avgCount).toFixed(2)}</td>
-                    <td>${(data.sumVolume / avgCount).toFixed(2)}</td>
-                    <td>${(data.sumDensity / avgCount).toFixed(2)}</td>
-                    <td>${(data.sumPorosity / avgCount).toFixed(2)}</td>
-                </tr>
-            `;
-        }
-    });
-
     if (totalData.count > 0) {
         let allCount = totalData.count;
         footerHtml += `
@@ -411,34 +357,32 @@ function calculateAllRows() {
                 <td colspan="12" class="text-start fw-bold">Grand Total / Overall Average</td>
             </tr>
             <tr class="fw-bold bg-light">
-                <td>Total (All)</td>
-                <td>${totalData.sumIronW.toFixed(2)}</td>
-                <td>${totalData.sumIronT.toFixed(2)}</td>
-                <td>${totalData.sumGlueW.toFixed(2)}</td>
-                <td>${totalData.sumGlueT.toFixed(2)}</td>
-                <td>${totalData.sumChemW.toFixed(2)}</td>
-                <td>${totalData.sumChemT.toFixed(2)}</td>
-                <td>${totalData.sumWeightChem.toFixed(2)}</td>
+                <td>Total</td>
+                <td>${totalData.sumWeight.toFixed(2)}</td>
+                <td>${totalData.sumT1.toFixed(2)}</td>
+                <td>${totalData.sumT2.toFixed(2)}</td>
+                <td>${totalData.sumT3.toFixed(2)}</td>
+                <td>${totalData.sumT4.toFixed(2)}</td>
+                <td>${totalData.sumT5.toFixed(2)}</td>
+                <td>${totalData.sumT6.toFixed(2)}</td>
                 <td>${totalData.sumThicknessChem.toFixed(2)}</td>
                 <td>${totalData.sumVolume.toFixed(2)}</td>
                 <td>${totalData.sumDensity.toFixed(2)}</td>
                 <td>${totalData.sumPorosity.toFixed(2)}</td>
-                <td></td>
             </tr>
             <tr class="fw-bold bg-light">
-                <td>Average (All)</td>
-                <td>${(totalData.sumIronW / allCount).toFixed(2)}</td>
-                <td>${(totalData.sumIronT / allCount).toFixed(2)}</td>
-                <td>${(totalData.sumGlueW / allCount).toFixed(2)}</td>
-                <td>${(totalData.sumGlueT / allCount).toFixed(2)}</td>
-                <td>${(totalData.sumChemW / allCount).toFixed(2)}</td>
-                <td>${(totalData.sumChemT / allCount).toFixed(2)}</td>
-                <td>${(totalData.sumWeightChem / allCount).toFixed(2)}</td>
+                <td>Average</td>
+                <td>${(totalData.sumWeight / allCount).toFixed(2)}</td>
+                <td>${(totalData.sumT1 / allCount).toFixed(2)}</td>
+                <td>${(totalData.sumT2 / allCount).toFixed(2)}</td>
+                <td>${(totalData.sumT3 / allCount).toFixed(2)}</td>
+                <td>${(totalData.sumT4 / allCount).toFixed(2)}</td>
+                <td>${(totalData.sumT5 / allCount).toFixed(2)}</td>
+                <td>${(totalData.sumT6 / allCount).toFixed(2)}</td>
                 <td>${(totalData.sumThicknessChem / allCount).toFixed(2)}</td>
                 <td>${(totalData.sumVolume / allCount).toFixed(2)}</td>
                 <td>${(totalData.sumDensity / allCount).toFixed(2)}</td>
                 <td>${(totalData.sumPorosity / allCount).toFixed(2)}</td>
-                <td></td>
             </tr>
         `;
     }
@@ -446,7 +390,7 @@ function calculateAllRows() {
     $('#cavity_table_footer').html(footerHtml).show();
 }
 
-// เมื่อเลือก Mold และสร้างแถวตาม Cavity
+// เมื่อเลือก Mold และสร้างแถวตาม Cavity (กำหนดคลาสให้ตรงกับช่องกรอกข้อมูลในแต่ละแถว)
 $('#mlod_code').on('change', function() {
     var selectedOption = $(this).find(':selected');
     var selectedMoldCode = selectedOption.val();
@@ -467,25 +411,17 @@ $('#mlod_code').on('change', function() {
             var row = `
                 <tr>
                     <td class="text-center">${i}</td>
-                    <td class="text-center"><input type="text" step="any" class="form-control iron-w" name="cavity[${i}][weight_1]" value="0"></td>
-                    <td class="text-center"><input type="text" step="any" class="form-control iron-t" name="cavity[${i}][thickness_1]" value="0"></td>
-                    <td class="text-center"><input type="text" step="any" class="form-control glue-w" name="cavity[${i}][weight_2]" value="0"></td>
-                    <td class="text-center"><input type="text" step="any" class="form-control glue-t" name="cavity[${i}][thickness_2]" value="0"></td>
-                    <td class="text-center"><input type="text" step="any" class="form-control chem-w" name="cavity[${i}][weight_3]" value="0"></td>
-                    <td class="text-center"><input type="text" step="any" class="form-control chem-t" name="cavity[${i}][thickness_3]" value="0"></td>
-                    <td class="text-center"><input type="text" class="form-control calc-weight-chem bg-light" name="cavity[${i}][weight_chemical]" value="0" readonly></td>
+                    <td class="text-center"><input type="text" step="any" class="form-control iron-w" name="cavity[${i}][weight]" value="0"></td>
+                    <td class="text-center"><input type="text" step="any" class="form-control thick-1" name="cavity[${i}][thickness_1]" value="0"></td>
+                    <td class="text-center"><input type="text" step="any" class="form-control thick-2" name="cavity[${i}][thickness_2]" value="0"></td>
+                    <td class="text-center"><input type="text" step="any" class="form-control thick-3" name="cavity[${i}][thickness_3]" value="0"></td>
+                    <td class="text-center"><input type="text" step="any" class="form-control thick-4" name="cavity[${i}][thickness_4]" value="0"></td>
+                    <td class="text-center"><input type="text" step="any" class="form-control thick-5" name="cavity[${i}][thickness_5]" value="0"></td>
+                    <td class="text-center"><input type="text" step="any" class="form-control thick-6" name="cavity[${i}][thickness_6]" value="0"></td>
                     <td class="text-center"><input type="text" class="form-control calc-thickness-chem bg-light" name="cavity[${i}][thickness_chemical]" value="0" readonly></td>
-                    <td class="text-center"><input type="text" class="form-control calc-volume bg-light" name="cavity[${i}][density_workpiece_dts_volume]" value="0" readonly></td>
-                    <td class="text-center"><input type="text" class="form-control calc-density bg-light" name="cavity[${i}][density_workpiece_dts_density]" value="0" readonly></td>
-                    <td class="text-center"><input type="text" class="form-control calc-porosity bg-light" name="cavity[${i}][density_workpiece_dts_porosity]" value="0" readonly></td>
-                    <td class="text-center">
-                        <select class="form-control" name="cavity[${i}][product_sides]">
-                            <option value="-">กรุณาเลือก</option>
-                            <option value="ซ้าย">ซ้าย</option>
-                            <option value="ขวา">ขวา</option>
-                            <option value="ซ้าย-ขวา">ซ้าย-ขวา</option>
-                        </select>
-                    </td>
+                    <td class="text-center"><input type="text" class="form-control calc-volume bg-light" name="cavity[${i}][volume]" value="0" readonly></td>
+                    <td class="text-center"><input type="text" class="form-control calc-density bg-light" name="cavity[${i}][density]" value="0" readonly></td>
+                    <td class="text-center"><input type="text" class="form-control calc-porosity bg-light" name="cavity[${i}][porosity]" value="0" readonly></td>
                 </tr>
             `;
             tbody.append(row);
@@ -498,12 +434,7 @@ $('#mlod_code').on('change', function() {
 });
 
 // Event เมื่อกรอกตัวเลขในช่องคำนวณ
-$(document).on('input', '.iron-w, .iron-t, .glue-w, .glue-t, .chem-w, .chem-t', function() {
-    calculateAllRows();
-});
-
-// Event เมื่อเปลี่ยนค่า Side ใน Dropdown แถวต่างๆ
-$(document).on('change', 'select[name*="[product_sides]"]', function() {
+$(document).on('input', '.iron-w, .thick-1, .thick-2, .thick-3, .thick-4, .thick-5, .thick-6', function() {
     calculateAllRows();
 });
 
