@@ -31,7 +31,7 @@
                                 <option value="{{ $product->product_code }}">{{ $product->product_code }}/{{$product->product_name }}</option>
                             @endforeach
                         </select>
-                    </div>             
+                    </div>            
                 </div>
                 <div class="col-4">
                     <div class="form-group">
@@ -39,7 +39,7 @@
                         <select class="form-control" name="mlod_code" id="mlod_code">
                             <option value="-">กรุณาเลือก</option>
                         </select>
-                    </div>             
+                    </div>            
                 </div>
                 <div class="col-4">
                     <div class="form-group">
@@ -49,14 +49,21 @@
                 </div>
             </div>
             <div class="row mt-2">
-                <div class="col-3">
+                <div class="col-2">
                     <div class="form-group">
                         <label class="form-label">Area (cm²)</label>
-                        <input class="form-control" name="mlod_area" id="mlod_area">
+                        <input class="form-control" name="mlod_area" id="mlod_area" readonly>
                         <input class="form-control" type="hidden" name="mlod_cavity" id="mlod_cavity">
                     </div>
                 </div>
-                <div class="col-3">
+                <div class="col-2">
+                    <div class="form-group">
+                        <label class="form-label">Volume (cm3/1Cavity)</label>
+                        <input class="form-control" id="mlod_volume_display" readonly>
+                        <input class="form-control" type="hidden" name="mlod_volume" id="mlod_volume">
+                    </div>
+                </div>
+                <div class="col-2">
                     <div class="form-group">
                         <label class="form-label">Pressure</label>
                         <input class="form-control" name="mlod_pressure" id="mlod_pressure">
@@ -173,7 +180,7 @@
                     <button type="submit" class="btn btn-primary">บันทึกข้อมูล</button>
                 </div>
             </div>
-        </form>      
+        </form>     
     </div>
 </div>
 </div>
@@ -202,6 +209,8 @@ $('select[name="product_code"]').on('change', function() {
     $('#mlod_area').val('');  
     $('#mlod_pressure').val('');
     $('#mlod_cavity').val('');
+    $('#mlod_volume').val('');
+    $('#mlod_volume_display').val('');
     $('#cavity_table_body').html('<tr><td colspan="12" class="text-center text-muted">กรุณาเลือก Mold ก่อน</td></tr>');
     $('#cavity_table_footer').hide();
 
@@ -217,7 +226,8 @@ $('select[name="product_code"]').on('change', function() {
                             <option value="${item.mlod_code}" 
                                     data-area="${item.mlod_area ?? ''}" 
                                     data-pressure="${item.mlod_pressure ?? ''}" 
-                                    data-cavity="${item.mlod_cavity ?? 0}">
+                                    data-cavity="${item.mlod_cavity ?? 0}"
+                                    data-volume="${item.mlod_volume ?? ''}">
                                 ${item.mlod_code} / ${item.mlod_name}
                             </option>
                         `);
@@ -274,11 +284,10 @@ $('#chemistry_hd_name').on('change', function() {
     }
 });
 
-// ฟังก์ชันคำนวณแต่ละแถวตามสูตร (ปรับให้แมตช์กับคลาสใหม่ในตาราง)
+// ฟังก์ชันคำนวณแต่ละแถวตามสูตรใน Excel (แสดงผลทศนิยม 2 ตำแหน่ง)
 function calculateRow(rowTr) {
-    var weight = parseFloat($(rowTr).find('.iron-w').val()) || 0; // น้ำหนัก (g)
+    var weight = parseFloat($(rowTr).find('.iron-w').val()) || 0; 
     
-    // ความหนาผ้าชิ้นก่อนกรอ จุดที่ 1 ถึง 6
     var t1 = parseFloat($(rowTr).find('.thick-1').val()) || 0;
     var t2 = parseFloat($(rowTr).find('.thick-2').val()) || 0;
     var t3 = parseFloat($(rowTr).find('.thick-3').val()) || 0;
@@ -286,27 +295,27 @@ function calculateRow(rowTr) {
     var t5 = parseFloat($(rowTr).find('.thick-5').val()) || 0;
     var t6 = parseFloat($(rowTr).find('.thick-6').val()) || 0;
 
-    // ตัวอย่าง: หาค่าเฉลี่ยความหนาก่อนกรอ หรือใช้สูตรคำนวณความหนาก้อนเคมีตามที่คุณต้องการ
-    // สมมติ: ใช้ค่าเฉลี่ยความหนา 6 จุดแปลงเป็น cm (หาร 10) หรือตามโจทย์ของคุณ
-    var validPoints = [t1, t2, t3, t4, t5, t6].filter(val => val > 0);
+    var points = [t1, t2, t3, t4, t5, t6];
+    var validPoints = points.filter(val => val > 0);
     var avgThicknessMm = validPoints.length > 0 ? (validPoints.reduce((a, b) => a + b, 0) / validPoints.length) : 0;
-    
-    var thicknessChem = avgThicknessMm / 10; // แปลง mm เป็น cm
+    var thicknessChem = avgThicknessMm / 10; 
+
+    var moldVolume = parseFloat($('#mlod_volume').val()) || 0;
     var mlodArea = parseFloat($('#mlod_area').val()) || 0;
+    var volume = moldVolume > 0 ? moldVolume : (thicknessChem * mlodArea); 
+
+    var density = (volume > 0) ? (weight / volume) : 0; 
+
     var targetDensity = parseFloat($('#total_density').val()) || 0;
+    var porosity = (targetDensity > 0) ? (((targetDensity - density) / targetDensity) * 100) : 0; 
 
-    var volume = thicknessChem * mlodArea; // Volume (cm³) = ความหนาก้อนเคมี (cm) * Area (cm²)
-    var density = (volume > 0) ? (weight / volume) : 0; // Density (g/cm³) = น้ำหนัก / Volume
-    var porosity = (targetDensity > 0) ? (((targetDensity - density) / targetDensity) * 100) : 0; // %Porosity
-
-    // แสดงผลลงในช่อง Input แบบ Readonly
-    $(rowTr).find('.calc-thickness-chem').val(thicknessChem > 0 ? thicknessChem.toFixed(4) : '0');
-    $(rowTr).find('.calc-volume').val(volume > 0 ? volume.toFixed(4) : '0');
-    $(rowTr).find('.calc-density').val(density > 0 ? density.toFixed(4) : '0');
-    $(rowTr).find('.calc-porosity').val(porosity !== 0 ? porosity.toFixed(4) : '0');
+    $(rowTr).find('.calc-thickness-chem').val(thicknessChem > 0 ? thicknessChem.toFixed(2) : '0.00');
+    $(rowTr).find('.calc-volume').val(volume > 0 ? volume.toFixed(2) : '0.00');
+    $(rowTr).find('.calc-density').val(density > 0 ? density.toFixed(2) : '0.00');
+    $(rowTr).find('.calc-porosity').val(porosity !== 0 ? porosity.toFixed(2) : '0.00');
 }
 
-// คำนวณตารางทั้งหมดและสรุปผล Total / Average
+// คำนวณตารางทั้งหมดและสรุปผล Total / Average (ทศนิยม 2 ตำแหน่ง)
 function calculateAllRows() {
     var rows = $('#cavity_table_body tr');
     if (rows.length === 0 || rows.find('td.text-muted').length > 0) {
@@ -390,7 +399,7 @@ function calculateAllRows() {
     $('#cavity_table_footer').html(footerHtml).show();
 }
 
-// เมื่อเลือก Mold และสร้างแถวตาม Cavity (กำหนดคลาสให้ตรงกับช่องกรอกข้อมูลในแต่ละแถว)
+// เมื่อเลือก Mold และสร้างแถวตาม Cavity
 $('#mlod_code').on('change', function() {
     var selectedOption = $(this).find(':selected');
     var selectedMoldCode = selectedOption.val();
@@ -398,10 +407,13 @@ $('#mlod_code').on('change', function() {
     var moldArea = selectedOption.data('area') || '';
     var moldPressure = selectedOption.data('pressure') || '';
     var cavityCount = selectedOption.data('cavity') || 0;
+    var moldVolume = selectedOption.data('volume') || '';
 
     $('#mlod_area').val(moldArea);
     $('#mlod_pressure').val(moldPressure);
     $('#mlod_cavity').val(cavityCount);
+    $('#mlod_volume_display').val(moldVolume);
+    $('#mlod_volume').val(moldVolume);
 
     var tbody = $('#cavity_table_body');
     tbody.empty();
@@ -411,17 +423,17 @@ $('#mlod_code').on('change', function() {
             var row = `
                 <tr>
                     <td class="text-center">${i}</td>
-                    <td class="text-center"><input type="text" step="any" class="form-control iron-w" name="cavity[${i}][weight]" value="0"></td>
-                    <td class="text-center"><input type="text" step="any" class="form-control thick-1" name="cavity[${i}][thickness_1]" value="0"></td>
-                    <td class="text-center"><input type="text" step="any" class="form-control thick-2" name="cavity[${i}][thickness_2]" value="0"></td>
-                    <td class="text-center"><input type="text" step="any" class="form-control thick-3" name="cavity[${i}][thickness_3]" value="0"></td>
-                    <td class="text-center"><input type="text" step="any" class="form-control thick-4" name="cavity[${i}][thickness_4]" value="0"></td>
-                    <td class="text-center"><input type="text" step="any" class="form-control thick-5" name="cavity[${i}][thickness_5]" value="0"></td>
-                    <td class="text-center"><input type="text" step="any" class="form-control thick-6" name="cavity[${i}][thickness_6]" value="0"></td>
-                    <td class="text-center"><input type="text" class="form-control calc-thickness-chem bg-light" name="cavity[${i}][thickness_chemical]" value="0" readonly></td>
-                    <td class="text-center"><input type="text" class="form-control calc-volume bg-light" name="cavity[${i}][volume]" value="0" readonly></td>
-                    <td class="text-center"><input type="text" class="form-control calc-density bg-light" name="cavity[${i}][density]" value="0" readonly></td>
-                    <td class="text-center"><input type="text" class="form-control calc-porosity bg-light" name="cavity[${i}][porosity]" value="0" readonly></td>
+                    <td class="text-center"><input type="text" step="any" class="form-control iron-w" name="cavity[${i}][weight_1]" value="0.00"></td>
+                    <td class="text-center"><input type="text" step="any" class="form-control thick-1" name="cavity[${i}][thickness_1]" value="0.00"></td>
+                    <td class="text-center"><input type="text" step="any" class="form-control thick-2" name="cavity[${i}][thickness_2]" value="0.00"></td>
+                    <td class="text-center"><input type="text" step="any" class="form-control thick-3" name="cavity[${i}][thickness_3]" value="0.00"></td>
+                    <td class="text-center"><input type="text" step="any" class="form-control thick-4" name="cavity[${i}][thickness_4]" value="0.00"></td>
+                    <td class="text-center"><input type="text" step="any" class="form-control thick-5" name="cavity[${i}][thickness_5]" value="0.00"></td>
+                    <td class="text-center"><input type="text" step="any" class="form-control thick-6" name="cavity[${i}][thickness_6]" value="0.00"></td>
+                    <td class="text-center"><input type="text" class="form-control calc-thickness-chem bg-light" name="cavity[${i}][thickness_chemical]" value="0.00" readonly></td>
+                    <td class="text-center"><input type="text" class="form-control calc-volume bg-light" name="cavity[${i}][volume]" value="0.00" readonly></td>
+                    <td class="text-center"><input type="text" class="form-control calc-density bg-light" name="cavity[${i}][density]" value="0.00" readonly></td>
+                    <td class="text-center"><input type="text" class="form-control calc-porosity bg-light" name="cavity[${i}][porosity]" value="0.00" readonly></td>
                 </tr>
             `;
             tbody.append(row);
@@ -438,7 +450,7 @@ $(document).on('input', '.iron-w, .thick-1, .thick-2, .thick-3, .thick-4, .thick
     calculateAllRows();
 });
 
-$('#mlod_area').on('change', function() {
+$('#mlod_area, #mlod_volume, #total_density').on('change', function() {
     calculateAllRows();
 });
 </script>

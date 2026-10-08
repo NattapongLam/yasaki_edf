@@ -7,6 +7,7 @@ use App\Models\DensityWorkclothHd;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class DensityWorkcloth extends Controller
@@ -83,7 +84,8 @@ class DensityWorkcloth extends Controller
                 'created_at'                   => Carbon::now(), 
                 'updated_at'                   => Carbon::now(),
                 'density_workcloth_hds_date'   => $request->density_workcloth_hds_date,
-                'machinery_name'               => $request->machinery_name
+                'machinery_name'               => $request->machinery_name,
+                'mlod_volume'                  => $request->mlod_volume
             ];
             if ($request->hasFile('density_workcloth_hds_file1')) {
                 $data['density_workcloth_hds_file1'] = $request->file('density_workcloth_hds_file1')->storeAs('images/DensityWorkpiece_File', "IMG_" . Carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('density_workcloth_hds_file1')->extension());
@@ -212,5 +214,29 @@ class DensityWorkcloth extends Controller
     public function destroy($id)
     {
         //
+    }
+    public function confirmDelDensityWorkcloth(Request $request)
+    {
+        $id = $request->refid;
+        try {
+            DB::beginTransaction();
+            DB::table('density_workcloth_hds')
+            ->where('density_workcloth_hds_id',$id)
+            ->update([
+                'updated_at' => Carbon::now(),
+                'density_workcloth_hds_flag' => 0,
+            ]);
+            DB::commit();                      
+            return response()->json([
+                'status' => true,
+                'message' => 'ยกเลิกเรียบร้อยแล้ว'
+            ]);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
     }
 }

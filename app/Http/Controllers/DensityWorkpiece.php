@@ -235,9 +235,9 @@ class DensityWorkpiece extends Controller
         
         // ดึงรายการแม่พิมพ์ทั้งหมด พร้อมกับ area, pressure และ cavity ของแต่ละ mold
         $molds = DB::table('ms_edf_moldlist')
-            ->select('mlod_code', 'mlod_name', 'mlod_area', 'mlod_pressure', 'mlod_cavity')
+            ->select('mlod_code', 'mlod_name', 'mlod_area', 'mlod_pressure', 'mlod_cavity','mlod_volume')
             ->where('product_code', $productCode)
-            ->groupBy('mlod_code', 'mlod_name', 'mlod_area', 'mlod_pressure', 'mlod_cavity')
+            ->groupBy('mlod_code', 'mlod_name', 'mlod_area', 'mlod_pressure', 'mlod_cavity','mlod_volume')
             ->get();
 
         return response()->json([
