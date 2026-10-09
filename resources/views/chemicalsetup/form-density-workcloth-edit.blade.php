@@ -106,7 +106,14 @@
                         </div>
                     </div>
                 </div>
-
+                <div class="row mt-2">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label class="form-label">หมายเหตุ</label>
+                            <input class="form-control" name="density_workcloth_hds_note" id="density_workcloth_hds_note" value="{{$hd->density_workcloth_hds_note}}">
+                        </div>
+                    </div>
+                </div>
                 <!-- ส่วนรูปภาพเดิม -->
                 <div class="row mt-2">
                     @for ($i = 1; $i <= 4; $i++)

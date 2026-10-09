@@ -116,6 +116,14 @@
                 </div>
             </div>
             <div class="row mt-2">
+                <div class="col-12">
+                    <div class="form-group">
+                        <label class="form-label">หมายเหตุ</label>
+                        <input class="form-control" name="density_workcloth_hds_note" id="density_workcloth_hds_note">
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-2">
                 <div class="col-3">
                     <div class="form-group">
                         <label for="density_workcloth_hds_file1" class="col-form-label">รูปภาพ</label>

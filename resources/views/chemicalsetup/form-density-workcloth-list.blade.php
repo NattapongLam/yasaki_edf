@@ -27,6 +27,7 @@
                     <th>แม่พิมพ์</th>
                     <th>สินค้า</th>
                     <th>สูตรเคมี</th>
+                    <th>หมายเหตุ</th>
                     <th>อัพเดท</th>
                     <th>ยกเลิก</th>
                 </tr>
@@ -38,6 +39,7 @@
                         <td>{{$item->mlod_name}} ({{$item->mlod_code}})</td>
                         <td>{{$item->product_name}} ({{$item->product_code}})</td>
                         <td>{{$item->ms_formule_name}} ({{$item->chemistry_hd_name}})</td>
+                        <td>{{$item->density_workcloth_hds_note}}</td>
                         <td>
                             <a href="{{route('density-workcloth.edit',$item->density_workcloth_hds_id)}}" class="btn btn-sm btn-info" >
                                 <i class="fas fa-edit"></i>

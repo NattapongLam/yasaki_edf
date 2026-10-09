@@ -85,7 +85,8 @@ class DensityWorkcloth extends Controller
                 'updated_at'                   => Carbon::now(),
                 'density_workcloth_hds_date'   => $request->density_workcloth_hds_date,
                 'machinery_name'               => $request->machinery_name,
-                'mlod_volume'                  => $request->mlod_volume
+                'mlod_volume'                  => $request->mlod_volume,
+                'density_workcloth_hds_note'   => $request->density_workcloth_hds_note
             ];
             if ($request->hasFile('density_workcloth_hds_file1')) {
                 $data['density_workcloth_hds_file1'] = $request->file('density_workcloth_hds_file1')->storeAs('images/DensityWorkpiece_File', "IMG_" . Carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('density_workcloth_hds_file1')->extension());
