@@ -59,8 +59,7 @@
                 <div class="col-2">
                     <div class="form-group">
                         <label class="form-label">Volume (cm3/1Cavity)</label>
-                        <input class="form-control" id="mlod_volume_display" readonly>
-                        <input class="form-control" type="hidden" name="mlod_volume" id="mlod_volume">
+                        <input class="form-control" name="mlod_volume" id="mlod_volume">
                     </div>
                 </div>
                 <div class="col-2">
@@ -208,6 +207,38 @@ $('.select2').select2({
     allowClear: true
 });
 
+// ฟังก์ชันสร้างตารางตามจำนวน Cavity ที่กำหนด
+function generateTableRows(cavityCount) {
+    var tbody = $('#cavity_table_body');
+    tbody.empty();
+
+    if (cavityCount && cavityCount > 0) {
+        for (var i = 1; i <= cavityCount; i++) {
+            var row = `
+                <tr>
+                    <td class="text-center">${i}</td>
+                    <td class="text-center"><input type="text" step="any" class="form-control iron-w" name="cavity[${i}][weight_1]" value="0.00"></td>
+                    <td class="text-center"><input type="text" step="any" class="form-control thick-1" name="cavity[${i}][thickness_1]" value="0.00"></td>
+                    <td class="text-center"><input type="text" step="any" class="form-control thick-2" name="cavity[${i}][thickness_2]" value="0.00"></td>
+                    <td class="text-center"><input type="text" step="any" class="form-control thick-3" name="cavity[${i}][thickness_3]" value="0.00"></td>
+                    <td class="text-center"><input type="text" step="any" class="form-control thick-4" name="cavity[${i}][thickness_4]" value="0.00"></td>
+                    <td class="text-center"><input type="text" step="any" class="form-control thick-5" name="cavity[${i}][thickness_5]" value="0.00"></td>
+                    <td class="text-center"><input type="text" step="any" class="form-control thick-6" name="cavity[${i}][thickness_6]" value="0.00"></td>
+                    <td class="text-center"><input type="text" class="form-control calc-thickness-chem bg-light" name="cavity[${i}][thickness_chemical]" value="0.00" readonly></td>
+                    <td class="text-center"><input type="text" class="form-control calc-volume bg-light" name="cavity[${i}][volume]" value="0.00" readonly></td>
+                    <td class="text-center"><input type="text" class="form-control calc-density bg-light" name="cavity[${i}][density]" value="0.00" readonly></td>
+                    <td class="text-center"><input type="text" class="form-control calc-porosity bg-light" name="cavity[${i}][porosity]" value="0.00" readonly></td>
+                </tr>
+            `;
+            tbody.append(row);
+        }
+        calculateAllRows();
+    } else {
+        tbody.append(`<tr><td colspan="12" class="text-center text-muted">กรุณาเลือก Mold ก่อน</td></tr>`);
+        $('#cavity_table_footer').hide();
+    }
+}
+
 // เมื่อเลือก Product
 $('select[name="product_code"]').on('change', function() {
     var productCode = $(this).val();
@@ -218,7 +249,6 @@ $('select[name="product_code"]').on('change', function() {
     $('#mlod_pressure').val('');
     $('#mlod_cavity').val('');
     $('#mlod_volume').val('');
-    $('#mlod_volume_display').val('');
     $('#cavity_table_body').html('<tr><td colspan="12" class="text-center text-muted">กรุณาเลือก Mold ก่อน</td></tr>');
     $('#cavity_table_footer').hide();
 
@@ -292,7 +322,7 @@ $('#chemistry_hd_name').on('change', function() {
     }
 });
 
-// ฟังก์ชันคำนวณแต่ละแถวตามสูตรใน Excel (แสดงผลทศนิยม 2 ตำแหน่ง)
+// ฟังก์ชันคำนวณแต่ละแถว
 function calculateRow(rowTr) {
     var weight = parseFloat($(rowTr).find('.iron-w').val()) || 0; 
     
@@ -310,20 +340,20 @@ function calculateRow(rowTr) {
 
     var moldVolume = parseFloat($('#mlod_volume').val()) || 0;
     var mlodArea = parseFloat($('#mlod_area').val()) || 0;
+    
     var volume = moldVolume > 0 ? moldVolume : (thicknessChem * mlodArea); 
-
     var density = (volume > 0) ? (weight / volume) : 0; 
 
     var targetDensity = parseFloat($('#total_density').val()) || 0;
     var porosity = (targetDensity > 0) ? (((targetDensity - density) / targetDensity) * 100) : 0; 
 
     $(rowTr).find('.calc-thickness-chem').val(thicknessChem > 0 ? thicknessChem.toFixed(2) : '0.00');
-    $(rowTr).find('.calc-volume').val(volume > 0 ? volume.toFixed(2) : '0.00');
+    $(rowTr).find('.calc-volume').val(volume > 0 ? volume.toFixed(3) : '0.000');
     $(rowTr).find('.calc-density').val(density > 0 ? density.toFixed(2) : '0.00');
     $(rowTr).find('.calc-porosity').val(porosity !== 0 ? porosity.toFixed(2) : '0.00');
 }
 
-// คำนวณตารางทั้งหมดและสรุปผล Total / Average (ทศนิยม 2 ตำแหน่ง)
+// คำนวณตารางทั้งหมดและสรุปผล Total / Average
 function calculateAllRows() {
     var rows = $('#cavity_table_body tr');
     if (rows.length === 0 || rows.find('td.text-muted').length > 0) {
@@ -407,7 +437,7 @@ function calculateAllRows() {
     $('#cavity_table_footer').html(footerHtml).show();
 }
 
-// เมื่อเลือก Mold และสร้างแถวตาม Cavity
+// เมื่อเลือก Mold (ใช้ค่า Cavity ตาม Mold เป็นหลัก)
 $('#mlod_code').on('change', function() {
     var selectedOption = $(this).find(':selected');
     var selectedMoldCode = selectedOption.val();
@@ -420,45 +450,37 @@ $('#mlod_code').on('change', function() {
     $('#mlod_area').val(moldArea);
     $('#mlod_pressure').val(moldPressure);
     $('#mlod_cavity').val(cavityCount);
-    $('#mlod_volume_display').val(moldVolume);
     $('#mlod_volume').val(moldVolume);
 
-    var tbody = $('#cavity_table_body');
-    tbody.empty();
-
-    if (cavityCount && cavityCount > 0 && selectedMoldCode !== '-') {
-        for (var i = 1; i <= cavityCount; i++) {
-            var row = `
-                <tr>
-                    <td class="text-center">${i}</td>
-                    <td class="text-center"><input type="text" step="any" class="form-control iron-w" name="cavity[${i}][weight_1]" value="0.00"></td>
-                    <td class="text-center"><input type="text" step="any" class="form-control thick-1" name="cavity[${i}][thickness_1]" value="0.00"></td>
-                    <td class="text-center"><input type="text" step="any" class="form-control thick-2" name="cavity[${i}][thickness_2]" value="0.00"></td>
-                    <td class="text-center"><input type="text" step="any" class="form-control thick-3" name="cavity[${i}][thickness_3]" value="0.00"></td>
-                    <td class="text-center"><input type="text" step="any" class="form-control thick-4" name="cavity[${i}][thickness_4]" value="0.00"></td>
-                    <td class="text-center"><input type="text" step="any" class="form-control thick-5" name="cavity[${i}][thickness_5]" value="0.00"></td>
-                    <td class="text-center"><input type="text" step="any" class="form-control thick-6" name="cavity[${i}][thickness_6]" value="0.00"></td>
-                    <td class="text-center"><input type="text" class="form-control calc-thickness-chem bg-light" name="cavity[${i}][thickness_chemical]" value="0.00" readonly></td>
-                    <td class="text-center"><input type="text" class="form-control calc-volume bg-light" name="cavity[${i}][volume]" value="0.00" readonly></td>
-                    <td class="text-center"><input type="text" class="form-control calc-density bg-light" name="cavity[${i}][density]" value="0.00" readonly></td>
-                    <td class="text-center"><input type="text" class="form-control calc-porosity bg-light" name="cavity[${i}][porosity]" value="0.00" readonly></td>
-                </tr>
-            `;
-            tbody.append(row);
-        }
-        calculateAllRows();
+    if (selectedMoldCode !== '-') {
+        generateTableRows(cavityCount);
     } else {
-        tbody.append(`<tr><td colspan="12" class="text-center text-muted">กรุณาเลือก Mold ก่อน</td></tr>`);
+        $('#cavity_table_body').html('<tr><td colspan="12" class="text-center text-muted">กรุณาเลือก Mold ก่อน</td></tr>');
         $('#cavity_table_footer').hide();
     }
 });
 
-// Event เมื่อกรอกตัวเลขในช่องคำนวณ
+// เมื่อมีการพิมพ์ระบุตัวเลขลงในช่อง Volume ด้านบน ให้บังคับตารางเหลือ 6 แถว (ถ้าช่อง Volume ว่าง ให้กลับไปใช้ Cavity ตาม Mold เดิม)
+$(document).on('input change', '#mlod_volume', function() {
+    var volumeVal = $(this).val();
+    var selectedMoldCode = $('#mlod_code').val();
+
+    if (selectedMoldCode && selectedMoldCode !== '-') {
+        var baseCavity = $('#mlod_code').find(':selected').data('cavity') || 0;
+        // ถ้ามีการระบุค่าใน Volume ให้บังคับจำนวนแถวเป็น 6 แถว, ถ้ารวมลบจนว่าง ให้กลับไปใช้ค่า Cavity ของ Mold
+        var targetCavity = (volumeVal && volumeVal.trim() !== '') ? 6 : baseCavity;
+        
+        $('#mlod_cavity').val(targetCavity);
+        generateTableRows(targetCavity);
+    }
+});
+
+// Event เมื่อกรอกตัวเลขในช่องคำนวณในตาราง
 $(document).on('input', '.iron-w, .thick-1, .thick-2, .thick-3, .thick-4, .thick-5, .thick-6', function() {
     calculateAllRows();
 });
 
-$('#mlod_area, #mlod_volume, #total_density').on('change', function() {
+$('#mlod_area, #total_density').on('change', function() {
     calculateAllRows();
 });
 </script>
