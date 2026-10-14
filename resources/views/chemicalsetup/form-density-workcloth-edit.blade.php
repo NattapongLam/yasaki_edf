@@ -144,6 +144,7 @@
                                     <th rowspan="2">Volume (cm³)</th>
                                     <th rowspan="2">Density (g/cm³)</th>
                                     <th rowspan="2">%Porosity</th>
+                                    <th colspan="3">Hardness</th>
                                 </tr>
                                 <tr>
                                     <th>น้ำหนัก (g)</th>
@@ -153,11 +154,14 @@
                                     <th>จุดที่ 4</th>
                                     <th>จุดที่ 5</th>
                                     <th>จุดที่ 6</th>
+                                    <th>1</th>
+                                    <th>2</th>
+                                    <th>3</th>
                                 </tr>
                             </thead>
                             <tbody id="cavity_table_body">
                                 @if(isset($dt) && count($dt) > 0)
-                                    @foreach($dt as $index => $item)
+                                    @foreach($dt as $index =>$item)
                                     <tr>
                                         <td class="text-center">{{ $index + 1 }}</td>
                                         <td class="text-center"><input type="text" step="any" class="form-control iron-w" name="cavity[{{ $index + 1 }}][weight_1]" value="{{ $item->weight_1 }}"></td>
@@ -171,11 +175,14 @@
                                         <td class="text-center"><input type="text" class="form-control calc-volume bg-light" name="cavity[{{ $index + 1 }}][volume]" value="{{ $item->volume }}" readonly></td>
                                         <td class="text-center"><input type="text" class="form-control calc-density bg-light" name="cavity[{{ $index + 1 }}][density]" value="{{ $item->density }}" readonly></td>
                                         <td class="text-center"><input type="text" class="form-control calc-porosity bg-light" name="cavity[{{ $index + 1 }}][porosity]" value="{{ $item->porosity }}" readonly></td>
+                                        <td class="text-center"><input type="text" step="any" class="form-control thick-6" name="cavity[{{ $index + 1 }}][hardness_1]" value="{{ $item->hardness_1 }}"></td>
+                                        <td class="text-center"><input type="text" step="any" class="form-control thick-6" name="cavity[{{ $index + 1 }}][hardness_2]" value="{{ $item->hardness_2 }}"></td>
+                                        <td class="text-center"><input type="text" step="any" class="form-control thick-6" name="cavity[{{ $index + 1 }}][hardness_3]" value="{{ $item->hardness_3 }}"></td>
                                     </tr>
                                     @endforeach
                                 @else
                                     <tr>
-                                        <td colspan="12" class="text-center text-muted">กรุณาเลือก Mold ก่อน</td>
+                                        <td colspan="15" class="text-center text-muted">กรุณาเลือก Mold ก่อน</td>
                                     </tr>
                                 @endif
                             </tbody>
@@ -185,6 +192,26 @@
                         </table>
                     </div>
                 </div> 
+
+                <!-- ส่วนแสดงกราฟ (Chart.js Dashboard) -->
+                <div class="row mt-4">
+                    <div class="col-12 mb-3">
+                        <div class="card border shadow-sm print-chart-card">
+                            <div class="card-body">
+                                <h6 class="fw-bold text-dark mb-2">กราฟเปรียบเทียบ Density กับ Target, Upper และ Lower</h6>
+                                <canvas id="densityChart" height="90"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mb-3">
+                        <div class="card border shadow-sm print-chart-card">
+                            <div class="card-body">
+                                <h6 class="fw-bold text-dark mb-2">กราฟแนวโน้ม %Porosity</h6>
+                                <canvas id="porosityChart" height="90"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="row mt-3">
                     <div class="col-12 text-end">
@@ -204,7 +231,15 @@
         overflow-y: auto !important;
     }
 </style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- เพิ่มปลั๊กอินสำหรับแสดงตัวเลขบนกราฟ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
+
 <script>
+let densityChartInstance = null;
+let porosityChartInstance = null;
+
 $(document).ready(function() {$('.select2').select2({
         theme: 'bootstrap-5',
         width: '100%',
@@ -326,7 +361,7 @@ function calculateAllRows() {
         let allCount = totalData.count;
         footerHtml += `
             <tr class="table-dark text-white">
-                <td colspan="12" class="text-start fw-bold">Grand Total / Overall Average</td>
+                <td colspan="15" class="text-start fw-bold">Grand Total / Overall Average</td>
             </tr>
             <tr class="fw-bold bg-light">
                 <td>Total</td>
@@ -341,6 +376,7 @@ function calculateAllRows() {
                 <td>${totalData.sumVolume.toFixed(2)}</td>
                 <td>${totalData.sumDensity.toFixed(2)}</td>
                 <td>${totalData.sumPorosity.toFixed(2)}</td>
+                <td colspan="3"></td>
             </tr>
             <tr class="fw-bold bg-light">
                 <td>Average</td>
@@ -355,11 +391,15 @@ function calculateAllRows() {
                 <td>${(totalData.sumVolume / allCount).toFixed(2)}</td>
                 <td>${(totalData.sumDensity / allCount).toFixed(2)}</td>
                 <td>${(totalData.sumPorosity / allCount).toFixed(2)}</td>
+                <td colspan="3"></td>
             </tr>
         `;
     }
 
     $('#cavity_table_footer').html(footerHtml).show();
+
+    // อัปเดตกราฟทุกครั้งที่มีการคำนวณใหม่
+    initOrUpdateCharts();
 }
 
 $(document).on('input', '.iron-w, .thick-1, .thick-2, .thick-3, .thick-4, .thick-5, .thick-6', function() {
@@ -369,5 +409,179 @@ $(document).on('input', '.iron-w, .thick-1, .thick-2, .thick-3, .thick-4, .thick
 $('#mlod_area, #mlod_volume, #total_density').on('change', function() {
     calculateAllRows();
 });
+
+function initOrUpdateCharts() {
+    if (typeof Chart === 'undefined') {
+        console.error('Chart.js library is not loaded!');
+        return;
+    }
+
+    let labels = [];
+    let densityData = [];
+    let porosityData = [];
+    let targetData = [];
+    let upperData = [];
+    let lowerData = [];
+
+    let targetDensity = parseFloat($('#total_density').val()) || 0;
+    let upperDensity = targetDensity * 1.05;
+    let lowerDensity = targetDensity * 0.95;
+
+    $('#cavity_table_body tr').each(function(index) {
+        let rowNum = index + 1;
+        let density = parseFloat($(this).find('.calc-density').val()) || 0;
+        let porosity = parseFloat($(this).find('.calc-porosity').val()) || 0;
+
+        if ($(this).find('td.text-muted').length === 0) {
+            labels.push('Cavity ' + rowNum);
+            densityData.push(density);
+            porosityData.push(porosity);
+            targetData.push(targetDensity);
+            upperData.push(upperDensity);
+            lowerData.push(lowerDensity);
+        }
+    });
+
+    // --- 1. กราฟ Density ---
+    const densityEl = document.getElementById('densityChart');
+    if (densityEl) {
+        const densityCtx = densityEl.getContext('2d');
+        if (densityChartInstance) {
+            densityChartInstance.destroy();
+        }
+        densityChartInstance = new Chart(densityCtx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Actual Density',
+                        data: densityData,
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderWidth: 2,
+                        tension: 0.1
+                    },
+                    {
+                        label: 'Target Density',
+                        data: targetData,
+                        borderColor: 'rgba(40, 167, 69, 1)',
+                        borderDash: [5, 5],
+                        borderWidth: 2,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'Upper Limit (+5%)',
+                        data: upperData,
+                        borderColor: 'rgba(220, 53, 69, 0.8)',
+                        borderDash: [2, 2],
+                        borderWidth: 1.5,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'Lower Limit (-5%)',
+                        data: lowerData,
+                        borderColor: 'rgba(255, 193, 7, 1)',
+                        borderDash: [2, 2],
+                        borderWidth: 1.5,
+                        pointRadius: 0
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    // เปิดใช้งานการแสดงตัวเลขเฉพาะเส้น Actual Density
+                    datalabels: {
+                        display: function(context) {
+                            // ให้แสดงตัวเลขเฉพาะ Dataset แรก (Actual Density) เพื่อไม่ให้ตัวเลขทับกันรกจนเกินไป
+                            return context.datasetIndex === 0;
+                        },
+                        align: 'top',
+                        formatter: function(value) {
+                            return value > 0 ? value.toFixed(2) : '';
+                        },
+                        font: {
+                            weight: 'bold',
+                            size: 11
+                        }
+                    }
+                },
+                scales: {
+                    y: { beginAtZero: false }
+                }
+            },
+            plugins: [ChartDataLabels] // ลงทะเบียนใช้งานปลั๊กอิน
+        });
+    }
+
+    // --- 2. กราฟ %Porosity ---
+    const porosityEl = document.getElementById('porosityChart');
+    if (porosityEl) {
+        const porosityCtx = porosityEl.getContext('2d');
+        if (porosityChartInstance) {
+            porosityChartInstance.destroy();
+        }
+        
+        // สร้างข้อมูลเส้น Max 5% ให้ยาวเท่ากับจำนวน Cavity ที่มี
+        let maxLimitData = new Array(labels.length).fill(5);
+
+        porosityChartInstance = new Chart(porosityCtx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        type: 'bar', // กราฟแท่งแสดงค่า %Porosity จริง
+                        label: '%Porosity',
+                        data: porosityData,
+                        backgroundColor: 'rgba(153, 102, 255, 0.6)',
+                        borderColor: 'rgba(153, 102, 255, 1)',
+                        borderWidth: 1,
+                        order: 2
+                    },
+                    {
+                        type: 'line', // เส้นกราฟตรง (Line) แสดงค่า Max 5%
+                        label: 'Max Limit (5%)',
+                        data: maxLimitData,
+                        borderColor: 'rgba(220, 53, 69, 1)', // สีแดงเตือนภัย
+                        borderWidth: 2,
+                        borderDash: [5, 5], // เส้นประ
+                        pointRadius: 0,     // ไม่แสดงจุดวงกลมบนเส้น
+                        order: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    datalabels: {
+                        // กำหนดให้แสดงตัวเลขเฉพาะกราฟแท่ง (%Porosity) เพื่อไม่ให้ตัวเลข 5 ทับซ้อนกับเส้น Max
+                        display: function(context) {
+                            return context.datasetIndex === 0;
+                        },
+                        anchor: 'end',
+                        align: 'top',
+                        formatter: function(value) {
+                            return value !== 0 ? value.toFixed(2) : '';
+                        },
+                        font: {
+                            weight: 'bold',
+                            size: 11
+                        }
+                    }
+                },
+                scales: {
+                    y: { 
+                        beginAtZero: true,
+                        // เผื่อขอบบนของแกน Y เล็กน้อย (เช่น 7) เพื่อให้เส้น Max 5% ที่ชนขอบบนดูสวยงามและไม่ติดขอบกราฟจนเกินไป
+                        suggestedMax: 7 
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+    }
+}
 </script>
 @endpush

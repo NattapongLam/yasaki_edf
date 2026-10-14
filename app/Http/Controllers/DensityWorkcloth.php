@@ -122,6 +122,9 @@ class DensityWorkcloth extends Controller
                         'porosity'                      => $item['porosity'] ?? 0,
                         'created_at'                    => Carbon::now(), 
                         'updated_at'                    => Carbon::now(),
+                        'hardness_1'                    => $item['hardness_1'] ?? 0,
+                        'hardness_2'                    => $item['hardness_2'] ?? 0,
+                        'hardness_3'                    => $item['hardness_3'] ?? 0,
                     ]);
                 }
             }
@@ -155,8 +158,19 @@ class DensityWorkcloth extends Controller
      */
     public function edit($id)
     {
-        $hd = DensityWorkclothHd::find($id);
-        $dt = DensityWorkclothDt::where('density_workcloth_hds_id',$id)->get();
+        $hd = DB::table('density_workcloth_hds')
+            ->select(
+                'density_workcloth_hds.*',
+                DB::raw('total_density * 1.05 as upper_density'),
+                DB::raw('total_density * 0.95 as lower_density')  
+            )
+            ->where('density_workcloth_hds_id', $id)
+            ->first();
+
+        $dt = DB::table('density_workcloth_dts')
+            ->where('density_workcloth_hds_id', $id)
+            ->orderBy('density_workcloth_dts_listno', 'asc')
+            ->get();
         return view('chemicalsetup.form-density-workcloth-edit', compact('hd','dt'));
     }
 
@@ -191,6 +205,9 @@ class DensityWorkcloth extends Controller
                             'volume'                        => $item['volume'] ?? 0,
                             'density'                       => $item['density'] ?? 0,
                             'porosity'                      => $item['porosity'] ?? 0,
+                            'hardness_1'                    => $item['hardness_1'] ?? 0,
+                            'hardness_2'                    => $item['hardness_2'] ?? 0,
+                            'hardness_3'                    => $item['hardness_3'] ?? 0,
                         ]
                     );
                 }

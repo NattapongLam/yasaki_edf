@@ -160,6 +160,7 @@
                                 <th rowspan="2">Volume (cm³)</th>
                                 <th rowspan="2">Density (g/cm³)</th>
                                 <th rowspan="2">%Porosity</th>
+                                <th colspan="3">Hardness</th>
                             </tr>
                             <tr>
                                 <th>น้ำหนัก (g)</th>
@@ -169,6 +170,9 @@
                                 <th>จุดที่ 4</th>
                                 <th>จุดที่ 5</th>
                                 <th>จุดที่ 6</th>
+                                <th>1</th>
+                                <th>2</th>
+                                <th>3</th>
                             </tr>
                         </thead>
                         <tbody id="cavity_table_body">
@@ -228,6 +232,9 @@ function generateTableRows(cavityCount) {
                     <td class="text-center"><input type="text" class="form-control calc-volume bg-light" name="cavity[${i}][volume]" value="0.00" readonly></td>
                     <td class="text-center"><input type="text" class="form-control calc-density bg-light" name="cavity[${i}][density]" value="0.00" readonly></td>
                     <td class="text-center"><input type="text" class="form-control calc-porosity bg-light" name="cavity[${i}][porosity]" value="0.00" readonly></td>
+                    <td class="text-center"><input type="text" step="any" class="form-control thick-6" name="cavity[${i}][hardness_1]" value="0.00"></td>
+                    <td class="text-center"><input type="text" step="any" class="form-control thick-6" name="cavity[${i}][hardness_2]" value="0.00"></td>
+                    <td class="text-center"><input type="text" step="any" class="form-control thick-6" name="cavity[${i}][hardness_3]" value="0.00"></td>
                 </tr>
             `;
             tbody.append(row);
@@ -401,7 +408,7 @@ function calculateAllRows() {
         let allCount = totalData.count;
         footerHtml += `
             <tr class="table-dark text-white">
-                <td colspan="12" class="text-start fw-bold">Grand Total / Overall Average</td>
+                <td colspan="15" class="text-start fw-bold">Grand Total / Overall Average</td>
             </tr>
             <tr class="fw-bold bg-light">
                 <td>Total</td>
@@ -416,6 +423,7 @@ function calculateAllRows() {
                 <td>${totalData.sumVolume.toFixed(2)}</td>
                 <td>${totalData.sumDensity.toFixed(2)}</td>
                 <td>${totalData.sumPorosity.toFixed(2)}</td>
+                <td colspan="3"></td>
             </tr>
             <tr class="fw-bold bg-light">
                 <td>Average</td>
@@ -430,6 +438,7 @@ function calculateAllRows() {
                 <td>${(totalData.sumVolume / allCount).toFixed(2)}</td>
                 <td>${(totalData.sumDensity / allCount).toFixed(2)}</td>
                 <td>${(totalData.sumPorosity / allCount).toFixed(2)}</td>
+                <td colspan="3"></td>
             </tr>
         `;
     }
