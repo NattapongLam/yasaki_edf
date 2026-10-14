@@ -35,7 +35,10 @@
             <tbody>
                 @foreach ($hd as $item)
                     <tr>
-                        <td>{{$item->density_workcloth_hds_date}}</td>
+                        <td>
+                            {{$item->density_workcloth_hds_date}}<br>
+                            เครื่อง : {{$item->machinery_name}}
+                        </td>
                         <td>{{$item->mlod_name}} ({{$item->mlod_code}})</td>
                         <td>{{$item->product_name}} ({{$item->product_code}})</td>
                         <td>{{$item->ms_formule_name}} ({{$item->chemistry_hd_name}})</td>
