@@ -84,7 +84,8 @@ class DensityWorkpiece extends Controller
                 'created_at'                   => Carbon::now(), 
                 'updated_at'                   => Carbon::now(),
                 'density_workpiece_hds_date'   => $request->density_workpiece_hds_date,
-                'machinery_name'               => $request->machinery_name
+                'machinery_name'               => $request->machinery_name,
+                'density_workpiece_hds_note'   => $request->density_workpiece_hds_note,
             ];
             if ($request->hasFile('density_workpiece_hds_file1')) {
                 $data['density_workpiece_hds_file1'] = $request->file('density_workpiece_hds_file1')->storeAs('images/DensityWorkpiece_File', "IMG_" . Carbon::now()->format('Ymdhis') . "_" . Str::random(5) . "." . $request->file('density_workpiece_hds_file1')->extension());
@@ -121,6 +122,9 @@ class DensityWorkpiece extends Controller
                         'created_at'                    => Carbon::now(), 
                         'updated_at'                    => Carbon::now(),
                         'product_sides'                 => $item['product_sides'],
+                        'hardness_1'                    => $item['hardness_1'] ?? 0,
+                        'hardness_2'                    => $item['hardness_2'] ?? 0,
+                        'hardness_3'                    => $item['hardness_3'] ?? 0,
                     ]);
                 }
             }
@@ -203,6 +207,9 @@ class DensityWorkpiece extends Controller
                             'density_workpiece_dts_density' => $item['density_workpiece_dts_density'] ?? 0,
                             'density_workpiece_dts_porosity'=> $item['density_workpiece_dts_porosity'] ?? 0,
                             'product_sides'                 => $item['product_sides'],
+                            'hardness_1'                    => $item['hardness_1'] ?? 0,
+                            'hardness_2'                    => $item['hardness_2'] ?? 0,
+                            'hardness_3'                    => $item['hardness_3'] ?? 0,
                         ]
                     );
                 }

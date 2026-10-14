@@ -109,6 +109,14 @@
                 </div>
             </div>
             <div class="row mt-2">
+                <div class="col-12">
+                    <div class="form-group">
+                        <label class="form-label">หมายเหตุ</label>
+                        <input class="form-control" name="density_workpiece_hds_note" id="density_workpiece_hds_note">
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-2">
                 <div class="col-3">
                     <div class="form-group">
                         <label for="density_workpiece_hds_file1" class="col-form-label">รูปภาพ</label>
@@ -149,6 +157,7 @@
                                 <th rowspan="2">Density (g/cm³)<br>ρ = mass / Volume</th>
                                 <th rowspan="2">%Porosity</th>
                                 <th rowspan="2">Sides</th>
+                                <th colspan="3">Hardness</th>
                             </tr>
                             <tr>
                                 <th>น้ำหนัก (g)</th>
@@ -157,6 +166,9 @@
                                 <th>ความหนา (mm)</th>
                                 <th>น้ำหนัก (g)</th>
                                 <th>ความหนา (mm)</th>
+                                <th>1</th>
+                                <th>2</th>
+                                <th>3</th>
                             </tr>
                         </thead>
                         <tbody id="cavity_table_body">
@@ -370,7 +382,7 @@ function calculateAllRows() {
             let avgCount = data.count;
             footerHtml += `
                 <tr class="table-secondary">
-                    <td colspan="12" class="text-start fw-bold">Side: ${sideName}</td>
+                    <td colspan="16" class="text-start fw-bold">Side: ${sideName}</td>
                 </tr>
                 <tr>
                     <td>Total (${sideName})</td>
@@ -385,6 +397,7 @@ function calculateAllRows() {
                     <td>${data.sumVolume.toFixed(2)}</td>
                     <td>${data.sumDensity.toFixed(2)}</td>
                     <td>${data.sumPorosity.toFixed(2)}</td>
+                    <td colspan="4"></td>
                 </tr>
                 <tr>
                     <td>Average (${sideName})</td>
@@ -399,6 +412,7 @@ function calculateAllRows() {
                     <td>${(data.sumVolume / avgCount).toFixed(2)}</td>
                     <td>${(data.sumDensity / avgCount).toFixed(2)}</td>
                     <td>${(data.sumPorosity / avgCount).toFixed(2)}</td>
+                    <td colspan="4"></td>
                 </tr>
             `;
         }
@@ -408,7 +422,7 @@ function calculateAllRows() {
         let allCount = totalData.count;
         footerHtml += `
             <tr class="table-dark text-white">
-                <td colspan="12" class="text-start fw-bold">Grand Total / Overall Average</td>
+                <td colspan="16" class="text-start fw-bold">Grand Total / Overall Average</td>
             </tr>
             <tr class="fw-bold bg-light">
                 <td>Total (All)</td>
@@ -423,7 +437,7 @@ function calculateAllRows() {
                 <td>${totalData.sumVolume.toFixed(2)}</td>
                 <td>${totalData.sumDensity.toFixed(2)}</td>
                 <td>${totalData.sumPorosity.toFixed(2)}</td>
-                <td></td>
+                <td colspan="4"></td>
             </tr>
             <tr class="fw-bold bg-light">
                 <td>Average (All)</td>
@@ -438,7 +452,7 @@ function calculateAllRows() {
                 <td>${(totalData.sumVolume / allCount).toFixed(2)}</td>
                 <td>${(totalData.sumDensity / allCount).toFixed(2)}</td>
                 <td>${(totalData.sumPorosity / allCount).toFixed(2)}</td>
-                <td></td>
+                <td colspan="4"></td>
             </tr>
         `;
     }
@@ -486,6 +500,9 @@ $('#mlod_code').on('change', function() {
                             <option value="ซ้าย-ขวา">ซ้าย-ขวา</option>
                         </select>
                     </td>
+                    <td class="text-center"><input type="text" step="any" class="form-control chem-t" name="cavity[${i}][hardness_1]" value="0"></td>
+                    <td class="text-center"><input type="text" step="any" class="form-control chem-t" name="cavity[${i}][hardness_2]" value="0"></td>
+                    <td class="text-center"><input type="text" step="any" class="form-control chem-t" name="cavity[${i}][hardness_3]" value="0"></td>
                 </tr>
             `;
             tbody.append(row);

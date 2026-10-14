@@ -86,6 +86,10 @@
                         <span class="text-muted">Lower Density:</span> 
                         <input type="text" step="any" class="form-control form-control-sm d-inline-block w-auto bg-light fw-bold text-danger" name="lower_density" id="lower_density" value="{{ isset($hd->lower_density) ? number_format($hd->lower_density, 4, '.', '') : '' }}" readonly>
                     </div>
+                    <div class="col-6 col-md-6 mt-2">
+                        <span class="text-muted">Note:</span> 
+                        <input type="text" class="form-control form-control-sm d-inline-block bg-light fw-bold" name="density_workpiece_hds_note" id="density_workpiece_hds_note" value="{{$hd->density_workpiece_hds_note}}" readonly>
+                    </div>
                 </div>
 
                 <!-- ตารางข้อมูลชิ้นงาน -->
@@ -103,6 +107,7 @@
                                 <th rowspan="2" class="align-middle">Density (g/cm³)</th>
                                 <th rowspan="2" class="align-middle">%Porosity</th>
                                 <th rowspan="2" class="align-middle">Sides</th>
+                                <th colspan="3">Hardness</th>
                             </tr>
                             <tr>
                                 <th>น้ำหนัก (g)</th>
@@ -111,6 +116,9 @@
                                 <th>ความหนา (mm)</th>
                                 <th>น้ำหนัก (g)</th>
                                 <th>ความหนา (mm)</th>
+                                <th>1</th>
+                                <th>2</th>
+                                <th>3</th>
                             </tr>
                         </thead>
                         <tbody id="summary_table_section" class="fw-bold bg-light">
@@ -139,6 +147,9 @@
                                         <option value="ซ้าย-ขวา">ซ้าย-ขวา</option>
                                     </select>
                                 </td>
+                                <td><input type="text" step="any" class="form-control form-control-sm text-center chem-t" name="cavity[{{ $item->density_workpiece_dts_listno }}][hardness_1]" value="{{ $item->hardness_1 }}"></td>
+                                <td><input type="text" step="any" class="form-control form-control-sm text-center chem-t" name="cavity[{{ $item->density_workpiece_dts_listno }}][hardness_2]" value="{{ $item->hardness_2 }}"></td>
+                                <td><input type="text" step="any" class="form-control form-control-sm text-center chem-t" name="cavity[{{ $item->density_workpiece_dts_listno }}][hardness_3]" value="{{ $item->hardness_3 }}"></td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -384,7 +395,7 @@ function calculateAllRows() {
             var count = data.count;
             summaryHtml += `
                 <tr class="table-secondary fw-bold text-dark print-hide-total">
-                    <td colspan="13" class="text-start ps-2">สรุปผลด้าน: ${side}</td>
+                    <td colspan="16" class="text-start ps-2">สรุปผลด้าน: ${side}</td>
                 </tr>
                 <tr class="table-light print-hide-total">
                     <td class="fw-semibold">Total (${side})</td>
@@ -399,7 +410,7 @@ function calculateAllRows() {
                     <td>${data.sumVolume.toFixed(2)}</td>
                     <td>${data.sumDensity.toFixed(2)}</td>
                     <td>${data.sumPorosity.toFixed(2)}</td>
-                    <td>-</td>
+                    <td colspan="4">-</td>
                 </tr>
                 <tr class="table-light">
                     <td class="fw-semibold">Average (${side})</td>
@@ -414,7 +425,7 @@ function calculateAllRows() {
                     <td>${(data.sumVolume / count).toFixed(2)}</td>
                     <td>${(data.sumDensity / count).toFixed(2)}</td>
                     <td>${(data.sumPorosity / count).toFixed(2)}</td>
-                    <td>-</td>
+                    <td colspan="4">-</td>
                 </tr>
             `;
         }
