@@ -233,7 +233,6 @@
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<!-- เพิ่มปลั๊กอินสำหรับแสดงตัวเลขบนกราฟ -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
 
 <script>
@@ -308,19 +307,17 @@ function calculateRow(rowTr) {
     var validPoints = [t1, t2, t3, t4, t5, t6].filter(val => val > 0);
     var avgThicknessMm = validPoints.length > 0 ? (validPoints.reduce((a, b) => a + b, 0) / validPoints.length) : 0;
     
-    // ความหนาก้อนเคมี (cm) = ค่าเฉลี่ย mm หารด้วย 10 ตามสูตร Excel
     var thicknessChem = avgThicknessMm / 10;
     
-    // ดึงค่า Volume และ Area และ Target Density
     var moldVolume = parseFloat($('#mlod_volume').val()) || 0;
     var mlodArea = parseFloat($('#mlod_area').val()) || 0;
     var targetDensity = parseFloat($('#total_density').val()) || 0;
 
+    // จุดที่แก้ไข: ใช้เครื่องหมายคูณ (*) บรรทัดเดียวสมบูรณ์
     var volume = moldVolume > 0 ? moldVolume : (thicknessChem * mlodArea);
     var density = (volume > 0) ? (weight / volume) : 0;
     var porosity = (targetDensity > 0) ? (((targetDensity - density) / targetDensity) * 100) : 0;
 
-    // ปรับให้แสดงผลเป็นทศนิยม 2 ตำแหน่ง
     $(rowTr).find('.calc-thickness-chem').val(thicknessChem > 0 ? thicknessChem.toFixed(2) : '0.00');
     $(rowTr).find('.calc-volume').val(volume > 0 ? volume.toFixed(2) : '0.00');
     $(rowTr).find('.calc-density').val(density > 0 ? density.toFixed(2) : '0.00');
@@ -397,8 +394,6 @@ function calculateAllRows() {
     }
 
     $('#cavity_table_footer').html(footerHtml).show();
-
-    // อัปเดตกราฟทุกครั้งที่มีการคำนวณใหม่
     initOrUpdateCharts();
 }
 
@@ -442,7 +437,6 @@ function initOrUpdateCharts() {
         }
     });
 
-    // --- 1. กราฟ Density ---
     const densityEl = document.getElementById('densityChart');
     if (densityEl) {
         const densityCtx = densityEl.getContext('2d');
@@ -491,10 +485,8 @@ function initOrUpdateCharts() {
             options: {
                 responsive: true,
                 plugins: {
-                    // เปิดใช้งานการแสดงตัวเลขเฉพาะเส้น Actual Density
                     datalabels: {
                         display: function(context) {
-                            // ให้แสดงตัวเลขเฉพาะ Dataset แรก (Actual Density) เพื่อไม่ให้ตัวเลขทับกันรกจนเกินไป
                             return context.datasetIndex === 0;
                         },
                         align: 'top',
@@ -511,11 +503,10 @@ function initOrUpdateCharts() {
                     y: { beginAtZero: false }
                 }
             },
-            plugins: [ChartDataLabels] // ลงทะเบียนใช้งานปลั๊กอิน
+            plugins: [ChartDataLabels]
         });
     }
 
-    // --- 2. กราฟ %Porosity ---
     const porosityEl = document.getElementById('porosityChart');
     if (porosityEl) {
         const porosityCtx = porosityEl.getContext('2d');
@@ -523,7 +514,6 @@ function initOrUpdateCharts() {
             porosityChartInstance.destroy();
         }
         
-        // สร้างข้อมูลเส้น Max 5% ให้ยาวเท่ากับจำนวน Cavity ที่มี
         let maxLimitData = new Array(labels.length).fill(5);
 
         porosityChartInstance = new Chart(porosityCtx, {
@@ -532,7 +522,7 @@ function initOrUpdateCharts() {
                 labels: labels,
                 datasets: [
                     {
-                        type: 'bar', // กราฟแท่งแสดงค่า %Porosity จริง
+                        type: 'bar',
                         label: '%Porosity',
                         data: porosityData,
                         backgroundColor: 'rgba(153, 102, 255, 0.6)',
@@ -541,13 +531,13 @@ function initOrUpdateCharts() {
                         order: 2
                     },
                     {
-                        type: 'line', // เส้นกราฟตรง (Line) แสดงค่า Max 5%
+                        type: 'line',
                         label: 'Max Limit (5%)',
                         data: maxLimitData,
-                        borderColor: 'rgba(220, 53, 69, 1)', // สีแดงเตือนภัย
+                        borderColor: 'rgba(220, 53, 69, 1)',
                         borderWidth: 2,
-                        borderDash: [5, 5], // เส้นประ
-                        pointRadius: 0,     // ไม่แสดงจุดวงกลมบนเส้น
+                        borderDash: [5, 5],
+                        pointRadius: 0,
                         order: 1
                     }
                 ]
@@ -556,7 +546,6 @@ function initOrUpdateCharts() {
                 responsive: true,
                 plugins: {
                     datalabels: {
-                        // กำหนดให้แสดงตัวเลขเฉพาะกราฟแท่ง (%Porosity) เพื่อไม่ให้ตัวเลข 5 ทับซ้อนกับเส้น Max
                         display: function(context) {
                             return context.datasetIndex === 0;
                         },
@@ -574,7 +563,6 @@ function initOrUpdateCharts() {
                 scales: {
                     y: { 
                         beginAtZero: true,
-                        // เผื่อขอบบนของแกน Y เล็กน้อย (เช่น 7) เพื่อให้เส้น Max 5% ที่ชนขอบบนดูสวยงามและไม่ติดขอบกราฟจนเกินไป
                         suggestedMax: 7 
                     }
                 }
