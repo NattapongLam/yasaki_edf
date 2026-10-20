@@ -175,9 +175,9 @@
                                         <td class="text-center"><input type="text" class="form-control calc-volume bg-light" name="cavity[{{ $index + 1 }}][volume]" value="{{ $item->volume }}" readonly></td>
                                         <td class="text-center"><input type="text" class="form-control calc-density bg-light" name="cavity[{{ $index + 1 }}][density]" value="{{ $item->density }}" readonly></td>
                                         <td class="text-center"><input type="text" class="form-control calc-porosity bg-light" name="cavity[{{ $index + 1 }}][porosity]" value="{{ $item->porosity }}" readonly></td>
-                                        <td class="text-center"><input type="text" step="any" class="form-control thick-6" name="cavity[{{ $index + 1 }}][hardness_1]" value="{{ $item->hardness_1 }}"></td>
-                                        <td class="text-center"><input type="text" step="any" class="form-control thick-6" name="cavity[{{ $index + 1 }}][hardness_2]" value="{{ $item->hardness_2 }}"></td>
-                                        <td class="text-center"><input type="text" step="any" class="form-control thick-6" name="cavity[{{ $index + 1 }}][hardness_3]" value="{{ $item->hardness_3 }}"></td>
+                                        <td class="text-center"><input type="text" step="any" class="form-control hard-1" name="cavity[{{ $index + 1 }}][hardness_1]" value="{{ $item->hardness_1 }}"></td>
+                                        <td class="text-center"><input type="text" step="any" class="form-control hard-2" name="cavity[{{ $index + 1 }}][hardness_2]" value="{{ $item->hardness_2 }}"></td>
+                                        <td class="text-center"><input type="text" step="any" class="form-control hard-3" name="cavity[{{ $index + 1 }}][hardness_3]" value="{{ $item->hardness_3 }}"></td>
                                     </tr>
                                     @endforeach
                                 @else
@@ -211,6 +211,15 @@
                             </div>
                         </div>
                     </div>
+                    <!-- เพิ่มกราฟ Hardness ตรงนี้ -->
+                    <div class="col-12 mb-3">
+                        <div class="card border shadow-sm print-chart-card">
+                            <div class="card-body">
+                                <h6 class="fw-bold text-dark mb-2">กราฟค่าความแข็ง (Hardness Average & Points 1, 2, 3)</h6>
+                                <canvas id="hardnessChart" height="90"></canvas>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="row mt-3">
@@ -238,6 +247,7 @@
 <script>
 let densityChartInstance = null;
 let porosityChartInstance = null;
+let hardnessChartInstance = null; // เพิ่มตัวแปรเก็บ Instance กราฟ Hardness
 
 $(document).ready(function() {$('.select2').select2({
         theme: 'bootstrap-5',
@@ -247,52 +257,6 @@ $(document).ready(function() {$('.select2').select2({
     });
 
     calculateAllRows();
-});
-
-// เมื่อเปลี่ยน Formule ในหน้า Edit ให้ดึง Number ใหม่มาแสดง
-$('#ms_formule_name').on('change', function() {
-    var formuleName = $(this).val();
-    var numberSelect = $('#chemistry_hd_name');
-
-    numberSelect.empty().append('<option value="-">กรุณาเลือก</option>').trigger('change');
-    $('#total_density').val('');
-
-    if (formuleName && formuleName !== '-') {
-        $.ajax({
-            url: "{{ route('get.numbers') }}",
-            type: 'GET',
-            data: { ms_formule_name: formuleName },
-            success: function(response) {
-                $.each(response, function(index, item) {
-                    numberSelect.append('<option value="' + item.chemistry_hd_name + '">' + item.chemistry_hd_name + '</option>');
-                });
-                numberSelect.trigger('change');
-            }
-        });
-    }
-});
-
-// เมื่อเลือก Number
-$('#chemistry_hd_name').on('change', function() {
-    var numberName = $(this).val();
-    var densityInput = $('#total_density');
-
-    if (!numberName || numberName === '-') {
-        densityInput.val('');
-        return;
-    }
-
-    $.ajax({
-        url: "{{ route('get.number.details') }}",
-        type: 'GET',
-        data: { chemistry_hd_name: numberName },
-        success: function(response) {
-            if (response && response.total_density !== null) {
-                densityInput.val(response.total_density);
-                calculateAllRows();
-            }
-        }
-    });
 });
 
 function calculateRow(rowTr) {
@@ -313,7 +277,6 @@ function calculateRow(rowTr) {
     var mlodArea = parseFloat($('#mlod_area').val()) || 0;
     var targetDensity = parseFloat($('#total_density').val()) || 0;
 
-    // จุดที่แก้ไข: ใช้เครื่องหมายคูณ (*) บรรทัดเดียวสมบูรณ์
     var volume = moldVolume > 0 ? moldVolume : (thicknessChem * mlodArea);
     var density = (volume > 0) ? (weight / volume) : 0;
     var porosity = (targetDensity > 0) ? (((targetDensity - density) / targetDensity) * 100) : 0;
@@ -333,7 +296,8 @@ function calculateAllRows() {
 
     let totalData = { 
         count: 0, sumWeight: 0, sumT1: 0, sumT2: 0, sumT3: 0, sumT4: 0, sumT5: 0, sumT6: 0, 
-        sumThicknessChem: 0, sumVolume: 0, sumDensity: 0, sumPorosity: 0 
+        sumThicknessChem: 0, sumVolume: 0, sumDensity: 0, sumPorosity: 0,
+        sumHard1: 0, sumHard2: 0, sumHard3: 0
     };
 
     rows.each(function() {
@@ -351,6 +315,10 @@ function calculateAllRows() {
         totalData.sumVolume += parseFloat($(this).find('.calc-volume').val()) || 0;
         totalData.sumDensity += parseFloat($(this).find('.calc-density').val()) || 0;
         totalData.sumPorosity += parseFloat($(this).find('.calc-porosity').val()) || 0;
+        
+        totalData.sumHard1 += parseFloat($(this).find('.hard-1').val()) || 0;
+        totalData.sumHard2 += parseFloat($(this).find('.hard-2').val()) || 0;
+        totalData.sumHard3 += parseFloat($(this).find('.hard-3').val()) || 0;
     });
 
     var footerHtml = '';
@@ -373,7 +341,9 @@ function calculateAllRows() {
                 <td>${totalData.sumVolume.toFixed(2)}</td>
                 <td>${totalData.sumDensity.toFixed(2)}</td>
                 <td>${totalData.sumPorosity.toFixed(2)}</td>
-                <td colspan="3"></td>
+                <td>${totalData.sumHard1.toFixed(2)}</td>
+                <td>${totalData.sumHard2.toFixed(2)}</td>
+                <td>${totalData.sumHard3.toFixed(2)}</td>
             </tr>
             <tr class="fw-bold bg-light">
                 <td>Average</td>
@@ -388,7 +358,9 @@ function calculateAllRows() {
                 <td>${(totalData.sumVolume / allCount).toFixed(2)}</td>
                 <td>${(totalData.sumDensity / allCount).toFixed(2)}</td>
                 <td>${(totalData.sumPorosity / allCount).toFixed(2)}</td>
-                <td colspan="3"></td>
+                <td>${(totalData.sumHard1 / allCount).toFixed(2)}</td>
+                <td>${(totalData.sumHard2 / allCount).toFixed(2)}</td>
+                <td>${(totalData.sumHard3 / allCount).toFixed(2)}</td>
             </tr>
         `;
     }
@@ -397,7 +369,7 @@ function calculateAllRows() {
     initOrUpdateCharts();
 }
 
-$(document).on('input', '.iron-w, .thick-1, .thick-2, .thick-3, .thick-4, .thick-5, .thick-6', function() {
+$(document).on('input', '.iron-w, .thick-1, .thick-2, .thick-3, .thick-4, .thick-5, .thick-6, .hard-1, .hard-2, .hard-3', function() {
     calculateAllRows();
 });
 
@@ -418,6 +390,11 @@ function initOrUpdateCharts() {
     let upperData = [];
     let lowerData = [];
 
+    let hardnessAvgData = [];
+    let hardness1Data = [];
+    let hardness2Data = [];
+    let hardness3Data = [];
+
     let targetDensity = parseFloat($('#total_density').val()) || 0;
     let upperDensity = targetDensity * 1.05;
     let lowerDensity = targetDensity * 0.95;
@@ -427,6 +404,18 @@ function initOrUpdateCharts() {
         let density = parseFloat($(this).find('.calc-density').val()) || 0;
         let porosity = parseFloat($(this).find('.calc-porosity').val()) || 0;
 
+        let h1 = parseFloat($(this).find('.hard-1').val()) || 0;
+        let h2 = parseFloat($(this).find('.hard-2').val()) || 0;
+        let h3 = parseFloat($(this).find('.hard-3').val()) || 0;
+
+        // คำนวณค่าเฉลี่ย Hardness เฉพาะช่องที่มีค่า > 0
+        let validHCount = 0;
+        let hSum = 0;
+        if (h1 > 0) { hSum += h1; validHCount++; }
+        if (h2 > 0) { hSum += h2; validHCount++; }
+        if (h3 > 0) { hSum += h3; validHCount++; }
+        let hAvg = validHCount > 0 ? (hSum / validHCount) : 0;
+
         if ($(this).find('td.text-muted').length === 0) {
             labels.push('Cavity ' + rowNum);
             densityData.push(density);
@@ -434,9 +423,15 @@ function initOrUpdateCharts() {
             targetData.push(targetDensity);
             upperData.push(upperDensity);
             lowerData.push(lowerDensity);
+
+            hardness1Data.push(h1);
+            hardness2Data.push(h2);
+            hardness3Data.push(h3);
+            hardnessAvgData.push(hAvg);
         }
     });
 
+    // 1. กราฟ Density
     const densityEl = document.getElementById('densityChart');
     if (densityEl) {
         const densityCtx = densityEl.getContext('2d');
@@ -507,6 +502,7 @@ function initOrUpdateCharts() {
         });
     }
 
+    // 2. กราฟ %Porosity
     const porosityEl = document.getElementById('porosityChart');
     if (porosityEl) {
         const porosityCtx = porosityEl.getContext('2d');
@@ -564,6 +560,87 @@ function initOrUpdateCharts() {
                     y: { 
                         beginAtZero: true,
                         suggestedMax: 7 
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+    }
+
+    // 3. กราฟ Hardness (Average และจุดที่ 1, 2, 3)
+    const hardnessEl = document.getElementById('hardnessChart');
+    if (hardnessEl) {
+        const hardnessCtx = hardnessEl.getContext('2d');
+        if (hardnessChartInstance) {
+            hardnessChartInstance.destroy();
+        }
+
+        hardnessChartInstance = new Chart(hardnessCtx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Hardness Avg',
+                        data: hardnessAvgData,
+                        borderColor: 'rgba(255, 159, 64, 1)',
+                        backgroundColor: 'rgba(255, 159, 64, 0.2)',
+                        borderWidth: 3,
+                        tension: 0.1,
+                        order: 1
+                    },
+                    {
+                        label: 'Hardness 1',
+                        data: hardness1Data,
+                        borderColor: 'rgba(54, 162, 235, 0.7)',
+                        borderWidth: 1.5,
+                        borderDash: [3, 3],
+                        pointRadius: 2,
+                        fill: false,
+                        order: 2
+                    },
+                    {
+                        label: 'Hardness 2',
+                        data: hardness2Data,
+                        borderColor: 'rgba(75, 192, 192, 0.7)',
+                        borderWidth: 1.5,
+                        borderDash: [3, 3],
+                        pointRadius: 2,
+                        fill: false,
+                        order: 2
+                    },
+                    {
+                        label: 'Hardness 3',
+                        data: hardness3Data,
+                        borderColor: 'rgba(153, 102, 255, 0.7)',
+                        borderWidth: 1.5,
+                        borderDash: [3, 3],
+                        pointRadius: 2,
+                        fill: false,
+                        order: 2
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    datalabels: {
+                        align: 'top',
+                        formatter: function(value, context) {
+                            // แสดงป้ายตัวเลขเฉพาะเส้นค่าเฉลี่ย (Hardness Avg) เพื่อความสะอาดตา
+                            if (context.datasetIndex === 0 && value > 0) {
+                                return value.toFixed(1);
+                            }
+                            return '';
+                        },
+                        font: { size: 9, weight: 'bold' },
+                        color: '#333'
+                    }
+                },
+                scales: {
+                    y: { 
+                        beginAtZero: false,
+                        grace: '15%' 
                     }
                 }
             },
