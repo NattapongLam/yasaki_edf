@@ -186,6 +186,21 @@ class DensityWorkcloth extends Controller
         DB::beginTransaction();
         try {
             $hd = DensityWorkclothHd::findOrFail($id);
+            $data = [
+                'mlod_cavity'                  => $request->mlod_cavity,
+                'mlod_area'                    => $request->mlod_area,
+                'mlod_pressure'                => $request->mlod_pressure,
+                'density_workcloth_hds_flag'   => 1, // ค่าเริ่มต้นหรือสถานะ (ปรับเปลี่ยนได้ตามระบบของคุณ)
+                'person_at'                    => auth()->user()->name ?? 'System', // หรือใช้ ID ผู้ใช้งาน
+                'chemical_weight'              => $request->chemical_weight,
+                'chemical_temp'                => $request->chemical_temp,
+                'updated_at'                   => Carbon::now(),
+                'density_workcloth_hds_date'   => $request->density_workcloth_hds_date,
+                'machinery_name'               => $request->machinery_name,
+                'mlod_volume'                  => $request->mlod_volume,
+                'density_workcloth_hds_note'   => $request->density_workcloth_hds_note
+            ];
+            DensityWorkclothHd::where('density_workcloth_hds_id',$id)->update($data);
             if ($request->has('cavity') && is_array($request->cavity)) {
                 foreach ($request->cavity as $listno => $item) {
                     DensityWorkclothDt::updateOrCreate(
