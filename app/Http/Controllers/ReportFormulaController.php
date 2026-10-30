@@ -503,90 +503,218 @@ public function checkTestHeaders(Request $request)
         ];
     }
 
-    // 2. ดึงข้อมูล Density Headers ที่ Active และตรงกับสูตรเคมี (พร้อมดึงค่า Upper/Lower ตามตัวอย่างของคุณ)
-    $densitys = DB::table('density_workpiece_hds')
-            ->select(
-                'density_workpiece_hds.*',
-                DB::raw('total_density * 1.05 as upper_density'), // ปรับสูตรคำนวณหรือเปลี่ยนเป็นชื่อฟิลด์จริงตามต้องการ
-                DB::raw('total_density * 0.95 as lower_density')  
-            )
+    // -------------------------------------------------------------------------
+    // 2. ดึงข้อมูล Density จากตาราง Workcloth และ Workpiece (แยกดึงเพื่อป้องกัน ID ชนกัน)
+    // -------------------------------------------------------------------------
+
+    // 2.1 ข้อมูลส่วน Cloth
+    $clothHeaders = DB::table('density_workcloth_hds')
+            ->where('density_workcloth_hds_flag', true)
+            ->where('chemistry_hd_name', $formulaNumber)
+            ->get();
+            
+    $clothIds = $clothHeaders->pluck('density_workcloth_hds_id');
+    
+    $clothDetails = $clothIds->isNotEmpty() 
+        ? DB::table('density_workcloth_dts')->whereIn('density_workcloth_hds_id', $clothIds)->get()
+        : collect();
+
+    // 2.2 ข้อมูลส่วน Workpiece
+    $workpieceHeaders = DB::table('density_workpiece_hds')
             ->where('density_workpiece_hds_flag', true)
             ->where('chemistry_hd_name', $formulaNumber)
             ->get();
-
-    // Map ค่าต่างๆ จาก density_workpiece_hds_id
-    $moldCodeMap = $densitys->pluck('mlod_code', 'density_workpiece_hds_id')->toArray();
-    $productCodeMap = $densitys->pluck('product_code', 'density_workpiece_hds_id')->toArray();
+            
+    $workpieceIds = $workpieceHeaders->pluck('density_workpiece_hds_id');
     
-    // สร้าง Map สำหรับเก็บค่า Upper และ Lower ของแต่ละ Header
-    $upperDensityMap = $densitys->pluck('upper_density', 'density_workpiece_hds_id')->toArray();
-    $lowerDensityMap = $densitys->pluck('lower_density', 'density_workpiece_hds_id')->toArray();
-    
-    $densityIds = array_keys($moldCodeMap);
+    $workpieceDetails = $workpieceIds->isNotEmpty() 
+        ? DB::table('density_workpiece_dts')->whereIn('density_workpiece_hds_id', $workpieceIds)->get()
+        : collect();
 
-    // 3. ดึงข้อมูล Density Details ตามรายการทั้งหมด เรียงตาม Header และ Listno
-    $allDensitys = DB::table('density_workpiece_dts')
-            ->whereIn('density_workpiece_hds_id', $densityIds)
-            ->orderBy('density_workpiece_dts_id', 'asc')
-            ->orderBy('density_workpiece_dts_listno', 'asc')
-            ->get();
+    // -------------------------------------------------------------------------
+    // 3. จัดการ Map ค่าและรวมข้อมูล Details พร้อมใส่ Prefix ป้องกัน ID ชนกัน
+    // -------------------------------------------------------------------------
+    $moldCodeMap = [];
+    $productCodeMap = [];
+    $upperDensityMap = [];
+    $lowerDensityMap = [];
+    $allDensitys = collect();
+    $densitys = collect(); // สำหรับส่งกลับไป View (รวม Header ทั้งสองฝั่งในรูปแบบโครงสร้าง Workpiece)
 
-    // 4. จัดกลุ่มข้อมูลแยกตาม mold_code และ product_code พร้อมรันเลข List ต่อเนื่อง
+    // --- Process Cloth ---
+    foreach ($clothHeaders as $row) {
+        $hdsId = 'cloth_' . $row->density_workcloth_hds_id;
+        
+        $normalizedClothRow = (object)[
+            'density_workpiece_hds_id'   => $row->density_workcloth_hds_id,
+            'density_workpiece_hds_date' => $row->density_workcloth_hds_date ?? null,
+            'mlod_name'                  => $row->mlod_name ?? 'Cloth Mold',
+            'mlod_code'                  => $row->mlod_code ?? '-',
+            'product_name'               => $row->product_name ?? 'Cloth Product',
+            'product_code'               => $row->product_code ?? '-',
+            'mlod_area'                  => $row->mlod_area ?? 0,
+            'mlod_pressure'              => $row->mlod_pressure ?? null,
+            'chemical_temp'              => $row->chemical_temp ?? '-',
+            'total_density'              => $row->total_density ?? 0,
+        ];
+        
+        $densitys->push($normalizedClothRow);
+
+        $moldCodeMap[$hdsId] = $row->mlod_code ?? 'Cloth Mold';
+        $productCodeMap[$hdsId] = $row->product_code ?? 'Cloth Product';
+        
+        $totalDensity = floatval($row->total_density ?? 0);
+        $upperDensityMap[$hdsId] = $totalDensity * 1.05;
+        $lowerDensityMap[$hdsId] = $totalDensity * 0.95;
+    }
+
+    foreach ($clothDetails as $row) {
+        $densityVal = $row->density_workcloth_dts_density ?? ($row->density_density ?? ($row->density ?? 0));
+        $porosityVal = $row->density_workcloth_dts_porosity ?? ($row->porosity ?? 0);
+
+        $allDensitys->push((object)[
+            'density_workpiece_hds_id' => 'cloth_' . $row->density_workcloth_hds_id,
+            'density_workpiece_dts_id' => $row->density_workcloth_dts_id ?? 0,
+            'density_workpiece_dts_listno' => $row->density_workcloth_dts_listno ?? 1,
+            'density_workpiece_dts_density' => floatval($densityVal),
+            'density_workpiece_dts_porosity' => floatval($porosityVal),
+            'product_sides' => $row->product_sides ?? 'ไม่ระบุ',
+        ]);
+    }
+
+    // --- Process Workpiece ---
+    foreach ($workpieceHeaders as $row) {
+        $hdsId = 'workpiece_' . $row->density_workpiece_hds_id;
+        
+        $densitys->push($row);
+
+        $moldCodeMap[$hdsId] = $row->mlod_code ?? 'Unknown Mold';
+        $productCodeMap[$hdsId] = $row->product_code ?? 'Unknown Product';
+        
+        $totalDensity = floatval($row->total_density ?? 0);
+        $upperDensityMap[$hdsId] = $totalDensity * 1.05;
+        $lowerDensityMap[$hdsId] = $totalDensity * 0.95;
+    }
+
+    foreach ($workpieceDetails as $row) {
+        $densityVal = $row->density_workpiece_dts_density ?? 0;
+        $porosityVal = $row->density_workpiece_dts_porosity ?? 0;
+
+        $allDensitys->push((object)[
+            'density_workpiece_hds_id' => 'workpiece_' . $row->density_workpiece_hds_id,
+            'density_workpiece_dts_id' => $row->density_workpiece_dts_id ?? 0,
+            'density_workpiece_dts_listno' => $row->density_workpiece_dts_listno ?? 1,
+            'density_workpiece_dts_density' => floatval($densityVal),
+            'density_workpiece_dts_porosity' => floatval($porosityVal),
+            'product_sides' => $row->product_sides ?? 'ไม่ระบุ',
+        ]);
+    }
+
+    // -------------------------------------------------------------------------
+    // 4. จัดกลุ่มข้อมูลและคำนวณค่า AVG ตาม Listno (Cavity) และใช้ total_density เป็น Target
+    // -------------------------------------------------------------------------
     $chartsPerMold = [];
+    $tempGroupedByMoldAndList = [];
+    
+    $groupTotalDensitySum = [];
+    $groupTotalDensityCount = [];
+
+    // เก็บผลรวม total_density จาก Header ของทั้งสองตารางล่วงหน้าตามกลุ่ม GroupKey
+    foreach ($clothHeaders as $row) {
+        $moldCode = $row->mlod_code ?? 'Cloth Mold';
+        $productCode = $row->product_code ?? 'Cloth Product';
+        $groupKey = $moldCode . ' | Product: ' . $productCode;
+        
+        if (isset($row->total_density)) {
+            $groupTotalDensitySum[$groupKey] = ($groupTotalDensitySum[$groupKey] ?? 0) + floatval($row->total_density);
+            $groupTotalDensityCount[$groupKey] = ($groupTotalDensityCount[$groupKey] ?? 0) + 1;
+        }
+    }
+
+    foreach ($workpieceHeaders as $row) {
+        $moldCode = $row->mlod_code ?? 'Unknown Mold';
+        $productCode = $row->product_code ?? 'Unknown Product';
+        $groupKey = $moldCode . ' | Product: ' . $productCode;
+        
+        if (isset($row->total_density)) {
+            $groupTotalDensitySum[$groupKey] = ($groupTotalDensitySum[$groupKey] ?? 0) + floatval($row->total_density);
+            $groupTotalDensityCount[$groupKey] = ($groupTotalDensityCount[$groupKey] ?? 0) + 1;
+        }
+    }
+
     foreach ($allDensitys as $row) {
         $hdsId = $row->density_workpiece_hds_id;
         $moldCode = $moldCodeMap[$hdsId] ?? 'Unknown Mold';
         $productCode = $productCodeMap[$hdsId] ?? 'Unknown Product';
-        
-        // ดึงค่า Upper และ Lower จาก Header ที่ผูกไว้ (หากมีหลายเรคอร์ดใน Header เดียวกัน ค่าจะใช้เรทเดียวกันตาม Header)
-        $upperVal = floatval($upperDensityMap[$hdsId] ?? 0);
-        $lowerVal = floatval($lowerDensityMap[$hdsId] ?? 0);
-        
-        // สร้าง Key ผสมระหว่าง Mold และ Product เพื่อแยกกราฟออกจากกันอย่างอิสระ
         $groupKey = $moldCode . ' | Product: ' . $productCode;
+
+        $listNo = $row->density_workpiece_dts_listno;
+
+        // จัดกลุ่มเก็บตาม Group และ Listno เพื่อหาค่าเฉลี่ยตาม Cavity
+        $tempGroupedByMoldAndList[$groupKey][$listNo]['densities'][] = $row->density_workpiece_dts_density;
+        $tempGroupedByMoldAndList[$groupKey][$listNo]['porosities'][] = $row->density_workpiece_dts_porosity;
+        $tempGroupedByMoldAndList[$groupKey][$listNo]['sides'] = $row->product_sides ?? 'ไม่ระบุ';
         
-        if (!isset($chartsPerMold[$groupKey])) {
-            $chartsPerMold[$groupKey] = [
-                'mold_code' => $moldCode,
-                'product_code' => $productCode,
-                'labels' => [],
-                'actualDensity' => [],
-                'targetDensity' => [],
-                'upperDensity' => [], // อาเรย์เก็บค่า Upper Limit สำหรับส่งเข้ากราฟ
-                'lowerDensity' => [], // อาเรย์เก็บค่า Lower Limit สำหรับส่งเข้ากราฟ
-                'porosity' => [],
-                'sides' => [],
-                'rawActual' => [],
-                'counter' => 1 
-            ];
+        $tempGroupedByMoldAndList[$groupKey][$listNo]['upper'] = floatval($upperDensityMap[$hdsId] ?? 0);
+        $tempGroupedByMoldAndList[$groupKey][$listNo]['lower'] = floatval($lowerDensityMap[$hdsId] ?? 0);
+    }
+
+    foreach ($tempGroupedByMoldAndList as $groupKey => $listItems) {
+        // แยก Mold และ Product ออกจาก GroupKey
+        [$moldCode, $productCodePart] = explode(' | Product: ', $groupKey);
+        $productCode = str_replace('Product: ', '', $productCodePart);
+
+        // เรียงลำดับตาม listno (Cavity 1, 2, 3...)
+        ksort($listItems);
+
+        $labels = [];
+        $actualDensity = [];
+        $upperDensity = [];
+        $lowerDensity = [];
+        $porosity = [];
+        $sides = [];
+        $rawActual = [];
+
+        foreach ($listItems as $listNo => $data) {
+            // คำนวณค่าเฉลี่ย (AVG) ของ Cavity (listno) นั้นๆ จากทุกๆ ใบ (Header)
+            $avgDensity = count($data['densities']) > 0 ? (array_sum($data['densities']) / count($data['densities'])) : 0;
+            $avgPorosity = count($data['porosities']) > 0 ? (array_sum($data['porosities']) / count($data['porosities'])) : 0;
+            
+            $avgUpper = count($data['densities']) > 0 ? $data['upper'] : 0;
+            $avgLower = count($data['densities']) > 0 ? $data['lower'] : 0;
+
+            $labels[] = 'Cavity: ' . $listNo;
+            $actualDensity[] = $avgDensity;
+            $upperDensity[] = $avgUpper;
+            $lowerDensity[] = $avgLower;
+            $porosity[] = $avgPorosity;
+            $sides[] = $data['sides'];
+            $rawActual[] = $avgDensity;
         }
-        
-        $actualVal = floatval($row->density_workpiece_dts_density ?? 0);
-        $porosityVal = floatval($row->density_workpiece_dts_porosity ?? 0);
 
-        $chartsPerMold[$groupKey]['labels'][] = 'Cavity: ' . $chartsPerMold[$groupKey]['counter'];
-        $chartsPerMold[$groupKey]['counter']++; 
+        // คำนวณค่าเฉลี่ยของ total_density สำหรับใช้เป็นเส้น Target Density
+        $sumTotalDensity = $groupTotalDensitySum[$groupKey] ?? 0;
+        $countTotalDensity = $groupTotalDensityCount[$groupKey] ?? 0;
+        $avgTotalDensity = $countTotalDensity > 0 ? ($sumTotalDensity / $countTotalDensity) : 0;
 
-        $chartsPerMold[$groupKey]['actualDensity'][] = $actualVal;
-        $chartsPerMold[$groupKey]['upperDensity'][] = $upperVal; // เติมค่า Upper ลงอาเรย์ตามจำนวน Cavity
-        $chartsPerMold[$groupKey]['lowerDensity'][] = $lowerVal; // เติมค่า Lower ลงอาเรย์ตามจำนวน Cavity
-        $chartsPerMold[$groupKey]['porosity'][] = $porosityVal;
-        $chartsPerMold[$groupKey]['sides'][] = $row->product_sides ?? 'ไม่ระบุ';
+        $count = count($rawActual);
+        $targetDensity = array_fill(0, $count, $avgTotalDensity);
 
-        // เก็บค่าดิบสำหรับนำไปหาค่าเฉลี่ย (AVG)
-        $chartsPerMold[$groupKey]['rawActual'][] = $actualVal;
+        $chartsPerMold[$groupKey] = [
+            'mold_code' => $moldCode,
+            'product_code' => $productCode,
+            'labels' => $labels,
+            'actualDensity' => $actualDensity,
+            'targetDensity' => $targetDensity,
+            'upperDensity' => $upperDensity,
+            'lowerDensity' => $lowerDensity,
+            'porosity' => $porosity,
+            'sides' => $sides,
+            'rawActual' => $rawActual
+        ];
     }
 
-    // 5. คำนวณค่าเฉลี่ย (AVG) ของ Actual Density ในแต่ละกลุ่ม มาตั้งเป็นเส้น targetDensity
-    foreach ($chartsPerMold as $groupKey => &$data) {
-        $count = count($data['rawActual']);
-        $avgActual = $count > 0 ? (array_sum($data['rawActual']) / $count) : 0;
-        
-        $data['targetDensity'] = array_fill(0, $count, $avgActual);
-    }
-    unset($data);
-
-    // 6. ส่งข้อมูลทั้งหมดไปยังหน้า View
+    // 5. ส่งข้อมูลทั้งหมดไปยังหน้า View
     return view('report.report-formulaslist', compact(
         'formulaNumber', 
         'tests', 
