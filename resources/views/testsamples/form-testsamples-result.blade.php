@@ -61,7 +61,7 @@
                                         {{$item->ar_requestorder_statuses_name}}
                                     </span>
                                 @else
-                                    <span class="bg-danger bg-soft">
+                                    <span class="bg-success bg-soft">
                                         {{$item->ar_requestorder_statuses_name}}
                                     </span>
                                 @endif
