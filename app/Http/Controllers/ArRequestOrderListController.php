@@ -34,7 +34,8 @@ class ArRequestOrderListController extends Controller
 
         $hd = DB::table('ar_requestorder_hds') // ปรับชื่อตารางตามจริงของคุณ
             ->leftJoin('ar_requestorder_statuses', 'ar_requestorder_hds.ar_requestorder_statuses_id', '=', 'ar_requestorder_statuses.ar_requestorder_statuses_id')
-            ->select('ar_requestorder_hds.*', 'ar_requestorder_statuses.ar_requestorder_statuses_name')
+            ->leftjoin('ar_requestorder_dts','ar_requestorder_hds.ar_requestorder_hds_id','=','ar_requestorder_dts.ar_requestorder_hds_id')
+            ->select('ar_requestorder_hds.*', 'ar_requestorder_statuses.ar_requestorder_statuses_name','ar_requestorder_dts.ar_requestorder_dts_jis_class')
             ->whereBetween('ar_requestorder_hds_date', [$startDate, $endDate])
             ->get();
         return view('sales.form-requestorder-list', compact('hd','startDate', 'endDate'));

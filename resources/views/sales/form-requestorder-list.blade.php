@@ -88,7 +88,18 @@
                                 {{$item->ar_requestorder_hds_date}}
                             </td>
                             <td>
-                                {{$item->ar_requestorder_hds_docuno}}
+                                {{$item->ar_requestorder_hds_docuno}}<br>
+                                @if ($item->ar_requestorder_dts_jis_class == "CLASS_3")
+                                    JIS D 4411 Class 3<br> (Heavy Loads) <br> 
+                                    <a href="{{ route('report.xbar', $item->ar_requestorder_hds_docuno) }}" class="btn btn-sm btn-info" target="_blank" title="เปิดกราฟ X-bar & R">
+                                        <i class="fas fa-print"></i>
+                                    </a>
+                                @elseif($item->ar_requestorder_dts_jis_class == "CLASS_4")
+                                    JIS D 4411 Class 4<br> (Disc Brakes) <br> 
+                                    <a href="{{ route('report.xbar', $item->ar_requestorder_hds_docuno) }}" class="btn btn-sm btn-info" target="_blank" title="เปิดกราฟ X-bar & R">
+                                        <i class="fas fa-print"></i>
+                                    </a>
+                                @endif
                             </td>
                             <td>
                                 {{$item->ar_requestorder_hds_duedate}}
