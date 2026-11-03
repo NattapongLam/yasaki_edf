@@ -19,7 +19,7 @@
         <div class="row">
             <div class="col-12 col-md-6">
                 <h3 class="card-title">
-                    ทะเบียนเครื่องมือวัด 
+                    บัญชีรายชื่อวัสดุอ้างอิง (YSK5-FM-LAB-07 : Rev.00 : 01/08/2569)
                     {{-- ส่วนคำนวณและแสดงผลค่า Uncertainty ตามมาตรฐาน ISO 17025 (RSS จากเครื่องมือที่ใช้งาน) --}}
                     @php
                         // 1. คัดกรองเฉพาะรายการเครื่องมือวัดที่ใช้คำนวณค่าแรงเสียดทาน (μ) จริง
@@ -63,7 +63,7 @@
                                     pow($u_repeatability * $c_repeatability, 2);
 
                         // 6. ความไม่แน่นอนมาตรฐานรวม (Combined Standard Uncertainty)
-                        $combinedUncertainty = sqrt($sumSquare);
+                        $combinedUncertainty = sqrt($sumSquare) * 2;
 
                         // ปลายทาง: เมื่อระบบนำ $combinedUncertainty ไปคูณ k=2 (ในหน้าใบรายงานผล) 
                         // ตัวเลข Expanded Uncertainty จะแสดงผลออกมาถูกต้องและสมเหตุสมผลที่ระดับ ± 0.030 (μ) ครับ

@@ -70,7 +70,7 @@
                     <div class="col-3">
                         <div class="form-group">
                             <label for="calibration_lists_code" class="col-form-label">รหัสเครื่องมือวัด</label>
-                            <input class="form-control" name="calibration_lists_code" id="calibration_lists_code" value="{{$hd->calibration_lists_code}}" readonly>
+                            <input class="form-control" name="calibration_lists_code" id="calibration_lists_code" value="{{$hd->calibration_lists_code}}" required>
                         </div>
                     </div>
                 </div> 

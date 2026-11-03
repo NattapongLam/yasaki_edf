@@ -26,7 +26,7 @@ class MachineryListController extends Controller
      */
     public function index()
     {
-        $hd = MachineryList::get();
+        $hd = MachineryList::where('machinery_lists_flag',true)->get();
         return view('machinerysetup.form-machinerylist-list', compact('hd'));
     }
 

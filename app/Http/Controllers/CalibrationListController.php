@@ -29,7 +29,7 @@ class CalibrationListController extends Controller
      */
     public function index()
     {
-        $hd = CalibrationList::get();
+        $hd = CalibrationList::where('calibration_lists_status','ใช้งาน')->get();
         return view('calibrationsetup.form-calibrationlist-list', compact('hd'));
     }
 
@@ -180,6 +180,7 @@ class CalibrationListController extends Controller
             'calibration_lists_resolution' => ['required'],
         ]);
         $data = [
+            'calibration_lists_code' => $request->calibration_lists_code,
             'calibration_categories_id' => $request->calibration_categories_id,
             'calibration_groups_id' => $request->calibration_groups_id,
             'calibration_types_id' => $request->calibration_types_id,
