@@ -17,17 +17,23 @@
 
     <div class="card">
         <div class="card-body">
-            <form action="{{ route('vendor.evaluation.store') }}" method="POST">
+            <!-- หัวข้อฟอร์ม + ปุ่มสร้างใหม่ (กรณีเปิดดูข้อมูลเก่าอยู่) -->
+            <div class="row mb-3 align-items-center">
+                <div class="col-12 col-md-6">
+                    <h3 class="card-title" id="form-title">แบบประเมินผู้ขาย / SUPPLIER EVALUATION (บันทึกใหม่)</h3>
+                </div> 
+                <div class="col-12 col-md-6 text-md-end" id="btn-new-container" style="display: none;">
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="resetToCreateMode()">
+                        <i class="fas fa-plus me-1"></i> ทำการประเมินใหม่ (Create New)
+                    </button>
+                </div>
+            </div> 
+
+            <form action="{{ route('vendor.evaluation.store') }}" method="POST" id="evaluation-form">
             @csrf
-                        
+                    
             <!-- Hidden ID สำหรับเชื่อมโยงกับ ap_vendor_lists -->
             <input type="hidden" name="ap_vendor_lists_id" value="{{ $hd->ap_vendor_lists_id }}">
-            <!-- หัวข้อหลัก -->
-            <div class="row mb-3">
-                <div class="col-12 col-md-6">
-                    <h3 class="card-title">แบบประเมินผู้ขาย / SUPPLIER EVALUATION</h3>
-                </div> 
-            </div> 
 
             <!-- ข้อมูลส่วนหัวฟอร์ม -->
             <div class="row mt-2 g-3">
@@ -37,15 +43,15 @@
                 </div>
                 <div class="col-md-3 col-sm-6">
                     <label class="form-label">วันที่ประเมิน (Date):</label>
-                    <input class="form-control" type="date" name="evaluation_date" value=""> 
+                    <input class="form-control" type="date" name="evaluation_date" id="evaluation_date" value="{{ date('Y-m-d') }}"> 
                 </div>
                 <div class="col-md-3 col-sm-6">
                     <label class="form-label">สินค้า / บริการที่ซื้อ (Goods / services):</label>
-                    <input class="form-control" type="text" name="goods_services" value=""> 
+                    <input class="form-control" type="text" name="goods_services" id="goods_services" value=""> 
                 </div>
                 <div class="col-md-3 col-sm-6">
                     <label class="form-label">รอบการประเมิน (Period evaluated):</label>
-                    <input class="form-control" type="text" name="period_evaluated" value=""> 
+                    <input class="form-control" type="text" name="period_evaluated" id="period_evaluated" value=""> 
                 </div>
             </div>
 
@@ -66,46 +72,23 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @for ($i = 1; $i <= 5; $i++)
                                 <tr>
-                                    <td>1</td>
-                                    <td class="text-start">คุณภาพสินค้า ตรงสเปก ของเสียน้อย<br><small class="text-muted">(Quality: meets specification, few rejects)</small></td>
+                                    <td>{{ $i }}</td>
+                                    <td class="text-start">
+                                        @if($i == 1) คุณภาพสินค้า ตรงสเปก ของเสียน้อย<br><small class="text-muted">(Quality: meets specification, few rejects)</small>
+                                        @elseif($i == 2) การส่งมอบ ตรงเวลาและครบจำนวน<br><small class="text-muted">(Delivery: on time and complete)</small>
+                                        @elseif($i == 3) ราคาและเงื่อนไขการค้า<br><small class="text-muted">(Price and commercial terms)</small>
+                                        @elseif($i == 4) การบริการและการตอบสนอง<br><small class="text-muted">(Service and responsiveness)</small>
+                                        @elseif($i == 5) เอกสารครบถ้วน COA / SDS / ใบรับประกัน<br><small class="text-muted">(Documents: COA / SDS / warranty)</small>
+                                        @endif
+                                    </td>
                                     <td>5</td>
-                                    <td><input type="number" class="form-control text-center eval-score" name="score_1" min="1" max="5" value="0"></td>
-                                    <td><input type="text" class="form-control" name="score_from_1"></td>
-                                    <td><input type="text" class="form-control" name="notes_1"></td>
+                                    <td><input type="number" class="form-control text-center eval-score" name="score_{{ $i }}" id="score_{{ $i }}" min="1" max="5" value="0"></td>
+                                    <td><input type="text" class="form-control" name="score_from_{{ $i }}" id="score_from_{{ $i }}"></td>
+                                    <td><input type="text" class="form-control" name="notes_{{ $i }}" id="notes_{{ $i }}"></td>
                                 </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td class="text-start">การส่งมอบ ตรงเวลาและครบจำนวน<br><small class="text-muted">(Delivery: on time and complete)</small></td>
-                                    <td>5</td>
-                                    <td><input type="number" class="form-control text-center eval-score" name="score_2" min="1" max="5" value="0"></td>
-                                    <td><input type="text" class="form-control" name="score_from_2"></td>
-                                    <td><input type="text" class="form-control" name="notes_2"></td>
-                                </tr>
-                                <tr>
-                                    <td>3</td>
-                                    <td class="text-start">ราคาและเงื่อนไขการค้า<br><small class="text-muted">(Price and commercial terms)</small></td>
-                                    <td>5</td>
-                                    <td><input type="number" class="form-control text-center eval-score" name="score_3" min="1" max="5" value="0"></td>
-                                    <td><input type="text" class="form-control" name="score_from_3"></td>
-                                    <td><input type="text" class="form-control" name="notes_3"></td>
-                                </tr>
-                                <tr>
-                                    <td>4</td>
-                                    <td class="text-start">การบริการและการตอบสนอง<br><small class="text-muted">(Service and responsiveness)</small></td>
-                                    <td>5</td>
-                                    <td><input type="number" class="form-control text-center eval-score" name="score_4" min="1" max="5" value="0"></td>
-                                    <td><input type="text" class="form-control" name="score_from_4"></td>
-                                    <td><input type="text" class="form-control" name="notes_4"></td>
-                                </tr>
-                                <tr>
-                                    <td>5</td>
-                                    <td class="text-start">เอกสารครบถ้วน COA / SDS / ใบรับประกัน<br><small class="text-muted">(Documents: COA / SDS / warranty)</small></td>
-                                    <td>5</td>
-                                    <td><input type="number" class="form-control text-center eval-score" name="score_5" min="1" max="5" value="0"></td>
-                                    <td><input type="text" class="form-control" name="score_from_5"></td>
-                                    <td><input type="text" class="form-control" name="notes_5"></td>
-                                </tr>
+                                @endfor
                             </tbody>
                             <tfoot class="table-light fw-bold">
                                 <tr>
@@ -130,7 +113,7 @@
                         <!-- เกณฑ์ผล -->
                         <div class="mb-3">
                             <span class="text-muted font-size-13">
-                                <i class="mdi mdi-information-outline me-1"></i><strong>เกณฑ์ผล (Grades):</strong> 20 คะแนนขึ้นไป = A คงสถานะ · 15-19 = B มีเงื่อนไข · ต่ำกว่า 15 = C ทบทวน/ระงับ <span class="text-muted font-size-11">(ปรับเกณฑ์ได้ตามนโยบายบริษัท)</span>
+                                <i class="mdi mdi-information-outline me-1"></i><strong>เกณฑ์ผล (Grades):</strong> 20 คะแนนขึ้นไป = A คงสถานะ · 15-19 = B มีเงื่อนไข · ต่ำกว่า 15 = C ทบทวน/ระงับ
                             </span>
                         </div>
 
@@ -140,23 +123,15 @@
                             <div class="d-flex flex-wrap gap-3">
                                 <div class="form-check form-check-inline mb-0">
                                     <input class="form-check-input" type="radio" name="decision" id="formRadios1" value="keep" checked>
-                                    <label class="form-check-label" for="formRadios1">
-                                        คงสถานะผู้ขายที่อนุมัติ <span class="text-muted">(Keep approved)</span>
-                                    </label>
+                                    <label class="form-check-label" for="formRadios1">คงสถานะผู้ขายที่อนุมัติ <span class="text-muted">(Keep approved)</span></label>
                                 </div>
-                                
                                 <div class="form-check form-check-inline mb-0">
                                     <input class="form-check-input" type="radio" name="decision" id="formRadios2" value="conditional">
-                                    <label class="form-check-label" for="formRadios2">
-                                        อนุมัติแบบมีเงื่อนไข <span class="text-muted">(Conditional)</span>
-                                    </label>
+                                    <label class="form-check-label" for="formRadios2">อนุมัติแบบมีเงื่อนไข <span class="text-muted">(Conditional)</span></label>
                                 </div>
-                                
                                 <div class="form-check form-check-inline mb-0">
                                     <input class="form-check-input" type="radio" name="decision" id="formRadios3" value="suspend">
-                                    <label class="form-check-label" for="formRadios3">
-                                        ระงับ / ถอดจากทะเบียน <span class="text-muted">(Suspend / remove)</span>
-                                    </label>
+                                    <label class="form-check-label" for="formRadios3">ระงับ / ถอดจากทะเบียน <span class="text-muted">(Suspend / remove)</span></label>
                                 </div>
                             </div>
                         </div>
@@ -170,24 +145,26 @@
                                 <div class="text-muted font-size-12">Follow-up / next evaluation due</div>
                             </div>
                             <div class="col-md-5">
-                                <input class="form-control" type="date" name="follow_up_date" value="">
+                                <input class="form-control" type="date" name="follow_up_date" id="follow_up_date" value="">
                             </div>
                         </div>
 
                     </div>
                 </div>
             </div>
+            
             <br>
-            <div class="col-12 col-md-1">
+            <div class="col-12 col-md-2" id="submit-btn-container">
                 <div class="form-group">
-                    <button type="submit" class="btn btn-block btn-primary">
-                            บันทึก
+                    <button type="submit" class="btn btn-block btn-primary w-100">
+                        บันทึกการประเมิน
                     </button>
                 </div>
-            </div>  
+            </div> 
         </form>            
         </div>
     </div>
+
     <div class="card mt-4">
         <div class="card-body">
             <h5 class="card-title mb-3">ประวัติรายการประเมินผู้ขาย (Evaluation History)</h5>
@@ -202,21 +179,21 @@
                             <th>คะแนนรวม (25)</th>
                             <th>ผลการตัดสินใจ (Decision)</th>
                             <th>ผู้ประเมิน</th>
-                            <th></th>
+                            <th>จัดการ</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse ($list as $index => $item)
+                            @php
+                                $totalHist = ($item->score_1 ?? 0) + ($item->score_2 ?? 0) + ($item->score_3 ?? 0) + ($item->score_4 ?? 0) + ($item->score_5 ?? 0);
+                            @endphp
                             <tr>
                                 <td>{{ $index + 1 }}</td>
                                 <td>{{ $item->evaluation_date ? \Carbon\Carbon::parse($item->evaluation_date)->format('d/m/Y') : '-' }}</td>
                                 <td>{{ $item->period_evaluated ?? '-' }}</td>
                                 <td>{{ $item->goods_services ?? '-' }}</td>
                                 <td>
-                                    @php
-                                        $total = ($item->score_1 ?? 0) + ($item->score_2 ?? 0) + ($item->score_3 ?? 0) + ($item->score_4 ?? 0) + ($item->score_5 ?? 0);
-                                    @endphp
-                                    <span class="fw-bold text-primary">{{ $total }}</span> / 25
+                                    <span class="fw-bold text-primary">{{ $totalHist }}</span> / 25
                                 </td>
                                 <td>
                                     @if($item->decision == 'keep')
@@ -231,14 +208,19 @@
                                 </td>
                                 <td>{{ $item->person_at ?? '-' }}</td>
                                 <td>
-                                    <a href="javascript:void(0)" class="btn btn-danger btn-sm" onclick="confirmDel('{{ $item->supplier_evaluations_id }}')">
+                                    <!-- ปุ่มดูข้อมูล -->
+                                    <button type="button" class="btn btn-info btn-sm" onclick='viewEvaluation(@json($item))' title="ดูข้อมูล">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <!-- ปุ่มลบ -->
+                                    <a href="javascript:void(0)" class="btn btn-danger btn-sm" onclick="confirmDel('{{ $item->supplier_evaluations_id }}')" title="ลบ">
                                         <i class="fas fa-trash"></i>
                                     </a>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="text-muted py-3">ยังไม่มีประวัติการประเมินผู้ขายรายนี้</td>
+                                <td colspan="8" class="text-muted py-3">ยังไม่มีประวัติการประเมินผู้ขายรายนี้</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -251,106 +233,178 @@
 
 @push('scriptjs')
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const scoreInputs = document.querySelectorAll('.eval-score');
-        const totalScoreSpan = document.getElementById('total-score');
-        const totalGradeSpan = document.getElementById('total-grade');
-        
-        // Radio buttons สำหรับเชื่อมโยงเกรดกับ Decision อัตโนมัติ (ถ้าต้องการ)
-        const radioKeep = document.getElementById('formRadios1');
-        const radioConditional = document.getElementById('formRadios2');
-        const radioSuspend = document.getElementById('formRadios3');
+    const scoreInputs = document.querySelectorAll('.eval-score');
+    const totalScoreSpan = document.getElementById('total-score');
+    const totalGradeSpan = document.getElementById('total-grade');
+    
+    const radioKeep = document.getElementById('formRadios1');
+    const radioConditional = document.getElementById('formRadios2');
+    const radioSuspend = document.getElementById('formRadios3');
 
-        function calculateTotal() {
-            let sum = 0;
-            scoreInputs.forEach(input => {
-                let val = parseFloat(input.value) || 0;
-                // จำกัดค่าไม่ให้เกิน 5 หรือต่ำกว่า 1
-                if (val > 5) val = 5;
-                if (val < 0) val = 0;
-                sum += val;
-            });
+    let isViewMode = false;
 
-            totalScoreSpan.textContent = sum;
-
-            // กำหนดเกรดและปรับเปลี่ยน Radio อัตโนมัติตามเกณฑ์ที่คุณให้มา
-            if (sum >= 20) {
-                totalGradeSpan.textContent = 'เกรด A (คงสถานะ)';
-                totalGradeSpan.className = 'badge bg-success fs-6';
-                radioKeep.checked = true; // เลือก "คงสถานะผู้ขายที่อนุมัติ" ให้เอง
-            } else if (sum >= 15 && sum <= 19) {
-                totalGradeSpan.textContent = 'เกรด B (มีเงื่อนไข ติดตามผล)';
-                totalGradeSpan.className = 'badge bg-warning text-dark fs-6';
-                radioConditional.checked = true; // เลือก "อนุมัติแบบมีเงื่อนไข" ให้เอง
-            } else {
-                totalGradeSpan.textContent = 'เกรด C (ทบทวน/ระงับ)';
-                totalGradeSpan.className = 'badge bg-danger fs-6';
-                radioSuspend.checked = true; // เลือก "ระงับ / ถอดจากทะเบียน" ให้เอง
-            }
-        }
-
-        // ดักจับการพิมพ์คะแนน
+    function calculateTotal() {
+        let sum = 0;
         scoreInputs.forEach(input => {
-            input.addEventListener('input', calculateTotal);
+            let val = parseFloat(input.value) || 0;
+            if (val > 5) val = 5;
+            if (val < 0) val = 0;
+            sum += val;
         });
 
-        // คำนวณครั้งแรกตอนโหลดหน้าเว็บ
-        calculateTotal();
+        totalScoreSpan.textContent = sum;
+
+        if (sum >= 20) {
+            totalGradeSpan.textContent = 'เกรด A (คงสถานะ)';
+            totalGradeSpan.className = 'badge bg-success fs-6';
+            if(!isViewMode) radioKeep.checked = true;
+        } else if (sum >= 15 && sum <= 19) {
+            totalGradeSpan.textContent = 'เกรด B (มีเงื่อนไข ติดตามผล)';
+            totalGradeSpan.className = 'badge bg-warning text-dark fs-6';
+            if(!isViewMode) radioConditional.checked = true;
+        } else {
+            totalGradeSpan.textContent = 'เกรด C (ทบทวน/ระงับ)';
+            totalGradeSpan.className = 'badge bg-danger fs-6';
+            if(!isViewMode) radioSuspend.checked = true;
+        }
+    }
+
+    scoreInputs.forEach(input => {
+        input.addEventListener('input', calculateTotal);
     });
-function confirmDel(refid) {
-    Swal.fire({
-        title: 'คุณแน่ใจหรือไม่ !',
-        text: `คุณต้องการลบรายการนี้หรือไม่ ?`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'ยืนยัน',
-        cancelButtonText: 'ยกเลิก',
-        confirmButtonClass: 'btn btn-success',
-        cancelButtonClass: 'btn btn-danger',
-        buttonsStyling: false         
-    }).then(function(result) {
-        if (result.value) {
-            $.ajax({
-                url: `{{ url('/confirmDelVendorEvaluation') }}`, // ปรับเปลี่ยน URL ตาม Route จริงของระบบท่านหากจำเป็น
-                type: "POST",
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    "refid": refid,               
-                },         
-                dataType: "json",
-                success: function(data) {
-                    if (data.status == true) {
-                        Swal.fire({
-                            title: 'สำเร็จ',
-                            text: 'ยกเลิกเอกสารเรียบร้อยแล้ว',
-                            icon: 'success'
-                        }).then(function() {
-                            location.reload();
-                        });
-                    } else {
+
+    calculateTotal();
+
+    // ฟังก์ชันสำหรับเปิดดูข้อมูลย้อนหลัง
+    function viewEvaluation(item) {
+        isViewMode = true;
+        document.getElementById('form-title').textContent = 'รายละเอียดการประเมินผู้ขาย (View Mode)';
+        document.getElementById('btn-new-container').style.display = 'block';
+        document.getElementById('submit-btn-container').style.display = 'none';
+
+        // เติมข้อมูลลงฟอร์มหลัก
+        document.getElementById('evaluation_date').value = item.evaluation_date ? item.evaluation_date.split('T')[0] : '';
+        document.getElementById('goods_services').value = item.goods_services || '';
+        document.getElementById('period_evaluated').value = item.period_evaluated || '';
+        document.getElementById('follow_up_date').value = item.follow_up_date ? item.follow_up_date.split('T')[0] : '';
+
+        // เติมคะแนนและข้อมูลช่องย่อย 1-5
+        for (let i = 1; i <= 5; i++) {
+            const scoreInput = document.getElementById(`score_${i}`);
+            const fromInput = document.getElementById(`score_from_${i}`);
+            const notesInput = document.getElementById(`notes_${i}`);
+
+            if (scoreInput) scoreInput.value = item[`score_${i}`] || 0;
+            if (fromInput) fromInput.value = item[`score_from_${i}`] || '';
+            if (notesInput) notesInput.value = item[`notes_${i}`] || '';
+            
+            // ล็อคอินพุตเป็น readonly
+            if (scoreInput) scoreInput.setAttribute('readonly', true);
+            if (fromInput) fromInput.setAttribute('readonly', true);
+            if (notesInput) notesInput.setAttribute('readonly', true);
+        }
+
+        document.getElementById('evaluation_date').setAttribute('readonly', true);
+        document.getElementById('goods_services').setAttribute('readonly', true);
+        document.getElementById('period_evaluated').setAttribute('readonly', true);
+        document.getElementById('follow_up_date').setAttribute('readonly', true);
+
+        // เลือก Radio ตาม Decision
+        if(item.decision == 'keep') radioKeep.checked = true;
+        else if(item.decision == 'conditional') radioConditional.checked = true;
+        else if(item.decision == 'suspend') radioSuspend.checked = true;
+
+        // ปิดการใช้งาน Radio
+        document.querySelectorAll('input[name="decision"]').forEach(r => r.setAttribute('disabled', true));
+
+        calculateTotal();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ฟังก์ชันกลับสู่โหมดสร้างใหม่
+    function resetToCreateMode() {
+        isViewMode = false;
+        document.getElementById('form-title').textContent = 'แบบประเมินผู้ขาย / SUPPLIER EVALUATION (บันทึกใหม่)';
+        document.getElementById('btn-new-container').style.display = 'none';
+        document.getElementById('submit-btn-container').style.display = 'block';
+
+        document.getElementById('evaluation_date').value = '{{ date("Y-m-d") }}';
+        document.getElementById('goods_services').value = '';
+        document.getElementById('period_evaluated').value = '';
+        document.getElementById('follow_up_date').value = '';
+
+        for (let i = 1; i <= 5; i++) {
+            const scoreInput = document.getElementById(`score_${i}`);
+            const fromInput = document.getElementById(`score_from_${i}`);
+            const notesInput = document.getElementById(`notes_${i}`);
+
+            if (scoreInput) scoreInput.value = 0;
+            if (fromInput) fromInput.value = '';
+            if (notesInput) notesInput.value = '';
+            
+            if (scoreInput) scoreInput.removeAttribute('readonly');
+            if (fromInput) fromInput.removeAttribute('readonly');
+            if (notesInput) notesInput.removeAttribute('readonly');
+        }
+
+        document.getElementById('evaluation_date').removeAttribute('readonly');
+        document.getElementById('goods_services').removeAttribute('readonly');
+        document.getElementById('period_evaluated').removeAttribute('readonly');
+        document.getElementById('follow_up_date').removeAttribute('readonly');
+
+        document.querySelectorAll('input[name="decision"]').forEach(r => r.removeAttribute('disabled'));
+        radioKeep.checked = true;
+        calculateTotal();
+    }
+
+    function confirmDel(refid) {
+        Swal.fire({
+            title: 'คุณแน่ใจหรือไม่ !',
+            text: `คุณต้องการลบรายการนี้หรือไม่ ?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'ยืนยัน',
+            cancelButtonText: 'ยกเลิก',
+            confirmButtonClass: 'btn btn-success',
+            cancelButtonClass: 'btn btn-danger',
+            buttonsStyling: false        
+        }).then(function(result) {
+            if (result.value) {
+                $.ajax({
+                    url: `{{ url('/confirmDelVendorEvaluation') }}`,
+                    type: "POST",
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        "refid": refid,             
+                    },        
+                    dataType: "json",
+                    success: function(data) {
+                        if (data.status == true) {
+                            Swal.fire({
+                                title: 'สำเร็จ',
+                                text: 'ลบรายการเรียบร้อยแล้ว',
+                                icon: 'success'
+                            }).then(function() {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'ไม่สำเร็จ',
+                                text: 'ลบรายการไม่สำเร็จ',
+                                icon: 'error'
+                            });
+                        }
+                    },
+                    error: function() {
                         Swal.fire({
                             title: 'ไม่สำเร็จ',
-                            text: 'ยกเลิกเอกสารไม่สำเร็จ',
+                            text: 'เกิดข้อผิดพลาดในการเชื่อมต่อ',
                             icon: 'error'
-                        });
+                        });         
                     }
-                },
-                error: function(data) {
-                    Swal.fire({
-                        title: 'ไม่สำเร็จ',
-                        text: 'ยกเลิกเอกสารไม่สำเร็จ',
-                        icon: 'error'
-                    });           
-                }
-            });
-        } else if (result.dismiss === Swal.DismissReason.cancel) {
-            Swal.fire({
-                title: 'ยกเลิก',
-                text: 'โปรดตรวจสอบข้อมูลอีกครั้งเพื่อความถูกต้อง :)',
-                icon: 'error'
-            });
-        }
-    });
-}
+                });
+            }
+        });
+    }
 </script>
 @endpush
