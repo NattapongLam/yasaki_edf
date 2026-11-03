@@ -466,7 +466,8 @@ tr:nth-child(even) td{
         <div class="accred-badge">
             <span class="tag">LABORATORY REPORT</span><br>
             ISO/IEC 17025<br>
-            YSK5-FM-LAB-15 : Rev.00 : 01/08/2569
+            YSK5-FM-LAB-15 : Rev.00 : 01/08/2569<br>
+            1/3
         </div>
     </div>
     <div class="report-title">Coefficient of Friction Test Report</div>
@@ -640,7 +641,8 @@ Note: The reported uncertainty is based on a standard uncertainty multiplied by 
         <div class="accred-badge">
             <span class="tag">LABORATORY REPORT</span><br>
             ISO/IEC 17025<br>
-            YSK5-FM-LAB-15 : Rev.00 : 01/08/2569
+            YSK5-FM-LAB-15 : Rev.00 : 01/08/2569<br>
+            2/3
         </div>
     </div>
     <div class="report-title">Coefficient of Friction Test Report</div>
@@ -772,7 +774,8 @@ Note: The reported uncertainty is based on a standard uncertainty multiplied by 
          <div class="accred-badge">
             <span class="tag">LABORATORY REPORT</span><br>
             ISO/IEC 17025<br>
-            YSK5-FM-LAB-15 : Rev.00 : 01/08/2569
+            YSK5-FM-LAB-15 : Rev.00 : 01/08/2569<br>
+            3/3
         </div>
     </div>
     <div class="report-title">Coefficient of Friction Test Report</div>
