@@ -113,9 +113,9 @@ class DensityWorkcloth extends Controller
                         'thickness_1'                   => $item['thickness_1'] ?? 0,
                         'thickness_2'                   => $item['thickness_2'] ?? 0,
                         'thickness_3'                   => $item['thickness_3'] ?? 0,
-                        'thickness_4'                   => $item['thickness_4'] ?? 0,
-                        'thickness_5'                   => $item['thickness_5'] ?? 0,
-                        'thickness_6'                   => $item['thickness_6'] ?? 0,
+                        'thickness_4'                   => 0,
+                        'thickness_5'                   => 0,
+                        'thickness_6'                   => 0,
                         'thickness_chemical'            => $item['thickness_chemical'] ?? 0,
                         'volume'                        => $item['volume'] ?? 0,
                         'density'                       => $item['density'] ?? 0,
@@ -125,6 +125,7 @@ class DensityWorkcloth extends Controller
                         'hardness_1'                    => $item['hardness_1'] ?? 0,
                         'hardness_2'                    => $item['hardness_2'] ?? 0,
                         'hardness_3'                    => $item['hardness_3'] ?? 0,
+                        'weight_2'                      => $item['weight_2'] ?? 0,
                     ]);
                 }
             }
@@ -213,9 +214,9 @@ class DensityWorkcloth extends Controller
                             'thickness_1'                  => $item['thickness_1'] ?? 0,
                             'thickness_2'                  => $item['thickness_2'] ?? 0,
                             'thickness_3'                  => $item['thickness_3'] ?? 0,
-                            'thickness_4'                  => $item['thickness_4'] ?? 0,
-                            'thickness_5'                  => $item['thickness_5'] ?? 0,
-                            'thickness_6'                  => $item['thickness_6'] ?? 0,
+                            'thickness_4'                  => 0,
+                            'thickness_5'                  => 0,
+                            'thickness_6'                  => 0,
                             'thickness_chemical'           => $item['thickness_chemical'] ?? 0,
                             'volume'                       => $item['volume'] ?? 0,
                             'density'                      => $item['density'] ?? 0,
@@ -223,6 +224,7 @@ class DensityWorkcloth extends Controller
                             'hardness_1'                   => $item['hardness_1'] ?? 0,
                             'hardness_2'                   => $item['hardness_2'] ?? 0,
                             'hardness_3'                   => $item['hardness_3'] ?? 0,
+                            'weight_2'                      => $item['weight_2'] ?? 0,s
                         ]
                     );
                 }
