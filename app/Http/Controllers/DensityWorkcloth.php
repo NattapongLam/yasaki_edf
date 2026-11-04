@@ -224,7 +224,7 @@ class DensityWorkcloth extends Controller
                             'hardness_1'                   => $item['hardness_1'] ?? 0,
                             'hardness_2'                   => $item['hardness_2'] ?? 0,
                             'hardness_3'                   => $item['hardness_3'] ?? 0,
-                            'weight_2'                      => $item['weight_2'] ?? 0,s
+                            'weight_2'                     => $item['weight_2'] ?? 0,
                         ]
                     );
                 }
