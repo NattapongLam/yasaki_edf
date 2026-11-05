@@ -356,7 +356,7 @@ function calculateRow(rowTr) {
     var targetDensity = parseFloat($('#total_density').val()) || 0;
 
     if (targetDensity > 0 && density !== 0) {
-        porosity = ((targetDensity - density) / targetDensity) * 100;
+        porosity = ((targetDensity - density) / targetDensity);
     }
 
     $(rowTr).find('.calc-thickness-chem').val(thicknessChem > 0 ? thicknessChem.toFixed(2) : '0.00');

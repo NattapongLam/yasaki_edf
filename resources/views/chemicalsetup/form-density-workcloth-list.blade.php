@@ -47,28 +47,84 @@
                     <th>ยกเลิก</th>
                 </tr>
             </thead>
-            <tbody>
-                @foreach ($hd as $item)
-                    <tr>
-                        <td>
-                            {{$item->density_workcloth_hds_date}}
-                        </td>
-                        <td>{{$item->machinery_name}}</td>
-                        <td>{{$item->mlod_name}} ({{$item->mlod_code}})</td>
-                        <td>{{$item->product_name}} ({{$item->product_code}})</td>
-                        <td>{{$item->ms_formule_name}} ({{$item->chemistry_hd_name}})</td>
-                        <td>{{$item->density_workcloth_hds_note}}</td>
-                        <td>
-                            <a href="{{route('density-workcloth.edit',$item->density_workcloth_hds_id)}}" class="btn btn-sm btn-info" >
-                                <i class="fas fa-edit"></i>
-                            </a>
-                        </td>
-                        <td>
-                            <a href="javascript:void(0)" class="btn btn-danger btn-sm" onclick="confirmDel('{{ $item->density_workcloth_hds_id }}')"><i class="fas fa-trash"></i></a> 
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
+        <tbody>
+        @foreach ($hd as $item)
+            <tr>
+                <!-- วันที่ -->
+                <td class="align-middle text-center">
+                    <span class="fw-semibold text-secondary">{{ $item->density_workcloth_hds_date }}</span>
+                </td>
+
+                <!-- เครื่อง -->
+                <td class="align-middle">
+                    <div class="d-flex justify-content-between align-items-center bg-light px-2 py-1 rounded border">
+                        <span class="text-dark fw-semibold">{{ $item->machinery_name }}</span>
+                        <a href="{{ route('density-workcloth.show', ['density_workcloth' => $item->machinery_name, 'type' => 'เครื่อง']) }}" class="btn btn-sm btn-outline-primary py-0 px-2" title="ดูประวัติเครื่องนี้">
+                            <i class="fas fa-eye fa-xs"></i>
+                        </a>
+                    </div>
+                </td>
+
+                <!-- แม่พิมพ์ -->
+                <td class="align-middle">
+                    <div class="d-flex justify-content-between align-items-center bg-light px-2 py-1 rounded border">
+                        <div class="text-start">
+                            <span class="d-block text-dark fw-semibold" style="font-size: 13px;">{{ $item->mlod_name }}</span>
+                            <span class="text-muted" style="font-size: 11px;">({{ $item->mlod_code }})</span>
+                        </div>
+                        <a href="{{ route('density-workcloth.show', ['density_workcloth' => $item->mlod_code, 'type' => 'แม่พิมพ์']) }}" class="btn btn-sm btn-outline-primary py-0 px-2" title="ดูประวัติแม่พิมพ์นี้">
+                            <i class="fas fa-eye fa-xs"></i>
+                        </a>
+                    </div>
+                </td>
+
+                <!-- สินค้า -->
+                <td class="align-middle">
+                    <div class="d-flex justify-content-between align-items-center bg-light px-2 py-1 rounded border">
+                        <div class="text-start">
+                            <span class="d-block text-dark fw-semibold" style="font-size: 13px;">{{ $item->product_name }}</span>
+                            <span class="text-muted" style="font-size: 11px;">({{ $item->product_code }})</span>
+                        </div>
+                        <a href="{{ route('density-workcloth.show', ['density_workcloth' => $item->product_code, 'type' => 'สินค้า']) }}" class="btn btn-sm btn-outline-primary py-0 px-2" title="ดูประวัติสินค้านี้">
+                            <i class="fas fa-eye fa-xs"></i>
+                        </a>
+                    </div>
+                </td>
+
+                <!-- สูตรเคมี -->
+                <td class="align-middle">
+                    <div class="d-flex justify-content-between align-items-center bg-light px-2 py-1 rounded border">
+                        <div class="text-start">
+                            <span class="d-block text-dark fw-semibold" style="font-size: 13px;">{{ $item->ms_formule_name }}</span>
+                            <span class="text-muted" style="font-size: 11px;">({{ $item->chemistry_hd_name }})</span>
+                        </div>
+                        <a href="{{ route('density-workcloth.show', ['density_workcloth' => $item->chemistry_hd_name, 'type' => 'สูตร']) }}" class="btn btn-sm btn-outline-primary py-0 px-2" title="ดูประวัติสูตรนี้">
+                            <i class="fas fa-eye fa-xs"></i>
+                        </a>
+                    </div>
+                </td>
+
+                <!-- หมายเหตุ -->
+                <td class="align-middle text-start">
+                    <span class="text-muted" style="font-size: 13px;">{{ $item->density_workcloth_hds_note ?? '-' }}</span>
+                </td>
+
+                <!-- อัพเดท (แก้ไข) -->
+                <td class="align-middle text-center">
+                    <a href="{{ route('density-workcloth.edit', $item->density_workcloth_hds_id) }}" class="btn btn-sm btn-info text-white" title="แก้ไขรายการ">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                </td>
+
+                <!-- ยกเลิก (ลบ) -->
+                <td class="align-middle text-center">
+                    <a href="javascript:void(0)" class="btn btn-danger btn-sm" onclick="confirmDel('{{ $item->density_workcloth_hds_id }}')" title="ลบรายการ">
+                        <i class="fas fa-trash"></i>
+                    </a> 
+                </td>
+            </tr>
+        @endforeach
+    </tbody>
         </table>
     </div>
 </div>

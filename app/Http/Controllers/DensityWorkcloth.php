@@ -155,9 +155,78 @@ class DensityWorkcloth extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id, Request $request)
     {
-        //
+        $startDate = $request->input('start_date', now()->startOfMonth()->format('Y-m-d'));
+        $endDate = $request->input('end_date', now()->endOfMonth()->format('Y-m-d'));
+        $type = $request->input('type', '');
+
+        // ตรวจสอบเงื่อนไขตามประเภท
+        if ($type == "เครื่อง") {
+            $hd = DB::table('density_workcloth_hds')
+                ->select(
+                    'density_workcloth_hds.*',
+                    DB::raw('total_density * 1.05 as upper_density'),
+                    DB::raw('total_density * 0.95 as lower_density')  
+                )
+                ->where('machinery_name', $id)
+                ->when($startDate && $endDate, function ($query) use ($startDate, $endDate) {
+                    $query->whereBetween('density_workcloth_hds_date', [$startDate, $endDate]);
+                })
+                ->get();
+
+            // เพิ่ม 'id' เข้าไปใน compact เพื่อให้สามารถนำชื่อเครื่องไปแสดงที่หน้า Blade ได้
+            return view('chemicalsetup.form-density-workcloth-machinery', compact('hd', 'startDate', 'endDate', 'id'));
+        }elseif($type == "แม่พิมพ์"){
+            $hd = DB::table('density_workcloth_hds')
+                ->select(
+                    'density_workcloth_hds.*',
+                    DB::raw('total_density * 1.05 as upper_density'),
+                    DB::raw('total_density * 0.95 as lower_density')  
+                )
+                ->where('mlod_code', $id)
+                ->when($startDate && $endDate, function ($query) use ($startDate, $endDate) {
+                    $query->whereBetween('density_workcloth_hds_date', [$startDate, $endDate]);
+                })
+                ->get();
+
+            // เพิ่ม 'id' เข้าไปใน compact เพื่อให้สามารถนำชื่อเครื่องไปแสดงที่หน้า Blade ได้
+            return view('chemicalsetup.form-density-workcloth-mlod', compact('hd', 'startDate', 'endDate', 'id'));
+        }elseif($type == "สินค้า"){
+            $hd = DB::table('density_workcloth_hds')
+                ->select(
+                    'density_workcloth_hds.*',
+                    DB::raw('total_density * 1.05 as upper_density'),
+                    DB::raw('total_density * 0.95 as lower_density')  
+                )
+                ->where('product_code', $id)
+                ->when($startDate && $endDate, function ($query) use ($startDate, $endDate) {
+                    $query->whereBetween('density_workcloth_hds_date', [$startDate, $endDate]);
+                })
+                ->get();
+
+            // เพิ่ม 'id' เข้าไปใน compact เพื่อให้สามารถนำชื่อเครื่องไปแสดงที่หน้า Blade ได้
+            return view('chemicalsetup.form-density-workcloth-product', compact('hd', 'startDate', 'endDate', 'id'));
+        }elseif($type == "สูตร"){
+            $hd = DB::table('density_workcloth_hds')
+                ->select(
+                    'density_workcloth_hds.*',
+                    DB::raw('total_density * 1.05 as upper_density'),
+                    DB::raw('total_density * 0.95 as lower_density')  
+                )
+                ->where('chemistry_hd_name', $id)
+                ->when($startDate && $endDate, function ($query) use ($startDate, $endDate) {
+                    $query->whereBetween('density_workcloth_hds_date', [$startDate, $endDate]);
+                })
+                ->get();
+
+            // เพิ่ม 'id' เข้าไปใน compact เพื่อให้สามารถนำชื่อเครื่องไปแสดงที่หน้า Blade ได้
+            return view('chemicalsetup.form-density-workcloth-chemistry', compact('hd', 'startDate', 'endDate', 'id'));
+        }
+
+        // กรณีเผื่อเลือกประเภทอื่นๆ หรือค่าว่าง ให้รีเทิร์นไปหน้าอื่น หรือ Redirect กลับ
+        // เช่น หากต้องการให้ค่าเริ่มต้นเป็นหน้าเครื่อง หรือมีหน้า Default
+        abort(404, 'ไม่พบหน้าที่ต้องการ'); 
     }
 
     /**

@@ -280,7 +280,7 @@ function calculateRow(rowTr) {
     // 2. คำนวณ %Porosity ตามสูตรใหม่: ((Target Density - Density) / Target Density) * 100
     var porosity = 0;
     if (targetDensity > 0 && density !== 0) {
-        porosity = ((targetDensity - density) / targetDensity) * 100;
+        porosity = ((targetDensity - density) / targetDensity);
     }
 
     $(rowTr).find('.calc-thickness-chem').val(thicknessChem > 0 ? thicknessChem.toFixed(2) : '0.00');
