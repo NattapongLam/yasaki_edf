@@ -58,7 +58,7 @@
                 </div>
                 <div class="col-2">
                     <div class="form-group">
-                        <label class="form-label">Volume (cm3/1Cavity)</label>
+                        <label class="form-label">CAD volume</label>
                         <input class="form-control" name="mlod_volume" id="mlod_volume">
                     </div>
                 </div>
@@ -157,7 +157,7 @@
                                 <th colspan="2">ผ้าชิ้นก่อนกรอ</th>
                                 <th colspan="3">ความหนาผ้าชิ้นก่อนกรอ (mm)</th>
                                 <th rowspan="2">ความหนาก้อนเคมี (cm)</th>
-                                <th rowspan="2">Volume (cm³)</th>
+                                <th rowspan="2">CAD volume</th>
                                 <th rowspan="2">Density (g/cm³)</th>
                                 <th rowspan="2">%Porosity</th>
                                 <th colspan="3">Hardness</th>
@@ -326,6 +326,8 @@ $('#chemistry_hd_name').on('change', function() {
 });
 
 // ฟังก์ชันคำนวณแต่ละแถว (สูตรมาตรฐานถูกต้อง)
+// ฟังก์ชันคำนวณแต่ละแถว (ปรับสูตร %Porosity ใหม่)
+// ฟังก์ชันคำนวณแต่ละแถว (ปรับสูตร Density และ Porosity ใหม่)
 function calculateRow(rowTr) {
     var inputs = $(rowTr).find('.iron-w');
     var weightNormal = parseFloat($(inputs[0]).val()) || 0; // น้ำหนักปกติ (g)
@@ -343,26 +345,23 @@ function calculateRow(rowTr) {
     var moldVolume = parseFloat($('#mlod_volume').val()) || 0;
     var mlodArea = parseFloat($('#mlod_area').val()) || 0;
     
-    // 1. คำนวณ Volume (cm³) = ความหนาก้อนเคมี * พื้นที่ Mold
+    // คำนวณ Volume (cm³) ไว้เผื่อใช้แสดงผล
     var volume = moldVolume > 0 ? moldVolume : (thicknessChem * mlodArea); 
     
-    // 2. คำนวณ Density (g/cm³) = น้ำหนักปกติ / Volume
-    var density = (volume > 0) ? (weightNormal / volume) : 0; 
+    // 1. คำนวณ Density ตามสูตรใหม่: น้ำหนักปกติ - น้ำหนักเปียก
+    var density = weightNormal / weightWet; 
 
-    // 3. คำนวณ %Porosity
+    // 2. คำนวณ %Porosity ตามสูตรเดิมที่คุณขอไปก่อนหน้า: ((Target Density - Density) / Target Density) * 100
     var porosity = 0;
-    if (weightWet > 0 && weightNormal > 0 && volume > 0) {
-        // สูตรการดูดซึมสารเคมี/น้ำ: ((น้ำหนักเปียก - น้ำหนักปกติ) / Volume) * 100
-        porosity = ((weightWet - weightNormal) / volume) * 100;
-    } else {
-        // สูตรกรณีเปรียบเทียบ Target Density: ((Target Density - Density) / Target Density) * 100
-        var targetDensity = parseFloat($('#total_density').val()) || 0;
-        porosity = (targetDensity > 0 && density > 0) ? (((targetDensity - density) / targetDensity) * 100) : 0;
+    var targetDensity = parseFloat($('#total_density').val()) || 0;
+
+    if (targetDensity > 0 && density !== 0) {
+        porosity = ((targetDensity - density) / targetDensity) * 100;
     }
 
     $(rowTr).find('.calc-thickness-chem').val(thicknessChem > 0 ? thicknessChem.toFixed(2) : '0.00');
     $(rowTr).find('.calc-volume').val(volume > 0 ? volume.toFixed(3) : '0.000');
-    $(rowTr).find('.calc-density').val(density > 0 ? density.toFixed(2) : '0.00');
+    $(rowTr).find('.calc-density').val(density.toFixed(2)); // แสดงผลค่า Density ใหม่
     $(rowTr).find('.calc-porosity').val(porosity !== 0 ? porosity.toFixed(2) : '0.00');
 }
 

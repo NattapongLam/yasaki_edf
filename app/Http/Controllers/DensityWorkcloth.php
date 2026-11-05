@@ -21,10 +21,19 @@ class DensityWorkcloth extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $hd = DensityWorkclothHd::where('density_workcloth_hds_flag',true)->get();
-        return view('chemicalsetup.form-density-workcloth-list', compact('hd'));
+        // กำหนดค่าเริ่มต้นถ้าไม่มีการส่งมา
+        $startDate = $request->input('start_date', now()->startOfMonth()->format('Y-m-d'));
+        $endDate = $request->input('end_date', now()->endOfMonth()->format('Y-m-d'));
+
+        $hd = DensityWorkclothHd::where('density_workcloth_hds_flag', true)
+            ->when($startDate && $endDate, function ($query) use ($startDate, $endDate) {
+                $query->whereBetween('density_workcloth_hds_date', [$startDate, $endDate]);
+            })
+            ->get();
+
+        return view('chemicalsetup.form-density-workcloth-list', compact('hd', 'startDate', 'endDate'));
     }
 
     /**

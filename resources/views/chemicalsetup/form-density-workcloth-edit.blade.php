@@ -56,7 +56,7 @@
                     </div>
                     <div class="col-2">
                         <div class="form-group">
-                            <label class="form-label">Volume (cm3/1Cavity)</label>
+                            <label class="form-label">CAD volume</label>
                             <input class="form-control" type="text" name="mlod_volume" id="mlod_volume" value="{{ $hd->mlod_volume ?? '' }}">
                         </div>
                     </div>
@@ -141,7 +141,7 @@
                                     <th colspan="2">ผ้าชิ้นก่อนกรอ</th>
                                     <th colspan="3">ความหนาผ้าชิ้นก่อนกรอ (mm)</th>
                                     <th rowspan="2">ความหนาก้อนเคมี (cm)</th>
-                                    <th rowspan="2">Volume (cm³)</th>
+                                    <th rowspan="2">CAD volume</th>
                                     <th rowspan="2">Density (g/cm³)</th>
                                     <th rowspan="2">%Porosity</th>
                                     <th colspan="3">Hardness</th>
@@ -273,19 +273,20 @@ function calculateRow(rowTr) {
     var targetDensity = parseFloat($('#total_density').val()) || 0;
 
     var volume = moldVolume > 0 ? moldVolume : (thicknessChem * mlodArea);
-    var density = (volume > 0) ? (weightNormal / volume) : 0;
     
+    // 1. คำนวณ Density (g/cm³) ตามสูตรใหม่: น้ำหนักปกติ - น้ำหนักเปียก
+    var density = weightNormal / weightWet; 
+    
+    // 2. คำนวณ %Porosity ตามสูตรใหม่: ((Target Density - Density) / Target Density) * 100
     var porosity = 0;
-    if (weightWet > 0 && weightNormal > 0 && volume > 0) {
-        porosity = ((weightWet - weightNormal) / volume) * 100;
-    } else {
-        porosity = (targetDensity > 0 && density > 0) ? (((targetDensity - density) / targetDensity) * 100) : 0;
+    if (targetDensity > 0 && density !== 0) {
+        porosity = ((targetDensity - density) / targetDensity) * 100;
     }
 
     $(rowTr).find('.calc-thickness-chem').val(thicknessChem > 0 ? thicknessChem.toFixed(2) : '0.00');
     $(rowTr).find('.calc-volume').val(volume > 0 ? volume.toFixed(3) : '0.000');
-    $(rowTr).find('.calc-density').val(density > 0 ? density.toFixed(2) : '0.00');
-    $(rowTr).find('.calc-porosity').val(porosity !== 0 ? porosity.toFixed(2) : '0.00');
+    $(rowTr).find('.calc-density').val(density.toFixed(2));
+    $(rowTr).find('.calc-porosity').val(porosity.toFixed(2));
 }
 
 function calculateAllRows() {
@@ -497,7 +498,7 @@ function initOrUpdateCharts() {
                         },
                         align: 'top',
                         formatter: function(value) {
-                            return value > 0 ? value.toFixed(2) : '';
+                            return value !== 0 ? value.toFixed(2) : '';
                         },
                         font: {
                             weight: 'bold',

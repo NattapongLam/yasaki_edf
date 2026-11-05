@@ -19,11 +19,26 @@
         <div class="row">
             <div class="col-12 col-md-6"><h3 class="card-title">ความหนาแน่นของผ้าชิ้น</h3></div>
             <div class="col-12 col-md-6"><a style="float: right" href="{{route('density-workcloth.create')}}" class="btn btn-primary"><i class="fas fa-plus"></i> เพิ่มรายการ</a></div>
-        </div>       
+        </div>      
+        <div class="row mb-4 align-items-end">
+                <div class="col-md-3">
+                    <label for="start_date" class="form-label">จากวันที่:</label>
+                    <input type="date" id="start_date" class="form-control" value="{{ $startDate ?? now()->startOfMonth()->format('Y-m-d') }}">
+                </div>
+                <div class="col-md-3">
+                    <label for="end_date" class="form-label">ถึงวันที่:</label>
+                    <input type="date" id="end_date" class="form-control" value="{{ $endDate ?? now()->endOfMonth()->format('Y-m-d') }}">
+                </div>
+                <div class="col-md-4">
+                    <button type="button" id="btn-filter" class="btn btn-primary me-2"><i class="fas fa-search me-1"></i> ค้นหา</button>
+                    <button type="button" id="btn-reset" class="btn btn-secondary"><i class="fas fa-redo me-1"></i> รีเซ็ต</button>
+                </div>
+            </div> 
         <table id="tb_job" class="table table-bordered dt-responsive nowrap w-100 text-center">
             <thead>
                 <tr>
                     <th>วันที่</th>
+                    <th>เครื่อง</th>
                     <th>แม่พิมพ์</th>
                     <th>สินค้า</th>
                     <th>สูตรเคมี</th>
@@ -36,9 +51,9 @@
                 @foreach ($hd as $item)
                     <tr>
                         <td>
-                            {{$item->density_workcloth_hds_date}}<br>
-                            เครื่อง : {{$item->machinery_name}}
+                            {{$item->density_workcloth_hds_date}}
                         </td>
+                        <td>{{$item->machinery_name}}</td>
                         <td>{{$item->mlod_name}} ({{$item->mlod_code}})</td>
                         <td>{{$item->product_name}} ({{$item->product_code}})</td>
                         <td>{{$item->ms_formule_name}} ({{$item->chemistry_hd_name}})</td>
@@ -68,11 +83,25 @@ $(document).ready(function() {
             [10, 25, 50, -1],
             [10, 25, 50, "All"]
         ],
-            dom: 'Bfrtip',
-            buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
         ]
-    })
+    });
+
+    // ปุ่มค้นหา
+    $('#btn-filter').click(function() {
+        let startDate = $('#start_date').val();
+        let endDate = $('#end_date').val();
+        
+        // รีไดเรกต์ไปยังหน้าเดิมพร้อมแนบ Query String วันที่
+        window.location.href = `{{ route('density-workcloth.index') }}?start_date=${startDate}&end_date=${endDate}`;
+    });
+
+    // ปุ่มรีเซ็ต
+    $('#btn-reset').click(function() {
+        window.location.href = `{{ route('density-workcloth.index') }}`;
+    });
 });
 confirmDel = (refid) =>{
 Swal.fire({
