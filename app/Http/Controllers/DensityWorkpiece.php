@@ -21,10 +21,17 @@ class DensityWorkpiece extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $hd = DensityWorkpieceHd::where('density_workpiece_hds_flag',true)->get();
-        return view('chemicalsetup.form-density-workpiece-list', compact('hd'));
+        // กำหนดค่าเริ่มต้นเป็นเดือนปัจจุบัน หากไม่มีการส่งค่ามา
+        $startDate = $request->input('start_date', now()->startOfMonth()->format('Y-m-d'));
+        $endDate = $request->input('end_date', now()->endOfMonth()->format('Y-m-d'));
+
+        $hd = DensityWorkpieceHd::where('density_workpiece_hds_flag', true)
+            ->whereBetween('density_workpiece_hds_date', [$startDate, $endDate])
+            ->get();
+
+        return view('chemicalsetup.form-density-workpiece-list', compact('hd', 'startDate', 'endDate'));
     }
 
     /**
