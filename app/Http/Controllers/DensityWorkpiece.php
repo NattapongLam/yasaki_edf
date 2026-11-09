@@ -152,10 +152,98 @@ class DensityWorkpiece extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
-        //
+ public function show($id, Request $request)
+{
+    $startDate = $request->input('start_date', now()->startOfMonth()->format('Y-m-d'));
+    $endDate = $request->input('end_date', now()->endOfMonth()->format('Y-m-d'));
+    $type = $request->input('type', '');
+
+    if ($type == "เครื่อง") {
+        $hd = DB::table('density_workpiece_hds')
+            ->select(
+                'density_workpiece_hds.*',
+                DB::raw('total_density * 1.05 as upper_density'),
+                DB::raw('total_density * 0.95 as lower_density')  
+            )
+            ->where('machinery_name', $id)
+            ->when($startDate && $endDate, function ($query) use ($startDate, $endDate) {
+                $query->whereBetween('density_workpiece_hds_date', [$startDate, $endDate]);
+            })
+            ->get();
+
+        return view('chemicalsetup.form-density-workpiece-machinery', compact('hd', 'startDate', 'endDate', 'id', 'type'));
+        
+    } elseif ($type == "แม่พิมพ์") {
+        
+        // --- จุดเช็คข้อมูล (ลองเปิดใช้บรรทัดนี้เพื่อดูว่า Query หาข้อมูลเจอไหม) ---
+        $queryTest = DB::table('density_workpiece_hds')
+            ->where('mlod_code', $id) // ลองสลับเช็คระหว่าง mlod_code กับ mlod_name
+            ->get();
+        
+        // dd($id, $startDate, $endDate, $queryTest); // เช็คว่าข้อมูลในตารางตรงกับ $id นี้หรือไม่
+        // -------------------------------------------------------------
+
+        $hd = DB::table('density_workpiece_hds')
+            ->select(
+                'density_workpiece_hds.*',
+                DB::raw('total_density * 1.05 as upper_density'),
+                DB::raw('total_density * 0.95 as lower_density')  
+            )
+            ->where('mlod_code', $id) // หากฐานข้อมูลเก็บบันทึกเป็นชื่อ ให้เปลี่ยนเป็น ->where('mlod_name', $id)
+            ->when($startDate && $endDate, function ($query) use ($startDate, $endDate) {
+                $query->whereBetween('density_workpiece_hds_date', [$startDate, $endDate]);
+            })
+            ->get();
+
+        return view('chemicalsetup.form-density-workpiece-mold', compact('hd', 'startDate', 'endDate', 'id', 'type'));
+    } elseif ($type == "สินค้า") {
+        
+        // --- จุดเช็คข้อมูล (ลองเปิดใช้บรรทัดนี้เพื่อดูว่า Query หาข้อมูลเจอไหม) ---
+        $queryTest = DB::table('density_workpiece_hds')
+            ->where('product_code', $id) // ลองสลับเช็คระหว่าง mlod_code กับ mlod_name
+            ->get();
+        
+        // dd($id, $startDate, $endDate, $queryTest); // เช็คว่าข้อมูลในตารางตรงกับ $id นี้หรือไม่
+        // -------------------------------------------------------------
+
+        $hd = DB::table('density_workpiece_hds')
+            ->select(
+                'density_workpiece_hds.*',
+                DB::raw('total_density * 1.05 as upper_density'),
+                DB::raw('total_density * 0.95 as lower_density')  
+            )
+            ->where('product_code', $id) // หากฐานข้อมูลเก็บบันทึกเป็นชื่อ ให้เปลี่ยนเป็น ->where('mlod_name', $id)
+            ->when($startDate && $endDate, function ($query) use ($startDate, $endDate) {
+                $query->whereBetween('density_workpiece_hds_date', [$startDate, $endDate]);
+            })
+            ->get();
+
+        return view('chemicalsetup.form-density-workpiece-product', compact('hd', 'startDate', 'endDate', 'id', 'type'));
+    }  elseif ($type == "สูตร") {
+        
+        // --- จุดเช็คข้อมูล (ลองเปิดใช้บรรทัดนี้เพื่อดูว่า Query หาข้อมูลเจอไหม) ---
+        $queryTest = DB::table('density_workpiece_hds')
+            ->where('chemistry_hd_name', $id) // ลองสลับเช็คระหว่าง mlod_code กับ mlod_name
+            ->get();
+        
+        // dd($id, $startDate, $endDate, $queryTest); // เช็คว่าข้อมูลในตารางตรงกับ $id นี้หรือไม่
+        // -------------------------------------------------------------
+
+        $hd = DB::table('density_workpiece_hds')
+            ->select(
+                'density_workpiece_hds.*',
+                DB::raw('total_density * 1.05 as upper_density'),
+                DB::raw('total_density * 0.95 as lower_density')  
+            )
+            ->where('chemistry_hd_name', $id) // หากฐานข้อมูลเก็บบันทึกเป็นชื่อ ให้เปลี่ยนเป็น ->where('mlod_name', $id)
+            ->when($startDate && $endDate, function ($query) use ($startDate, $endDate) {
+                $query->whereBetween('density_workpiece_hds_date', [$startDate, $endDate]);
+            })
+            ->get();
+
+        return view('chemicalsetup.form-density-workpiece-chemistry', compact('hd', 'startDate', 'endDate', 'id', 'type'));
     }
+}
 
     /**
      * Show the form for editing the specified resource.

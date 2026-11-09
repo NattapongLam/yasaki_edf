@@ -57,15 +57,37 @@
                                 {{$item->density_workpiece_hds_date}}<br>
                             </td>
                             <td>
-                                {{$item->machinery_name}}
+                                {{ $item->machinery_name }}<br>
+                                @if(!empty($item->machinery_name))
+                                    <a href="{{ route('density-workpiece.show', ['density_workpiece' => $item->machinery_name, 'type' => 'เครื่อง']) }}" class="btn btn-sm btn-outline-primary py-0 px-2" title="ดูประวัติเครื่องนี้">
+                                        <i class="fas fa-eye fa-xs"></i>
+                                    </a>
+                                @endif
                             </td>
                             <td>{{$item->mlod_name}}<br>
-                                ({{$item->mlod_code}})
+                                ({{$item->mlod_code}})<br>
+                                 @if(!empty($item->mlod_code))
+                                    <a href="{{ route('density-workpiece.show', ['density_workpiece' => $item->mlod_code, 'type' => 'แม่พิมพ์']) }}" class="btn btn-sm btn-outline-primary py-0 px-2" title="ดูประวัติแม่พิมพ์นี้">
+                                        <i class="fas fa-eye fa-xs"></i>
+                                    </a>
+                                @endif
                             </td>
                             <td>{{$item->product_name}}<br>
-                                ({{$item->product_code}})
+                                ({{$item->product_code}})<br>
+                                @if(!empty($item->product_code))
+                                    <a href="{{ route('density-workpiece.show', ['density_workpiece' => $item->product_code, 'type' => 'สินค้า']) }}" class="btn btn-sm btn-outline-primary py-0 px-2" title="ดูประวัติสินค้านี้">
+                                        <i class="fas fa-eye fa-xs"></i>
+                                    </a>
+                                @endif
                             </td>
-                            <td>{{$item->ms_formule_name}} ({{$item->chemistry_hd_name}})</td>
+                            <td>
+                                {{$item->ms_formule_name}} ({{$item->chemistry_hd_name}})<br>
+                                @if(!empty($item->chemistry_hd_name))
+                                    <a href="{{ route('density-workpiece.show', ['density_workpiece' => $item->chemistry_hd_name, 'type' => 'สูตร']) }}" class="btn btn-sm btn-outline-primary py-0 px-2" title="ดูประวัติสูตรนี้">
+                                        <i class="fas fa-eye fa-xs"></i>
+                                    </a>
+                                @endif
+                            </td>
                             <td>{{$item->density_workpiece_hds_note}}</td>
                             <td>
                                 <a href="{{route('density-workpiece.edit',$item->density_workpiece_hds_id)}}" class="btn btn-sm btn-info" >
