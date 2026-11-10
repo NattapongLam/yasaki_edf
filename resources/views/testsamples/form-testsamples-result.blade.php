@@ -95,9 +95,34 @@
                             </td>
                             <td>
                                 @if ($item->TestID)
-                               <a href="{{ route('report.compareformulas.print',$item->TestID) }}" target="_blank" class="btn btn-sm btn-warning">
+                                <!-- ปุ่มกดเปิด Modal -->
+                                <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#printDateModal{{ $item->TestID }}">
                                     <i class="fas fa-print"></i>
-                                </a>     
+                                </button>
+                                <!-- Modal สำหรับเลือกวันที่ -->
+                                <div class="modal fade" id="printDateModal{{ $item->TestID }}" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <form action="{{ route('report.compareformulas.print', $item->TestID) }}" method="GET" target="_blank">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">เลือกวันที่ออกเอกสาร (Issue Date)</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="mb-3">
+                                                        <label for="issue_date" class="form-label">วันที่ออกเอกสาร:</label>
+                                                        <!-- กำหนดค่าเริ่มต้นเป็นวันปัจจุบัน (date('Y-m-d')) -->
+                                                        <input type="date" class="form-control" name="issue_date" value="{{ date('Y-m-d') }}" required>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+                                                    <button type="submit" class="btn btn-primary">พิมพ์รายงาน</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>     
                                 @endif               
                             </td>
                             <td>
@@ -110,6 +135,9 @@
         </div>
     </div>
 </div>
+
+
+
 @endsection
 
 @push('scriptjs')

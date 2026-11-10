@@ -509,7 +509,7 @@ tr:nth-child(even) td{
         </tr>
         <tr>
             <th>Issue Date</th>
-            <td>{{ date('d/m/Y') }} </td>
+            <td>{{ $issueDate }}</td>
         </tr>
         <tr>
             <th>Test Standard</th>

@@ -98,7 +98,7 @@ class ReportFormulaController extends Controller
         return response()->json($result);
     }
 
-    public function PrintCompareFormula($id)
+    public function PrintCompareFormula(Request $request, $id)
     {
         $hd = DB::table('TestHeaders')
             ->where('TestID',$id)
@@ -301,11 +301,14 @@ class ReportFormulaController extends Controller
         $rmp2 = (($rechd->result_n2_rpm ?? 0) * (22 / 7) * 300) / (60 * 1000);
         $rmp3 = (($rechd->result_n3_rpm ?? 0) * (22 / 7) * 300) / (60 * 1000);
         $average_rmp = ($rmp1 + $rmp2 + $rmp3) / 3;
+        $issueDate = $request->filled('issue_date') 
+        ? \Carbon\Carbon::parse($request->issue_date)->format('d/m/Y') 
+        : date('d/m/Y');
         return view(
             'report.report-compareformulas-print',compact(
                 'hd','friction','dt','frictionPoints','wearRatePoints','temps','safeUpper','safeLower','jisMin','jisMax','targetUpper','targetLower'
                 ,'reqhd','reqdt','rechd','caldimensions','calweight','cal','bomdt','caldimensions1','mjis','average_rmp','expandedUncertainty'
-                ,'cust','prov','dist','subd'
+                ,'cust','prov','dist','subd','issueDate'
             )
         );
     }
