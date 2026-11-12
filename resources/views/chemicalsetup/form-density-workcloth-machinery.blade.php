@@ -154,7 +154,7 @@
                     </div>
                     <div class="col-12 col-md-4 mb-3">
                         <div class="card border shadow-sm p-2">
-                            <h6 class="fw-bold text-dark text-center mb-2" style="font-size: 13px;">%Porosity Trend</h6>
+                            <h6 class="fw-bold text-dark text-center mb-2" style="font-size: 13px;">%Porosity Trend (Avg Limit)</h6>
                             <canvas id="porosityChart-{{ $item->density_workcloth_hds_id }}" height="160"></canvas>
                         </div>
                     </div>
@@ -224,13 +224,13 @@ function renderChartsForCard(hdsId, targetDensity) {
     let targetData = [];
     let upperData = [];
     let lowerData = [];
-    let maxPorosityLimit = [];
 
     let hAvgData = [];
     let h1Data = [];
     let h2Data = [];
     let h3Data = [];
 
+    // แก้ไข: ใส่เครื่องหมายคูณ (*) ให้ถูกต้อง
     let upperLimit = targetDensity * 1.05;
     let lowerLimit = targetDensity * 0.95;
 
@@ -252,7 +252,6 @@ function renderChartsForCard(hdsId, targetDensity) {
         targetData.push(targetDensity);
         upperData.push(upperLimit);
         lowerData.push(lowerLimit);
-        maxPorosityLimit.push(5);
 
         h1Data.push(h1);
         h2Data.push(h2);
@@ -260,7 +259,7 @@ function renderChartsForCard(hdsId, targetDensity) {
         hAvgData.push(hAvg);
     });
 
-    // 1. กราฟ Density (แสดงตัวเลขเฉพาะ dataset แรก คือ Actual Density)
+    // 1. กราฟ Density
     const ctxDensity = document.getElementById(`densityChart-${hdsId}`);
     if (ctxDensity) {
         new Chart(ctxDensity.getContext('2d'), {
@@ -280,7 +279,7 @@ function renderChartsForCard(hdsId, targetDensity) {
                     legend: { display: false },
                     datalabels: {
                         display: function(context) {
-                            return context.datasetIndex === 0; // โชว์เฉพาะเส้น Actual
+                            return context.datasetIndex === 0;
                         },
                         align: 'top',
                         formatter: function(value) {
@@ -296,16 +295,22 @@ function renderChartsForCard(hdsId, targetDensity) {
         });
     }
 
-    // 2. กราฟ %Porosity (แสดงตัวเลขบนแท่งกราฟ)
+    // 2. กราฟ %Porosity (คำนวณเส้น Max Limit เป็นค่าเฉลี่ยของแต่ละการ์ดอัตโนมัติ)
     const ctxPorosity = document.getElementById(`porosityChart-${hdsId}`);
     if (ctxPorosity) {
+        const avgPorosity = porosityData.length > 0 
+            ? porosityData.reduce((sum, val) => sum + Number(val || 0), 0) / porosityData.length 
+            : 0;
+
+        let maxPorosityLimit = new Array(labels.length).fill(avgPorosity);
+
         new Chart(ctxPorosity.getContext('2d'), {
             type: 'bar',
             data: {
                 labels: labels,
                 datasets: [
-                    { type: 'bar', label: '%Porosity', data: porosityData, backgroundColor: 'rgba(153, 102, 255, 0.6)', borderColor: 'rgba(153, 102, 255, 1)', borderWidth: 1 },
-                    { type: 'line', label: 'Limit (5%)', data: maxPorosityLimit, borderColor: 'rgba(220, 53, 69, 1)', borderDash: [4, 4], borderWidth: 1.5, pointRadius: 0 }
+                    { type: 'bar', label: '%Porosity', data: porosityData, backgroundColor: 'rgba(153, 102, 255, 0.6)', borderColor: 'rgba(153, 102, 255, 1)', borderWidth: 1, order: 2 },
+                    { type: 'line', label: `Average (${avgPorosity.toFixed(2)}%)`, data: maxPorosityLimit, borderColor: 'rgba(220, 53, 69, 1)', borderDash: [4, 4], borderWidth: 1.5, pointRadius: 0, order: 1 }
                 ]
             },
             options: {
@@ -314,7 +319,7 @@ function renderChartsForCard(hdsId, targetDensity) {
                     legend: { display: false },
                     datalabels: {
                         display: function(context) {
-                            return context.datasetIndex === 0; // โชว์เฉพาะแท่งกราฟ Porosity
+                            return context.datasetIndex === 0;
                         },
                         anchor: 'end',
                         align: 'top',
@@ -325,13 +330,18 @@ function renderChartsForCard(hdsId, targetDensity) {
                         color: '#333'
                     }
                 },
-                scales: { y: { beginAtZero: true, suggestedMax: 7 } }
+                scales: { 
+                    y: { 
+                        beginAtZero: true, 
+                        suggestedMax: Math.max(...porosityData, avgPorosity) * 1.2 || 7 
+                    } 
+                }
             },
             plugins: [ChartDataLabels]
         });
     }
 
-    // 3. กราฟ Hardness (แสดงตัวเลขเฉพาะเส้น Hardness Avg เพื่อไม่ให้ตัวเลขทับกันรกเกินไป)
+    // 3. กราฟ Hardness
     const ctxHardness = document.getElementById(`hardnessChart-${hdsId}`);
     if (ctxHardness) {
         new Chart(ctxHardness.getContext('2d'), {
@@ -351,7 +361,7 @@ function renderChartsForCard(hdsId, targetDensity) {
                     legend: { display: false },
                     datalabels: {
                         display: function(context) {
-                            return context.datasetIndex === 0; // โชว์เฉพาะเส้น Avg
+                            return context.datasetIndex === 0;
                         },
                         align: 'top',
                         formatter: function(value) {

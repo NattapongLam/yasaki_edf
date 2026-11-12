@@ -272,12 +272,13 @@ function calculateRow(rowTr) {
     var mlodArea = parseFloat($('#mlod_area').val()) || 0;
     var targetDensity = parseFloat($('#total_density').val()) || 0;
 
+    // แก้ไข: ใส่เครื่องหมายคูณ (*)
     var volume = moldVolume > 0 ? moldVolume : (thicknessChem * mlodArea);
     
-    // 1. คำนวณ Density (g/cm³) ตามสูตรใหม่: น้ำหนักปกติ - น้ำหนักเปียก
-    var density = weightNormal / weightWet; 
+    // 1. คำนวณ Density (g/cm³) ตามสูตร: น้ำหนักปกติ / น้ำหนักเปียก
+    var density = weightWet > 0 ? (weightNormal / weightWet) : 0; 
     
-    // 2. คำนวณ %Porosity ตามสูตรใหม่: ((Target Density - Density) / Target Density) * 100
+    // 2. คำนวณ %Porosity ตามสูตร: ((Target Density - Density) / Target Density)
     var porosity = 0;
     if (targetDensity > 0 && density !== 0) {
         porosity = ((targetDensity - density) / targetDensity);
@@ -409,6 +410,7 @@ function initOrUpdateCharts() {
     let hardness3Data = [];
 
     let targetDensity = parseFloat($('#total_density').val()) || 0;
+    // แก้ไข: ใส่เครื่องหมายคูณ (*)
     let upperDensity = targetDensity * 1.05;
     let lowerDensity = targetDensity * 0.95;
 
@@ -514,7 +516,7 @@ function initOrUpdateCharts() {
         });
     }
 
-    // 2. กราฟ %Porosity
+    // 2. กราฟ %Porosity (ใช้ค่าเฉลี่ยคำนวณแบบไดนามิก)
     const porosityEl = document.getElementById('porosityChart');
     if (porosityEl) {
         const porosityCtx = porosityEl.getContext('2d');
@@ -522,7 +524,12 @@ function initOrUpdateCharts() {
             porosityChartInstance.destroy();
         }
         
-        let maxLimitData = new Array(labels.length).fill(5);
+        // คำนวณค่าเฉลี่ยจาก porosityData
+        const avgPorosity = porosityData.length > 0 
+            ? porosityData.reduce((sum, val) => sum + Number(val || 0), 0) / porosityData.length 
+            : 0;
+
+        let maxLimitData = new Array(labels.length).fill(avgPorosity);
 
         porosityChartInstance = new Chart(porosityCtx, {
             type: 'bar',
@@ -540,7 +547,7 @@ function initOrUpdateCharts() {
                     },
                     {
                         type: 'line',
-                        label: 'Max Limit (5%)',
+                        label: `Average (${avgPorosity.toFixed(2)}%)`,
                         data: maxLimitData,
                         borderColor: 'rgba(220, 53, 69, 1)',
                         borderWidth: 2,
@@ -560,7 +567,7 @@ function initOrUpdateCharts() {
                         anchor: 'end',
                         align: 'top',
                         formatter: function(value) {
-                            return value !== 0 ? value.toFixed(2) : '';
+                            return value !== 0 ? Number(value).toFixed(2) : '';
                         },
                         font: {
                             weight: 'bold',
@@ -571,7 +578,7 @@ function initOrUpdateCharts() {
                 scales: {
                     y: { 
                         beginAtZero: true,
-                        suggestedMax: 7 
+                        suggestedMax: Math.max(...porosityData, avgPorosity) * 1.2 || 7 
                     }
                 }
             },
