@@ -24,4 +24,8 @@ class CalibrationList extends Model
     {
         return $this->belongsTo(CalibrationType::class, 'calibration_types_id', 'calibration_types_id');
     }
+    public function Vendor()
+    {
+        return $this->belongsTo(ApVendorList::class, 'ap_vendor_lists_id', 'ap_vendor_lists_id');
+    }
 }

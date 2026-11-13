@@ -76,18 +76,27 @@
             <div class="col-12 col-md-6"><a style="float: right" href="{{route('calibrationlists.create')}}" class="btn btn-primary"><i class="fas fa-plus"></i> เพิ่มรายการ</a></div>
         </div>      
         
-        <table id="tb_job" class="table table-bordered dt-responsive nowrap w-100 text-center">
+        <div class="table-responsive">
+        <table id="tb_job" class="table table-sm table-bordered w-100 text-center">
             <thead>
                 <tr>
                     <th>สถานะ</th>
-                    <th>รหัส</th>
-                    <th>ชื่อ</th>
-                    <th>หมวด</th>
+                    {{-- <th>รหัส</th> --}}
+                    <th>ชื่อเครื่องมือ</th>
+                    <th>Lab ID</th>
+                    <th>ผู้จำหน่าย</th>
+                    <th>แบบ/รุ่น</th>
+                    <th>ความสามารถใช้งานของเครื่องมือ</th>
+                    <th>จุด/ช่วงการใช้งานของห้องปฏิบัติการ</th>
+                    <th>เกณฑ์การยอมรับของเครื่องมือ</th>
+                    {{-- <th>หมวด</th>
                     <th>กลุ่ม</th>
-                    <th>ประเภท</th>
-                    <th>วันที่ทวนสอบครั้งต่อไป</th>
-                    <th>เครื่องมือใช้ทดสอบ</th>
-                    <th>ค่าความไม่แน่นอน</th>
+                    <th>ประเภท</th> --}}
+                    <th>ห้องปฏิบัติการสอบเทียบ</th>
+                    <th>วันที่สอบเทียบล่าสุด</th>
+                    <th>วันที่สอบเทียบครั้งต่อไป</th>
+                    {{-- <th>เครื่องมือใช้ทดสอบ</th> --}}
+                   
                     <th></th>
                     <th>ตรวจประจำวัน</th>
                 </tr>
@@ -98,20 +107,33 @@
                         <td>
                             {{$item->calibration_lists_status}}
                         </td>
-                        <td>{{$item->calibration_lists_code}}</td>
-                        <td>{{$item->calibration_lists_name1}}</td>
-                        <td>{{$item->Categorys->calibration_categories_name}}</td>
-                        <td>{{$item->Groups->calibration_groups_name}}</td>
-                        <td>{{$item->Types->calibration_types_name}}</td>
-                        <td>{{$item->calibration_lists_nextdate}}</td>
+                        {{-- <td>{{$item->calibration_lists_code}}</td> --}}
                         <td>
+                            {{$item->calibration_lists_name1}}
+                        </td>
+                        <td>{{$item->calibration_lists_code}}</td>                       
+                        <td>{{ $item->Vendor?->ap_vendor_lists_name1 ?? 'N/A' }}</td>
+                        <td>{{$item->calibration_lists_model}}</td>
+                        <td>
+                            {{number_format($item->calibration_lists_areaofuse,2)}} (+ {{number_format($item->calibration_lists_areaofuse_add,2)}} , - {{number_format($item->calibration_lists_areaofuse_del,2)}})
+                        </td>
+                        <td>
+                            {{number_format($item->calibration_lists_measuringrange,2)}} (+ {{number_format($item->calibration_lists_measuringrange_add,2)}} , - {{number_format($item->calibration_lists_measuringrange_del,2)}})
+                        </td>
+                        <td>{{number_format($item->calibration_lists_uncertainty,6)}}</td>
+                        {{-- <td>{{$item->Categorys->calibration_categories_name}}</td>
+                        <td>{{$item->Groups->calibration_groups_name}}</td>
+                        <td>{{$item->Types->calibration_types_name}}</td> --}}
+                        <td>{{$item->calibration_laboratory}}</td>
+                        <td>{{$item->calibration_lists_calibrationdate}}</td>
+                        <td>{{$item->calibration_lists_nextdate}}</td>
+                        {{-- <td>
                             @if ($item->calibration_lists_lapstatus)
                                 <span class="badge-soft-success">ใช้งาน</span>
                             @else
                                 <span class="badge-soft-danger">ไม่ใช้งาน</span>
                             @endif
-                        </td>
-                        <td>{{number_format($item->calibration_lists_uncertainty,6)}}</td>
+                        </td> --}}
                         <td>
                             <a href="{{route('calibrationlists.edit',$item->calibration_lists_id)}}" class="btn btn-sm btn-warning" >
                                 <i class="fas fa-edit"></i>
@@ -126,6 +148,7 @@
                 @endforeach
             </tbody>
         </table>
+        </div>
     </div>
 </div>
 </div>
@@ -139,11 +162,12 @@ $(document).ready(function() {
             [10, 25, 50, -1],
             [10, 25, 50, "All"]
         ],
-            dom: 'Bfrtip',
-            buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
+        "scrollX": true, // เพิ่มตัวนี้ได้ถ้าต้องการให้ตารางเลื่อนซ้าย-ขวาได้นุ่มนวลขึ้น
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
         ]
-    })
+    });
 });
 </script>
 @endpush

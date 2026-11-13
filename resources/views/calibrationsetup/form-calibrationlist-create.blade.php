@@ -110,6 +110,20 @@
                     </div>
                 </div> 
                 <div class="row">
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label for="calibration_lists_model" class="col-form-label">แบบ/รุ่น</label>
+                            <input class="form-control" name="calibration_lists_model" id="calibration_lists_model">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label for="calibration_laboratory" class="col-form-label">ห้องปฏิบัติการสอบเทียบ</label>
+                            <input class="form-control" name="calibration_laboratory" id="calibration_laboratory">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
                     <div class="col-12">
                         <div class="form-group">
                             <label for="calibration_lists_reamrk" class="col-form-label">หมายเหตุ</label>
